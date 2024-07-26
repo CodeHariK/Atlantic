@@ -1,0 +1,34 @@
+---
+import BarChart1 from "../components/BarChart1.svelte";
+import BarChart2 from "../components/BarChart2.svelte";
+import Index from "./index.astro";
+import FormExample from "../components/forms/FormExample.svelte";
+---
+
+<Index title="Charts Page">
+    <div class="chart-container">
+        <!-- <div class="chart-item">
+            <BarChart1 client:only="svelte" />
+        </div>
+        <div class="chart-item">
+            <BarChart2 client:only="svelte" />
+        </div> -->
+        <div class="chart-item">
+            <FormExample client:only="svelte" />
+        </div>
+    </div>
+</Index>
+
+<style>
+    .chart-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .chart-item {
+        flex: 1;
+        min-width: 300px;
+    }
+</style>

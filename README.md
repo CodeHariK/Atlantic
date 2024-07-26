@@ -1,9 +1,12 @@
 # Atlantic
-Golang microservice project
 
-Sure, here are a few project ideas that involve multiple microservices, Redis, NATS, real-time analytics, PostgreSQL, and ClickHouse:
+* [How to design a successful eCommerce system for Amazon, eBay, FilPCart and Walmart (by Amazon TPM)](https://www.youtube.com/watch?v=E-KW1O3hLSg)
 
-Real-Time E-Commerce Analytics Platform
+* [Implementing A Modern E-Commerce Search](https://spinscale.de/posts/2020-06-22-implementing-a-modern-ecommerce-search.html)
+
+* [Book] Deep Learning for Search
+
+E-Commerce Platform
 
 	•	User Service: Manages user information and authentication.
 	•	Product Service: Handles product details, inventory, and catalog management.
@@ -12,11 +15,42 @@ Real-Time E-Commerce Analytics Platform
 
 Technologies:
 
-	•	Redis: Used for caching and session management.
-	•	NATS: For message brokering between services.
-	•	Real-Time Analytics: To process and display analytics data in real time.
-	•	PostgreSQL: For storing user, product, and order information.
-	•	ClickHouse: For storing and querying large volumes of analytics data efficiently.
+	1. MeiliSearch: Provide fast and efficient search capabilities for products.
+    {
+      "id": "String",
+      "name": "String",
+      "description": "String",
+      "category": "String",
+      "brand": "String",
+      "price": "Number",
+      "specifications": {
+        "type": "Mixed"
+      }
+    }
+
+	2.	PostgreSQL: Manage transactions, products inventory, users, sellers, orders, carts, payments, and ensure data integrity.
+
+    {
+      "product_id": "ObjectId",
+      "spec_id": "ObjectId",
+      "seller_id": "ObjectId",
+      "price": "Number",
+      "inventory": "Number",
+      "created_at": "Date",
+      "updated_at": "Date"
+    }
+
+	3.	ClickHouse: For analytics. Collects and analyzes clickstream and other data.
+    
+    [Clicks, Ratings, Units Sold, Area, Type]
+
+	4.	NATS: For communication between microservices.
+
+	5.  DragonFly: Used for caching and session management.
+  
+### NATS Events
+
+#### Order Service Events
 
 1. **OrderCreated**: This event is triggered when a new order is created.
    ```json
@@ -125,3 +159,30 @@ Technologies:
      "refundAmount": 79.97
    }
    ```
+
+#### Product Service Events
+  product.created
+  product.updated
+  product.deleted
+
+#### User Service Events
+  user.created
+  user.updated
+
+#### Seller Service Events
+  seller.created
+  seller.updated
+
+#### Ratings Service Events
+  comment.created
+  comment.updated
+  comment.deleted
+
+  rating.added
+  rating.updated
+  rating.deleted
+
+#### Mail Service
+
+#### Analytics Service Events
+  click.tracked
