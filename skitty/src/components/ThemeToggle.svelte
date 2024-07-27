@@ -4,8 +4,7 @@
     let theme = "light";
 
     onMount(() => {
-        theme = localStorage.getItem("theme") || "light";
-        document.documentElement.classList.toggle("dark", theme === "dark");
+        theme = localStorage.getItem("theme");
     });
 
     function toggleTheme() {

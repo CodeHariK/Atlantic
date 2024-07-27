@@ -1,11 +1,14 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-    darkMode: 'class',
-    content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
-    theme: {
-        extend: {},
-    },
-    plugins: [
-        require('@tailwindcss/forms'),
+module.exports = {
+    content: [
+        './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+        './node_modules/flowbite-svelte/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+        'node_modules/preline/dist/*.js',
     ],
-};
+    plugins: [
+        require('flowbite/plugin'),
+        require('preline/plugin')
+    ],
+
+    darkMode: 'class'
+}
