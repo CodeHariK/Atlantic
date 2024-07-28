@@ -1,0 +1,41 @@
+---
+import RainbowText from "../components/RainbowText.astro";
+import Layout from "../layouts/Layout.astro";
+
+const title = "404: Not Found";
+---
+
+<Layout overflow center title={title}>
+    <img title="Astro" src="/logos/astro.svg" />
+
+    <h3>Path: {Astro.url.pathname}</h3>
+    <h2>{title}</h2>
+    <h2>
+        <a title="Return to Home" href=".">
+            <RainbowText>Return to Home</RainbowText>
+        </a>
+    </h2>
+</Layout>
+
+<style is:inline>
+    img {
+        background-color: rgb(29, 29, 29);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 2rem;
+        border-radius: 2rem;
+        height: 124px;
+        width: 124px;
+        margin: 2.5rem;
+    }
+
+    h2 {
+        text-align: center;
+        padding: 0.5rem;
+        font-family: Menlo, monospace;
+        background: rgba(255, 192, 249, 0.174);
+        margin: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        text-decoration: none;
+    }
+</style>

@@ -1,44 +1,7 @@
 ---
-import ThemeToggle from "../components/ThemeToggle.svelte";
+import Layout from "../layouts/Layout.astro";
+
+const title = "Hari Krishnan : Flutter Firebase Freelance Developer";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<script>
-			import "preline/dist/preline.js";
-		</script>
-		<title>Astro</title>
-	</head>
-
-	<body class="bg-white dark:bg-gray-800 text-black dark:text-white">
-		<header
-			class="p-4 flex justify-between items-center bg-gray-800 text-white"
-		>
-			<h1 class="text-xl font-bold">
-				<a href="/" class="hover:underline">Home</a>
-			</h1>
-			<nav class="flex space-x-4">
-				<a href="/dashboard" class="hover:underline">Dashboard</a>
-				<a href="/login" class="hover:underline">Login</a>
-
-				<ThemeToggle client:load />
-			</nav>
-		</header>
-
-		<main class="p-4">
-			<slot />
-		</main>
-	</body>
-
-	<script>
-		let theme = localStorage.getItem("theme");
-		if (!theme) {
-			localStorage.setItem("theme", "light");
-		}
-		document.documentElement.classList.add(theme);
-	</script>
-</html>
+<Layout overflow title={title}> Hello </Layout>

@@ -1,0 +1,16 @@
+---
+import { Soc } from "../data/Constants.astro";
+import ThemeIcon from "./ThemeIcon.astro";
+---
+
+<div class="nav-bar">
+    <div class="title-link">
+        <a title="Shark.run" href="/">Shark.run</a>
+    </div>
+    <div class="nav-links">
+        <a title="Works" href="/about">Works</a>
+        <a title="Blog" href={Soc.Blog}>Blog</a>
+        <a title="Github" href={Soc.Github} target="_blank">GitHub</a>
+        <ThemeIcon />
+    </div>
+</div>

@@ -1,0 +1,30 @@
+---
+import { Soc } from "../data/Constants.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer>
+    <h3>
+        &copy; {year} Shark.run by
+        <a title="Hari Krishnan Github" href={Soc.Github}>{Soc.HariKrishnan}</a
+        >. All Rights Reserved.
+    </h3>
+</footer>
+<style>
+    h3 {
+        margin: 0.5rem 0;
+    }
+
+    a,
+    html.light a {
+        padding: 0.1rem;
+        color: #fb6262;
+        text-decoration: underline;
+    }
+
+    a:hover {
+        background-color: #7e7e7e50;
+        border-radius: 10px;
+    }
+</style>

@@ -1,0 +1,36 @@
+---
+import Layout from "../layouts/Layout.astro";
+import RainbowImage from "../components/RainbowImage.astro";
+import RainbowText from "../components/RainbowText.astro";
+
+const title = "Hari Krishnan : Flutter Firebase Freelance Developer";
+---
+
+<Layout overflow title={title}>
+	<div id="spaceshark" class="gif">
+		<RainbowImage
+			src={"url('/images/SpaceShark512.webp')"}
+			size={"300px"}
+		/>
+	</div>
+
+	<h1 id="name"><RainbowText>Hari Krishnan</RainbowText></h1>
+</Layout>
+
+<style>
+	#spaceshark,
+	h1 {
+		align-self: center;
+		animation: MoveUpDown 4s ease infinite;
+	}
+
+	@keyframes MoveUpDown {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
+	}
+</style>
