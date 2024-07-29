@@ -26,6 +26,10 @@
     // Allow JavaScript files to be imported
     "allowJs": true,
     // Allow JSX files (or files that are internally considered JSX, like Astro files) to be imported inside `.js` and `.ts` files.
-    "jsx": "preserve"
+    "jsx": "preserve",
+    //
+    "jsxImportSource": "solid-js",
+    // "strict": true,
+    "allowSyntheticDefaultImports": true,
   }
 }

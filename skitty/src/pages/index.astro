@@ -1,7 +1,19 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import ThemeIconSolid from "../components/ThemeIconSolid.astro";
+import AstroLayout from "../layouts/AstroLayout.astro";
+
+import "../components/solid/solidstyle.css";
+
+import { ClassicForm } from "../components/solid/form";
+import { Password } from "../components/solid/password";
 
 const title = "Hari Krishnan : Flutter Firebase Freelance Developer";
 ---
 
-<Layout overflow title={title}> Hello </Layout>
+<AstroLayout title={title}>
+    <ThemeIconSolid />
+
+    <Password client:only="solid" />
+
+    <ClassicForm client:only="solid" />
+</AstroLayout>
