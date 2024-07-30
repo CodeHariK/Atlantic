@@ -6,10 +6,10 @@
 -- Create the table
 CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL PRIMARY KEY,
-    "username" VARCHAR(255) NOT NULL UNIQUE,
-    "email" VARCHAR(255) NOT NULL UNIQUE,
-    "phone_number" VARCHAR(15) NOT NULL UNIQUE,
-    "gender" VARCHAR(4) NOT NULL CHECK ("gender" IN ('M', 'F')),
+    "username" VARCHAR(255) UNIQUE NOT NULL CHECK (CHAR_LENGTH("username") > 0),
+    "email" VARCHAR(255) UNIQUE NOT NULL CHECK (CHAR_LENGTH("email") > 0),
+    "phone_number" VARCHAR(15) UNIQUE NOT NULL CHECK (CHAR_LENGTH("phone_number") > 0),
+    "gender" VARCHAR(1) NOT NULL CHECK ("gender" IN ('M', 'F')),
     "is_admin" BOOLEAN DEFAULT FALSE NOT NULL,
     "date_of_birth" DATE NOT NULL,
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

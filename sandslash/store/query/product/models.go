@@ -14,6 +14,19 @@ type Attribute struct {
 	AttributeValue string `json:"attribute_value"`
 }
 
+type Cart struct {
+	ID        int32            `json:"id"`
+	UserID    int32            `json:"user_id"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+}
+
+type CartItem struct {
+	ID        int32 `json:"id"`
+	CartID    int32 `json:"cart_id"`
+	ProductID int32 `json:"product_id"`
+	Quantity  int32 `json:"quantity"`
+}
+
 type GooseDbVersion struct {
 	ID        int32            `json:"id"`
 	VersionID int64            `json:"version_id"`
@@ -29,24 +42,24 @@ type Inventory struct {
 }
 
 type Location struct {
-	ID         int32  `json:"id"`
-	Address    string `json:"address"`
-	City       string `json:"city"`
-	State      string `json:"state"`
-	Country    string `json:"country"`
-	PostalCode string `json:"postal_code"`
-	Latitude   int64  `json:"latitude"`
-	Longitude  int64  `json:"longitude"`
+	ID         int32   `json:"id"`
+	Address    string  `json:"address"`
+	City       string  `json:"city"`
+	State      string  `json:"state"`
+	Country    string  `json:"country"`
+	PostalCode string  `json:"postal_code"`
+	Latitude   float64 `json:"latitude"`
+	Longitude  float64 `json:"longitude"`
 }
 
 type Order struct {
 	ID          int32            `json:"id"`
 	UserID      int32            `json:"user_id"`
-	Status      string           `json:"status"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
 	TotalAmount int64            `json:"total_amount"`
 	Currency    string           `json:"currency"`
+	Status      string           `json:"status"`
 }
 
 type OrderItem struct {
@@ -57,12 +70,12 @@ type OrderItem struct {
 	Quantity  int32  `json:"quantity"`
 	Price     int64  `json:"price"`
 	Currency  string `json:"currency"`
+	Status    string `json:"status"`
 }
 
 type Product struct {
-	ID          int32  `json:"id"`
-	ProductName string `json:"product_name"`
-	Description int32  `json:"description"`
+	ID          int32       `json:"id"`
+	ProductName pgtype.Text `json:"product_name"`
 }
 
 type ProductAttribute struct {
@@ -81,7 +94,7 @@ type ProductComment struct {
 
 type ProductDescription struct {
 	ID               int32       `json:"id"`
-	ProductID        pgtype.Int4 `json:"product_id"`
+	ProductID        int32       `json:"product_id"`
 	ProductVariantID pgtype.Int4 `json:"product_variant_id"`
 	Description      pgtype.Text `json:"description"`
 	Images           []string    `json:"images"`

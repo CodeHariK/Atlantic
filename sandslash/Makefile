@@ -8,10 +8,10 @@ help:
 	@echo "Available commands:"
 	
 	@echo "\nAtlas"
-	@echo "  ainspect       - Inspect schema and output to $(SCHEMA_FILE)"
-	@echo "  aapply         - Apply schema to database using $(FILE_SCHEMA_FILE) and $(DEV_URL)"
-	@echo "  apush          - Push migrations to $(DEV_URL) from $(SCHEMA_DIR)"
-	@echo "  ahash          - Hash migrations from $(SCHEMA_DIR)"
+	@echo "  ainspect       - Inspect schema and output to SCHEMA_FILE"
+	@echo "  aapply         - Apply schema to database"
+	@echo "  apush          - Push migrations"
+	@echo "  ahash          - Hash migrations"
 	@echo "  aweb           - Inspect schema using web interface"
 	@echo "  all            - Run all commands: ainspect, aapply, apush, ahash, aweb"
 
@@ -20,10 +20,12 @@ help:
 	@echo "  gdo            - Rollback Goose migrations"
 	@echo "  greset         - Rollback Goose migrations to version 0"
 	@echo "  gstatus        - Display the status of Goose migrations"
-	@echo "  gdestroy       - Destroy Goose Table"
+	@echo "  destroy        - Destroy Goose Table"
 
-	@echo "\nSQLc"
-	@echo "  sqlc			- sqlc generate"
+	@echo "  immortalFire   - Destroy Tables, Functions, Trigger, Enums, Index"
+
+	@echo "\nSQL"
+	@echo "  sql			- sqlc generate"
 
 	@echo "\nGen"
 	@echo "  gen			- Generate All"
@@ -60,18 +62,31 @@ greset:
 	goose -dir store/migration postgres $(POSTGRES_URL) reset
 gstatus:
 	goose -dir store/migration postgres $(POSTGRES_URL) status
-gdestroy:
+
+destroy:
 	go run store/function/destroy/destroy.go 
+
+immortalFire:
+	go run store/function/destroy/destroy.go -confirm
 
 sql:
 	sqlc generate
 sqlconnect:
 	sqlc-connect -tracing -metric
 
-gen: gup ainspect ahash sql
+bufGen:
+	buf generate
+bufMigrate:
+	buf config migrate -diff
+	buf config migrate
+
+gen: gup ainspect ahash sql sqlconnect bufGen
 
 dbstatus:
 	go run store/function/status/status.go
 
 run:
 	go run cmd/main.go
+
+doRun:
+	go run . -db $(POSTGRES_URL) -port=5100

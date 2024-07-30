@@ -9,123 +9,16 @@ import (
 	"context"
 )
 
-const createProduct = `-- name: CreateProduct :one
-INSERT INTO
-    "products" ("product_name", "description")
-VALUES ($1, $2)
-RETURNING
-    "id",
-    "product_name",
-    "description"
+const createProductAndDescription = `-- name: CreateProductAndDescription :one
+BEGIN
 `
 
-type CreateProductParams struct {
-	ProductName string `json:"product_name"`
-	Description int32  `json:"description"`
+type CreateProductAndDescriptionRow struct {
 }
 
-func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
-	row := q.db.QueryRow(ctx, createProduct, arg.ProductName, arg.Description)
-	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.Description)
-	return i, err
-}
-
-const deleteProduct = `-- name: DeleteProduct :one
-DELETE FROM "products" WHERE "id" = $1 RETURNING "id"
-`
-
-func (q *Queries) DeleteProduct(ctx context.Context, id int32) (int32, error) {
-	row := q.db.QueryRow(ctx, deleteProduct, id)
-	err := row.Scan(&id)
-	return id, err
-}
-
-const findProductByName = `-- name: FindProductByName :one
-SELECT
-    "id",
-    "product_name",
-    "description"
-FROM "products"
-WHERE
-    "product_name" = $1
-`
-
-func (q *Queries) FindProductByName(ctx context.Context, productName string) (Product, error) {
-	row := q.db.QueryRow(ctx, findProductByName, productName)
-	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.Description)
-	return i, err
-}
-
-const getProductByID = `-- name: GetProductByID :one
-SELECT
-    "id",
-    "product_name",
-    "description"
-FROM "products"
-WHERE
-    "id" = $1
-`
-
-func (q *Queries) GetProductByID(ctx context.Context, id int32) (Product, error) {
-	row := q.db.QueryRow(ctx, getProductByID, id)
-	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.Description)
-	return i, err
-}
-
-const listAllProducts = `-- name: ListAllProducts :many
-SELECT
-    "id",
-    "product_name",
-    "description"
-FROM "products"
-ORDER BY "product_name"
-`
-
-func (q *Queries) ListAllProducts(ctx context.Context) ([]Product, error) {
-	rows, err := q.db.Query(ctx, listAllProducts)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Product{}
-	for rows.Next() {
-		var i Product
-		if err := rows.Scan(&i.ID, &i.ProductName, &i.Description); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const updateProduct = `-- name: UpdateProduct :one
-UPDATE "products"
-SET
-    "product_name" = $1,
-    "description" = $2
-WHERE
-    "id" = $3
-RETURNING
-    "id",
-    "product_name",
-    "description"
-`
-
-type UpdateProductParams struct {
-	ProductName string `json:"product_name"`
-	Description int32  `json:"description"`
-	ID          int32  `json:"id"`
-}
-
-func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
-	row := q.db.QueryRow(ctx, updateProduct, arg.ProductName, arg.Description, arg.ID)
-	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.Description)
+func (q *Queries) CreateProductAndDescription(ctx context.Context) (CreateProductAndDescriptionRow, error) {
+	row := q.db.QueryRow(ctx, createProductAndDescription)
+	var i CreateProductAndDescriptionRow
+	err := row.Scan()
 	return i, err
 }

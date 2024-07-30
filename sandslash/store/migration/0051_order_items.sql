@@ -16,6 +16,15 @@ CREATE TABLE IF NOT EXISTS "order_items" (
             'ETH',
             'SOL'
         )
+    ),
+    "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
+        "status" IN (
+            'PENDING',
+            'PROCESSING',
+            'SHIPPED',
+            'CANCELED',
+            'REFUNDED'
+        )
     )
 );
 
