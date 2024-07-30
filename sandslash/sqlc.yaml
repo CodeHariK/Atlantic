@@ -1,0 +1,38 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "store/query/user"
+    schema: "store/schema.sql"
+    gen:
+      go:
+        package: "user"
+        out: "store/query/user"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true
+
+  - engine: "postgresql"
+    queries: "store/query/seller"
+    schema: "store/schema.sql"
+    gen:
+      go:
+        package: "seller"
+        out: "store/query/seller"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true
+
+
+  - engine: "postgresql"
+    queries: "store/query/product"
+    schema: "store/schema.sql"
+    gen:
+      go:
+        package: "product"
+        out: "store/query/product"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true

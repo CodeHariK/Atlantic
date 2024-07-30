@@ -6,14 +6,55 @@ import "../components/solid/solidstyle.css";
 
 import { ClassicForm } from "../components/solid/form";
 import { Password } from "../components/solid/password";
+import {
+    ToggleOptions,
+    PositionBox,
+    PositionBox2,
+} from "../components/solid/dropdown";
 
 const title = "Hari Krishnan : Flutter Firebase Freelance Developer";
 ---
 
 <AstroLayout title={title}>
-    <ThemeIconSolid />
+    <!-- <ThemeIconSolid /> -->
 
-    <Password client:only="solid" />
+    <!-- <Password client:only="solid" /> -->
 
-    <ClassicForm client:only="solid" />
+    <div style="right: 50%; top: 50%; position: absolute;">
+        <ToggleOptions client:only="solid" />
+    </div>
+
+    <!-- <ClassicForm client:only="solid" /> -->
 </AstroLayout>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .flex-grid {
+        display: flex;
+        flex-wrap: wrap;
+        width: 600px; /* Adjust as needed */
+        height: 800px; /* Adjust as needed */
+    }
+
+    .grid-item {
+        flex: 1 0 25%; /* Each item takes up 25% of the width */
+        height: 25%; /* Each item takes up 25% of the height */
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        font-size: 24px;
+        color: #333;
+    }
+</style>
