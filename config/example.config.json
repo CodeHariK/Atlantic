@@ -1,0 +1,43 @@
+{
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "user",
+    "password": "password",
+    "dbname": "mydb",
+    "max_connections": 10,
+    "timeout": 30,
+    "ssl_mode": "disable"
+  },
+  "discord": {
+    "client_id": "your-client-id",
+    "client_secret": "your-client-secret",
+    "scopes": [
+      "identify",
+      "email"
+    ],
+    "redirect_uri": "http://localhost:8080/callback",
+    "auth_url": "https://discord.com/oauth2/authorize",
+    "token_url": "https://discord.com/api/oauth2/token"
+  },
+  "server": {
+    "port": 8080,
+    "log_level": "info",
+    "enable_metrics": true
+  },
+  "feature_flags": {
+    "new_feature": true,
+    "beta_access": false
+  },
+  "session": {
+    "max_age": 3600,
+    "http_only": true,
+    "secure": true,
+    "auth_key": "secret-auth-key",
+    "encryption_key": "secret-encryption-key"
+  },
+  "otlp": {
+    "grpc": 4317,
+    "http": 4318
+  }
+}

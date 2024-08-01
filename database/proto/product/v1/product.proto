@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package product.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/codeharik/Atlantic/sandslash/api/product/v1";
+
+service ProductService {
+  rpc CreateProductAndDescription(CreateProductAndDescriptionRequest) returns (CreateProductAndDescriptionResponse) {}
+}
+
+message Attribute {
+  int32 id = 1;
+  string attribute_name = 2;
+  string attribute_value = 3;
+}
+
+message Cart {
+  int32 id = 1;
+  int32 user_id = 2;
+  google.protobuf.Timestamp updated_at = 3;
+}
+
+message CartItem {
+  int32 id = 1;
+  int32 cart_id = 2;
+  int32 product_id = 3;
+  int32 quantity = 4;
+}
+
+message CreateProductAndDescriptionRequest {}
+
+message CreateProductAndDescriptionResponse {
+  CreateProductAndDescriptionRow create_product_and_description_row = 1;
+}
+
+message CreateProductAndDescriptionRow {}
+
+message GooseDbVersion {
+  int32 id = 1;
+  int64 version_id = 2;
+  bool is_applied = 3;
+  google.protobuf.Timestamp tstamp = 4;
+}
+
+message Inventory {
+  int32 id = 1;
+  int32 product_id = 2;
+  int32 seller_id = 3;
+  int32 quantity = 4;
+}
+
+message Location {
+  int32 id = 1;
+  string address = 2;
+  string city = 3;
+  string state = 4;
+  string country = 5;
+  string postal_code = 6;
+  double latitude = 7;
+  double longitude = 8;
+}
+
+message Order {
+  int32 id = 1;
+  int32 user_id = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  int64 total_amount = 5;
+  string currency = 6;
+  string status = 7;
+}
+
+message OrderItem {
+  int32 id = 1;
+  int32 order_id = 2;
+  int32 product_id = 3;
+  int32 seller_id = 4;
+  int32 quantity = 5;
+  int64 price = 6;
+  string currency = 7;
+  string status = 8;
+}
+
+message Product {
+  int32 id = 1;
+  google.protobuf.StringValue product_name = 2;
+}
+
+message ProductAttribute {
+  int32 id = 1;
+  int32 product_id = 2;
+  google.protobuf.Int32Value variant_id = 3;
+  int32 attribute_id = 4;
+}
+
+message ProductComment {
+  int32 id = 1;
+  google.protobuf.StringValue comment = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+message ProductDescription {
+  int32 id = 1;
+  int32 product_id = 2;
+  google.protobuf.Int32Value product_variant_id = 3;
+  google.protobuf.StringValue description = 4;
+  repeated string images = 5;
+  repeated string videos = 6;
+}
+
+message ProductPromotion {
+  int32 id = 1;
+  string promotion_name = 2;
+  int64 discount = 3;
+  int32 product_variant_id = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message ProductReview {
+  int32 id = 1;
+  int32 user_id = 2;
+  int32 product_id = 3;
+  int32 seller_id = 4;
+  int32 rating = 5;
+  google.protobuf.Int32Value comment = 6;
+}
+
+message ProductSeller {
+  int32 id = 1;
+  int32 product_variant_id = 2;
+  int32 seller_id = 3;
+  int64 price = 4;
+}
+
+message ProductVariant {
+  int32 id = 1;
+  int32 product_id = 2;
+  string variant_name = 3;
+  int64 price = 4;
+  string currency = 5;
+}
+
+message Seller {
+  int32 id = 1;
+  string name = 2;
+  google.protobuf.Int32Value location = 3;
+}
+
+message User {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string gender = 5;
+  bool is_admin = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Int32Value location = 10;
+}

@@ -1,0 +1,83 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins:
+            - "*"
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+
+exporters:
+
+  logging:
+    loglevel: debug
+
+  # otlp:
+  #   endpoint: otelcol:4317
+
+  otlp:
+    endpoint: "jaeger:16686"
+    tls:
+      insecure_skip_verify: true
+
+
+  # jaeger:
+  #     endpoint: "jaeger:16686"  # Jaeger's gRPC endpoint (default port for Jaeger agent)
+  #     insecure: true  # Use if Jaeger does not require TLS (adjust as needed)
+
+  prometheus:
+      endpoint: "0.0.0.0:8889"  # Port where Prometheus will scrape metrics
+
+  # otlphttp_relic:
+  #   endpoint: "https://otlp.nr-data.net"
+  #   headers:
+  #     api-key: "42b0ac43ae044b2668ede4ef033a7ff5FFFFNRAL"  # New Relic API key for authentication
+  #   insecure: false  # Set to true if the endpoint does not require TLS (usually false for secure connections)
+
+  # otlpgrpc_relic:
+  #   endpoint: "otlp.nr-data.net:4317"  # New Relic's gRPC endpoint for OTLP
+  #   headers:
+  #     api-key: "42b0ac43ae044b2668ede4ef033a7ff5FFFFNRAL"  # New Relic API key for authentication
+  #   tls:
+  #     insecure: false  # Use true if not using TLS (false recommended for secure connections)
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+# service:
+#   extensions: [health_check, pprof, zpages]
+#   pipelines:
+#     traces:
+#       receivers: [otlp]
+#       processors: [batch]
+#       exporters: [logging, otlp, jaeger, otlphttp_relic, otlpgrpc_relic]
+#     metrics:
+#       receivers: [otlp]
+#       processors: [batch]
+#       exporters: [logging, otlp, prometheus, otlphttp_relic, otlpgrpc_relic]
+#     logs:
+#       receivers: [otlp]
+#       processors: [batch]
+#       exporters: [logging, otlp, otlphttp_relic, otlpgrpc_relic]
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp]
+
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]
+
+  telemetry:
+    logs:
+      level: debug

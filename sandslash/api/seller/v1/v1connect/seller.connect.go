@@ -8,8 +8,8 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
+	v1 "github.com/codeharik/Atlantic/sandslash/api/seller/v1"
 	http "net/http"
-	v1 "sandslash/api/seller/v1"
 	strings "strings"
 )
 

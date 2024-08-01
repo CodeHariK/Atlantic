@@ -19,6 +19,13 @@ var (
 )
 
 type Config struct {
+	Service struct {
+		Name          string `json:"name"`
+		Dev           bool   `json:"dev"`
+		Address       string `json:"address"`
+		Port          int    `json:"port"`
+		EnableMetrics bool   `json:"enable_metrics"`
+	} `json:"service"`
 	Database struct {
 		Host           string `json:"host"`
 		Port           int    `json:"port"`
@@ -37,11 +44,6 @@ type Config struct {
 		AuthURL      string   `json:"auth_url"`
 		TokenURL     string   `json:"token_url"`
 	} `json:"discord"`
-	Server struct {
-		Port          int    `json:"port"`
-		LogLevel      string `json:"log_level"`
-		EnableMetrics bool   `json:"enable_metrics"`
-	} `json:"server"`
 	FeatureFlags struct {
 		NewFeature bool `json:"new_feature"`
 		BetaAccess bool `json:"beta_access"`
@@ -53,10 +55,32 @@ type Config struct {
 		AuthKey       string `json:"auth_key"`
 		EncryptionKey string `json:"encryption_key"`
 	} `json:"session"`
+
+	OTLP struct {
+		GRPC string `json:"grpc"`
+		HTTP string `json:"http"`
+	} `json:"otlp"`
 }
 
-func LoadConfig() Config {
-	file, err := os.Open("config.json")
+func LoadConfig(paths ...string) Config {
+	var filePath string
+	fileExists := false
+
+	// Check each path for the existence of the file
+	for _, path := range paths {
+		if _, err := os.Stat(path); !os.IsNotExist(err) {
+			filePath = path
+			fileExists = true
+			break
+		}
+	}
+
+	if !fileExists {
+		fmt.Println("Error: config.json not found in any of the expected locations.")
+		os.Exit(1) // Exit with status code 1 indicating failure
+	}
+
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
@@ -89,8 +113,8 @@ func LoadConfig() Config {
 	return cfg
 }
 
-func (config *Config) CreateDatabaseConnectionUri() string {
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
+func (config *Config) DatabaseConnectionUri() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		config.Database.User,
 		config.Database.Password,
 		config.Database.Host,
@@ -98,5 +122,12 @@ func (config *Config) CreateDatabaseConnectionUri() string {
 		config.Database.DbName,
 		config.Database.SSLMode,
 	)
-	return dsn
+}
+
+func (config *Config) ServerFullUrl() string {
+	return fmt.Sprintf("http://%s:%d", config.Service.Address, config.Service.Port)
+}
+
+func (config *Config) ServerPortUrl() string {
+	return fmt.Sprintf(":%d", config.Service.Port)
 }

@@ -1,0 +1,38 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "query/user"
+    schema: "schema.sql"
+    gen:
+      go:
+        package: "user"
+        out: "../sandslash/store/user"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true
+
+  - engine: "postgresql"
+    queries: "query/seller"
+    schema: "schema.sql"
+    gen:
+      go:
+        package: "seller"
+        out: "../sandslash/store/seller"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true
+
+
+  - engine: "postgresql"
+    queries: "query/product"
+    schema: "schema.sql"
+    gen:
+      go:
+        package: "product"
+        out: "../sandslash/store/product"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true

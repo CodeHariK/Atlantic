@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"sandslash/types"
+	"github.com/codeharik/Atlantic/sandslash/types"
 
 	"github.com/gorilla/sessions"
 )
