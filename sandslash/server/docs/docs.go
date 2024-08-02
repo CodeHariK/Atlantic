@@ -4,12 +4,14 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+
+	"github.com/codeharik/Atlantic/sandslash/service"
 )
 
 //go:embed openapi.json
 var openapijson embed.FS
 
-func OpenapiHandler(app *http.ServeMux, logo string) {
+func OpenapiHandler(app *http.ServeMux, config service.Config) {
 	// Serve the embedded openapi.json file at /docs/openapi.json
 	app.HandleFunc("GET /docs/openapi.json", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/json")
@@ -29,76 +31,63 @@ func OpenapiHandler(app *http.ServeMux, logo string) {
 <html>
 
 <head>
-    <title>Redoc</title>
+    <title>%s</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
-
+	<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-		.react-tabs__tab-panel {
-			border-radius: 20px;
+		body, span {
+			font-weight: 400 !important;
+			outline: none;
+			font-size: 14px;
 		}
-		input {
-			padding: 15px !important;
-			margin: 6px !important;
-			border: 1px solid white !important;
-			border-radius: 5px !important;
-			font-size: 16px !important;
+		.swagger-ui .info {
+			margin: 10px;
 		}
-		div[role="search"] {
-			text-align-last: center;
+		.swagger-ui .opblock.opblock-post {
+			background: #ffffff1a;
+			border-color: #f0f0f0;
 		}
-		div[role="search"] > input{
-			width: 95%%;
+		.swagger-ui .opblock.opblock-post .opblock-summary-method {
+			background: #ffffff;
+			border: 1px solid #74df74;
+			color: black;
+		}
+		.swagger-ui section.models .model-container {
+			background: #dedede2e;
+		}
+		.highlight-code pre {
+			background: black;
+		}
+		.swagger-ui textarea {
+			background: #ffffffcc;
+			border: 1px solid #b3b3b3;
+			color: #292929;
+			font-weight: 300;
 		}
     </style>
 </head>
 
 <body>
-	<div id="redoc-container"></div>
 </body>
 
-<script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
-<script>
-	Redoc.init('/docs/openapi.json', {
-		theme: {
-			sidebar: {					
-				backgroundColor: '#43395d',
-				textColor: '#ffffff'
-			},
-			rightPanel: {					
-				backgroundColor: '#43395d',
-			},
-			colors: {
-				primary: {
-					main: '#5a5a5a'
-				}
-			},
-			typography: {
-				fontSize: '16px',
-				fontFamily: 'Roboto, sans-serif',
-				headings: {
-					fontFamily: 'Montserrat, sans-serif'
-				}
-			}
-		}
-	}, document.getElementById('redoc-container'))
+<script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" crossorigin></script>
 
-	setTimeout(() => {
-		var searchDiv = document.querySelector('div[role="search"]');
-		var img = document.createElement('img');
-		img.src = '%s';
-		img.style.width = '200px'
-		img.style.borderRadius = '20px'
-		img.style.padding = '15px'
-		// searchDiv.appendChild(img);
-	}, 2000);
+<script>
+
+	window.onload = () => {
+		window.ui = SwaggerUIBundle({
+			url: '%s',
+			dom_id: 'body',
+		});
+
+		setTimeout(() => {
+			document.querySelector(".title").textContent = '%s'
+		}, 50)
+	};
+
 </script>
 
-</html>`, logo)))
+</html>`, config.Service.Name, config.ServerFullUrl()+"/docs/openapi.json", config.Service.Name)))
 	})
 }

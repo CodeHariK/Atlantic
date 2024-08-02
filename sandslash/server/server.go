@@ -39,7 +39,7 @@ func Serve(storeInstance service.Store, config service.Config) {
 
 	router := http.NewServeMux()
 
-	CreateRoutes(router, storeInstance)
+	CreateRoutes(router, storeInstance, config)
 
 	var interceptors []connect.Interceptor
 	if config.OTLP.GRPC != "" {
@@ -64,11 +64,11 @@ func Serve(storeInstance service.Store, config service.Config) {
 
 	mux := RouteTaggingMiddleware(
 		loggingMiddleware(
-			CSRFMiddleware(
-				CORSMiddleware(
-					router, config,
-				),
+			// CSRFMiddleware(
+			CORSMiddleware(
+				router, config,
 			),
+			// ),
 		),
 	)
 	omux := otelhttp.NewHandler(mux, "/")

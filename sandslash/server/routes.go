@@ -8,7 +8,7 @@ import (
 	"github.com/codeharik/Atlantic/sandslash/service"
 )
 
-func CreateRoutes(router *http.ServeMux, storeInstance service.Store) {
+func CreateRoutes(router *http.ServeMux, storeInstance service.Store, config service.Config) {
 	hss := New(&storeInstance)
 
 	UserHandler.CreateRoutes(router, storeInstance.UserStore)
@@ -21,5 +21,5 @@ func CreateRoutes(router *http.ServeMux, storeInstance service.Store) {
 	)
 	router.HandleFunc("/auth/discord/callback", HandleCallback)
 
-	docs.OpenapiHandler(router, "")
+	docs.OpenapiHandler(router, config)
 }

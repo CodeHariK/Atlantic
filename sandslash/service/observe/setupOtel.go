@@ -15,7 +15,9 @@ import (
 // If it does not return an error, make sure to call shutdown for proper cleanup.
 func SetupOTelSDK(ctx context.Context, config service.Config) (shutdown func(context.Context) error, err error) {
 	if config.OTLP.GRPC == "" || !config.Service.EnableMetrics {
-		return nil, fmt.Errorf("OpenTelemetry not running.")
+		return (func(ctx context.Context) error {
+			return nil
+		}), fmt.Errorf("OpenTelemetry not running.")
 	}
 
 	fmt.Println("OpenTelemetry Collector running on http://" + config.OTLP.GRPC)
@@ -31,6 +33,7 @@ func SetupOTelSDK(ctx context.Context, config service.Config) (shutdown func(con
 			err = errors.Join(err, fn(ctx))
 		}
 		shutdownFuncs = nil
+		fmt.Println("OpenTelemetry collector shutdown completed")
 		return err
 	}
 

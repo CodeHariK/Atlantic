@@ -9,7 +9,7 @@ plugins:
     out: ../sandslash/api
     opt: paths=source_relative
   - remote: buf.build/grpc-ecosystem/openapiv2:v2.21.0
-    out: ../sandslash/handler/docs/
+    out: ../sandslash/server/docs/
     opt:
       - generate_unbound_methods=true
       - logtostderr=true

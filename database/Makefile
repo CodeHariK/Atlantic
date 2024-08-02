@@ -69,7 +69,7 @@ connect:
 
 	rm buf.gen.yaml
 
-	mv ../sandslash/handler/docs/apidocs.swagger.json ../sandslash/server/docs/openapi.json
+	mv ../sandslash/server/docs/apidocs.swagger.json ../sandslash/server/docs/openapi.json
 
 	cd .. && find . -type f -name ".DS_Store" -exec rm {} +
 
