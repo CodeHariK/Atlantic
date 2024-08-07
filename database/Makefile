@@ -46,7 +46,7 @@ connect:
 	rm -rf ../sandslash/store
 
 	sqlc generate
-	sqlc-connect -m "github.com/codeharik/Atlantic/sandslash"
+	sqlc-connect -m "github.com/codeharik/Atlantic/sandslash" -metric -tracing
 
 	rm -rf ../sandslash/api
 	rm -rf ../sandslash/internal

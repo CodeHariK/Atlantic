@@ -6,18 +6,19 @@ import (
 
 	"github.com/codeharik/Atlantic/sandslash/service"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
+	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"
-	"go.opentelemetry.io/otel/sdk/log"
+	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func CreateLoggerProvider(exporter log.Exporter, config service.Config) *log.LoggerProvider {
-	loggerProvider := log.NewLoggerProvider(
-		log.WithProcessor(
-			log.NewBatchProcessor(exporter),
+func CreateLoggerProvider(exporter sdklog.Exporter, config service.Config) *sdklog.LoggerProvider {
+	loggerProvider := sdklog.NewLoggerProvider(
+		sdklog.WithProcessor(
+			sdklog.NewBatchProcessor(exporter),
 		),
-		log.WithResource(
+		sdklog.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
 				semconv.ServiceNameKey.String(config.Service.Name),
@@ -26,10 +27,16 @@ func CreateLoggerProvider(exporter log.Exporter, config service.Config) *log.Log
 	)
 	global.SetLoggerProvider(loggerProvider)
 
+	r := log.Record{}
+	r.SetSeverity(log.SeverityInfo)
+
+	s := global.GetLoggerProvider().Logger("Hello")
+	s.Emit(context.Background(), r) // log.Record{},
+
 	return loggerProvider
 }
 
-func CreateLogsExporterGRPC(ctx context.Context, config service.Config) (log.Exporter, error) {
+func CreateLogsExporterGRPC(ctx context.Context, config service.Config) (sdklog.Exporter, error) {
 	exporter, err := otlploggrpc.New(
 		ctx,
 		otlploggrpc.WithEndpoint(config.OTLP.GRPC),
