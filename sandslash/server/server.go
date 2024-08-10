@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,11 +12,10 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/otelconnect"
+	basecontext "github.com/codeharik/Atlantic/sandslash/server/context"
 	"github.com/codeharik/Atlantic/sandslash/server/database"
 	"github.com/codeharik/Atlantic/sandslash/service"
 	"github.com/codeharik/Atlantic/sandslash/service/observe"
-	"github.com/gorilla/csrf"
-	"github.com/gorilla/handlers"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -25,16 +23,16 @@ import (
 
 func Serve(storeInstance service.Store, config service.Config) {
 	// Handle SIGINT (CTRL+C) gracefully.
-	ctx, stop := signal.NotifyContext(
+	sigctx, stop := signal.NotifyContext(
 		context.Background(),
 		os.Interrupt,
 	)
 	defer stop()
 
 	// Set up OpenTelemetry.
-	otelShutdown, err := observe.SetupOTelSDK(ctx, config)
-	if err != nil {
-		fmt.Println(err)
+	otelShutdown, otelerr := observe.SetupOTelSDK(sigctx, config)
+	if otelerr != nil {
+		fmt.Println(otelerr)
 	}
 
 	router := http.NewServeMux()
@@ -79,7 +77,9 @@ func Serve(storeInstance service.Store, config service.Config) {
 			omux,
 			&http2.Server{},
 		),
-		BaseContext:       func(_ net.Listener) context.Context { return ctx },
+
+		BaseContext: basecontext.GenerateContext(sigctx),
+
 		ReadHeaderTimeout: time.Second,
 		ReadTimeout:       60 * time.Second,
 		WriteTimeout:      60 * time.Second,
@@ -93,72 +93,27 @@ func Serve(storeInstance service.Store, config service.Config) {
 	}()
 
 	defer func() {
-		err = server.Shutdown(context.Background())
+		err := server.Shutdown(context.Background())
 		if err != nil {
-			log.Printf("Error shutting down Server: %v", err)
+			fmt.Printf("Error shutting down Server: %v", err)
 		}
 
 		if shutdownErr := otelShutdown(context.Background()); shutdownErr != nil {
-			log.Printf("Error shutting down OpenTelemetry: %v", shutdownErr)
+			fmt.Printf("Error shutting down OpenTelemetry: %v", shutdownErr)
 		}
 
 		storeInstance.Db.Close()
+		fmt.Println("Server Shutdown, OtelShutdown, Store closed")
 	}()
 
 	// Wait for interruption.
 	select {
-	case <-srvErr:
+	case serverError := <-srvErr:
+		fmt.Println(serverError)
 		return
-	case <-ctx.Done():
+	case <-sigctx.Done():
 		// Wait for first CTRL+C.
 		// Stop receiving signal notifications as soon as possible.
 		stop()
 	}
-}
-
-func loggingMiddleware(h http.Handler) http.Handler {
-	return handlers.LoggingHandler(os.Stdout, h)
-}
-
-var CSRFMiddleware = csrf.Protect(
-	service.CSRFkey,
-	csrf.Secure(false),
-	csrf.HttpOnly(true),
-	csrf.SameSite(csrf.SameSiteLaxMode),
-	csrf.Secure(false),                 // false in development only!
-	csrf.RequestHeader("X-CSRF-Token"), // Must be in CORS Allowed and Exposed Headers
-)
-
-func CORSMiddleware(handler http.Handler, config service.Config) http.Handler {
-	return handlers.CORS(
-		handlers.AllowedOrigins([]string{
-			// Only allow requests from this specific origin
-			// "http://" + config.ServerUrl(),
-			"*",
-		}),
-		handlers.AllowedMethods([]string{
-			http.MethodGet,
-			http.MethodPost,
-			http.MethodPut,
-			http.MethodDelete,
-		}),
-		handlers.AllowedHeaders([]string{
-			"X-Requested-With",
-			"Content-Type",
-			"Authorization",
-		}),
-		handlers.ExposedHeaders([]string{
-			"Content-Type",
-			"Authorization",
-		}),
-		handlers.AllowCredentials(),
-	)(handler)
-}
-
-func RouteTaggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Create a new handler with route tagging for OpenTelemetry
-		taggedHandler := otelhttp.WithRouteTag(r.URL.Path, next)
-		taggedHandler.ServeHTTP(w, r)
-	})
 }

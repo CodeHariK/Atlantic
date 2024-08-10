@@ -6,7 +6,6 @@ import (
 
 	"github.com/codeharik/Atlantic/sandslash/service"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
-	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -26,12 +25,6 @@ func CreateLoggerProvider(exporter sdklog.Exporter, config service.Config) *sdkl
 		),
 	)
 	global.SetLoggerProvider(loggerProvider)
-
-	r := log.Record{}
-	r.SetSeverity(log.SeverityInfo)
-
-	s := global.GetLoggerProvider().Logger("Hello")
-	s.Emit(context.Background(), r) // log.Record{},
 
 	return loggerProvider
 }

@@ -8,27 +8,28 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/sdk/resource"
-	"go.opentelemetry.io/otel/sdk/trace"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func CreateTracerProvider(exporter trace.SpanExporter, config service.Config) *trace.TracerProvider {
-	tracerProvider := trace.NewTracerProvider(
-		trace.WithBatcher(exporter),
-		trace.WithSampler(trace.AlwaysSample()),
-		trace.WithResource(
+func CreateTracerProvider(exporter sdktrace.SpanExporter, config service.Config) *sdktrace.TracerProvider {
+	tracerProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
 				semconv.ServiceNameKey.String(config.Service.Name),
 			),
 		),
 	)
+
 	otel.SetTracerProvider(tracerProvider)
 
 	return tracerProvider
 }
 
-func CreateTraceExporterGRPC(ctx context.Context, config service.Config) (trace.SpanExporter, error) {
+func CreateTraceExporterGRPC(ctx context.Context, config service.Config) (sdktrace.SpanExporter, error) {
 	exporter, err := otlptracegrpc.New(
 		ctx,
 		otlptracegrpc.WithEndpoint(config.OTLP.GRPC),

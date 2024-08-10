@@ -8,20 +8,20 @@ import (
 	"github.com/codeharik/Atlantic/sandslash/service"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
-	"go.opentelemetry.io/otel/sdk/metric"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func CreateMeterProvider(exporter metric.Exporter, config service.Config) *metric.MeterProvider {
-	meterProvider := metric.NewMeterProvider(
-		metric.WithReader(
-			metric.NewPeriodicReader(
+func CreateMeterProvider(exporter sdkmetric.Exporter, config service.Config) *sdkmetric.MeterProvider {
+	meterProvider := sdkmetric.NewMeterProvider(
+		sdkmetric.WithReader(
+			sdkmetric.NewPeriodicReader(
 				exporter,
-				metric.WithInterval(3*time.Second),
+				sdkmetric.WithInterval(3*time.Second),
 			),
 		),
-		metric.WithResource(
+		sdkmetric.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
 				semconv.ServiceNameKey.String(config.Service.Name),
@@ -33,7 +33,7 @@ func CreateMeterProvider(exporter metric.Exporter, config service.Config) *metri
 	return meterProvider
 }
 
-func CreateMetricExporterGRPC(ctx context.Context, config service.Config) (metric.Exporter, error) {
+func CreateMetricExporterGRPC(ctx context.Context, config service.Config) (sdkmetric.Exporter, error) {
 	exporter, err := otlpmetricgrpc.New(
 		ctx,
 		otlpmetricgrpc.WithEndpoint(config.OTLP.GRPC),
