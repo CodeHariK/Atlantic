@@ -9,6 +9,10 @@ option go_package = "github.com/codeharik/Atlantic/sandslash/api/product/v1";
 
 service ProductService {
   rpc CreateProductAndDescription(CreateProductAndDescriptionRequest) returns (CreateProductAndDescriptionResponse) {}
+
+  rpc GetCategoryPath(GetCategoryPathRequest) returns (GetCategoryPathResponse) {}
+
+  rpc GetProductWithCategoryPath(GetProductWithCategoryPathRequest) returns (GetProductWithCategoryPathResponse) {}
 }
 
 message Attribute {
@@ -37,6 +41,29 @@ message CreateProductAndDescriptionResponse {
 }
 
 message CreateProductAndDescriptionRow {}
+
+message GetCategoryPathRequest {
+  int32 id = 1;
+}
+
+message GetCategoryPathResponse {
+  string value = 1;
+}
+
+message GetProductWithCategoryPathRequest {
+  int32 id = 1;
+}
+
+message GetProductWithCategoryPathResponse {
+  GetProductWithCategoryPathRow get_product_with_category_path_row = 1;
+}
+
+message GetProductWithCategoryPathRow {
+  int32 product_id = 1;
+  google.protobuf.StringValue product_name = 2;
+  int32 category_id = 3;
+  string category_path = 4;
+}
 
 message GooseDbVersion {
   int32 id = 1;

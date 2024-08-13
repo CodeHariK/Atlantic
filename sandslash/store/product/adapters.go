@@ -3,11 +3,25 @@
 package product
 
 import (
+	"google.golang.org/protobuf/types/known/wrapperspb"
+
 	pb "github.com/codeharik/Atlantic/sandslash/api/product/v1"
 )
 
 func toCreateProductAndDescriptionRow(in CreateProductAndDescriptionRow) *pb.CreateProductAndDescriptionRow {
 
 	out := new(pb.CreateProductAndDescriptionRow)
+	return out
+}
+
+func toGetProductWithCategoryPathRow(in GetProductWithCategoryPathRow) *pb.GetProductWithCategoryPathRow {
+
+	out := new(pb.GetProductWithCategoryPathRow)
+	out.ProductId = in.ProductID
+	if in.ProductName.Valid {
+		out.ProductName = wrapperspb.String(in.ProductName.String)
+	}
+	out.CategoryId = in.CategoryID
+	out.CategoryPath = in.CategoryPath
 	return out
 }

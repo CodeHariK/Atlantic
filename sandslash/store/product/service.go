@@ -26,3 +26,25 @@ func (s *Service) CreateProductAndDescription(ctx context.Context, req *connect.
 	}
 	return connect.NewResponse(&pb.CreateProductAndDescriptionResponse{CreateProductAndDescriptionRow: toCreateProductAndDescriptionRow(result)}), nil
 }
+
+func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.GetCategoryPathRequest]) (*connect.Response[pb.GetCategoryPathResponse], error) {
+	id := req.Msg.GetId()
+
+	result, err := s.querier.GetCategoryPath(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetCategoryPath")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetCategoryPathResponse{Value: result}), nil
+}
+
+func (s *Service) GetProductWithCategoryPath(ctx context.Context, req *connect.Request[pb.GetProductWithCategoryPathRequest]) (*connect.Response[pb.GetProductWithCategoryPathResponse], error) {
+	id := req.Msg.GetId()
+
+	result, err := s.querier.GetProductWithCategoryPath(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetProductWithCategoryPath")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetProductWithCategoryPathResponse{GetProductWithCategoryPathRow: toGetProductWithCategoryPathRow(result)}), nil
+}

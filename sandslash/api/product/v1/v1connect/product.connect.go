@@ -36,17 +36,27 @@ const (
 	// ProductServiceCreateProductAndDescriptionProcedure is the fully-qualified name of the
 	// ProductService's CreateProductAndDescription RPC.
 	ProductServiceCreateProductAndDescriptionProcedure = "/product.v1.ProductService/CreateProductAndDescription"
+	// ProductServiceGetCategoryPathProcedure is the fully-qualified name of the ProductService's
+	// GetCategoryPath RPC.
+	ProductServiceGetCategoryPathProcedure = "/product.v1.ProductService/GetCategoryPath"
+	// ProductServiceGetProductWithCategoryPathProcedure is the fully-qualified name of the
+	// ProductService's GetProductWithCategoryPath RPC.
+	ProductServiceGetProductWithCategoryPathProcedure = "/product.v1.ProductService/GetProductWithCategoryPath"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	productServiceServiceDescriptor                           = v1.File_product_v1_product_proto.Services().ByName("ProductService")
 	productServiceCreateProductAndDescriptionMethodDescriptor = productServiceServiceDescriptor.Methods().ByName("CreateProductAndDescription")
+	productServiceGetCategoryPathMethodDescriptor             = productServiceServiceDescriptor.Methods().ByName("GetCategoryPath")
+	productServiceGetProductWithCategoryPathMethodDescriptor  = productServiceServiceDescriptor.Methods().ByName("GetProductWithCategoryPath")
 )
 
 // ProductServiceClient is a client for the product.v1.ProductService service.
 type ProductServiceClient interface {
 	CreateProductAndDescription(context.Context, *connect.Request[v1.CreateProductAndDescriptionRequest]) (*connect.Response[v1.CreateProductAndDescriptionResponse], error)
+	GetCategoryPath(context.Context, *connect.Request[v1.GetCategoryPathRequest]) (*connect.Response[v1.GetCategoryPathResponse], error)
+	GetProductWithCategoryPath(context.Context, *connect.Request[v1.GetProductWithCategoryPathRequest]) (*connect.Response[v1.GetProductWithCategoryPathResponse], error)
 }
 
 // NewProductServiceClient constructs a client for the product.v1.ProductService service. By
@@ -65,12 +75,26 @@ func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(productServiceCreateProductAndDescriptionMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		getCategoryPath: connect.NewClient[v1.GetCategoryPathRequest, v1.GetCategoryPathResponse](
+			httpClient,
+			baseURL+ProductServiceGetCategoryPathProcedure,
+			connect.WithSchema(productServiceGetCategoryPathMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getProductWithCategoryPath: connect.NewClient[v1.GetProductWithCategoryPathRequest, v1.GetProductWithCategoryPathResponse](
+			httpClient,
+			baseURL+ProductServiceGetProductWithCategoryPathProcedure,
+			connect.WithSchema(productServiceGetProductWithCategoryPathMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // productServiceClient implements ProductServiceClient.
 type productServiceClient struct {
 	createProductAndDescription *connect.Client[v1.CreateProductAndDescriptionRequest, v1.CreateProductAndDescriptionResponse]
+	getCategoryPath             *connect.Client[v1.GetCategoryPathRequest, v1.GetCategoryPathResponse]
+	getProductWithCategoryPath  *connect.Client[v1.GetProductWithCategoryPathRequest, v1.GetProductWithCategoryPathResponse]
 }
 
 // CreateProductAndDescription calls product.v1.ProductService.CreateProductAndDescription.
@@ -78,9 +102,21 @@ func (c *productServiceClient) CreateProductAndDescription(ctx context.Context, 
 	return c.createProductAndDescription.CallUnary(ctx, req)
 }
 
+// GetCategoryPath calls product.v1.ProductService.GetCategoryPath.
+func (c *productServiceClient) GetCategoryPath(ctx context.Context, req *connect.Request[v1.GetCategoryPathRequest]) (*connect.Response[v1.GetCategoryPathResponse], error) {
+	return c.getCategoryPath.CallUnary(ctx, req)
+}
+
+// GetProductWithCategoryPath calls product.v1.ProductService.GetProductWithCategoryPath.
+func (c *productServiceClient) GetProductWithCategoryPath(ctx context.Context, req *connect.Request[v1.GetProductWithCategoryPathRequest]) (*connect.Response[v1.GetProductWithCategoryPathResponse], error) {
+	return c.getProductWithCategoryPath.CallUnary(ctx, req)
+}
+
 // ProductServiceHandler is an implementation of the product.v1.ProductService service.
 type ProductServiceHandler interface {
 	CreateProductAndDescription(context.Context, *connect.Request[v1.CreateProductAndDescriptionRequest]) (*connect.Response[v1.CreateProductAndDescriptionResponse], error)
+	GetCategoryPath(context.Context, *connect.Request[v1.GetCategoryPathRequest]) (*connect.Response[v1.GetCategoryPathResponse], error)
+	GetProductWithCategoryPath(context.Context, *connect.Request[v1.GetProductWithCategoryPathRequest]) (*connect.Response[v1.GetProductWithCategoryPathResponse], error)
 }
 
 // NewProductServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -95,10 +131,26 @@ func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.Handler
 		connect.WithSchema(productServiceCreateProductAndDescriptionMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	productServiceGetCategoryPathHandler := connect.NewUnaryHandler(
+		ProductServiceGetCategoryPathProcedure,
+		svc.GetCategoryPath,
+		connect.WithSchema(productServiceGetCategoryPathMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	productServiceGetProductWithCategoryPathHandler := connect.NewUnaryHandler(
+		ProductServiceGetProductWithCategoryPathProcedure,
+		svc.GetProductWithCategoryPath,
+		connect.WithSchema(productServiceGetProductWithCategoryPathMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/product.v1.ProductService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ProductServiceCreateProductAndDescriptionProcedure:
 			productServiceCreateProductAndDescriptionHandler.ServeHTTP(w, r)
+		case ProductServiceGetCategoryPathProcedure:
+			productServiceGetCategoryPathHandler.ServeHTTP(w, r)
+		case ProductServiceGetProductWithCategoryPathProcedure:
+			productServiceGetProductWithCategoryPathHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -110,4 +162,12 @@ type UnimplementedProductServiceHandler struct{}
 
 func (UnimplementedProductServiceHandler) CreateProductAndDescription(context.Context, *connect.Request[v1.CreateProductAndDescriptionRequest]) (*connect.Response[v1.CreateProductAndDescriptionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.CreateProductAndDescription is not implemented"))
+}
+
+func (UnimplementedProductServiceHandler) GetCategoryPath(context.Context, *connect.Request[v1.GetCategoryPathRequest]) (*connect.Response[v1.GetCategoryPathResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.GetCategoryPath is not implemented"))
+}
+
+func (UnimplementedProductServiceHandler) GetProductWithCategoryPath(context.Context, *connect.Request[v1.GetProductWithCategoryPathRequest]) (*connect.Response[v1.GetProductWithCategoryPathResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.GetProductWithCategoryPath is not implemented"))
 }
