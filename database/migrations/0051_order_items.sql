@@ -7,23 +7,28 @@ CREATE TABLE IF NOT EXISTS "order_items" (
     "product_id" INTEGER NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "seller_id" INTEGER NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "quantity" INTEGER NOT NULL,
-    "price" BIGINT NOT NULL,
-    "currency" VARCHAR(12) NOT NULL DEFAULT 'USD' CHECK (
-        "currency" IN (
-            'USD',
-            'INR',
-            'BTC',
-            'ETH',
-            'SOL'
-        )
-    ),
+
+    "amount.units" BIGINT NOT NULL,
+    "amount.nanos" INTEGER NOT NULL,
+    "amount.currency" VARCHAR(4) NOT NULL,
+
     "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
         "status" IN (
+            'RETURNED',
+            'CANCELED',
             'PENDING',
+            'CONFIRMED',
             'PROCESSING',
             'SHIPPED',
-            'CANCELED',
-            'REFUNDED'
+            'DELIVERED'
+        )
+    ),
+
+    "payment_status" VARCHAR(12) NOT NULL CHECK (
+        "status" IN (
+            'REFUNDED',
+            'CASH_ON_DELIVERY',
+            'PAID'
         )
     )
 );

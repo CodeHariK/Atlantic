@@ -5,7 +5,12 @@ CREATE TABLE IF NOT EXISTS "inventory" (
     "id" SERIAL PRIMARY KEY,
     "product_id" INTEGER NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "seller_id" INTEGER NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "quantity" INTEGER NOT NULL
+
+    "quantity" INTEGER NOT NULL,
+
+    "amount.units" BIGINT NOT NULL,
+    "amount.nanos" INTEGER NOT NULL,
+    "amount.currency" VARCHAR(4) NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_inventory_seller_id_id ON "inventory" ("seller_id");

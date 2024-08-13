@@ -125,6 +125,9 @@ message Inventory {
   int32 product_id = 2;
   int32 seller_id = 3;
   int32 quantity = 4;
+  int64 amount_units = 5;
+  int32 amount_nanos = 6;
+  string amount_currency = 7;
 }
 
 message ListAllUsersRequest {}
@@ -161,9 +164,11 @@ message Order {
   int32 user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
-  int64 total_amount = 5;
-  string currency = 6;
-  string status = 7;
+  int64 amount_units = 5;
+  int32 amount_nanos = 6;
+  string amount_currency = 7;
+  string status = 8;
+  string payment_status = 9;
 }
 
 message OrderItem {
@@ -172,14 +177,17 @@ message OrderItem {
   int32 product_id = 3;
   int32 seller_id = 4;
   int32 quantity = 5;
-  int64 price = 6;
-  string currency = 7;
-  string status = 8;
+  int64 amount_units = 6;
+  int32 amount_nanos = 7;
+  string amount_currency = 8;
+  string status = 9;
+  string payment_status = 10;
 }
 
 message Product {
   int32 id = 1;
   google.protobuf.StringValue product_name = 2;
+  int32 category_id = 3;
 }
 
 message ProductAttribute {
@@ -187,6 +195,12 @@ message ProductAttribute {
   int32 product_id = 2;
   google.protobuf.Int32Value variant_id = 3;
   int32 attribute_id = 4;
+}
+
+message ProductCategory {
+  int32 id = 1;
+  string name = 2;
+  google.protobuf.Int32Value parent_id = 3;
 }
 
 message ProductComment {
@@ -208,8 +222,8 @@ message ProductDescription {
 message ProductPromotion {
   int32 id = 1;
   string promotion_name = 2;
-  int64 discount = 3;
-  int32 product_variant_id = 4;
+  int32 discount = 3;
+  int32 product_id = 4;
   google.protobuf.Timestamp start_date = 5;
   google.protobuf.Timestamp end_date = 6;
 }
@@ -223,19 +237,10 @@ message ProductReview {
   google.protobuf.Int32Value comment = 6;
 }
 
-message ProductSeller {
-  int32 id = 1;
-  int32 product_variant_id = 2;
-  int32 seller_id = 3;
-  int64 price = 4;
-}
-
 message ProductVariant {
   int32 id = 1;
   int32 product_id = 2;
   string variant_name = 3;
-  int64 price = 4;
-  string currency = 5;
 }
 
 message Seller {

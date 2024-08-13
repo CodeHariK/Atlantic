@@ -21,7 +21,7 @@ aweb:
 	atlas schema inspect \
 		-u $(POSTGRES_URL) \
 		--web
-all: schema-inspect schema-apply migrate-push migrate-hash schema-inspect-web
+all: ainspect aapply apush ahash aweb
 
 gup:
 	goose -dir migrations postgres $(POSTGRES_URL) up
@@ -54,6 +54,7 @@ connect:
 	rm -rf api
 	rm -rf tools
 
+	rm main.go
 	rm go.mod
 	rm go.sum
 
@@ -63,6 +64,7 @@ connect:
 	cp gen.buf.yaml buf.gen.yaml
 
 	mv -f internal ../sandslash
+	rm -rf ../sandslash/internal/server
 	mv -f registry.go ../sandslash/server/database
 
 	buf generate

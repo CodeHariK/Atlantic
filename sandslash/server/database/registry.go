@@ -37,6 +37,6 @@ func RegisterHandlers(mux *http.ServeMux, db *pgxpool.Pool, option ...connect.Ha
 		seller_v1connect.SellerServiceName,
 		user_v1connect.UserServiceName,
 	)
-	mux.Handle(grpcreflect.NewHandlerV1(reflector, option...))
-	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector, option...))
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 }

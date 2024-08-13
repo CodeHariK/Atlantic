@@ -819,6 +819,21 @@ export class Inventory extends Message<Inventory> {
    */
   quantity = 0;
 
+  /**
+   * @generated from field: int64 amount_units = 5;
+   */
+  amountUnits = protoInt64.zero;
+
+  /**
+   * @generated from field: int32 amount_nanos = 6;
+   */
+  amountNanos = 0;
+
+  /**
+   * @generated from field: string amount_currency = 7;
+   */
+  amountCurrency = "";
+
   constructor(data?: PartialMessage<Inventory>) {
     super();
     proto3.util.initPartial(data, this);
@@ -831,6 +846,9 @@ export class Inventory extends Message<Inventory> {
     { no: 2, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 3, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 6, name: "amount_nanos", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 7, name: "amount_currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Inventory {
@@ -1107,19 +1125,29 @@ export class Order extends Message<Order> {
   updatedAt?: Timestamp;
 
   /**
-   * @generated from field: int64 total_amount = 5;
+   * @generated from field: int64 amount_units = 5;
    */
-  totalAmount = protoInt64.zero;
+  amountUnits = protoInt64.zero;
 
   /**
-   * @generated from field: string currency = 6;
+   * @generated from field: int32 amount_nanos = 6;
    */
-  currency = "";
+  amountNanos = 0;
 
   /**
-   * @generated from field: string status = 7;
+   * @generated from field: string amount_currency = 7;
+   */
+  amountCurrency = "";
+
+  /**
+   * @generated from field: string status = 8;
    */
   status = "";
+
+  /**
+   * @generated from field: string payment_status = 9;
+   */
+  paymentStatus = "";
 
   constructor(data?: PartialMessage<Order>) {
     super();
@@ -1133,9 +1161,11 @@ export class Order extends Message<Order> {
     { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 3, name: "created_at", kind: "message", T: Timestamp },
     { no: 4, name: "updated_at", kind: "message", T: Timestamp },
-    { no: 5, name: "total_amount", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 6, name: "currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 6, name: "amount_nanos", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 7, name: "amount_currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 8, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 9, name: "payment_status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Order {
@@ -1185,19 +1215,29 @@ export class OrderItem extends Message<OrderItem> {
   quantity = 0;
 
   /**
-   * @generated from field: int64 price = 6;
+   * @generated from field: int64 amount_units = 6;
    */
-  price = protoInt64.zero;
+  amountUnits = protoInt64.zero;
 
   /**
-   * @generated from field: string currency = 7;
+   * @generated from field: int32 amount_nanos = 7;
    */
-  currency = "";
+  amountNanos = 0;
 
   /**
-   * @generated from field: string status = 8;
+   * @generated from field: string amount_currency = 8;
+   */
+  amountCurrency = "";
+
+  /**
+   * @generated from field: string status = 9;
    */
   status = "";
+
+  /**
+   * @generated from field: string payment_status = 10;
+   */
+  paymentStatus = "";
 
   constructor(data?: PartialMessage<OrderItem>) {
     super();
@@ -1212,9 +1252,11 @@ export class OrderItem extends Message<OrderItem> {
     { no: 3, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 4, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 6, name: "price", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 7, name: "currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 7, name: "amount_nanos", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 8, name: "amount_currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 9, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 10, name: "payment_status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OrderItem {
@@ -1248,6 +1290,11 @@ export class Product extends Message<Product> {
    */
   productName?: string;
 
+  /**
+   * @generated from field: int32 category_id = 3;
+   */
+  categoryId = 0;
+
   constructor(data?: PartialMessage<Product>) {
     super();
     proto3.util.initPartial(data, this);
@@ -1258,6 +1305,7 @@ export class Product extends Message<Product> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 2, name: "product_name", kind: "message", T: StringValue },
+    { no: 3, name: "category_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {
@@ -1329,6 +1377,55 @@ export class ProductAttribute extends Message<ProductAttribute> {
 
   static equals(a: ProductAttribute | PlainMessage<ProductAttribute> | undefined, b: ProductAttribute | PlainMessage<ProductAttribute> | undefined): boolean {
     return proto3.util.equals(ProductAttribute, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.ProductCategory
+ */
+export class ProductCategory extends Message<ProductCategory> {
+  /**
+   * @generated from field: int32 id = 1;
+   */
+  id = 0;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * @generated from field: google.protobuf.Int32Value parent_id = 3;
+   */
+  parentId?: number;
+
+  constructor(data?: PartialMessage<ProductCategory>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.ProductCategory";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "parent_id", kind: "message", T: Int32Value },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductCategory {
+    return new ProductCategory().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ProductCategory {
+    return new ProductCategory().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ProductCategory {
+    return new ProductCategory().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ProductCategory | PlainMessage<ProductCategory> | undefined, b: ProductCategory | PlainMessage<ProductCategory> | undefined): boolean {
+    return proto3.util.equals(ProductCategory, a, b);
   }
 }
 
@@ -1469,14 +1566,14 @@ export class ProductPromotion extends Message<ProductPromotion> {
   promotionName = "";
 
   /**
-   * @generated from field: int64 discount = 3;
+   * @generated from field: int32 discount = 3;
    */
-  discount = protoInt64.zero;
+  discount = 0;
 
   /**
-   * @generated from field: int32 product_variant_id = 4;
+   * @generated from field: int32 product_id = 4;
    */
-  productVariantId = 0;
+  productId = 0;
 
   /**
    * @generated from field: google.protobuf.Timestamp start_date = 5;
@@ -1498,8 +1595,8 @@ export class ProductPromotion extends Message<ProductPromotion> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 2, name: "promotion_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "discount", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 4, name: "product_variant_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 3, name: "discount", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 4, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "start_date", kind: "message", T: Timestamp },
     { no: 6, name: "end_date", kind: "message", T: Timestamp },
   ]);
@@ -1589,61 +1686,6 @@ export class ProductReview extends Message<ProductReview> {
 }
 
 /**
- * @generated from message user.v1.ProductSeller
- */
-export class ProductSeller extends Message<ProductSeller> {
-  /**
-   * @generated from field: int32 id = 1;
-   */
-  id = 0;
-
-  /**
-   * @generated from field: int32 product_variant_id = 2;
-   */
-  productVariantId = 0;
-
-  /**
-   * @generated from field: int32 seller_id = 3;
-   */
-  sellerId = 0;
-
-  /**
-   * @generated from field: int64 price = 4;
-   */
-  price = protoInt64.zero;
-
-  constructor(data?: PartialMessage<ProductSeller>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.ProductSeller";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "product_variant_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 4, name: "price", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductSeller {
-    return new ProductSeller().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ProductSeller {
-    return new ProductSeller().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ProductSeller {
-    return new ProductSeller().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: ProductSeller | PlainMessage<ProductSeller> | undefined, b: ProductSeller | PlainMessage<ProductSeller> | undefined): boolean {
-    return proto3.util.equals(ProductSeller, a, b);
-  }
-}
-
-/**
  * @generated from message user.v1.ProductVariant
  */
 export class ProductVariant extends Message<ProductVariant> {
@@ -1662,16 +1704,6 @@ export class ProductVariant extends Message<ProductVariant> {
    */
   variantName = "";
 
-  /**
-   * @generated from field: int64 price = 4;
-   */
-  price = protoInt64.zero;
-
-  /**
-   * @generated from field: string currency = 5;
-   */
-  currency = "";
-
   constructor(data?: PartialMessage<ProductVariant>) {
     super();
     proto3.util.initPartial(data, this);
@@ -1683,8 +1715,6 @@ export class ProductVariant extends Message<ProductVariant> {
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 2, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 3, name: "variant_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "price", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 5, name: "currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductVariant {
