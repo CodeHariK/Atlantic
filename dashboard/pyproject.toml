@@ -7,9 +7,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-jupyter = "^1.0.0"
 duckdb = "^1.0.0"
-
+pyarrow = "^17.0.0"
+pandas = "^2.2.2"
+ruff = "^0.5.7"
+sqlalchemy = "^2.0.32"
+streamlit = "^1.37.1"
 
 [build-system]
 requires = ["poetry-core"]

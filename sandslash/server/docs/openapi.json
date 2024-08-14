@@ -22,38 +22,6 @@
     "application/json"
   ],
   "paths": {
-    "/product.v1.ProductService/CreateProductAndDescription": {
-      "post": {
-        "operationId": "ProductService_CreateProductAndDescription",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CreateProductAndDescriptionResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1CreateProductAndDescriptionRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProductService"
-        ]
-      }
-    },
     "/product.v1.ProductService/GetCategoryPath": {
       "post": {
         "operationId": "ProductService_GetCategoryPath",
@@ -515,20 +483,6 @@
           "format": "int32"
         }
       }
-    },
-    "v1CreateProductAndDescriptionRequest": {
-      "type": "object"
-    },
-    "v1CreateProductAndDescriptionResponse": {
-      "type": "object",
-      "properties": {
-        "createProductAndDescriptionRow": {
-          "$ref": "#/definitions/v1CreateProductAndDescriptionRow"
-        }
-      }
-    },
-    "v1CreateProductAndDescriptionRow": {
-      "type": "object"
     },
     "v1CreateSellerRequest": {
       "type": "object",

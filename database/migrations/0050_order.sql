@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS "orders" (
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    "amount.units" BIGINT NOT NULL,
-    "amount.nanos" INTEGER NOT NULL,
-    "amount.currency" VARCHAR(4) NOT NULL,
+    "amount_units" BIGINT NOT NULL,
+    "amount_nanos" INTEGER NOT NULL,
+    "amount_currency" VARCHAR(4) NOT NULL,
 
     "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
         "status" IN (

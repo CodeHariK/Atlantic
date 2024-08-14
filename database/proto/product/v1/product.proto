@@ -8,8 +8,6 @@ import "google/protobuf/wrappers.proto";
 option go_package = "github.com/codeharik/Atlantic/sandslash/api/product/v1";
 
 service ProductService {
-  rpc CreateProductAndDescription(CreateProductAndDescriptionRequest) returns (CreateProductAndDescriptionResponse) {}
-
   rpc GetCategoryPath(GetCategoryPathRequest) returns (GetCategoryPathResponse) {}
 
   rpc GetProductWithCategoryPath(GetProductWithCategoryPathRequest) returns (GetProductWithCategoryPathResponse) {}
@@ -33,14 +31,6 @@ message CartItem {
   int32 product_id = 3;
   int32 quantity = 4;
 }
-
-message CreateProductAndDescriptionRequest {}
-
-message CreateProductAndDescriptionResponse {
-  CreateProductAndDescriptionRow create_product_and_description_row = 1;
-}
-
-message CreateProductAndDescriptionRow {}
 
 message GetCategoryPathRequest {
   int32 id = 1;

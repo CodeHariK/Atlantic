@@ -39,9 +39,9 @@ type Inventory struct {
 	ProductID      int32  `json:"product_id"`
 	SellerID       int32  `json:"seller_id"`
 	Quantity       int32  `json:"quantity"`
-	AmountUnits    int64  `json:"amount.units"`
-	AmountNanos    int32  `json:"amount.nanos"`
-	AmountCurrency string `json:"amount.currency"`
+	AmountUnits    int64  `json:"amount_units"`
+	AmountNanos    int32  `json:"amount_nanos"`
+	AmountCurrency string `json:"amount_currency"`
 }
 
 type Location struct {
@@ -60,9 +60,9 @@ type Order struct {
 	UserID         int32            `json:"user_id"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
-	AmountUnits    int64            `json:"amount.units"`
-	AmountNanos    int32            `json:"amount.nanos"`
-	AmountCurrency string           `json:"amount.currency"`
+	AmountUnits    int64            `json:"amount_units"`
+	AmountNanos    int32            `json:"amount_nanos"`
+	AmountCurrency string           `json:"amount_currency"`
 	Status         string           `json:"status"`
 	PaymentStatus  string           `json:"payment_status"`
 }
@@ -73,9 +73,9 @@ type OrderItem struct {
 	ProductID      int32  `json:"product_id"`
 	SellerID       int32  `json:"seller_id"`
 	Quantity       int32  `json:"quantity"`
-	AmountUnits    int64  `json:"amount.units"`
-	AmountNanos    int32  `json:"amount.nanos"`
-	AmountCurrency string `json:"amount.currency"`
+	AmountUnits    int64  `json:"amount_units"`
+	AmountNanos    int32  `json:"amount_nanos"`
+	AmountCurrency string `json:"amount_currency"`
 	Status         string `json:"status"`
 	PaymentStatus  string `json:"payment_status"`
 }

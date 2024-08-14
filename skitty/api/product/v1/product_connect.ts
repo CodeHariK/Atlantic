@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateProductAndDescriptionRequest, CreateProductAndDescriptionResponse, GetCategoryPathRequest, GetCategoryPathResponse, GetProductWithCategoryPathRequest, GetProductWithCategoryPathResponse } from "./product_pb.js";
+import { GetCategoryPathRequest, GetCategoryPathResponse, GetProductWithCategoryPathRequest, GetProductWithCategoryPathResponse } from "./product_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -12,15 +12,6 @@ import { MethodKind } from "@bufbuild/protobuf";
 export const ProductService = {
   typeName: "product.v1.ProductService",
   methods: {
-    /**
-     * @generated from rpc product.v1.ProductService.CreateProductAndDescription
-     */
-    createProductAndDescription: {
-      name: "CreateProductAndDescription",
-      I: CreateProductAndDescriptionRequest,
-      O: CreateProductAndDescriptionResponse,
-      kind: MethodKind.Unary,
-    },
     /**
      * @generated from rpc product.v1.ProductService.GetCategoryPath
      */

@@ -1,4 +1,9 @@
 version: "2"
+plugins:
+- name: py
+  wasm:
+    url: https://downloads.sqlc.dev/plugin/sqlc-gen-python_1.2.0.wasm
+    sha256: a6c5d174c407007c3717eea36ff0882744346e6ba991f92f71d6ab2895204c0e
 sql:
   - engine: "postgresql"
     queries: "query/user"
@@ -33,6 +38,17 @@ sql:
         package: "product"
         out: "../sandslash/store/product"
         sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: true
+        emit_empty_slices: true
+    codegen:
+    - plugin: "py"
+      out: "../dashboard/store"
+      options:
+        package: "product"
+        emit_sync_querier: true
+        emit_async_querier: true
+        query_parameter_limit: 5
         emit_json_tags: true
         emit_prepared_queries: true
         emit_empty_slices: true

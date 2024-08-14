@@ -17,16 +17,6 @@ type Service struct {
 	querier *Queries
 }
 
-func (s *Service) CreateProductAndDescription(ctx context.Context, req *connect.Request[pb.CreateProductAndDescriptionRequest]) (*connect.Response[pb.CreateProductAndDescriptionResponse], error) {
-
-	result, err := s.querier.CreateProductAndDescription(ctx)
-	if err != nil {
-		slog.Error("sql call failed", "error", err, "method", "CreateProductAndDescription")
-		return nil, err
-	}
-	return connect.NewResponse(&pb.CreateProductAndDescriptionResponse{CreateProductAndDescriptionRow: toCreateProductAndDescriptionRow(result)}), nil
-}
-
 func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.GetCategoryPathRequest]) (*connect.Response[pb.GetCategoryPathResponse], error) {
 	id := req.Msg.GetId()
 

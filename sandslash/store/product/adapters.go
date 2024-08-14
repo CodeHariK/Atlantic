@@ -8,12 +8,6 @@ import (
 	pb "github.com/codeharik/Atlantic/sandslash/api/product/v1"
 )
 
-func toCreateProductAndDescriptionRow(in CreateProductAndDescriptionRow) *pb.CreateProductAndDescriptionRow {
-
-	out := new(pb.CreateProductAndDescriptionRow)
-	return out
-}
-
 func toGetProductWithCategoryPathRow(in GetProductWithCategoryPathRow) *pb.GetProductWithCategoryPathRow {
 
 	out := new(pb.GetProductWithCategoryPathRow)

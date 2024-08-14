@@ -8,9 +8,9 @@ CREATE TABLE IF NOT EXISTS "inventory" (
 
     "quantity" INTEGER NOT NULL,
 
-    "amount.units" BIGINT NOT NULL,
-    "amount.nanos" INTEGER NOT NULL,
-    "amount.currency" VARCHAR(4) NOT NULL
+    "amount_units" BIGINT NOT NULL,
+    "amount_nanos" INTEGER NOT NULL,
+    "amount_currency" VARCHAR(4) NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_inventory_seller_id_id ON "inventory" ("seller_id");
