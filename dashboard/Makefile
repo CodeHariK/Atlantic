@@ -1,5 +1,5 @@
 run:
-	python main.py
+	python3 main.py
 app:
 	streamlit run app.py
 format:
@@ -7,3 +7,9 @@ format:
 shell:
 	poetry shell
 	poetry env info --path
+
+env:
+	conda env list
+	conda env export > environment.yml
+install:
+	conda install -c conda-forge streamlit altair

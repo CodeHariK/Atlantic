@@ -1,2 +1,4 @@
 executables
 config.json
+*.pyc
+.DS_Store

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+
+    <style>
+        #dropzone {
+            width: 300px;
+            height: 200px;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #888;
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        #dropzone.dragover {
+            border-color: #000;
+            color: #000;
+        }
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Upload Image</h1>
+    <div id="dropzone">Drag and drop an image here>
+        <img id="imagePreview" src="" alt="Image Preview" />
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+    <button onclick="uploadFile()">Upload</button>
+
+    <script>
+
+        async function uploadFile(f, url) {
+            const input = document.getElementById('fileInput');
+            const file = f || input.files[0];
+
+            if (!file & !url) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const formData = new FormData();
+            if (file) {
+                formData.append('file', file);
+            } else {
+                formData.append('url', url);
+            }
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+                console.log('File uploaded successfully:', result);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+        }
+
+        function displayImage(src) {
+            imagePreview.src = src;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+
+            // Handle drag over
+            dropzone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                dropzone.classList.add('dragover');
+            });
+
+            // Handle drag leave
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragover');
+            });
+
+            // Handle drop
+            dropzone.addEventListener('drop', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                dropzone.classList.remove('dragover');
+
+                const items = event.dataTransfer.items;
+
+                if (items && items[0].kind === 'file') {
+                    console.log("drop file")
+                    const file = items[0].getAsFile();
+                    if (file && file.type.startsWith('image/')) {
+                        displayImage(URL.createObjectURL(file));
+                        uploadFile(file);
+                    } else {
+                        alert('Please drop a valid image file.');
+                    }
+                } else {
+                    console.log("drop url")
+                    const url = event.dataTransfer.getData('text/uri-list');
+                    if (url) {
+                        displayImage(url);
+                        uploadFile(null, url)
+                    }
+                }
+            });
+
+            dropzone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (event) => {
+                console.log("fileinput")
+                const file = event.target.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function () {
+                        displayImage(this.result)
+                        uploadFile(file);
+                        return
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
