@@ -1,0 +1,22 @@
+# Use a lightweight base image
+FROM python:3.11-slim
+
+# Set environment variables to prevent Python from writing .pyc files and to ensure output is sent straight to the terminal (no buffering)
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# Create and set the working directory
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir streamlit pandas altair duckdb sqlalchemy
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the application port (change if your app runs on a different port)
+EXPOSE 8501
+
+# Command to run the application (adjust to your app's entry point)
+CMD ["streamlit", "run", "app.py"]
+# CMD ["python3", "main.py"]

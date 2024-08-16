@@ -1,12 +1,16 @@
 import duckdb
-from helper.config import setup_postgres_connection
+from helper.config import setup_postgres_connection, find_existing_path
 from helper.query import execute_query, convert_dataframe_to_dataclass
-
 
 def main():
     try:
         conn = duckdb.connect("./duck.db")
-        setup_postgres_connection(conn, "../config/config.json")
+        postgres_path = find_existing_path(["../config/config.json", "../config.json"])
+        try:
+            setup_postgres_connection(conn, postgres_path)
+        except:
+            return
+
     except Exception as e:
         print(e)
 

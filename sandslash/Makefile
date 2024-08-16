@@ -1,15 +1,24 @@
+PORT = 8080
+CONTAINER_NAME = sandslash
+
 run:
 	go run cmd/main.go
 
 dockerbuild:
-	docker build -f Dockerfile.sandslash -t sandslash .
-
+	docker build -f Dockerfile.$(CONTAINER_NAME) -t $(CONTAINER_NAME) .
 dockersh:
-	docker run -it -v $(shell dirname $(shell pwd))/config/config.json:/config.json --entrypoint /bin/sh sandslash
-
+	docker exec -it -v $(shell dirname $(shell pwd))/config/config.json:/config.json $(CONTAINER_NAME) /bin/sh
 dockerrun:
-	make dockerrm
-	docker run -p 8080:8080 -v $(shell dirname $(shell pwd))/config/config.json:/config.json --name sandslash sandslash
-
-dockerrm:
-	docker rm -f sandslash
+	docker run -p $(PORT):$(PORT) -v $(shell dirname $(shell pwd))/config/config.json:/config.json --name $(CONTAINER_NAME) $(CONTAINER_NAME)
+dockerlogs:
+	docker logs -f $(CONTAINER_NAME)
+dockerinspect:
+	docker inspect $(CONTAINER_NAME)
+dockerstats:
+	docker stats $(CONTAINER_NAME)
+dockerrestart:
+	docker restart $(CONTAINER_NAME)
+dockerstop:
+	docker stop $(CONTAINER_NAME)
+dockerremove:
+	docker rm -f $(CONTAINER_NAME)

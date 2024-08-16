@@ -1,68 +1,57 @@
-import torch
-from transformers import AutoImageProcessor, EfficientNetForImageClassification
-
-import requests
 from PIL import Image
-from io import BytesIO
 from fastapi import FastAPI
-from pydantic import BaseModel
-from transformers import pipeline
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 
-image_processor = AutoImageProcessor.from_pretrained("google/efficientnet-b0")
-model = EfficientNetForImageClassification.from_pretrained("google/efficientnet-b0")
-model.load_state_dict(torch.load('efficientnet-b0.pt', weights_only=True))
-
-torch.save(model.state_dict(), 'efficientnet-b0.pt')
+from valid import validate_image
+from classify import classify_image
+from helper import fetchImage
+from text_generate import Prompt, generate_text
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins (change this to specific origins in production)
+    allow_origins=["*"], 
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-text_generator = pipeline("text-generation", model="gpt2")
-
-class Prompt(BaseModel):
-    text: str
-
 @app.post("/generate")
-async def generate_text(prompt: Prompt):
-    results = text_generator(prompt.text, max_length=100, truncation="longest_first")
-    return {"generated_text": results[0]['generated_text']}
+async def generate_text_route(prompt: Prompt):
+    return await generate_text(prompt)
 
 @app.post("/upload/")
 async def upload_image(
     file: UploadFile = File(None),
     url: str = Form(None)
 ):
-    if url:
-        response = requests.get(url)
-        response.raise_for_status()
-        image = Image.open(BytesIO(response.content))
-    if file:
-        image = Image.open(file.file).convert("RGB")
-    
-    inputs = image_processor(images=image, return_tensors="pt")
+    try:
+        if url:
+            image = fetchImage(url)
+        if file:
+            image = Image.open(file.file).convert("RGB")
+    except:
+        return JSONResponse(content="Image not supported")
 
-    with torch.no_grad():
-        logits = model(**inputs).logits
+    try:
+        validResponse = validate_image(image)
+    except :
+        return JSONResponse(content="Image not supported") 
 
-    top5_probabilities, top5_class_indices = torch.topk(logits.softmax(dim=-1), k=5)
+    try:
+        classifyResponse = classify_image(image)
+    except:
+        return JSONResponse(content="Image not supported") 
 
-    result = {}
-    for index, (class_idx, probability) in enumerate(zip(top5_class_indices[0], top5_probabilities[0])):
-        result[model.config.id2label[class_idx.item()]] = round(probability.item() * 100, 2)
-
-    return JSONResponse(content=result)
+    return JSONResponse(content={
+        "valid": validResponse,
+        "class": classifyResponse,
+    })
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

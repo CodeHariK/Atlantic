@@ -1,4 +1,21 @@
+import os
 import json
+from typing import List, Optional
+
+def find_existing_path(paths: List[str]) -> Optional[str]:
+    """
+    Check a list of file paths and return the first one that exists.
+
+    Args:
+    paths (List[str]): List of file paths to check.
+
+    Returns:
+    Optional[str]: The first existing file path or None if none exist.
+    """
+    for path in paths:
+        if os.path.exists(path):
+            return path
+    return None
 
 
 def create_postgres_dsn(path: str) -> str:
@@ -55,3 +72,4 @@ def setup_postgres_connection(conn, path: str):
         )
     except Exception as e:
         print(f"An error occurred while setting up PostgreSQL connection: {e}")
+        raise

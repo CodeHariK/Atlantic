@@ -2,3 +2,7 @@ executables
 config.json
 *.pyc
 .DS_Store
+
+__pycache__
+*.pyc
+.git
