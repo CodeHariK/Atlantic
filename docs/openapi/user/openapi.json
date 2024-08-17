@@ -1,16 +1,10 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "product/v1/product.proto",
+    "title": "proto/user/v1/user.proto",
     "version": "version not set"
   },
   "tags": [
-    {
-      "name": "ProductService"
-    },
-    {
-      "name": "SellerService"
-    },
     {
       "name": "UserService"
     }
@@ -22,230 +16,6 @@
     "application/json"
   ],
   "paths": {
-    "/product.v1.ProductService/GetCategoryPath": {
-      "post": {
-        "operationId": "ProductService_GetCategoryPath",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetCategoryPathResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetCategoryPathRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProductService"
-        ]
-      }
-    },
-    "/product.v1.ProductService/GetProductWithCategoryPath": {
-      "post": {
-        "operationId": "ProductService_GetProductWithCategoryPath",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetProductWithCategoryPathResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetProductWithCategoryPathRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProductService"
-        ]
-      }
-    },
-    "/seller.v1.SellerService/CreateSeller": {
-      "post": {
-        "operationId": "SellerService_CreateSeller",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CreateSellerResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1CreateSellerRequest"
-            }
-          }
-        ],
-        "tags": [
-          "SellerService"
-        ]
-      }
-    },
-    "/seller.v1.SellerService/DeleteSeller": {
-      "post": {
-        "operationId": "SellerService_DeleteSeller",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1DeleteSellerResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1DeleteSellerRequest"
-            }
-          }
-        ],
-        "tags": [
-          "SellerService"
-        ]
-      }
-    },
-    "/seller.v1.SellerService/GetSellerByID": {
-      "post": {
-        "operationId": "SellerService_GetSellerByID",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetSellerByIDResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetSellerByIDRequest"
-            }
-          }
-        ],
-        "tags": [
-          "SellerService"
-        ]
-      }
-    },
-    "/seller.v1.SellerService/ListSellers": {
-      "post": {
-        "operationId": "SellerService_ListSellers",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1ListSellersResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1ListSellersRequest"
-            }
-          }
-        ],
-        "tags": [
-          "SellerService"
-        ]
-      }
-    },
-    "/seller.v1.SellerService/UpdateSeller": {
-      "post": {
-        "operationId": "SellerService_UpdateSeller",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1UpdateSellerResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1UpdateSellerRequest"
-            }
-          }
-        ],
-        "tags": [
-          "SellerService"
-        ]
-      }
-    },
     "/user.v1.UserService/CreateUser": {
       "post": {
         "operationId": "UserService_CreateUser",
@@ -468,43 +238,6 @@
         }
       }
     },
-    "sellerv1Seller": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "name": {
-          "type": "string"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1CreateSellerRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1CreateSellerResponse": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "v1CreateUserRequest": {
       "type": "object",
       "properties": {
@@ -575,18 +308,6 @@
         }
       }
     },
-    "v1DeleteSellerRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1DeleteSellerResponse": {
-      "type": "object"
-    },
     "v1DeleteUserRequest": {
       "type": "object",
       "properties": {
@@ -655,76 +376,6 @@
         "location": {
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "v1GetCategoryPathRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1GetCategoryPathResponse": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
-    },
-    "v1GetProductWithCategoryPathRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1GetProductWithCategoryPathResponse": {
-      "type": "object",
-      "properties": {
-        "getProductWithCategoryPathRow": {
-          "$ref": "#/definitions/v1GetProductWithCategoryPathRow"
-        }
-      }
-    },
-    "v1GetProductWithCategoryPathRow": {
-      "type": "object",
-      "properties": {
-        "productId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "productName": {
-          "type": "string"
-        },
-        "categoryId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "categoryPath": {
-          "type": "string"
-        }
-      }
-    },
-    "v1GetSellerByIDRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1GetSellerByIDResponse": {
-      "type": "object",
-      "properties": {
-        "seller": {
-          "$ref": "#/definitions/sellerv1Seller"
         }
       }
     },
@@ -831,45 +482,6 @@
         "location": {
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "v1ListSellersRequest": {
-      "type": "object"
-    },
-    "v1ListSellersResponse": {
-      "type": "object",
-      "properties": {
-        "list": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/sellerv1Seller"
-          }
-        }
-      }
-    },
-    "v1UpdateSellerRequest": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1UpdateSellerResponse": {
-      "type": "object",
-      "properties": {
-        "seller": {
-          "$ref": "#/definitions/sellerv1Seller"
         }
       }
     },

@@ -4,19 +4,17 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
-
-	"github.com/codeharik/Atlantic/config"
 )
 
-//go:embed openapi.json
-var openapijson embed.FS
+//go:embed openapi
+var openapi embed.FS
 
-func OpenapiHandler(app *http.ServeMux, config config.Config) {
+func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
 	// Serve the embedded openapi.json file at /docs/openapi.json
 	app.HandleFunc("GET /docs/openapi.json", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/json")
 
-		openapiBytes, err := openapijson.ReadFile("openapi.json")
+		openapiBytes, err := openapi.ReadFile("openapi/" + path + "/openapi.json")
 		if err != nil {
 			http.Error(w, "Failed to read openapi.json", http.StatusInternalServerError)
 			return
@@ -88,6 +86,6 @@ func OpenapiHandler(app *http.ServeMux, config config.Config) {
 
 </script>
 
-</html>`, config.Service.Name, config.ServerFullUrl()+"/docs/openapi.json", config.Service.Name)))
+</html>`, serviceName, "/docs/openapi.json", serviceName)))
 	})
 }

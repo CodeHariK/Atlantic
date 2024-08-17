@@ -1,5 +1,9 @@
 package types
 
+import (
+	"golang.org/x/oauth2"
+)
+
 type AuthUser struct {
 	ID       string  `json:"id"`
 	Username string  `json:"username"`
@@ -7,3 +11,11 @@ type AuthUser struct {
 	Email    string  `json:"email"`
 	Verified bool    `json:"verified"`
 }
+
+var (
+	DiscordOauthConfig *oauth2.Config
+	OauthStateString   = "oauthStateString"
+	ConstAuthSession   = "session-name"
+	ConstAuthUser      = "user"
+	CSRFkey            = []byte("->DM!(sxXx.Q(XVVZ(kqnF1}BwNXRzZL")
+)

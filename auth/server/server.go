@@ -22,7 +22,15 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-func Serve(storeInstance store.Store, config config.Config) {
+func ServerFullUrl(config config.Config) string {
+	return fmt.Sprintf("http://%s:%d", config.AuthService.Address, config.AuthService.Port)
+}
+
+func ServerPortUrl(config config.Config) string {
+	return fmt.Sprintf(":%d", config.AuthService.Port)
+}
+
+func Serve(storeInstance store.Store, sessionStore *store.SessionHandler, config config.Config) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -38,7 +46,7 @@ func Serve(storeInstance store.Store, config config.Config) {
 
 	router := http.NewServeMux()
 
-	CreateRoutes(router, storeInstance, config)
+	CreateRoutes(router, storeInstance, sessionStore, config)
 
 	var interceptors []connect.Interceptor
 	if config.OTLP.GRPC != "" {
@@ -73,7 +81,7 @@ func Serve(storeInstance store.Store, config config.Config) {
 	omux := otelhttp.NewHandler(mux, "/")
 
 	server := &http.Server{
-		Addr: config.ServerPortUrl(),
+		Addr: ServerPortUrl(config),
 		Handler: h2c.NewHandler(
 			omux,
 			&http2.Server{},
@@ -89,7 +97,7 @@ func Serve(storeInstance store.Store, config config.Config) {
 
 	srvErr := make(chan error, 1)
 	go func() {
-		fmt.Printf("Server on %s\n", config.ServerFullUrl())
+		fmt.Printf("Server on %s\n", ServerFullUrl(config))
 		srvErr <- server.ListenAndServe()
 	}()
 

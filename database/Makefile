@@ -51,13 +51,12 @@ connect:
 
 	buf generate
 
-	cp server/docs/apidocs.swagger.json docs/openapi.json
-
 	rm -rf tools
-	rm -rf server
 	rm -rf internal/server
 	rm main.go
 	rm buf.gen.yaml
+
+	cp -r ./proto/ ../docs/proto
 
 	cd .. && find . -type f -name ".DS_Store" -exec rm {} +
 

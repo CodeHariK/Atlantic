@@ -13,12 +13,12 @@ type UserHandler struct {
 	store *user.Queries
 }
 
-func CreateRoutes(router *http.ServeMux, store *user.Queries) {
-	u := &UserHandler{
+func CreateUserRoutes(router *http.ServeMux, store *user.Queries) {
+	userHandler := &UserHandler{
 		store: store,
 	}
 
-	router.HandleFunc("/createUser", u.CreateUser)
+	router.HandleFunc("/createUser", userHandler.CreateUser)
 }
 
 func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {

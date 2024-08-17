@@ -11,10 +11,18 @@ import (
 	"github.com/codeharik/Atlantic/config"
 )
 
-func CreateSessionStore(cfg config.Config) *sessions.CookieStore {
+type SessionHandler struct {
+	store *sessions.CookieStore
+}
+
+func CreateSessionStore(cfg config.Config) *SessionHandler {
 	store := sessions.NewCookieStore(
 		[]byte(cfg.Session.AuthKey), []byte(cfg.Session.EncryptionKey),
 	)
+	// store := sessions.NewCookieStore(
+	// 	securecookie.GenerateRandomKey(32),
+	// 	securecookie.GenerateRandomKey(32),
+	// )
 
 	store.Options = &sessions.Options{
 		Path:     "/",
@@ -26,29 +34,63 @@ func CreateSessionStore(cfg config.Config) *sessions.CookieStore {
 
 	gob.Register(types.AuthUser{})
 
-	return store
+	return &SessionHandler{
+		store: store,
+	}
 }
 
-const (
-	AuthSession = "session-name"
-	AuthUser    = "user"
-)
-
-func GetUser(r *http.Request) (types.AuthUser, error) {
-	session, err := config.SessionStore.Get(r, AuthSession)
+// GetSession retrieves a session from the request.
+func (sessionHandler *SessionHandler) GetSession(r *http.Request) (*sessions.Session, error) {
+	session, err := sessionHandler.store.Get(r, types.ConstAuthSession)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("GetUserError : %v", err))
-		return types.AuthUser{}, nil
+		return nil, fmt.Errorf("failed to get session: %v", err)
 	}
-	user, ok := (session.Values[AuthUser]).(types.AuthUser)
+	return session, nil
+}
+
+func (sessionHandler *SessionHandler) GetUser(r *http.Request) (types.AuthUser, error) {
+	session, err := sessionHandler.GetSession(r)
+	if err != nil {
+		return types.AuthUser{}, err
+	}
+
+	// Check if session.Values has the expected key
+	val, ok := session.Values[types.ConstAuthUser]
 	if !ok {
-		return types.AuthUser{}, fmt.Errorf("User not found")
+		return types.AuthUser{}, fmt.Errorf("user not found in session")
 	}
+
+	// Type assertion
+	user, ok := val.(types.AuthUser)
+	if !ok {
+		return types.AuthUser{}, fmt.Errorf("failed to assert user type")
+	}
+
 	return user, nil
 }
 
-func SaveUserSession(r *http.Request, w http.ResponseWriter, user types.AuthUser) error {
-	session, _ := config.SessionStore.Get(r, AuthSession)
-	session.Values[AuthUser] = user
+func (sessionHandler *SessionHandler) SaveUserSession(r *http.Request, w http.ResponseWriter, user types.AuthUser) error {
+	session, _ := sessionHandler.store.Get(r, types.ConstAuthSession)
+	session.Values[types.ConstAuthUser] = user
 	return session.Save(r, w)
+}
+
+// RevokeSession destroys a session by deleting its cookie.
+func (sessionHandler *SessionHandler) RevokeSession(w http.ResponseWriter, r *http.Request) error {
+	session, err := sessionHandler.GetSession(r)
+	if err != nil {
+		return fmt.Errorf("failed to get session for revocation: %v", err)
+	}
+
+	// Clear the session values
+	session.Values = make(map[interface{}]interface{})
+	session.Options.MaxAge = -1
+
+	// Save the session with the cleared values
+	err = session.Save(r, w)
+	if err != nil {
+		return fmt.Errorf("failed to save session after revocation: %v", err)
+	}
+
+	return nil
 }

@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+package product.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/codeharik/Atlantic/database/api/product/v1";
+
+service ProductService {
+  rpc GetCategoryPath(GetCategoryPathRequest) returns (GetCategoryPathResponse) {}
+
+  rpc GetProductWithCategoryPath(GetProductWithCategoryPathRequest) returns (GetProductWithCategoryPathResponse) {}
+}
+
+message Attribute {
+  int32 id = 1;
+  string attribute_name = 2;
+  string attribute_value = 3;
+}
+
+message Cart {
+  int32 id = 1;
+  int32 user_id = 2;
+  google.protobuf.Timestamp updated_at = 3;
+}
+
+message CartItem {
+  int32 id = 1;
+  int32 cart_id = 2;
+  int32 product_id = 3;
+  int32 quantity = 4;
+}
+
+message GetCategoryPathRequest {
+  int32 id = 1;
+}
+
+message GetCategoryPathResponse {
+  string value = 1;
+}
+
+message GetProductWithCategoryPathRequest {
+  int32 id = 1;
+}
+
+message GetProductWithCategoryPathResponse {
+  GetProductWithCategoryPathRow get_product_with_category_path_row = 1;
+}
+
+message GetProductWithCategoryPathRow {
+  int32 product_id = 1;
+  google.protobuf.StringValue product_name = 2;
+  int32 category_id = 3;
+  string category_path = 4;
+}
+
+message GooseDbVersion {
+  int32 id = 1;
+  int64 version_id = 2;
+  bool is_applied = 3;
+  google.protobuf.Timestamp tstamp = 4;
+}
+
+message Inventory {
+  int32 id = 1;
+  int32 product_id = 2;
+  int32 seller_id = 3;
+  int32 quantity = 4;
+  int64 amount_units = 5;
+  int32 amount_nanos = 6;
+  string amount_currency = 7;
+}
+
+message Location {
+  int32 id = 1;
+  string address = 2;
+  string city = 3;
+  string state = 4;
+  string country = 5;
+  string postal_code = 6;
+  double latitude = 7;
+  double longitude = 8;
+}
+
+message Order {
+  int32 id = 1;
+  int32 user_id = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  int64 amount_units = 5;
+  int32 amount_nanos = 6;
+  string amount_currency = 7;
+  string status = 8;
+  string payment_status = 9;
+}
+
+message OrderItem {
+  int32 id = 1;
+  int32 order_id = 2;
+  int32 product_id = 3;
+  int32 seller_id = 4;
+  int32 quantity = 5;
+  int64 amount_units = 6;
+  int32 amount_nanos = 7;
+  string amount_currency = 8;
+  string status = 9;
+  string payment_status = 10;
+}
+
+message Product {
+  int32 id = 1;
+  google.protobuf.StringValue product_name = 2;
+  int32 category_id = 3;
+}
+
+message ProductAttribute {
+  int32 id = 1;
+  int32 product_id = 2;
+  google.protobuf.Int32Value variant_id = 3;
+  int32 attribute_id = 4;
+}
+
+message ProductCategory {
+  int32 id = 1;
+  string name = 2;
+  google.protobuf.Int32Value parent_id = 3;
+}
+
+message ProductComment {
+  int32 id = 1;
+  google.protobuf.StringValue comment = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+message ProductDescription {
+  int32 id = 1;
+  int32 product_id = 2;
+  google.protobuf.Int32Value product_variant_id = 3;
+  google.protobuf.StringValue description = 4;
+  repeated string images = 5;
+  repeated string videos = 6;
+}
+
+message ProductPromotion {
+  int32 id = 1;
+  string promotion_name = 2;
+  int32 discount = 3;
+  int32 product_id = 4;
+  google.protobuf.Timestamp start_date = 5;
+  google.protobuf.Timestamp end_date = 6;
+}
+
+message ProductReview {
+  int32 id = 1;
+  int32 user_id = 2;
+  int32 product_id = 3;
+  int32 seller_id = 4;
+  int32 rating = 5;
+  google.protobuf.Int32Value comment = 6;
+}
+
+message ProductVariant {
+  int32 id = 1;
+  int32 product_id = 2;
+  string variant_name = 3;
+}
+
+message Seller {
+  int32 id = 1;
+  string name = 2;
+  google.protobuf.Int32Value location = 3;
+}
+
+message User {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string gender = 5;
+  bool is_admin = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Int32Value location = 10;
+}

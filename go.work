@@ -1,8 +1,10 @@
 go 1.22.4
 
 use (
+	./auth
 	./config
 	./database
-	./auth
+	./docs
 	./service
+	./skitty
 )

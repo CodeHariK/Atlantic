@@ -6,26 +6,18 @@ import (
 	"io"
 	"log"
 	"os"
-
-	"github.com/gorilla/sessions"
-	"golang.org/x/oauth2"
-)
-
-var (
-	DiscordOauthConfig *oauth2.Config
-	OauthStateString   = "oauthStateString"
-	SessionStore       *sessions.CookieStore
-	CSRFkey            = []byte("32-byte-long-auth-key")
 )
 
 type Config struct {
 	Service struct {
 		Name          string `json:"name"`
 		Dev           bool   `json:"dev"`
-		Address       string `json:"address"`
-		Port          int    `json:"port"`
 		EnableMetrics bool   `json:"enable_metrics"`
 	} `json:"service"`
+	AuthService struct {
+		Address string `json:"address"`
+		Port    int    `json:"port"`
+	} `json:"auth_service"`
 	Database struct {
 		Host           string `json:"host"`
 		Port           int    `json:"port"`
@@ -104,18 +96,6 @@ func LoadConfig(paths ...string) Config {
 		log.Fatalf("error unmarshaling config: %v", err)
 	}
 
-	// Setup OAuth2 configuration
-	DiscordOauthConfig = &oauth2.Config{
-		RedirectURL:  cfg.Discord.RedirectURI,
-		ClientID:     cfg.Discord.ClientID,
-		ClientSecret: cfg.Discord.ClientSecret,
-		Scopes:       cfg.Discord.Scopes,
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  cfg.Discord.AuthURL,
-			TokenURL: cfg.Discord.TokenURL,
-		},
-	}
-
 	return cfg
 }
 
@@ -137,12 +117,4 @@ func (config *Config) DragonflyConnectionUri() string {
 		config.Dragonfly.Host,
 		config.Dragonfly.Port,
 	)
-}
-
-func (config *Config) ServerFullUrl() string {
-	return fmt.Sprintf("http://%s:%d", config.Service.Address, config.Service.Port)
-}
-
-func (config *Config) ServerPortUrl() string {
-	return fmt.Sprintf(":%d", config.Service.Port)
 }

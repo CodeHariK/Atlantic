@@ -6,9 +6,11 @@ import (
 
 	handler "github.com/codeharik/Atlantic/auth/server"
 	"github.com/codeharik/Atlantic/auth/store"
+	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/service/logger"
 	"github.com/codeharik/Atlantic/service/process"
+	"golang.org/x/oauth2"
 )
 
 func main() {
@@ -16,9 +18,19 @@ func main() {
 
 	cfg := config.LoadConfig("config.json", "../config/config.json")
 
-	logger.SetLogger(cfg)
+	// Setup OAuth2 configuration
+	types.DiscordOauthConfig = &oauth2.Config{
+		RedirectURL:  cfg.Discord.RedirectURI,
+		ClientID:     cfg.Discord.ClientID,
+		ClientSecret: cfg.Discord.ClientSecret,
+		Scopes:       cfg.Discord.Scopes,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  cfg.Discord.AuthURL,
+			TokenURL: cfg.Discord.TokenURL,
+		},
+	}
 
-	config.SessionStore = store.CreateSessionStore(cfg)
+	logger.SetLogger(cfg)
 
 	storeInstance, err := store.ConnectDatabase(cfg)
 	if err != nil {
@@ -27,6 +39,7 @@ func main() {
 
 	handler.Serve(
 		storeInstance,
+		store.CreateSessionStore(cfg),
 		cfg,
 	)
 }

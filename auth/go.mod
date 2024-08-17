@@ -18,6 +18,7 @@ require (
 	github.com/exaring/otelpgx v0.6.2
 	github.com/gorilla/csrf v1.7.2
 	github.com/gorilla/handlers v1.5.2
+	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.3.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/redis/go-redis/v9 v9.6.1
@@ -35,7 +36,6 @@ require (
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.21.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect

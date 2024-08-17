@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
 
 	"github.com/gorilla/csrf"
@@ -16,7 +17,7 @@ func loggingMiddleware(h http.Handler) http.Handler {
 }
 
 var CSRFMiddleware = csrf.Protect(
-	config.CSRFkey,
+	types.CSRFkey,
 	csrf.Secure(false),
 	csrf.HttpOnly(true),
 	csrf.SameSite(csrf.SameSiteLaxMode),

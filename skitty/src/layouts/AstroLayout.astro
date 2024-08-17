@@ -85,12 +85,14 @@ const { title, overflow, center } = Astro.props;
 			}}
 		/>
 	</head>
-	<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+	<body
+		class="h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+	>
 		<main
-			class:list={[{ overflow, center }]}
+			class:list={[{ "h-screen": true, overflow, center }]}
 			transition:animate={fade({ duration: "0.4s" })}
 		>
-			<article class:list={[{ center }]}>
+			<article class:list={[{ "h-screen": true, center }]}>
 				<slot />
 			</article>
 		</main>
