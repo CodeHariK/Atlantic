@@ -5,7 +5,7 @@ package user.v1;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/codeharik/Atlantic/sandslash/api/user/v1";
+option go_package = "github.com/codeharik/Atlantic/database/api/user/v1";
 
 service UserService {
   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}

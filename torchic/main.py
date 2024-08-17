@@ -1,10 +1,12 @@
 from PIL import Image
 from fastapi import FastAPI
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, Form
 from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
+from starlette.datastructures import UploadFile as StarletteUploadFile
+from typing import Any
 
 from valid import validate_image
 from classify import classify_image
@@ -27,14 +29,13 @@ async def generate_text_route(prompt: Prompt):
 
 @app.post("/upload/")
 async def upload_image(
-    file: UploadFile = File(None),
-    url: str = Form(None)
+    item: Any = Form(None)
 ):
     try:
-        if url:
-            image = fetchImage(url)
-        if file:
-            image = Image.open(file.file).convert("RGB")
+        if isinstance(item, StarletteUploadFile):
+            image = Image.open(item.file).convert("RGB")
+        else:
+            image = fetchImage(item)
     except:
         return JSONResponse(content="Image not supported")
 

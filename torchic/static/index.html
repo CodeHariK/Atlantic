@@ -44,21 +44,18 @@
 
     <script>
 
-        async function uploadFile(f, url) {
+        async function uploadFile(f) {
             const input = document.getElementById('fileInput');
             const file = f || input.files[0];
 
-            if (!file & !url) {
+            if (!file) {
                 alert('Please select a file.');
                 return;
             }
 
             const formData = new FormData();
-            if (file) {
-                formData.append('file', file);
-            } else {
-                formData.append('url', url);
-            }
+
+            formData.append('item', file)
 
             try {
                 const response = await fetch('/upload', {
@@ -119,7 +116,7 @@
                     const url = event.dataTransfer.getData('text/uri-list');
                     if (url) {
                         displayImage(url);
-                        uploadFile(null, url)
+                        uploadFile(url)
                     }
                 }
             });

@@ -8,15 +8,15 @@ import (
 	"os"
 	"strings"
 
-	"github.com/codeharik/Atlantic/sandslash/service"
+	"github.com/codeharik/Atlantic/config"
 
 	"github.com/jackc/pgx/v5"
 )
 
 func main() {
-	sandslashConfig := service.LoadConfig("../config/config.json")
+	DestroyConfig := config.LoadConfig("../config/config.json")
 
-	connString := sandslashConfig.DatabaseConnectionUri()
+	connString := DestroyConfig.DatabaseConnectionUri()
 
 	conn, err := pgx.Connect(context.Background(), connString)
 	if err != nil {

@@ -8,6 +8,8 @@ from typing import Optional
 import sqlalchemy
 import sqlalchemy.ext.asyncio
 
+from product import models
+
 
 GET_CATEGORY_PATH = """-- name: get_category_path \\:one
 WITH RECURSIVE CategoryHierarchy AS (

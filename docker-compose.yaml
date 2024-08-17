@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
 
-  sandslash:
+  auth:
     build: 
-      context: sandslash
-      dockerfile: Dockerfile.sandslash
+      context: auth
+      dockerfile: Dockerfile.auth
     ports:
       - "8080:8080"
     volumes:
@@ -75,6 +75,16 @@ services:
     ports:
       - "16686:16686"
 
+  dragonfly:
+    image: 'cgr.dev/chainguard/dragonfly:latest'
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    volumes:
+      - dragonflydata:/data
+
 volumes:
 #   pgdata:
   grafana-data:
+  dragonflydata:

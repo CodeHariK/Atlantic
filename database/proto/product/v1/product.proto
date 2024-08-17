@@ -5,7 +5,7 @@ package product.v1;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-option go_package = "github.com/codeharik/Atlantic/sandslash/api/product/v1";
+option go_package = "github.com/codeharik/Atlantic/database/api/product/v1";
 
 service ProductService {
   rpc GetCategoryPath(GetCategoryPathRequest) returns (GetCategoryPathResponse) {}

@@ -6,15 +6,15 @@ import (
 	"log"
 	"strings"
 
-	"github.com/codeharik/Atlantic/sandslash/service"
+	"github.com/codeharik/Atlantic/config"
 
 	"github.com/jackc/pgx/v5"
 )
 
 func main() {
-	sandslashConfig := service.LoadConfig("../config/config.json")
+	StatusConfig := config.LoadConfig("../config/config.json")
 
-	connString := sandslashConfig.DatabaseConnectionUri()
+	connString := StatusConfig.DatabaseConnectionUri()
 
 	fmt.Printf("\nexport POSTGRES_URL=%s\n\n", connString)
 
