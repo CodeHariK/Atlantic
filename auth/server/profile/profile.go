@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	AuthHandler "github.com/codeharik/Atlantic/auth/server/auth"
-	"github.com/codeharik/Atlantic/auth/types"
+	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/database/store/user"
 )
 
@@ -31,9 +31,8 @@ func (profileHandler *ProfileHandler) Index(w http.ResponseWriter, r *http.Reque
 }
 
 func (profileHandler *ProfileHandler) HandleProfile(w http.ResponseWriter, r *http.Request) {
-	user, ok := r.Context().Value(types.ConstAuthUser).(types.AuthUser)
-	if !ok {
-		http.Error(w, "User not found in context", http.StatusInternalServerError)
+	user, shouldReturn := sessionstore.GetUserFromContext(r, w)
+	if shouldReturn {
 		return
 	}
 

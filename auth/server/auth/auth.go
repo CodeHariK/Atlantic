@@ -8,31 +8,32 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/codeharik/Atlantic/auth/store"
+	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/types"
 )
 
 type AuthHandler struct {
-	store *store.SessionHandler
+	*sessionstore.SessionStore
 }
 
 func CreateAuthRoutes(
 	router *http.ServeMux,
-	store *store.SessionHandler,
+	store *sessionstore.SessionStore,
 ) *AuthHandler {
 	authHandler := &AuthHandler{
-		store: store,
+		store,
 	}
 
 	router.HandleFunc("/login", authHandler.HandleLogin)
 	router.HandleFunc("/logout", authHandler.Logout)
+	router.HandleFunc("/getSessionsForUser", authHandler.GetSessionsForUser)
 	router.HandleFunc("/auth/discord/callback", authHandler.HandleCallback)
 
 	return authHandler
 }
 
 func (authHandler *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	_, err := authHandler.store.GetUser(r)
+	_, err := authHandler.GetUser(r)
 	if err == nil {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
@@ -87,7 +88,7 @@ func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	err = authHandler.store.SaveUserSession(r, w, user)
+	err = authHandler.SaveUserSession(r, w, user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -96,8 +97,30 @@ func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Re
 	http.Redirect(w, r, "/profile", http.StatusFound)
 }
 
+func (authHandler *AuthHandler) GetSessionsForUser(w http.ResponseWriter, r *http.Request) {
+	user, err := authHandler.GetUser(r)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	sessions, err := authHandler.SessionStore.GetSessionsForUser(user.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	sessionsJSON, err := json.Marshal(sessions)
+	if err != nil {
+		http.Error(w, "Failed to marshal sessions to JSON", http.StatusInternalServerError)
+		return
+	}
+	w.Write(sessionsJSON)
+}
+
 func (authHandler *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	err := authHandler.store.RevokeSession(w, r)
+	err := authHandler.RevokeSession(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -107,13 +130,13 @@ func (authHandler *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 func (authHandler *AuthHandler) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, err := authHandler.store.GetUser(r)
+		user, err := authHandler.GetUser(r)
 		if err != nil {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), types.ConstAuthUser, user)
+		ctx := sessionstore.SetContextWithUser(r, user)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

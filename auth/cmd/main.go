@@ -5,6 +5,7 @@ import (
 	"log"
 
 	handler "github.com/codeharik/Atlantic/auth/server"
+	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
@@ -37,9 +38,18 @@ func main() {
 		log.Fatalf("Cannot connect to database : %v", err.Error())
 	}
 
+	// sessionStore := store.CreateCookieStore(cfg)
+	// if err != nil {
+	// 	log.Fatalf("Could not create Session Store")
+	// }
+	sessionStore, err := sessionstore.CreateDragonflySessionStore(cfg)
+	if err != nil {
+		log.Fatalf("Could not create Session Store")
+	}
+
 	handler.Serve(
 		storeInstance,
-		store.CreateSessionStore(cfg),
+		sessionStore,
 		cfg,
 	)
 }

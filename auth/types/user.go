@@ -15,7 +15,5 @@ type AuthUser struct {
 var (
 	DiscordOauthConfig *oauth2.Config
 	OauthStateString   = "oauthStateString"
-	ConstAuthSession   = "session-name"
-	ConstAuthUser      = "user"
 	CSRFkey            = []byte("->DM!(sxXx.Q(XVVZ(kqnF1}BwNXRzZL")
 )

@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/service/basecontext"
@@ -25,7 +26,7 @@ func ServerPortUrl(config config.Config) string {
 	return fmt.Sprintf(":%d", config.AuthService.Port)
 }
 
-func Serve(storeInstance store.Store, sessionStore *store.SessionHandler, config config.Config) {
+func Serve(storeInstance store.Store, sessionStore *sessionstore.SessionStore, config config.Config) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -86,7 +87,13 @@ func Serve(storeInstance store.Store, sessionStore *store.SessionHandler, config
 		}
 
 		storeInstance.Db.Close()
-		fmt.Println("Server Shutdown, OtelShutdown, Store closed")
+
+		err = sessionStore.Close()
+		if err != nil {
+			fmt.Printf("Error shutting down SessionStore: %v", err)
+		}
+
+		fmt.Println("Server Shutdown, OtelShutdown, Store closed, Session store closed")
 	}()
 
 	// Wait for interruption.

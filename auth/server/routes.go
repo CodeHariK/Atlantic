@@ -11,6 +11,7 @@ import (
 	AuthHandler "github.com/codeharik/Atlantic/auth/server/auth"
 	ProfileHandler "github.com/codeharik/Atlantic/auth/server/profile"
 	UserHandler "github.com/codeharik/Atlantic/auth/server/user"
+	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
@@ -19,7 +20,7 @@ import (
 	user_app "github.com/codeharik/Atlantic/database/store/user"
 )
 
-func CreateRoutes(router *http.ServeMux, storeInstance store.Store, sessionStore *store.SessionHandler, config config.Config) {
+func CreateRoutes(router *http.ServeMux, storeInstance store.Store, sessionStore *sessionstore.SessionStore, config config.Config) {
 	UserHandler.CreateUserRoutes(router, storeInstance.UserStore)
 
 	authHandler := AuthHandler.CreateAuthRoutes(router, sessionStore)
