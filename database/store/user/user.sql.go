@@ -13,46 +13,36 @@ import (
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO
-    "users" (
-        "username",
-        "email",
-        "phone_number",
-        "is_admin",
-        "date_of_birth",
-        "location"
+    users (
+        username,
+        email,
+        phone_number,
+        gender,
+        is_admin,
+        date_of_birth,
+        location
     )
-VALUES ($1, $2, $3, $4, $5, $6)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
+    id,
+    created_at,
+    updated_at
 `
 
 type CreateUserParams struct {
 	Username    string      `json:"username"`
 	Email       string      `json:"email"`
 	PhoneNumber string      `json:"phone_number"`
+	Gender      string      `json:"gender"`
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.Int4 `json:"location"`
 }
 
 type CreateUserRow struct {
-	ID          int32            `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	IsAdmin     bool             `json:"is_admin"`
-	DateOfBirth pgtype.Date      `json:"date_of_birth"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+	ID        int32            `json:"id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
@@ -60,71 +50,51 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 		arg.Username,
 		arg.Email,
 		arg.PhoneNumber,
+		arg.Gender,
 		arg.IsAdmin,
 		arg.DateOfBirth,
 		arg.Location,
 	)
 	var i CreateUserRow
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Email,
-		&i.PhoneNumber,
-		&i.IsAdmin,
-		&i.DateOfBirth,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.Location,
-	)
+	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
 	return i, err
 }
 
-const deleteUser = `-- name: DeleteUser :one
-DELETE FROM "users" WHERE "id" = $1 RETURNING "id"
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) (int32, error) {
-	row := q.db.QueryRow(ctx, deleteUser, id)
-	err := row.Scan(&id)
-	return id, err
+func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
+	return err
 }
 
 const findUserByUsername = `-- name: FindUserByUsername :one
 SELECT
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
-FROM "users"
+    id,
+    username,
+    email,
+    phone_number,
+    gender,
+    is_admin,
+    date_of_birth,
+    created_at,
+    updated_at,
+    location
+FROM users
 WHERE
-    "username" = $1
+    username = $1
 `
 
-type FindUserByUsernameRow struct {
-	ID          int32            `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	IsAdmin     bool             `json:"is_admin"`
-	DateOfBirth pgtype.Date      `json:"date_of_birth"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
-}
-
-func (q *Queries) FindUserByUsername(ctx context.Context, username string) (FindUserByUsernameRow, error) {
+func (q *Queries) FindUserByUsername(ctx context.Context, username string) (User, error) {
 	row := q.db.QueryRow(ctx, findUserByUsername, username)
-	var i FindUserByUsernameRow
+	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.Gender,
 		&i.IsAdmin,
 		&i.DateOfBirth,
 		&i.CreatedAt,
@@ -136,40 +106,30 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username string) (Find
 
 const getUserByID = `-- name: GetUserByID :one
 SELECT
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
-FROM "users"
+    id,
+    username,
+    email,
+    phone_number,
+    gender,
+    is_admin,
+    date_of_birth,
+    created_at,
+    updated_at,
+    location
+FROM users
 WHERE
-    "id" = $1
+    id = $1
 `
 
-type GetUserByIDRow struct {
-	ID          int32            `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	IsAdmin     bool             `json:"is_admin"`
-	DateOfBirth pgtype.Date      `json:"date_of_birth"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
-}
-
-func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, error) {
+func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
-	var i GetUserByIDRow
+	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.Gender,
 		&i.IsAdmin,
 		&i.DateOfBirth,
 		&i.CreatedAt,
@@ -179,47 +139,44 @@ func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, er
 	return i, err
 }
 
-const listAllUsers = `-- name: ListAllUsers :many
+const listUsers = `-- name: ListUsers :many
 SELECT
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
-FROM "users"
-ORDER BY "created_at" DESC
+    id,
+    username,
+    email,
+    phone_number,
+    gender,
+    is_admin,
+    date_of_birth,
+    created_at,
+    updated_at,
+    location
+FROM users
+LIMIT $1
+OFFSET
+    $2
 `
 
-type ListAllUsersRow struct {
-	ID          int32            `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	IsAdmin     bool             `json:"is_admin"`
-	DateOfBirth pgtype.Date      `json:"date_of_birth"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+type ListUsersParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListAllUsers(ctx context.Context) ([]ListAllUsersRow, error) {
-	rows, err := q.db.Query(ctx, listAllUsers)
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, listUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListAllUsersRow{}
+	items := []User{}
 	for rows.Next() {
-		var i ListAllUsersRow
+		var i User
 		if err := rows.Scan(
 			&i.ID,
 			&i.Username,
 			&i.Email,
 			&i.PhoneNumber,
+			&i.Gender,
 			&i.IsAdmin,
 			&i.DateOfBirth,
 			&i.CreatedAt,
@@ -237,33 +194,28 @@ func (q *Queries) ListAllUsers(ctx context.Context) ([]ListAllUsersRow, error) {
 }
 
 const updateUser = `-- name: UpdateUser :one
-UPDATE "users"
+UPDATE users
 SET
-    "username" = $1,
-    "email" = $2,
-    "phone_number" = $3,
-    "is_admin" = $4,
-    "date_of_birth" = $5,
-    "location" = $6,
-    "updated_at" = CURRENT_TIMESTAMP
+    username = $1,
+    email = $2,
+    phone_number = $3,
+    gender = $4,
+    is_admin = $5,
+    date_of_birth = $6,
+    location = $7,
+    updated_at = CURRENT_TIMESTAMP
 WHERE
-    "id" = $7
+    id = $8
 RETURNING
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
+    id,
+    updated_at
 `
 
 type UpdateUserParams struct {
 	Username    string      `json:"username"`
 	Email       string      `json:"email"`
 	PhoneNumber string      `json:"phone_number"`
+	Gender      string      `json:"gender"`
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.Int4 `json:"location"`
@@ -271,15 +223,8 @@ type UpdateUserParams struct {
 }
 
 type UpdateUserRow struct {
-	ID          int32            `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	IsAdmin     bool             `json:"is_admin"`
-	DateOfBirth pgtype.Date      `json:"date_of_birth"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+	ID        int32            `json:"id"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error) {
@@ -287,22 +232,13 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateU
 		arg.Username,
 		arg.Email,
 		arg.PhoneNumber,
+		arg.Gender,
 		arg.IsAdmin,
 		arg.DateOfBirth,
 		arg.Location,
 		arg.ID,
 	)
 	var i UpdateUserRow
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Email,
-		&i.PhoneNumber,
-		&i.IsAdmin,
-		&i.DateOfBirth,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.Location,
-	)
+	err := row.Scan(&i.ID, &i.UpdatedAt)
 	return i, err
 }

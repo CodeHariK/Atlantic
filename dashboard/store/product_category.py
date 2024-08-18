@@ -18,9 +18,9 @@ WITH RECURSIVE CategoryHierarchy AS (
     FROM product_category c
     WHERE c.id = :p1
 
-    UNION ALL
 
-    -- Recursive member\\: join the category table with itself to traverse up the hierarchy
+UNION ALL
+    
     SELECT pc.id, pc.name, pc.parent_id, 
         ch.path || '.' || pc.name AS path
     FROM product_category pc
@@ -44,26 +44,31 @@ WITH RECURSIVE CategoryHierarchy AS (
         WHERE id = :p1  -- Use product ID to find the category_id
     )
 
-    UNION ALL
 
-    -- Recursive member\\: join the category table with itself to traverse up the hierarchy
+UNION ALL
+    
     SELECT pc.id, pc.name, pc.parent_id, 
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
 )
 
-, CategoryPath AS (
+,
+CategoryPath AS (
     SELECT path
     FROM CategoryHierarchy
     ORDER BY array_length(string_to_array(path, '.'), 1) DESC
     LIMIT 1
 )
-
-SELECT p.id AS product_id, p.product_name, p.category_id, cp.path AS category_path
+SELECT
+    p.id AS product_id,
+    p.product_name,
+    p.category_id,
+    cp.path AS category_path
 FROM products p
-CROSS JOIN CategoryPath cp
-WHERE p.id = :p1
+    CROSS JOIN CategoryPath cp
+WHERE
+    p.id = :p1
 """
 
 

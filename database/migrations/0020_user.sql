@@ -1,9 +1,6 @@
 -- +goose Up
 
 -- Create "users" table
--- 024/07/23 - Create users table and trigger
-
--- Create the table
 CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL PRIMARY KEY,
     "username" VARCHAR(255) UNIQUE NOT NULL CHECK (CHAR_LENGTH("username") > 0),

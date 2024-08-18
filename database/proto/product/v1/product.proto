@@ -8,9 +8,19 @@ import "google/protobuf/wrappers.proto";
 option go_package = "github.com/codeharik/Atlantic/database/api/product/v1";
 
 service ProductService {
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
+
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse) {}
+
   rpc GetCategoryPath(GetCategoryPathRequest) returns (GetCategoryPathResponse) {}
 
+  rpc GetProductByID(GetProductByIDRequest) returns (GetProductByIDResponse) {}
+
   rpc GetProductWithCategoryPath(GetProductWithCategoryPathRequest) returns (GetProductWithCategoryPathResponse) {}
+
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {}
+
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse) {}
 }
 
 message Attribute {
@@ -32,12 +42,35 @@ message CartItem {
   int32 quantity = 4;
 }
 
+message CreateProductRequest {
+  google.protobuf.StringValue product_name = 1;
+  int32 category_id = 2;
+}
+
+message CreateProductResponse {
+  Product product = 1;
+}
+
+message DeleteProductRequest {
+  int32 id = 1;
+}
+
+message DeleteProductResponse {}
+
 message GetCategoryPathRequest {
   int32 id = 1;
 }
 
 message GetCategoryPathResponse {
   string value = 1;
+}
+
+message GetProductByIDRequest {
+  int32 id = 1;
+}
+
+message GetProductByIDResponse {
+  Product product = 1;
 }
 
 message GetProductWithCategoryPathRequest {
@@ -70,6 +103,15 @@ message Inventory {
   int64 amount_units = 5;
   int32 amount_nanos = 6;
   string amount_currency = 7;
+}
+
+message ListProductsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListProductsResponse {
+  repeated Product list = 1;
 }
 
 message Location {
@@ -171,6 +213,16 @@ message Seller {
   int32 id = 1;
   string name = 2;
   google.protobuf.Int32Value location = 3;
+}
+
+message UpdateProductRequest {
+  google.protobuf.StringValue product_name = 1;
+  int32 category_id = 2;
+  int32 id = 3;
+}
+
+message UpdateProductResponse {
+  Product product = 1;
 }
 
 message User {

@@ -144,14 +144,14 @@
         ]
       }
     },
-    "/user.v1.UserService/ListAllUsers": {
+    "/user.v1.UserService/ListUsers": {
       "post": {
-        "operationId": "UserService_ListAllUsers",
+        "operationId": "UserService_ListUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListAllUsersResponse"
+              "$ref": "#/definitions/v1ListUsersResponse"
             }
           },
           "default": {
@@ -167,7 +167,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1ListAllUsersRequest"
+              "$ref": "#/definitions/v1ListUsersRequest"
             }
           }
         ],
@@ -250,6 +250,9 @@
         "phoneNumber": {
           "type": "string"
         },
+        "gender": {
+          "type": "string"
+        },
         "isAdmin": {
           "type": "boolean"
         },
@@ -278,22 +281,6 @@
           "type": "integer",
           "format": "int32"
         },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
         "createdAt": {
           "type": "string",
           "format": "date-time"
@@ -301,10 +288,6 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -318,13 +301,7 @@
       }
     },
     "v1DeleteUserResponse": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
+      "type": "object"
     },
     "v1FindUserByUsernameRequest": {
       "type": "object",
@@ -337,45 +314,8 @@
     "v1FindUserByUsernameResponse": {
       "type": "object",
       "properties": {
-        "findUserByUsernameRow": {
-          "$ref": "#/definitions/v1FindUserByUsernameRow"
-        }
-      }
-    },
-    "v1FindUserByUsernameRow": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
@@ -391,97 +331,33 @@
     "v1GetUserByIDResponse": {
       "type": "object",
       "properties": {
-        "getUserByIdRow": {
-          "$ref": "#/definitions/v1GetUserByIDRow"
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
-    "v1GetUserByIDRow": {
+    "v1ListUsersRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "limit": {
           "type": "integer",
           "format": "int32"
         },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "location": {
+        "offset": {
           "type": "integer",
           "format": "int32"
         }
       }
     },
-    "v1ListAllUsersRequest": {
-      "type": "object"
-    },
-    "v1ListAllUsersResponse": {
+    "v1ListUsersResponse": {
       "type": "object",
       "properties": {
         "list": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/v1ListAllUsersRow"
+            "$ref": "#/definitions/v1User"
           }
-        }
-      }
-    },
-    "v1ListAllUsersRow": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -495,6 +371,9 @@
           "type": "string"
         },
         "phoneNumber": {
+          "type": "string"
+        },
+        "gender": {
           "type": "string"
         },
         "isAdmin": {
@@ -529,6 +408,19 @@
           "type": "integer",
           "format": "int32"
         },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
         "username": {
           "type": "string"
         },
@@ -536,6 +428,9 @@
           "type": "string"
         },
         "phoneNumber": {
+          "type": "string"
+        },
+        "gender": {
           "type": "string"
         },
         "isAdmin": {

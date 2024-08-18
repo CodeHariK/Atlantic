@@ -25,6 +25,7 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 	arg.Username = req.Msg.GetUsername()
 	arg.Email = req.Msg.GetEmail()
 	arg.PhoneNumber = req.Msg.GetPhoneNumber()
+	arg.Gender = req.Msg.GetGender()
 	arg.IsAdmin = req.Msg.GetIsAdmin()
 	if v := req.Msg.GetDateOfBirth(); v != nil {
 		if err := v.CheckValid(); err != nil {
@@ -51,12 +52,12 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[pb.DeleteUserResponse], error) {
 	id := req.Msg.GetId()
 
-	result, err := s.querier.DeleteUser(ctx, id)
+	err := s.querier.DeleteUser(ctx, id)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "DeleteUser")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.DeleteUserResponse{Value: result}), nil
+	return connect.NewResponse(&pb.DeleteUserResponse{}), nil
 }
 
 func (s *Service) FindUserByUsername(ctx context.Context, req *connect.Request[pb.FindUserByUsernameRequest]) (*connect.Response[pb.FindUserByUsernameResponse], error) {
@@ -67,7 +68,7 @@ func (s *Service) FindUserByUsername(ctx context.Context, req *connect.Request[p
 		slog.Error("sql call failed", "error", err, "method", "FindUserByUsername")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.FindUserByUsernameResponse{FindUserByUsernameRow: toFindUserByUsernameRow(result)}), nil
+	return connect.NewResponse(&pb.FindUserByUsernameResponse{User: toUser(result)}), nil
 }
 
 func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUserByIDRequest]) (*connect.Response[pb.GetUserByIDResponse], error) {
@@ -78,19 +79,22 @@ func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUs
 		slog.Error("sql call failed", "error", err, "method", "GetUserByID")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.GetUserByIDResponse{GetUserByIdRow: toGetUserByIDRow(result)}), nil
+	return connect.NewResponse(&pb.GetUserByIDResponse{User: toUser(result)}), nil
 }
 
-func (s *Service) ListAllUsers(ctx context.Context, req *connect.Request[pb.ListAllUsersRequest]) (*connect.Response[pb.ListAllUsersResponse], error) {
+func (s *Service) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
+	var arg ListUsersParams
+	arg.Limit = req.Msg.GetLimit()
+	arg.Offset = req.Msg.GetOffset()
 
-	result, err := s.querier.ListAllUsers(ctx)
+	result, err := s.querier.ListUsers(ctx, arg)
 	if err != nil {
-		slog.Error("sql call failed", "error", err, "method", "ListAllUsers")
+		slog.Error("sql call failed", "error", err, "method", "ListUsers")
 		return nil, err
 	}
-	res := new(pb.ListAllUsersResponse)
+	res := new(pb.ListUsersResponse)
 	for _, r := range result {
-		res.List = append(res.List, toListAllUsersRow(r))
+		res.List = append(res.List, toUser(r))
 	}
 	return connect.NewResponse(res), nil
 }
@@ -100,6 +104,7 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 	arg.Username = req.Msg.GetUsername()
 	arg.Email = req.Msg.GetEmail()
 	arg.PhoneNumber = req.Msg.GetPhoneNumber()
+	arg.Gender = req.Msg.GetGender()
 	arg.IsAdmin = req.Msg.GetIsAdmin()
 	if v := req.Msg.GetDateOfBirth(); v != nil {
 		if err := v.CheckValid(); err != nil {

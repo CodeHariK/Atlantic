@@ -25,12 +25,12 @@ func (s *Service) CreateSeller(ctx context.Context, req *connect.Request[pb.Crea
 		arg.Location = pgtype.Int4{Valid: true, Int32: v.Value}
 	}
 
-	result, err := s.querier.CreateSeller(ctx, arg)
+	err := s.querier.CreateSeller(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "CreateSeller")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateSellerResponse{Value: result}), nil
+	return connect.NewResponse(&pb.CreateSellerResponse{}), nil
 }
 
 func (s *Service) DeleteSeller(ctx context.Context, req *connect.Request[pb.DeleteSellerRequest]) (*connect.Response[pb.DeleteSellerResponse], error) {
@@ -77,10 +77,10 @@ func (s *Service) UpdateSeller(ctx context.Context, req *connect.Request[pb.Upda
 	}
 	arg.ID = req.Msg.GetId()
 
-	result, err := s.querier.UpdateSeller(ctx, arg)
+	err := s.querier.UpdateSeller(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "UpdateSeller")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.UpdateSellerResponse{Seller: toSeller(result)}), nil
+	return connect.NewResponse(&pb.UpdateSellerResponse{}), nil
 }

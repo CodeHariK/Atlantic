@@ -34,6 +34,12 @@ func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
     <style>
+		html {
+			background: white;
+		}
+		div, h2 {
+			color: black !important;
+		}
 		body, span {
 			font-weight: 400 !important;
 			outline: none;
@@ -55,7 +61,7 @@ func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
 			background: #dedede2e;
 		}
 		.highlight-code pre {
-			background: black;
+			background: black !important;
 		}
 		.swagger-ui textarea {
 			background: #ffffffcc;

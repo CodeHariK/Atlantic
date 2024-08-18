@@ -22,19 +22,23 @@ func CreateUserRoutes(router *http.ServeMux, store *user.Queries) {
 }
 
 func (userHandler *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var user user.CreateUserParams
-	err := json.NewDecoder(r.Body).Decode(&user)
+	var u user.CreateUserParams
+	err := json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	_, err = userHandler.store.CreateUser(context.Background(), user)
+	_, err = userHandler.store.CreateUser(context.Background(), u)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
-	users, err := userHandler.store.ListAllUsers(context.Background())
+	users, err := userHandler.store.ListUsers(
+		context.Background(), user.ListUsersParams{
+			Limit:  10,
+			Offset: 0,
+		})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

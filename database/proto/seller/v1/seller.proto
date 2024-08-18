@@ -43,9 +43,7 @@ message CreateSellerRequest {
   google.protobuf.Int32Value location = 2;
 }
 
-message CreateSellerResponse {
-  int32 value = 1;
-}
+message CreateSellerResponse {}
 
 message DeleteSellerRequest {
   int32 id = 1;
@@ -191,9 +189,7 @@ message UpdateSellerRequest {
   int32 id = 3;
 }
 
-message UpdateSellerResponse {
-  Seller seller = 1;
-}
+message UpdateSellerResponse {}
 
 message User {
   int32 id = 1;

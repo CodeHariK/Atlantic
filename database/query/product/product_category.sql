@@ -5,9 +5,10 @@ WITH RECURSIVE CategoryHierarchy AS (
     FROM product_category c
     WHERE c.id = $1
 
-    UNION ALL
 
-    -- Recursive member: join the category table with itself to traverse up the hierarchy
+UNION ALL
+-- Recursive member: join the category table with itself to traverse up the hierarchy
+    
     SELECT pc.id, pc.name, pc.parent_id, 
         ch.path || '.' || pc.name AS path
     FROM product_category pc
@@ -18,8 +19,6 @@ SELECT path
 FROM CategoryHierarchy
 ORDER BY array_length(string_to_array(path, '.'), 1) DESC
 LIMIT 1;
-
-
 
 -- name: GetProductWithCategoryPath :one
 WITH RECURSIVE CategoryHierarchy AS (
@@ -32,9 +31,10 @@ WITH RECURSIVE CategoryHierarchy AS (
         WHERE id = $1  -- Use product ID to find the category_id
     )
 
-    UNION ALL
 
-    -- Recursive member: join the category table with itself to traverse up the hierarchy
+UNION ALL
+-- Recursive member: join the category table with itself to traverse up the hierarchy
+    
     SELECT pc.id, pc.name, pc.parent_id, 
         ch.path || '.' || pc.name AS path
     FROM product_category pc
@@ -42,15 +42,21 @@ WITH RECURSIVE CategoryHierarchy AS (
 )
 
 -- Select the hierarchical category path
-, CategoryPath AS (
+,
+CategoryPath AS (
     SELECT path
     FROM CategoryHierarchy
     ORDER BY array_length(string_to_array(path, '.'), 1) DESC
     LIMIT 1
 )
-
 -- Select the product details along with the hierarchical category path
-SELECT p.id AS product_id, p.product_name, p.category_id, cp.path AS category_path
+SELECT
+    p.id AS product_id,
+    p.product_name,
+    p.category_id,
+    cp.path AS category_path
 FROM products p
-CROSS JOIN CategoryPath cp
-WHERE p.id = $1;  -- Use product ID to match the product
+    CROSS JOIN CategoryPath cp
+WHERE
+    p.id = $1;
+-- Use product ID to match the product

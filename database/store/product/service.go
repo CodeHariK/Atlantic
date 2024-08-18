@@ -7,6 +7,7 @@ import (
 	"log/slog"
 
 	"connectrpc.com/connect"
+	"github.com/jackc/pgx/v5/pgtype"
 
 	pb "github.com/codeharik/Atlantic/database/api/product/v1"
 	"github.com/codeharik/Atlantic/database/api/product/v1/v1connect"
@@ -15,6 +16,32 @@ import (
 type Service struct {
 	v1connect.UnimplementedProductServiceHandler
 	querier *Queries
+}
+
+func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.CreateProductRequest]) (*connect.Response[pb.CreateProductResponse], error) {
+	var arg CreateProductParams
+	if v := req.Msg.GetProductName(); v != nil {
+		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
+	}
+	arg.CategoryID = req.Msg.GetCategoryId()
+
+	result, err := s.querier.CreateProduct(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateProduct")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateProductResponse{Product: toProduct(result)}), nil
+}
+
+func (s *Service) DeleteProduct(ctx context.Context, req *connect.Request[pb.DeleteProductRequest]) (*connect.Response[pb.DeleteProductResponse], error) {
+	id := req.Msg.GetId()
+
+	err := s.querier.DeleteProduct(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "DeleteProduct")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.DeleteProductResponse{}), nil
 }
 
 func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.GetCategoryPathRequest]) (*connect.Response[pb.GetCategoryPathResponse], error) {
@@ -28,6 +55,17 @@ func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.G
 	return connect.NewResponse(&pb.GetCategoryPathResponse{Value: result}), nil
 }
 
+func (s *Service) GetProductByID(ctx context.Context, req *connect.Request[pb.GetProductByIDRequest]) (*connect.Response[pb.GetProductByIDResponse], error) {
+	id := req.Msg.GetId()
+
+	result, err := s.querier.GetProductByID(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetProductByID")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetProductByIDResponse{Product: toProduct(result)}), nil
+}
+
 func (s *Service) GetProductWithCategoryPath(ctx context.Context, req *connect.Request[pb.GetProductWithCategoryPathRequest]) (*connect.Response[pb.GetProductWithCategoryPathResponse], error) {
 	id := req.Msg.GetId()
 
@@ -37,4 +75,37 @@ func (s *Service) GetProductWithCategoryPath(ctx context.Context, req *connect.R
 		return nil, err
 	}
 	return connect.NewResponse(&pb.GetProductWithCategoryPathResponse{GetProductWithCategoryPathRow: toGetProductWithCategoryPathRow(result)}), nil
+}
+
+func (s *Service) ListProducts(ctx context.Context, req *connect.Request[pb.ListProductsRequest]) (*connect.Response[pb.ListProductsResponse], error) {
+	var arg ListProductsParams
+	arg.Limit = req.Msg.GetLimit()
+	arg.Offset = req.Msg.GetOffset()
+
+	result, err := s.querier.ListProducts(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "ListProducts")
+		return nil, err
+	}
+	res := new(pb.ListProductsResponse)
+	for _, r := range result {
+		res.List = append(res.List, toProduct(r))
+	}
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.UpdateProductRequest]) (*connect.Response[pb.UpdateProductResponse], error) {
+	var arg UpdateProductParams
+	if v := req.Msg.GetProductName(); v != nil {
+		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
+	}
+	arg.CategoryID = req.Msg.GetCategoryId()
+	arg.ID = req.Msg.GetId()
+
+	result, err := s.querier.UpdateProduct(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateProduct")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateProductResponse{Product: toProduct(result)}), nil
 }

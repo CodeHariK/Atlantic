@@ -42,9 +42,8 @@ const (
 	UserServiceFindUserByUsernameProcedure = "/user.v1.UserService/FindUserByUsername"
 	// UserServiceGetUserByIDProcedure is the fully-qualified name of the UserService's GetUserByID RPC.
 	UserServiceGetUserByIDProcedure = "/user.v1.UserService/GetUserByID"
-	// UserServiceListAllUsersProcedure is the fully-qualified name of the UserService's ListAllUsers
-	// RPC.
-	UserServiceListAllUsersProcedure = "/user.v1.UserService/ListAllUsers"
+	// UserServiceListUsersProcedure is the fully-qualified name of the UserService's ListUsers RPC.
+	UserServiceListUsersProcedure = "/user.v1.UserService/ListUsers"
 	// UserServiceUpdateUserProcedure is the fully-qualified name of the UserService's UpdateUser RPC.
 	UserServiceUpdateUserProcedure = "/user.v1.UserService/UpdateUser"
 )
@@ -56,7 +55,7 @@ var (
 	userServiceDeleteUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("DeleteUser")
 	userServiceFindUserByUsernameMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("FindUserByUsername")
 	userServiceGetUserByIDMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("GetUserByID")
-	userServiceListAllUsersMethodDescriptor       = userServiceServiceDescriptor.Methods().ByName("ListAllUsers")
+	userServiceListUsersMethodDescriptor          = userServiceServiceDescriptor.Methods().ByName("ListUsers")
 	userServiceUpdateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("UpdateUser")
 )
 
@@ -66,7 +65,7 @@ type UserServiceClient interface {
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	FindUserByUsername(context.Context, *connect.Request[v1.FindUserByUsernameRequest]) (*connect.Response[v1.FindUserByUsernameResponse], error)
 	GetUserByID(context.Context, *connect.Request[v1.GetUserByIDRequest]) (*connect.Response[v1.GetUserByIDResponse], error)
-	ListAllUsers(context.Context, *connect.Request[v1.ListAllUsersRequest]) (*connect.Response[v1.ListAllUsersResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 }
 
@@ -104,10 +103,10 @@ func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(userServiceGetUserByIDMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		listAllUsers: connect.NewClient[v1.ListAllUsersRequest, v1.ListAllUsersResponse](
+		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
 			httpClient,
-			baseURL+UserServiceListAllUsersProcedure,
-			connect.WithSchema(userServiceListAllUsersMethodDescriptor),
+			baseURL+UserServiceListUsersProcedure,
+			connect.WithSchema(userServiceListUsersMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
@@ -125,7 +124,7 @@ type userServiceClient struct {
 	deleteUser         *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
 	findUserByUsername *connect.Client[v1.FindUserByUsernameRequest, v1.FindUserByUsernameResponse]
 	getUserByID        *connect.Client[v1.GetUserByIDRequest, v1.GetUserByIDResponse]
-	listAllUsers       *connect.Client[v1.ListAllUsersRequest, v1.ListAllUsersResponse]
+	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
 	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
 }
 
@@ -149,9 +148,9 @@ func (c *userServiceClient) GetUserByID(ctx context.Context, req *connect.Reques
 	return c.getUserByID.CallUnary(ctx, req)
 }
 
-// ListAllUsers calls user.v1.UserService.ListAllUsers.
-func (c *userServiceClient) ListAllUsers(ctx context.Context, req *connect.Request[v1.ListAllUsersRequest]) (*connect.Response[v1.ListAllUsersResponse], error) {
-	return c.listAllUsers.CallUnary(ctx, req)
+// ListUsers calls user.v1.UserService.ListUsers.
+func (c *userServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+	return c.listUsers.CallUnary(ctx, req)
 }
 
 // UpdateUser calls user.v1.UserService.UpdateUser.
@@ -165,7 +164,7 @@ type UserServiceHandler interface {
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
 	FindUserByUsername(context.Context, *connect.Request[v1.FindUserByUsernameRequest]) (*connect.Response[v1.FindUserByUsernameResponse], error)
 	GetUserByID(context.Context, *connect.Request[v1.GetUserByIDRequest]) (*connect.Response[v1.GetUserByIDResponse], error)
-	ListAllUsers(context.Context, *connect.Request[v1.ListAllUsersRequest]) (*connect.Response[v1.ListAllUsersResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 }
 
@@ -199,10 +198,10 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(userServiceGetUserByIDMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	userServiceListAllUsersHandler := connect.NewUnaryHandler(
-		UserServiceListAllUsersProcedure,
-		svc.ListAllUsers,
-		connect.WithSchema(userServiceListAllUsersMethodDescriptor),
+	userServiceListUsersHandler := connect.NewUnaryHandler(
+		UserServiceListUsersProcedure,
+		svc.ListUsers,
+		connect.WithSchema(userServiceListUsersMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceUpdateUserHandler := connect.NewUnaryHandler(
@@ -221,8 +220,8 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 			userServiceFindUserByUsernameHandler.ServeHTTP(w, r)
 		case UserServiceGetUserByIDProcedure:
 			userServiceGetUserByIDHandler.ServeHTTP(w, r)
-		case UserServiceListAllUsersProcedure:
-			userServiceListAllUsersHandler.ServeHTTP(w, r)
+		case UserServiceListUsersProcedure:
+			userServiceListUsersHandler.ServeHTTP(w, r)
 		case UserServiceUpdateUserProcedure:
 			userServiceUpdateUserHandler.ServeHTTP(w, r)
 		default:
@@ -250,8 +249,8 @@ func (UnimplementedUserServiceHandler) GetUserByID(context.Context, *connect.Req
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.GetUserByID is not implemented"))
 }
 
-func (UnimplementedUserServiceHandler) ListAllUsers(context.Context, *connect.Request[v1.ListAllUsersRequest]) (*connect.Response[v1.ListAllUsersResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.ListAllUsers is not implemented"))
+func (UnimplementedUserServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.ListUsers is not implemented"))
 }
 
 func (UnimplementedUserServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {

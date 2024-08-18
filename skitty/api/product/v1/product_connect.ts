@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetCategoryPathRequest, GetCategoryPathResponse, GetProductWithCategoryPathRequest, GetProductWithCategoryPathResponse } from "./product_pb.js";
+import { CreateProductRequest, CreateProductResponse, DeleteProductRequest, DeleteProductResponse, GetCategoryPathRequest, GetCategoryPathResponse, GetProductByIDRequest, GetProductByIDResponse, GetProductWithCategoryPathRequest, GetProductWithCategoryPathResponse, ListProductsRequest, ListProductsResponse, UpdateProductRequest, UpdateProductResponse } from "./product_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -12,6 +12,24 @@ import { MethodKind } from "@bufbuild/protobuf";
 export const ProductService = {
   typeName: "product.v1.ProductService",
   methods: {
+    /**
+     * @generated from rpc product.v1.ProductService.CreateProduct
+     */
+    createProduct: {
+      name: "CreateProduct",
+      I: CreateProductRequest,
+      O: CreateProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.DeleteProduct
+     */
+    deleteProduct: {
+      name: "DeleteProduct",
+      I: DeleteProductRequest,
+      O: DeleteProductResponse,
+      kind: MethodKind.Unary,
+    },
     /**
      * @generated from rpc product.v1.ProductService.GetCategoryPath
      */
@@ -22,12 +40,39 @@ export const ProductService = {
       kind: MethodKind.Unary,
     },
     /**
+     * @generated from rpc product.v1.ProductService.GetProductByID
+     */
+    getProductByID: {
+      name: "GetProductByID",
+      I: GetProductByIDRequest,
+      O: GetProductByIDResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
      * @generated from rpc product.v1.ProductService.GetProductWithCategoryPath
      */
     getProductWithCategoryPath: {
       name: "GetProductWithCategoryPath",
       I: GetProductWithCategoryPathRequest,
       O: GetProductWithCategoryPathResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.ListProducts
+     */
+    listProducts: {
+      name: "ListProducts",
+      I: ListProductsRequest,
+      O: ListProductsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.UpdateProduct
+     */
+    updateProduct: {
+      name: "UpdateProduct",
+      I: UpdateProductRequest,
+      O: UpdateProductResponse,
       kind: MethodKind.Unary,
     },
   }

@@ -19,3 +19,14 @@ func toGetProductWithCategoryPathRow(in GetProductWithCategoryPathRow) *pb.GetPr
 	out.CategoryPath = in.CategoryPath
 	return out
 }
+
+func toProduct(in Product) *pb.Product {
+
+	out := new(pb.Product)
+	out.Id = in.ID
+	if in.ProductName.Valid {
+		out.ProductName = wrapperspb.String(in.ProductName.String)
+	}
+	out.CategoryId = in.CategoryID
+	return out
+}

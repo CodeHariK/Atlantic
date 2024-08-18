@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createSeller = `-- name: CreateSeller :one
+const createSeller = `-- name: CreateSeller :exec
 INSERT INTO seller (name, location) VALUES ($1, $2) RETURNING id
 `
 
@@ -20,11 +20,9 @@ type CreateSellerParams struct {
 	Location pgtype.Int4 `json:"location"`
 }
 
-func (q *Queries) CreateSeller(ctx context.Context, arg CreateSellerParams) (int32, error) {
-	row := q.db.QueryRow(ctx, createSeller, arg.Name, arg.Location)
-	var id int32
-	err := row.Scan(&id)
-	return id, err
+func (q *Queries) CreateSeller(ctx context.Context, arg CreateSellerParams) error {
+	_, err := q.db.Exec(ctx, createSeller, arg.Name, arg.Location)
+	return err
 }
 
 const deleteSeller = `-- name: DeleteSeller :exec
@@ -71,8 +69,8 @@ func (q *Queries) ListSellers(ctx context.Context) ([]Seller, error) {
 	return items, nil
 }
 
-const updateSeller = `-- name: UpdateSeller :one
-UPDATE seller SET name = $1, location = $2 WHERE id = $3 RETURNING id, name, location
+const updateSeller = `-- name: UpdateSeller :exec
+UPDATE seller SET name = $1, location = $2 WHERE id = $3
 `
 
 type UpdateSellerParams struct {
@@ -81,9 +79,7 @@ type UpdateSellerParams struct {
 	ID       int32       `json:"id"`
 }
 
-func (q *Queries) UpdateSeller(ctx context.Context, arg UpdateSellerParams) (Seller, error) {
-	row := q.db.QueryRow(ctx, updateSeller, arg.Name, arg.Location, arg.ID)
-	var i Seller
-	err := row.Scan(&i.ID, &i.Name, &i.Location)
-	return i, err
+func (q *Queries) UpdateSeller(ctx context.Context, arg UpdateSellerParams) error {
+	_, err := q.db.Exec(ctx, updateSeller, arg.Name, arg.Location, arg.ID)
+	return err
 }

@@ -1,91 +1,85 @@
 -- name: CreateUser :one
 INSERT INTO
-    "users" (
-        "username",
-        "email",
-        "phone_number",
-        "is_admin",
-        "date_of_birth",
-        "location"
+    users (
+        username,
+        email,
+        phone_number,
+        gender,
+        is_admin,
+        date_of_birth,
+        location
     )
-VALUES ($1, $2, $3, $4, $5, $6)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location";
+    id,
+    created_at,
+    updated_at;
 
 -- name: GetUserByID :one
 SELECT
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
-FROM "users"
+    id,
+    username,
+    email,
+    phone_number,
+    gender,
+    is_admin,
+    date_of_birth,
+    created_at,
+    updated_at,
+    location
+FROM users
 WHERE
-    "id" = $1;
+    id = $1;
 
 -- name: UpdateUser :one
-UPDATE "users"
+UPDATE users
 SET
-    "username" = $1,
-    "email" = $2,
-    "phone_number" = $3,
-    "is_admin" = $4,
-    "date_of_birth" = $5,
-    "location" = $6,
-    "updated_at" = CURRENT_TIMESTAMP
+    username = $1,
+    email = $2,
+    phone_number = $3,
+    gender = $4,
+    is_admin = $5,
+    date_of_birth = $6,
+    location = $7,
+    updated_at = CURRENT_TIMESTAMP
 WHERE
-    "id" = $7
+    id = $8
 RETURNING
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location";
+    id,
+    updated_at;
 
--- name: DeleteUser :one
-DELETE FROM "users" WHERE "id" = $1 RETURNING "id";
+-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1;
 
--- name: ListAllUsers :many
+-- name: ListUsers :many
 SELECT
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
-FROM "users"
-ORDER BY "created_at" DESC;
+    id,
+    username,
+    email,
+    phone_number,
+    gender,
+    is_admin,
+    date_of_birth,
+    created_at,
+    updated_at,
+    location
+FROM users
+LIMIT $1
+OFFSET
+    $2;
 
 -- name: FindUserByUsername :one
 SELECT
-    "id",
-    "username",
-    "email",
-    "phone_number",
-    "is_admin",
-    "date_of_birth",
-    "created_at",
-    "updated_at",
-    "location"
-FROM "users"
+    id,
+    username,
+    email,
+    phone_number,
+    gender,
+    is_admin,
+    date_of_birth,
+    created_at,
+    updated_at,
+    location
+FROM users
 WHERE
-    "username" = $1;
+    username = $1;

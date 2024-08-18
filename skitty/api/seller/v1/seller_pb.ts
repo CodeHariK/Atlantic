@@ -206,11 +206,6 @@ export class CreateSellerRequest extends Message<CreateSellerRequest> {
  * @generated from message seller.v1.CreateSellerResponse
  */
 export class CreateSellerResponse extends Message<CreateSellerResponse> {
-  /**
-   * @generated from field: int32 value = 1;
-   */
-  value = 0;
-
   constructor(data?: PartialMessage<CreateSellerResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -219,7 +214,6 @@ export class CreateSellerResponse extends Message<CreateSellerResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.CreateSellerResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "value", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSellerResponse {
@@ -1392,11 +1386,6 @@ export class UpdateSellerRequest extends Message<UpdateSellerRequest> {
  * @generated from message seller.v1.UpdateSellerResponse
  */
 export class UpdateSellerResponse extends Message<UpdateSellerResponse> {
-  /**
-   * @generated from field: seller.v1.Seller seller = 1;
-   */
-  seller?: Seller;
-
   constructor(data?: PartialMessage<UpdateSellerResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -1405,7 +1394,6 @@ export class UpdateSellerResponse extends Message<UpdateSellerResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.UpdateSellerResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "seller", kind: "message", T: Seller },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateSellerResponse {
