@@ -23,7 +23,7 @@ import (
 func CreateRoutes(router *http.ServeMux, storeInstance store.Store, sessionStore *sessionstore.SessionStore, config config.Config) {
 	UserHandler.CreateUserRoutes(router, storeInstance.UserStore)
 
-	authHandler := AuthHandler.CreateAuthRoutes(router, sessionStore)
+	authHandler := AuthHandler.CreateAuthRoutes(router, sessionStore, storeInstance.UserStore)
 
 	ProfileHandler.CreateProfileRoutes(router, storeInstance.UserStore, authHandler)
 

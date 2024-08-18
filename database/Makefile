@@ -26,7 +26,7 @@ all: ainspect aapply apush ahash aweb
 gup:
 	goose -dir migrations postgres $(POSTGRES_URL) up
 gdo:
-	goose -dir migrations postgres$(POSTGRES_URL) down
+	goose -dir migrations postgres $(POSTGRES_URL) down
 greset:
 	goose -dir migrations postgres $(POSTGRES_URL) reset
 gstatus:

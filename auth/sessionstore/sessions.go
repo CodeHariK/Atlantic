@@ -20,7 +20,8 @@ const (
 type ISessionStore interface {
 	Get(r *http.Request, name string) (*sessions.Session, error)
 	StoreSessionKey(userID, sessionKey string) error
-	GetSessionsForUser(userID string) ([]string, error)
+	GetAllSessionsForUser(userID string) ([]string, error)
+	InvalidateAllSessionsForUser(userID string) error
 	Close() error
 }
 

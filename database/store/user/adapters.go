@@ -22,19 +22,9 @@ func toCreateUserRow(in CreateUserRow) *pb.CreateUserRow {
 	return out
 }
 
-func toUpdateUserRow(in UpdateUserRow) *pb.UpdateUserRow {
+func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow {
 
-	out := new(pb.UpdateUserRow)
-	out.Id = in.ID
-	if in.UpdatedAt.Valid {
-		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
-	}
-	return out
-}
-
-func toUser(in User) *pb.User {
-
-	out := new(pb.User)
+	out := new(pb.FindUserByUsernameRow)
 	out.Id = in.ID
 	out.Username = in.Username
 	out.Email = in.Email
@@ -52,6 +42,64 @@ func toUser(in User) *pb.User {
 	}
 	if in.Location.Valid {
 		out.Location = wrapperspb.Int32(in.Location.Int32)
+	}
+	return out
+}
+
+func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
+
+	out := new(pb.GetUserByIDRow)
+	out.Id = in.ID
+	out.Username = in.Username
+	out.Email = in.Email
+	out.PhoneNumber = in.PhoneNumber
+	out.Gender = in.Gender
+	out.IsAdmin = in.IsAdmin
+	if in.DateOfBirth.Valid {
+		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
+	}
+	if in.CreatedAt.Valid {
+		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
+	}
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
+	}
+	if in.Location.Valid {
+		out.Location = wrapperspb.Int32(in.Location.Int32)
+	}
+	return out
+}
+
+func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
+
+	out := new(pb.ListUsersRow)
+	out.Id = in.ID
+	out.Username = in.Username
+	out.Email = in.Email
+	out.PhoneNumber = in.PhoneNumber
+	out.Gender = in.Gender
+	out.IsAdmin = in.IsAdmin
+	if in.DateOfBirth.Valid {
+		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
+	}
+	if in.CreatedAt.Valid {
+		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
+	}
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
+	}
+	if in.Location.Valid {
+		out.Location = wrapperspb.Int32(in.Location.Int32)
+	}
+	return out
+}
+
+func toUpdateUserRow(in UpdateUserRow) *pb.UpdateUserRow {
+
+	out := new(pb.UpdateUserRow)
+	out.Id = in.ID
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
 	return out
 }

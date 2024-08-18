@@ -38,11 +38,11 @@ func main() {
 		log.Fatalf("Cannot connect to database : %v", err.Error())
 	}
 
-	// sessionStore := store.CreateCookieStore(cfg)
+	// sessionStore := sessionstore.CreateCookieSessionStore(cfg)
 	// if err != nil {
 	// 	log.Fatalf("Could not create Session Store")
 	// }
-	sessionStore, err := sessionstore.CreateDragonflySessionStore(cfg)
+	sessionStore, err := sessionstore.CreateDragonSessionStore(cfg)
 	if err != nil {
 		log.Fatalf("Could not create Session Store")
 	}

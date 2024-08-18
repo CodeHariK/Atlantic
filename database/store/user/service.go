@@ -68,7 +68,7 @@ func (s *Service) FindUserByUsername(ctx context.Context, req *connect.Request[p
 		slog.Error("sql call failed", "error", err, "method", "FindUserByUsername")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.FindUserByUsernameResponse{User: toUser(result)}), nil
+	return connect.NewResponse(&pb.FindUserByUsernameResponse{FindUserByUsernameRow: toFindUserByUsernameRow(result)}), nil
 }
 
 func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUserByIDRequest]) (*connect.Response[pb.GetUserByIDResponse], error) {
@@ -79,7 +79,7 @@ func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUs
 		slog.Error("sql call failed", "error", err, "method", "GetUserByID")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.GetUserByIDResponse{User: toUser(result)}), nil
+	return connect.NewResponse(&pb.GetUserByIDResponse{GetUserByIdRow: toGetUserByIDRow(result)}), nil
 }
 
 func (s *Service) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
@@ -94,7 +94,7 @@ func (s *Service) ListUsers(ctx context.Context, req *connect.Request[pb.ListUse
 	}
 	res := new(pb.ListUsersResponse)
 	for _, r := range result {
-		res.List = append(res.List, toUser(r))
+		res.List = append(res.List, toListUsersRow(r))
 	}
 	return connect.NewResponse(res), nil
 }

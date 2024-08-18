@@ -27,25 +27,39 @@ func (store *DragonStore) StoreSessionKey(userID, sessionKey string) error {
 	return nil
 }
 
-// GetSessionsForUser retrieves all session IDs for a given user
-func (store *DragonStore) GetSessionsForUser(userID string) ([]string, error) {
+// GetAllSessionsForUser retrieves all session IDs for a given user
+func (store *DragonStore) GetAllSessionsForUser(userID string) ([]string, error) {
 	// Define the key for storing user sessions
 	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
 
 	sessions, err := store.SMembers(context.Background(), sessionKeySet).Result()
 	if err != nil {
-		return nil, fmt.Errorf("could not get sessions from DragonFly: %v", err)
+		return nil, fmt.Errorf("could not get sessions from Dragonstore: %v", err)
 	}
 
 	return sessions, nil
 }
 
-func CreateDragonflySessionStore(cfg config.Config) (*SessionStore, error) {
+// InvalidateAllSessionsForUser removes all session IDs for a given user
+func (store *DragonStore) InvalidateAllSessionsForUser(userID string) error {
+	// Define the key for storing user sessions
+	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
+
+	// Remove the Redis set
+	_, err := store.Del(context.Background(), sessionKeySet).Result()
+	if err != nil {
+		return fmt.Errorf("could not delete sessions from Redis: %v", err)
+	}
+
+	return nil
+}
+
+func CreateDragonSessionStore(cfg config.Config) (*SessionStore, error) {
 	config := config.LoadConfig("config.json", "../config/config.json")
 
-	dragonflyURI := config.DragonflyConnectionUri()
+	dragonURI := config.DragonConnectionUri()
 
-	options, err := dragon.ParseURL(dragonflyURI)
+	options, err := dragon.ParseURL(dragonURI)
 	if err != nil {
 		panic(err)
 	}
@@ -57,10 +71,10 @@ func CreateDragonflySessionStore(cfg config.Config) (*SessionStore, error) {
 		dragonClient,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create dragonfly store: %v", err)
+		return nil, fmt.Errorf("failed to create dragon store: %v", err)
 	}
 
-	fmt.Println("Initialized DragonFly")
+	fmt.Println("Initialized Dragon")
 
 	// dragonSessionStore.KeyGen(func() (string, error) {
 	// 	return "", nil
@@ -68,9 +82,9 @@ func CreateDragonflySessionStore(cfg config.Config) (*SessionStore, error) {
 
 	dragonSessionStore.Options(sessions.Options{
 		Path:     "/",
-		MaxAge:   cfg.Session.MaxAge,
-		HttpOnly: cfg.Session.HttpOnly,
-		Secure:   cfg.Session.Secure,
+		MaxAge:   2592000,
+		HttpOnly: true,
+		Secure:   false,
 		// SameSite: http.SameSiteLaxMode,
 	})
 

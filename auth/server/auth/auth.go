@@ -10,23 +10,28 @@ import (
 
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/types"
+	"github.com/codeharik/Atlantic/database/store/user"
 )
 
 type AuthHandler struct {
+	*user.Queries
 	*sessionstore.SessionStore
 }
 
 func CreateAuthRoutes(
 	router *http.ServeMux,
-	store *sessionstore.SessionStore,
+	sessionstore *sessionstore.SessionStore,
+	userstore *user.Queries,
 ) *AuthHandler {
 	authHandler := &AuthHandler{
-		store,
+		userstore,
+		sessionstore,
 	}
 
 	router.HandleFunc("/login", authHandler.HandleLogin)
 	router.HandleFunc("/logout", authHandler.Logout)
-	router.HandleFunc("/getSessionsForUser", authHandler.GetSessionsForUser)
+	router.HandleFunc("/getAllSessionsForUser", authHandler.GetAllSessionsForUser)
+	router.HandleFunc("/invalidateAllSessionsForUser", authHandler.InvalidateAllSessionsForUser)
 	router.HandleFunc("/auth/discord/callback", authHandler.HandleCallback)
 
 	return authHandler
@@ -97,14 +102,14 @@ func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Re
 	http.Redirect(w, r, "/profile", http.StatusFound)
 }
 
-func (authHandler *AuthHandler) GetSessionsForUser(w http.ResponseWriter, r *http.Request) {
+func (authHandler *AuthHandler) GetAllSessionsForUser(w http.ResponseWriter, r *http.Request) {
 	user, err := authHandler.GetUser(r)
 	if err != nil {
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
 	}
 
-	sessions, err := authHandler.SessionStore.GetSessionsForUser(user.ID)
+	sessions, err := authHandler.SessionStore.GetAllSessionsForUser(user.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -117,6 +122,23 @@ func (authHandler *AuthHandler) GetSessionsForUser(w http.ResponseWriter, r *htt
 		return
 	}
 	w.Write(sessionsJSON)
+}
+
+// InvalidateAllSessionsForUser invalidates all sessions for the user
+func (authHandler *AuthHandler) InvalidateAllSessionsForUser(w http.ResponseWriter, r *http.Request) {
+	user, err := authHandler.GetUser(r)
+	if err != nil {
+		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+		return
+	}
+
+	err = authHandler.SessionStore.InvalidateAllSessionsForUser(user.ID)
+	if err != nil {
+		http.Error(w, "Failed to invalidate sessions: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 func (authHandler *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {

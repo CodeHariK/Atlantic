@@ -194,12 +194,13 @@ message UpdateSellerResponse {}
 message User {
   int32 id = 1;
   string username = 2;
-  string email = 3;
-  string phone_number = 4;
-  string gender = 5;
-  bool is_admin = 6;
-  google.protobuf.Timestamp date_of_birth = 7;
-  google.protobuf.Timestamp created_at = 8;
-  google.protobuf.Timestamp updated_at = 9;
-  google.protobuf.Int32Value location = 10;
+  string password_hash = 3;
+  string email = 4;
+  string phone_number = 5;
+  string gender = 6;
+  bool is_admin = 7;
+  google.protobuf.Timestamp date_of_birth = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Int32Value location = 11;
 }

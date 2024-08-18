@@ -5,6 +5,7 @@ import (
 
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 )
 
@@ -16,28 +17,32 @@ func (store *CookieStore) StoreSessionKey(userID, sessionKey string) error {
 	return nil
 }
 
-func (store *CookieStore) GetSessionsForUser(userID string) ([]string, error) {
+func (store *CookieStore) GetAllSessionsForUser(userID string) ([]string, error) {
 	return nil, nil
+}
+
+func (store *CookieStore) InvalidateAllSessionsForUser(userID string) error {
+	return nil
 }
 
 func (store *CookieStore) Close() error {
 	return nil
 }
 
-func CreateCookieStore(cfg config.Config) *SessionStore {
-	store := sessions.NewCookieStore(
-		[]byte(cfg.Session.AuthKey), []byte(cfg.Session.EncryptionKey),
-	)
+func CreateCookieSessionStore(cfg config.Config) *SessionStore {
 	// store := sessions.NewCookieStore(
-	// 	securecookie.GenerateRandomKey(32),
-	// 	securecookie.GenerateRandomKey(32),
+	// 	[]byte(cfg.Session.AuthKey), []byte(cfg.Session.EncryptionKey),
 	// )
+	store := sessions.NewCookieStore(
+		securecookie.GenerateRandomKey(32),
+		securecookie.GenerateRandomKey(32),
+	)
 
 	store.Options = &sessions.Options{
 		Path:     "/",
-		MaxAge:   cfg.Session.MaxAge,
-		HttpOnly: cfg.Session.HttpOnly,
-		Secure:   cfg.Session.Secure,
+		MaxAge:   900,
+		HttpOnly: true,
+		Secure:   false,
 		// SameSite: http.SameSiteLaxMode,
 	}
 

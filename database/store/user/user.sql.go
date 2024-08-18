@@ -86,9 +86,22 @@ WHERE
     username = $1
 `
 
-func (q *Queries) FindUserByUsername(ctx context.Context, username string) (User, error) {
+type FindUserByUsernameRow struct {
+	ID          int32            `json:"id"`
+	Username    string           `json:"username"`
+	Email       string           `json:"email"`
+	PhoneNumber string           `json:"phone_number"`
+	Gender      string           `json:"gender"`
+	IsAdmin     bool             `json:"is_admin"`
+	DateOfBirth pgtype.Date      `json:"date_of_birth"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	Location    pgtype.Int4      `json:"location"`
+}
+
+func (q *Queries) FindUserByUsername(ctx context.Context, username string) (FindUserByUsernameRow, error) {
 	row := q.db.QueryRow(ctx, findUserByUsername, username)
-	var i User
+	var i FindUserByUsernameRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -121,9 +134,22 @@ WHERE
     id = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
+type GetUserByIDRow struct {
+	ID          int32            `json:"id"`
+	Username    string           `json:"username"`
+	Email       string           `json:"email"`
+	PhoneNumber string           `json:"phone_number"`
+	Gender      string           `json:"gender"`
+	IsAdmin     bool             `json:"is_admin"`
+	DateOfBirth pgtype.Date      `json:"date_of_birth"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	Location    pgtype.Int4      `json:"location"`
+}
+
+func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
-	var i User
+	var i GetUserByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -162,15 +188,28 @@ type ListUsersParams struct {
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
+type ListUsersRow struct {
+	ID          int32            `json:"id"`
+	Username    string           `json:"username"`
+	Email       string           `json:"email"`
+	PhoneNumber string           `json:"phone_number"`
+	Gender      string           `json:"gender"`
+	IsAdmin     bool             `json:"is_admin"`
+	DateOfBirth pgtype.Date      `json:"date_of_birth"`
+	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
+	Location    pgtype.Int4      `json:"location"`
+}
+
+func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
 	rows, err := q.db.Query(ctx, listUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []User{}
+	items := []ListUsersRow{}
 	for rows.Next() {
-		var i User
+		var i ListUsersRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Username,

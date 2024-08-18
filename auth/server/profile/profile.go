@@ -20,14 +20,9 @@ func CreateProfileRoutes(router *http.ServeMux, store *user.Queries, authHandler
 		authHandler: authHandler,
 	}
 
-	router.HandleFunc("/", (profileHandler.Index))
 	router.Handle("/profile", authHandler.AuthMiddleware(
 		http.HandlerFunc(profileHandler.HandleProfile)),
 	)
-}
-
-func (profileHandler *ProfileHandler) Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Index")
 }
 
 func (profileHandler *ProfileHandler) HandleProfile(w http.ResponseWriter, r *http.Request) {

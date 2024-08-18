@@ -71,7 +71,20 @@ message FindUserByUsernameRequest {
 }
 
 message FindUserByUsernameResponse {
-  User user = 1;
+  FindUserByUsernameRow find_user_by_username_row = 1;
+}
+
+message FindUserByUsernameRow {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string gender = 5;
+  bool is_admin = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Int32Value location = 10;
 }
 
 message GetUserByIDRequest {
@@ -79,7 +92,20 @@ message GetUserByIDRequest {
 }
 
 message GetUserByIDResponse {
-  User user = 1;
+  GetUserByIDRow get_user_by_id_row = 1;
+}
+
+message GetUserByIDRow {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string gender = 5;
+  bool is_admin = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Int32Value location = 10;
 }
 
 message GooseDbVersion {
@@ -105,7 +131,20 @@ message ListUsersRequest {
 }
 
 message ListUsersResponse {
-  repeated User list = 1;
+  repeated ListUsersRow list = 1;
+}
+
+message ListUsersRow {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string gender = 5;
+  bool is_admin = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Int32Value location = 10;
 }
 
 message Location {
@@ -232,12 +271,13 @@ message UpdateUserRow {
 message User {
   int32 id = 1;
   string username = 2;
-  string email = 3;
-  string phone_number = 4;
-  string gender = 5;
-  bool is_admin = 6;
-  google.protobuf.Timestamp date_of_birth = 7;
-  google.protobuf.Timestamp created_at = 8;
-  google.protobuf.Timestamp updated_at = 9;
-  google.protobuf.Int32Value location = 10;
+  string password_hash = 3;
+  string email = 4;
+  string phone_number = 5;
+  string gender = 6;
+  bool is_admin = 7;
+  google.protobuf.Timestamp date_of_birth = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Int32Value location = 11;
 }

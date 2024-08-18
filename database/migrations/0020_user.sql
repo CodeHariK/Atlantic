@@ -4,8 +4,11 @@
 CREATE TABLE IF NOT EXISTS "users" (
     "id" SERIAL PRIMARY KEY,
     "username" VARCHAR(255) UNIQUE NOT NULL CHECK (CHAR_LENGTH("username") > 0),
+    "password_hash" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) UNIQUE NOT NULL CHECK (CHAR_LENGTH("email") > 0),
-    "phone_number" VARCHAR(15) UNIQUE NOT NULL CHECK (CHAR_LENGTH("phone_number") > 0),
+    "phone_number" VARCHAR(15) UNIQUE NOT NULL CHECK (
+        CHAR_LENGTH("phone_number") > 0
+    ),
     "gender" VARCHAR(1) NOT NULL CHECK ("gender" IN ('M', 'F')),
     "is_admin" BOOLEAN DEFAULT FALSE NOT NULL,
     "date_of_birth" DATE NOT NULL,

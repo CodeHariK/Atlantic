@@ -164,6 +164,7 @@ class Seller:
 class User:
     id: int
     username: str
+    password_hash: str
     email: str
     phone_number: str
     gender: str

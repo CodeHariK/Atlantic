@@ -146,14 +146,15 @@ type Seller struct {
 }
 
 type User struct {
-	ID          int32            `json:"id"`
-	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	Gender      string           `json:"gender"`
-	IsAdmin     bool             `json:"is_admin"`
-	DateOfBirth pgtype.Date      `json:"date_of_birth"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
-	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+	ID           int32            `json:"id"`
+	Username     string           `json:"username"`
+	PasswordHash string           `json:"password_hash"`
+	Email        string           `json:"email"`
+	PhoneNumber  string           `json:"phone_number"`
+	Gender       string           `json:"gender"`
+	IsAdmin      bool             `json:"is_admin"`
+	DateOfBirth  pgtype.Date      `json:"date_of_birth"`
+	CreatedAt    pgtype.Timestamp `json:"created_at"`
+	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
+	Location     pgtype.Int4      `json:"location"`
 }

@@ -28,7 +28,7 @@ type Config struct {
 		Timeout        int    `json:"timeout"`
 		SSLMode        string `json:"ssl_mode"`
 	} `json:"database"`
-	Dragonfly struct {
+	Dragon struct {
 		Host     string `json:"host"`
 		Port     int    `json:"port"`
 		User     string `json:"user"`
@@ -46,14 +46,6 @@ type Config struct {
 		NewFeature bool `json:"new_feature"`
 		BetaAccess bool `json:"beta_access"`
 	} `json:"feature_flags"`
-	Session struct {
-		MaxAge        int    `json:"max_age"`
-		HttpOnly      bool   `json:"http_only"`
-		Secure        bool   `json:"secure"`
-		AuthKey       string `json:"auth_key"`
-		EncryptionKey string `json:"encryption_key"`
-	} `json:"session"`
-
 	OTLP struct {
 		GRPC string `json:"grpc"`
 		HTTP string `json:"http"`
@@ -110,11 +102,11 @@ func (config *Config) DatabaseConnectionUri() string {
 	)
 }
 
-func (config *Config) DragonflyConnectionUri() string {
+func (config *Config) DragonConnectionUri() string {
 	return fmt.Sprintf("rediss://%s:%s@%s:%d",
-		config.Dragonfly.User,
-		config.Dragonfly.Password,
-		config.Dragonfly.Host,
-		config.Dragonfly.Port,
+		config.Dragon.User,
+		config.Dragon.Password,
+		config.Dragon.Host,
+		config.Dragon.Port,
 	)
 }
