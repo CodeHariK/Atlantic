@@ -70,7 +70,10 @@ func (sessionHandler *SessionHandler) GetUser(r *http.Request) (types.AuthUser, 
 }
 
 func (sessionHandler *SessionHandler) SaveUserSession(r *http.Request, w http.ResponseWriter, user types.AuthUser) error {
-	session, _ := sessionHandler.store.Get(r, types.ConstAuthSession)
+	session, err := sessionHandler.GetSession(r)
+	if err != nil {
+		return err
+	}
 	session.Values[types.ConstAuthUser] = user
 	return session.Save(r, w)
 }

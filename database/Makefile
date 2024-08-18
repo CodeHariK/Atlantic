@@ -45,8 +45,6 @@ connect:
 	sqlc generate
 	sqlc-connect -m "github.com/codeharik/Atlantic/database" -metric -tracing
 
-	sed 's/interceptors \[\]connect\.Interceptor/option ...connect\.HandlerOption/g' registry.go > temp_file && mv temp_file database/registry.go
-
 	cp gen.buf.yaml buf.gen.yaml
 
 	buf generate
@@ -54,7 +52,10 @@ connect:
 	rm -rf tools
 	rm -rf internal/server
 	rm main.go
+	rm registry.go
 	rm buf.gen.yaml
+
+	go mod tidy
 
 	cp -r ./proto/ ../docs/proto
 

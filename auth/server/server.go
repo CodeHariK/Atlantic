@@ -3,18 +3,13 @@ package handler
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"connectrpc.com/connect"
-	"connectrpc.com/grpchealth"
-	"connectrpc.com/otelconnect"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
-	"github.com/codeharik/Atlantic/database/database"
 	"github.com/codeharik/Atlantic/service/basecontext"
 	"github.com/codeharik/Atlantic/service/observe"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
@@ -47,27 +42,6 @@ func Serve(storeInstance store.Store, sessionStore *store.SessionHandler, config
 	router := http.NewServeMux()
 
 	CreateRoutes(router, storeInstance, sessionStore, config)
-
-	var interceptors []connect.Interceptor
-	if config.OTLP.GRPC != "" {
-		observability, err := otelconnect.NewInterceptor()
-		if err != nil {
-			log.Fatalf("%v", err.Error())
-		}
-		interceptors = append(interceptors, observability)
-	}
-
-	compress1KB := connect.WithCompressMinBytes(1024)
-	database.RegisterHandlers(
-		router,
-		storeInstance.Db,
-		connect.WithInterceptors(interceptors...), compress1KB,
-	)
-
-	router.Handle(grpchealth.NewHandler(
-		grpchealth.NewStaticChecker(config.Service.Name),
-		compress1KB,
-	))
 
 	mux := RouteTaggingMiddleware(
 		loggingMiddleware(

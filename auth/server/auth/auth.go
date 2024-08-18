@@ -87,7 +87,7 @@ func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	err = authHandler.store.SaveUserSession(r, w, types.AuthUser{})
+	err = authHandler.store.SaveUserSession(r, w, user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
