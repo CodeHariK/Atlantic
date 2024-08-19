@@ -9,9 +9,7 @@ INSERT INTO
         date_of_birth,
         location
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING
-    id,
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id,
     created_at,
     updated_at;
 
@@ -31,6 +29,16 @@ FROM users
 WHERE
     id = $1;
 
+-- name: GetAuthUserByEmail :one
+SELECT
+    id,
+    username,
+    email,
+    password_hash
+FROM users
+WHERE
+    email = $1;
+
 -- name: UpdateUser :one
 UPDATE users
 SET
@@ -43,9 +51,7 @@ SET
     location = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $8
-RETURNING
-    id,
+    id = $8 RETURNING id,
     updated_at;
 
 -- name: DeleteUser :exec

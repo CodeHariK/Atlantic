@@ -1,6 +1,9 @@
 PORT = 8080
 CONTAINER_NAME = auth
 
+docs:
+	cp -r ./proto/ ../docs/proto/auth
+
 run:
 	go run cmd/main.go
 

@@ -1,2 +1,2 @@
 gen:
-	buf generate --path proto/user/ -o openapi/user/ && mv openapi/user/apidocs.swagger.json openapi/user/openapi.json
+	buf generate --path proto/user --path proto/auth -o openapi/auth/ && mv openapi/auth/apidocs.swagger.json openapi/auth/openapi.json

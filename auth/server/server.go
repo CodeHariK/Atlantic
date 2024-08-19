@@ -26,7 +26,7 @@ func ServerPortUrl(config config.Config) string {
 	return fmt.Sprintf(":%d", config.AuthService.Port)
 }
 
-func Serve(storeInstance store.Store, sessionStore *sessionstore.SessionStore, config config.Config) {
+func Serve(storeInstance store.Store, dragonstore *sessionstore.SessionStore, cookiestore *sessionstore.SessionStore, config config.Config) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -42,7 +42,7 @@ func Serve(storeInstance store.Store, sessionStore *sessionstore.SessionStore, c
 
 	router := http.NewServeMux()
 
-	CreateRoutes(router, storeInstance, sessionStore, config)
+	CreateRoutes(router, storeInstance, dragonstore, cookiestore, config)
 
 	mux := RouteTaggingMiddleware(
 		loggingMiddleware(
@@ -88,7 +88,7 @@ func Serve(storeInstance store.Store, sessionStore *sessionstore.SessionStore, c
 
 		storeInstance.Db.Close()
 
-		err = sessionStore.Close()
+		err = dragonstore.Close()
 		if err != nil {
 			fmt.Printf("Error shutting down SessionStore: %v", err)
 		}

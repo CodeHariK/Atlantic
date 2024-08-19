@@ -16,7 +16,7 @@ func HashPassword(password string) (string, error) {
 }
 
 // Compare the hashed password stored in the database with the user input
-func ComparePassworld(hashedPassword string, inputPassword string) error {
+func CheckPassword(hashedPassword string, inputPassword string) error {
 	err := bcrypt.CompareHashAndPassword(
 		[]byte(hashedPassword),
 		[]byte(inputPassword),

@@ -14,6 +14,8 @@ service UserService {
 
   rpc FindUserByUsername(FindUserByUsernameRequest) returns (FindUserByUsernameResponse) {}
 
+  rpc GetAuthUserByEmail(GetAuthUserByEmailRequest) returns (GetAuthUserByEmailResponse) {}
+
   rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse) {}
 
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
@@ -85,6 +87,21 @@ message FindUserByUsernameRow {
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
   google.protobuf.Int32Value location = 10;
+}
+
+message GetAuthUserByEmailRequest {
+  string email = 1;
+}
+
+message GetAuthUserByEmailResponse {
+  GetAuthUserByEmailRow get_auth_user_by_email_row = 1;
+}
+
+message GetAuthUserByEmailRow {
+  int32 id = 1;
+  string username = 2;
+  string email = 3;
+  string password_hash = 4;
 }
 
 message GetUserByIDRequest {

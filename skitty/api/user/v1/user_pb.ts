@@ -552,6 +552,135 @@ export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
 }
 
 /**
+ * @generated from message user.v1.GetAuthUserByEmailRequest
+ */
+export class GetAuthUserByEmailRequest extends Message<GetAuthUserByEmailRequest> {
+  /**
+   * @generated from field: string email = 1;
+   */
+  email = "";
+
+  constructor(data?: PartialMessage<GetAuthUserByEmailRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.GetAuthUserByEmailRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailRequest {
+    return new GetAuthUserByEmailRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRequest {
+    return new GetAuthUserByEmailRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRequest {
+    return new GetAuthUserByEmailRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetAuthUserByEmailRequest | PlainMessage<GetAuthUserByEmailRequest> | undefined, b: GetAuthUserByEmailRequest | PlainMessage<GetAuthUserByEmailRequest> | undefined): boolean {
+    return proto3.util.equals(GetAuthUserByEmailRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.GetAuthUserByEmailResponse
+ */
+export class GetAuthUserByEmailResponse extends Message<GetAuthUserByEmailResponse> {
+  /**
+   * @generated from field: user.v1.GetAuthUserByEmailRow get_auth_user_by_email_row = 1;
+   */
+  getAuthUserByEmailRow?: GetAuthUserByEmailRow;
+
+  constructor(data?: PartialMessage<GetAuthUserByEmailResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.GetAuthUserByEmailResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "get_auth_user_by_email_row", kind: "message", T: GetAuthUserByEmailRow },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailResponse {
+    return new GetAuthUserByEmailResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAuthUserByEmailResponse {
+    return new GetAuthUserByEmailResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAuthUserByEmailResponse {
+    return new GetAuthUserByEmailResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetAuthUserByEmailResponse | PlainMessage<GetAuthUserByEmailResponse> | undefined, b: GetAuthUserByEmailResponse | PlainMessage<GetAuthUserByEmailResponse> | undefined): boolean {
+    return proto3.util.equals(GetAuthUserByEmailResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.GetAuthUserByEmailRow
+ */
+export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
+  /**
+   * @generated from field: int32 id = 1;
+   */
+  id = 0;
+
+  /**
+   * @generated from field: string username = 2;
+   */
+  username = "";
+
+  /**
+   * @generated from field: string email = 3;
+   */
+  email = "";
+
+  /**
+   * @generated from field: string password_hash = 4;
+   */
+  passwordHash = "";
+
+  constructor(data?: PartialMessage<GetAuthUserByEmailRow>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.GetAuthUserByEmailRow";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailRow {
+    return new GetAuthUserByEmailRow().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRow {
+    return new GetAuthUserByEmailRow().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRow {
+    return new GetAuthUserByEmailRow().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetAuthUserByEmailRow | PlainMessage<GetAuthUserByEmailRow> | undefined, b: GetAuthUserByEmailRow | PlainMessage<GetAuthUserByEmailRow> | undefined): boolean {
+    return proto3.util.equals(GetAuthUserByEmailRow, a, b);
+  }
+}
+
+/**
  * @generated from message user.v1.GetUserByIDRequest
  */
 export class GetUserByIDRequest extends Message<GetUserByIDRequest> {

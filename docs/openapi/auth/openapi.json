@@ -1,10 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/user/v1/user.proto",
+    "title": "proto/auth/v1/auth.proto",
     "version": "version not set"
   },
   "tags": [
+    {
+      "name": "AuthService"
+    },
     {
       "name": "UserService"
     }
@@ -16,6 +19,39 @@
     "application/json"
   ],
   "paths": {
+    "/auth.v1.AuthService/EmailLogin": {
+      "post": {
+        "summary": "Defines the EmailLogin RPC method",
+        "operationId": "AuthService_EmailLogin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1EmailLoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1EmailLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
     "/user.v1.UserService/CreateUser": {
       "post": {
         "operationId": "UserService_CreateUser",
@@ -104,6 +140,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1FindUserByUsernameRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user.v1.UserService/GetAuthUserByEmail": {
+      "post": {
+        "operationId": "UserService_GetAuthUserByEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthUserByEmailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetAuthUserByEmailRequest"
             }
           }
         ],
@@ -303,6 +371,37 @@
     "v1DeleteUserResponse": {
       "type": "object"
     },
+    "v1EmailLoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "The request message for the EmailLogin method"
+    },
+    "v1EmailLoginResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "errorMessage": {
+          "type": "string"
+        }
+      },
+      "title": "The response message for the EmailLogin method"
+    },
     "v1FindUserByUsernameRequest": {
       "type": "object",
       "properties": {
@@ -314,8 +413,82 @@
     "v1FindUserByUsernameResponse": {
       "type": "object",
       "properties": {
-        "user": {
-          "$ref": "#/definitions/v1User"
+        "findUserByUsernameRow": {
+          "$ref": "#/definitions/v1FindUserByUsernameRow"
+        }
+      }
+    },
+    "v1FindUserByUsernameRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1GetAuthUserByEmailRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetAuthUserByEmailResponse": {
+      "type": "object",
+      "properties": {
+        "getAuthUserByEmailRow": {
+          "$ref": "#/definitions/v1GetAuthUserByEmailRow"
+        }
+      }
+    },
+    "v1GetAuthUserByEmailRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
         }
       }
     },
@@ -331,8 +504,48 @@
     "v1GetUserByIDResponse": {
       "type": "object",
       "properties": {
-        "user": {
-          "$ref": "#/definitions/v1User"
+        "getUserByIdRow": {
+          "$ref": "#/definitions/v1GetUserByIDRow"
+        }
+      }
+    },
+    "v1GetUserByIDRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -356,8 +569,48 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/v1User"
+            "$ref": "#/definitions/v1ListUsersRow"
           }
+        }
+      }
+    },
+    "v1ListUsersRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "isAdmin": {
+          "type": "boolean"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -411,46 +664,6 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
-        }
-      }
-    },
-    "v1User": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "location": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     }

@@ -46,6 +46,16 @@ func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow
 	return out
 }
 
+func toGetAuthUserByEmailRow(in GetAuthUserByEmailRow) *pb.GetAuthUserByEmailRow {
+
+	out := new(pb.GetAuthUserByEmailRow)
+	out.Id = in.ID
+	out.Username = in.Username
+	out.Email = in.Email
+	out.PasswordHash = in.PasswordHash
+	return out
+}
+
 func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
 
 	out := new(pb.GetUserByIDRow)

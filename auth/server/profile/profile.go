@@ -31,5 +31,6 @@ func (profileHandler *ProfileHandler) HandleProfile(w http.ResponseWriter, r *ht
 		return
 	}
 
+	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(w, "User Info:\nID: %s\nUsername: %s\nEmail: %s", user.ID, user.Username, user.Email)
 }

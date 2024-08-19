@@ -71,6 +71,17 @@ func (s *Service) FindUserByUsername(ctx context.Context, req *connect.Request[p
 	return connect.NewResponse(&pb.FindUserByUsernameResponse{FindUserByUsernameRow: toFindUserByUsernameRow(result)}), nil
 }
 
+func (s *Service) GetAuthUserByEmail(ctx context.Context, req *connect.Request[pb.GetAuthUserByEmailRequest]) (*connect.Response[pb.GetAuthUserByEmailResponse], error) {
+	email := req.Msg.GetEmail()
+
+	result, err := s.querier.GetAuthUserByEmail(ctx, email)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetAuthUserByEmail")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetAuthUserByEmailResponse{GetAuthUserByEmailRow: toGetAuthUserByEmailRow(result)}), nil
+}
+
 func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUserByIDRequest]) (*connect.Response[pb.GetUserByIDResponse], error) {
 	id := req.Msg.GetId()
 

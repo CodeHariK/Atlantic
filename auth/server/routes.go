@@ -9,6 +9,7 @@ import (
 	"connectrpc.com/grpcreflect"
 	"connectrpc.com/otelconnect"
 	AuthHandler "github.com/codeharik/Atlantic/auth/server/auth"
+	"github.com/codeharik/Atlantic/auth/server/authn"
 	ProfileHandler "github.com/codeharik/Atlantic/auth/server/profile"
 	UserHandler "github.com/codeharik/Atlantic/auth/server/user"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
@@ -18,16 +19,28 @@ import (
 
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"
+
+	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 )
 
-func CreateRoutes(router *http.ServeMux, storeInstance store.Store, sessionStore *sessionstore.SessionStore, config config.Config) {
+func CreateRoutes(
+	router *http.ServeMux,
+	storeInstance store.Store,
+	dragonstore *sessionstore.SessionStore,
+	cookiestore *sessionstore.SessionStore,
+	config config.Config,
+) {
 	UserHandler.CreateUserRoutes(router, storeInstance.UserStore)
 
-	authHandler := AuthHandler.CreateAuthRoutes(router, sessionStore, storeInstance.UserStore)
+	authHandler := AuthHandler.CreateAuthRoutes(
+		router,
+		dragonstore,
+		cookiestore,
+		storeInstance.UserStore)
 
 	ProfileHandler.CreateProfileRoutes(router, storeInstance.UserStore, authHandler)
 
-	docs.OpenapiHandler(router, "user", "Auth")
+	docs.OpenapiHandler(router, "auth", "Auth")
 
 	var interceptors []connect.Interceptor
 	if config.OTLP.GRPC != "" {
@@ -40,14 +53,30 @@ func CreateRoutes(router *http.ServeMux, storeInstance store.Store, sessionStore
 
 	compress1KB := connect.WithCompressMinBytes(1024)
 
-	userService := user_app.NewService(user_app.New(storeInstance.Db))
-	userPath, userHandler := user_v1connect.NewUserServiceHandler(userService,
+	authService := AuthHandler.CreateNewAuthServiceServer(
+		storeInstance.UserStore,
+		dragonstore,
+		cookiestore,
+	)
+	authPath, authHandle := auth_v1connect.NewAuthServiceHandler(
+		authService,
+		connect.WithInterceptors(interceptors...), compress1KB,
+	)
+	aut := authn.NewMiddleware(authService.Authenticate).Wrap(authHandle)
+	router.Handle(authPath, aut)
+
+	userService := user_app.NewService(
+		user_app.New(storeInstance.Db),
+	)
+	userPath, userHandler := user_v1connect.NewUserServiceHandler(
+		userService,
 		connect.WithInterceptors(interceptors...), compress1KB,
 	)
 	router.Handle(userPath, userHandler)
 
 	reflector := grpcreflect.NewStaticReflector(
 		user_v1connect.UserServiceName,
+		auth_v1connect.AuthServiceName,
 	)
 	router.Handle(grpcreflect.NewHandlerV1(reflector))
 	router.Handle(grpcreflect.NewHandlerV1Alpha(reflector))

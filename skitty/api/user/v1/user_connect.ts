@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, FindUserByUsernameRequest, FindUserByUsernameResponse, GetUserByIDRequest, GetUserByIDResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from "./user_pb.js";
+import { CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, FindUserByUsernameRequest, FindUserByUsernameResponse, GetAuthUserByEmailRequest, GetAuthUserByEmailResponse, GetUserByIDRequest, GetUserByIDResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from "./user_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -37,6 +37,15 @@ export const UserService = {
       name: "FindUserByUsername",
       I: FindUserByUsernameRequest,
       O: FindUserByUsernameResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc user.v1.UserService.GetAuthUserByEmail
+     */
+    getAuthUserByEmail: {
+      name: "GetAuthUserByEmail",
+      I: GetAuthUserByEmailRequest,
+      O: GetAuthUserByEmailResponse,
       kind: MethodKind.Unary,
     },
     /**
