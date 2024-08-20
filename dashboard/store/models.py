@@ -4,6 +4,7 @@
 import dataclasses
 import datetime
 from typing import List, Optional
+import uuid
 
 
 @dataclasses.dataclass()
@@ -16,7 +17,7 @@ class Attribute:
 @dataclasses.dataclass()
 class Cart:
     id: int
-    user_id: int
+    user_id: uuid.UUID
     updated_at: Optional[datetime.datetime]
 
 
@@ -62,7 +63,7 @@ class Location:
 @dataclasses.dataclass()
 class Order:
     id: int
-    user_id: int
+    user_id: uuid.UUID
     created_at: datetime.datetime
     updated_at: Optional[datetime.datetime]
     amount_units: int
@@ -139,7 +140,7 @@ class ProductPromotion:
 @dataclasses.dataclass()
 class ProductReview:
     id: int
-    user_id: int
+    user_id: uuid.UUID
     product_id: int
     seller_id: int
     rating: int
@@ -162,7 +163,7 @@ class Seller:
 
 @dataclasses.dataclass()
 class User:
-    id: int
+    id: uuid.UUID
     username: str
     password_hash: str
     email: str

@@ -65,9 +65,9 @@ export class Cart extends Message<Cart> {
   id = 0;
 
   /**
-   * @generated from field: int32 user_id = 2;
+   * @generated from field: google.protobuf.StringValue user_id = 2;
    */
-  userId = 0;
+  userId?: string;
 
   /**
    * @generated from field: google.protobuf.Timestamp updated_at = 3;
@@ -83,7 +83,7 @@ export class Cart extends Message<Cart> {
   static readonly typeName = "seller.v1.Cart";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "user_id", kind: "message", T: StringValue },
     { no: 3, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
@@ -660,9 +660,9 @@ export class Order extends Message<Order> {
   id = 0;
 
   /**
-   * @generated from field: int32 user_id = 2;
+   * @generated from field: google.protobuf.StringValue user_id = 2;
    */
-  userId = 0;
+  userId?: string;
 
   /**
    * @generated from field: google.protobuf.Timestamp created_at = 3;
@@ -708,7 +708,7 @@ export class Order extends Message<Order> {
   static readonly typeName = "seller.v1.Order";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "user_id", kind: "message", T: StringValue },
     { no: 3, name: "created_at", kind: "message", T: Timestamp },
     { no: 4, name: "updated_at", kind: "message", T: Timestamp },
     { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
@@ -1178,9 +1178,9 @@ export class ProductReview extends Message<ProductReview> {
   id = 0;
 
   /**
-   * @generated from field: int32 user_id = 2;
+   * @generated from field: google.protobuf.StringValue user_id = 2;
    */
-  userId = 0;
+  userId?: string;
 
   /**
    * @generated from field: int32 product_id = 3;
@@ -1211,7 +1211,7 @@ export class ProductReview extends Message<ProductReview> {
   static readonly typeName = "seller.v1.ProductReview";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "user_id", kind: "message", T: StringValue },
     { no: 3, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 4, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "rating", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
@@ -1418,9 +1418,9 @@ export class UpdateSellerResponse extends Message<UpdateSellerResponse> {
  */
 export class User extends Message<User> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: google.protobuf.StringValue id = 1;
    */
-  id = 0;
+  id?: string;
 
   /**
    * @generated from field: string username = 2;
@@ -1480,7 +1480,7 @@ export class User extends Message<User> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.User";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "message", T: StringValue },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },

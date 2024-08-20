@@ -5,6 +5,7 @@ import (
 
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/google/uuid"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 )
@@ -13,15 +14,15 @@ type CookieStore struct {
 	*sessions.CookieStore
 }
 
-func (store *CookieStore) StoreSessionKey(userID, sessionKey string) error {
+func (store *CookieStore) StoreSessionKey(userID uuid.UUID, sessionKey string) error {
 	return nil
 }
 
-func (store *CookieStore) GetAllSessionsForUser(userID string) ([]string, error) {
+func (store *CookieStore) GetAllSessionsForUser(userID uuid.UUID) ([]string, error) {
 	return nil, nil
 }
 
-func (store *CookieStore) InvalidateAllSessionsForUser(userID string) error {
+func (store *CookieStore) InvalidateAllSessionsForUser(userID uuid.UUID) error {
 	return nil
 }
 

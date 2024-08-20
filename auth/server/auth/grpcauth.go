@@ -4,13 +4,13 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
-	"net/http"
 
 	"connectrpc.com/connect"
 	"github.com/codeharik/Atlantic/auth/server/authn"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/database/store/user"
+	"github.com/google/uuid"
 
 	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 
@@ -82,14 +82,15 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 
 	r := authn.GetInfo(ctx).(authn.Request)
 
-	r.Writer.Header().Set("Content-Type", "text/html")
-	http.Redirect(
-		r.Writer,
-		r.Request,
-		"/",
-		http.StatusTemporaryRedirect)
+	// r.Writer.Header().Set("Content-Type", "text/html")
+	// http.Redirect(
+	// 	r.Writer,
+	// 	r.Request,
+	// 	"/",
+	// 	http.StatusTemporaryRedirect)
 
-	s.dragonstore.SaveUserSession(r.Request, r.Writer, types.AuthUser{ID: "123hello"})
+	newid, _ := uuid.NewV7()
+	s.cookiestore.SaveUserSession(r.Request, r.Writer, types.AuthUser{ID: newid})
 
 	fmt.Printf("-> email:%s password:%s info:%v\n\n", email, password, authn.GetInfo(ctx))
 

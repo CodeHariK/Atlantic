@@ -108,3 +108,236 @@ export class EmailLoginResponse extends Message<EmailLoginResponse> {
   }
 }
 
+/**
+ * The message for fetching a profile
+ *
+ * @generated from message auth.v1.GetProfileRequest
+ */
+export class GetProfileRequest extends Message<GetProfileRequest> {
+  /**
+   * ID is required and must not be empty
+   *
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  constructor(data?: PartialMessage<GetProfileRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.GetProfileRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileRequest {
+    return new GetProfileRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProfileRequest {
+    return new GetProfileRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProfileRequest {
+    return new GetProfileRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetProfileRequest | PlainMessage<GetProfileRequest> | undefined, b: GetProfileRequest | PlainMessage<GetProfileRequest> | undefined): boolean {
+    return proto3.util.equals(GetProfileRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.GetProfileResponse
+ */
+export class GetProfileResponse extends Message<GetProfileResponse> {
+  /**
+   * @generated from field: auth.v1.AuthUser user = 1;
+   */
+  user?: AuthUser;
+
+  constructor(data?: PartialMessage<GetProfileResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.GetProfileResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "user", kind: "message", T: AuthUser },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileResponse {
+    return new GetProfileResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProfileResponse {
+    return new GetProfileResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProfileResponse {
+    return new GetProfileResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetProfileResponse | PlainMessage<GetProfileResponse> | undefined, b: GetProfileResponse | PlainMessage<GetProfileResponse> | undefined): boolean {
+    return proto3.util.equals(GetProfileResponse, a, b);
+  }
+}
+
+/**
+ * The message for updating a profile
+ *
+ * @generated from message auth.v1.UpdateProfileRequest
+ */
+export class UpdateProfileRequest extends Message<UpdateProfileRequest> {
+  /**
+   * AuthUser is required
+   *
+   * @generated from field: auth.v1.AuthUser user = 1;
+   */
+  user?: AuthUser;
+
+  constructor(data?: PartialMessage<UpdateProfileRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.UpdateProfileRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "user", kind: "message", T: AuthUser },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateProfileRequest {
+    return new UpdateProfileRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateProfileRequest {
+    return new UpdateProfileRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateProfileRequest {
+    return new UpdateProfileRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateProfileRequest | PlainMessage<UpdateProfileRequest> | undefined, b: UpdateProfileRequest | PlainMessage<UpdateProfileRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateProfileRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.UpdateProfileResponse
+ */
+export class UpdateProfileResponse extends Message<UpdateProfileResponse> {
+  /**
+   * @generated from field: bool success = 1;
+   */
+  success = false;
+
+  constructor(data?: PartialMessage<UpdateProfileResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.UpdateProfileResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "success", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateProfileResponse {
+    return new UpdateProfileResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateProfileResponse {
+    return new UpdateProfileResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateProfileResponse {
+    return new UpdateProfileResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateProfileResponse | PlainMessage<UpdateProfileResponse> | undefined, b: UpdateProfileResponse | PlainMessage<UpdateProfileResponse> | undefined): boolean {
+    return proto3.util.equals(UpdateProfileResponse, a, b);
+  }
+}
+
+/**
+ * The user profile message
+ *
+ * @generated from message auth.v1.AuthUser
+ */
+export class AuthUser extends Message<AuthUser> {
+  /**
+   * ID is required and must not be empty
+   *
+   * @generated from field: uint32 id = 1;
+   */
+  id = 0;
+
+  /**
+   * Username must be 8-24 characters
+   *
+   * @generated from field: string username = 2;
+   */
+  username = "";
+
+  /**
+   * @generated from field: string phone_number = 3;
+   */
+  phoneNumber = "";
+
+  /**
+   * Avatar must be a valid URL
+   *
+   * @generated from field: string avatar = 4;
+   */
+  avatar = "";
+
+  /**
+   * `email` validates that a string field is a valid email.
+   *
+   * @generated from field: string email = 5;
+   */
+  email = "";
+
+  /**
+   * @generated from field: bool verified = 6;
+   */
+  verified = false;
+
+  constructor(data?: PartialMessage<AuthUser>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.AuthUser";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "avatar", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthUser {
+    return new AuthUser().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AuthUser {
+    return new AuthUser().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AuthUser {
+    return new AuthUser().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AuthUser | PlainMessage<AuthUser> | undefined, b: AuthUser | PlainMessage<AuthUser> | undefined): boolean {
+    return proto3.util.equals(AuthUser, a, b);
+  }
+}
+

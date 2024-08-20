@@ -51,6 +51,19 @@ func (authHandler *AuthHandler) GrpcEmailLoginPageHandler(w http.ResponseWriter,
 
 	fmt.Println(auth_v1connect.AuthServiceEmailLoginProcedure)
 
+	// ///////
+	// ///////
+	// ///////
+	_, err := authHandler.cookiestore.GetUser(r)
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	/////////
+	/////////
+	/////////
+	/////////
+
 	// Write the HTML content directly as a string
 	w.Write([]byte(`
 <!DOCTYPE html>
@@ -161,7 +174,7 @@ func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http
 	fmt.Println(r.Header.Get("User-Agent"))
 
 	u := types.AuthUser{
-		ID:    string(user.ID),
+		ID:    user.ID,
 		Email: user.Email,
 	}
 

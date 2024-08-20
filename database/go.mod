@@ -7,6 +7,7 @@ replace github.com/codeharik/Atlantic/config => ../config
 require (
 	connectrpc.com/connect v1.16.2
 	github.com/codeharik/Atlantic/config v0.0.0-00010101000000-000000000000
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.6.0
 	google.golang.org/protobuf v1.34.2
 )

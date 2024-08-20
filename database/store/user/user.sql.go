@@ -8,12 +8,14 @@ package user
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO
     users (
+        id,
         username,
         email,
         phone_number,
@@ -22,12 +24,22 @@ INSERT INTO
         date_of_birth,
         location
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id,
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8
+    ) RETURNING id,
     created_at,
     updated_at
 `
 
 type CreateUserParams struct {
+	ID          uuid.UUID   `json:"id"`
 	Username    string      `json:"username"`
 	Email       string      `json:"email"`
 	PhoneNumber string      `json:"phone_number"`
@@ -38,13 +50,14 @@ type CreateUserParams struct {
 }
 
 type CreateUserRow struct {
-	ID        int32            `json:"id"`
+	ID        uuid.UUID        `json:"id"`
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
 	row := q.db.QueryRow(ctx, createUser,
+		arg.ID,
 		arg.Username,
 		arg.Email,
 		arg.PhoneNumber,
@@ -62,7 +75,7 @@ const deleteUser = `-- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
@@ -85,7 +98,7 @@ WHERE
 `
 
 type FindUserByUsernameRow struct {
-	ID          int32            `json:"id"`
+	ID          uuid.UUID        `json:"id"`
 	Username    string           `json:"username"`
 	Email       string           `json:"email"`
 	PhoneNumber string           `json:"phone_number"`
@@ -127,10 +140,10 @@ WHERE
 `
 
 type GetAuthUserByEmailRow struct {
-	ID           int32  `json:"id"`
-	Username     string `json:"username"`
-	Email        string `json:"email"`
-	PasswordHash string `json:"password_hash"`
+	ID           uuid.UUID `json:"id"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	PasswordHash string    `json:"password_hash"`
 }
 
 func (q *Queries) GetAuthUserByEmail(ctx context.Context, email string) (GetAuthUserByEmailRow, error) {
@@ -163,7 +176,7 @@ WHERE
 `
 
 type GetUserByIDRow struct {
-	ID          int32            `json:"id"`
+	ID          uuid.UUID        `json:"id"`
 	Username    string           `json:"username"`
 	Email       string           `json:"email"`
 	PhoneNumber string           `json:"phone_number"`
@@ -175,7 +188,7 @@ type GetUserByIDRow struct {
 	Location    pgtype.Int4      `json:"location"`
 }
 
-func (q *Queries) GetUserByID(ctx context.Context, id int32) (GetUserByIDRow, error) {
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i GetUserByIDRow
 	err := row.Scan(
@@ -217,7 +230,7 @@ type ListUsersParams struct {
 }
 
 type ListUsersRow struct {
-	ID          int32            `json:"id"`
+	ID          uuid.UUID        `json:"id"`
 	Username    string           `json:"username"`
 	Email       string           `json:"email"`
 	PhoneNumber string           `json:"phone_number"`
@@ -284,11 +297,11 @@ type UpdateUserParams struct {
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.Int4 `json:"location"`
-	ID          int32       `json:"id"`
+	ID          uuid.UUID   `json:"id"`
 }
 
 type UpdateUserRow struct {
-	ID        int32            `json:"id"`
+	ID        uuid.UUID        `json:"id"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 

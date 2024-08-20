@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { EmailLoginRequest, EmailLoginResponse } from "./auth_pb.js";
+import { EmailLoginRequest, EmailLoginResponse, GetProfileRequest, GetProfileResponse, UpdateProfileRequest, UpdateProfileResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -21,6 +21,39 @@ export const AuthService = {
       name: "EmailLogin",
       I: EmailLoginRequest,
       O: EmailLoginResponse,
+      kind: MethodKind.Unary,
+    },
+  }
+} as const;
+
+/**
+ * The profile service definition
+ *
+ * @generated from service auth.v1.ProfileService
+ */
+export const ProfileService = {
+  typeName: "auth.v1.ProfileService",
+  methods: {
+    /**
+     * Retrieves the profile of a user by ID
+     *
+     * @generated from rpc auth.v1.ProfileService.GetProfile
+     */
+    getProfile: {
+      name: "GetProfile",
+      I: GetProfileRequest,
+      O: GetProfileResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Updates a user's profile
+     *
+     * @generated from rpc auth.v1.ProfileService.UpdateProfile
+     */
+    updateProfile: {
+      name: "UpdateProfile",
+      I: UpdateProfileRequest,
+      O: UpdateProfileResponse,
       kind: MethodKind.Unary,
     },
   }

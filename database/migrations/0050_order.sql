@@ -3,13 +3,13 @@
 -- Create "orders" table
 CREATE TABLE IF NOT EXISTS "orders" (
     "id" SERIAL PRIMARY KEY,
-    "user_id" INTEGER NOT NULL REFERENCES "users" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "user_id" UUID NOT NULL REFERENCES "users" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     "amount_units" BIGINT NOT NULL,
     "amount_nanos" INTEGER NOT NULL,
     "amount_currency" VARCHAR(4) NOT NULL,
+
 
     "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
         "status" IN (
@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS "orders" (
             'DELIVERED'
         )
     ),
-
     "payment_status" VARCHAR(12) NOT NULL CHECK (
         "status" IN (
             'REFUNDED',

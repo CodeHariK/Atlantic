@@ -7,6 +7,7 @@ import (
 
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 
 	dragonstore "github.com/rbcervilla/redisstore/v9"
@@ -18,7 +19,7 @@ type DragonStore struct {
 	*dragonstore.RedisStore
 }
 
-func (store *DragonStore) StoreSessionKey(userID, sessionKey string) error {
+func (store *DragonStore) StoreSessionKey(userID uuid.UUID, sessionKey string) error {
 	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
 	err := store.SAdd(context.Background(), sessionKeySet, sessionKey).Err()
 	if err != nil {
@@ -28,7 +29,7 @@ func (store *DragonStore) StoreSessionKey(userID, sessionKey string) error {
 }
 
 // GetAllSessionsForUser retrieves all session IDs for a given user
-func (store *DragonStore) GetAllSessionsForUser(userID string) ([]string, error) {
+func (store *DragonStore) GetAllSessionsForUser(userID uuid.UUID) ([]string, error) {
 	// Define the key for storing user sessions
 	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
 
@@ -41,7 +42,7 @@ func (store *DragonStore) GetAllSessionsForUser(userID string) ([]string, error)
 }
 
 // InvalidateAllSessionsForUser removes all session IDs for a given user
-func (store *DragonStore) InvalidateAllSessionsForUser(userID string) error {
+func (store *DragonStore) InvalidateAllSessionsForUser(userID uuid.UUID) error {
 	// Define the key for storing user sessions
 	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
 

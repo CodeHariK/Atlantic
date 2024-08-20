@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS "inventory" (
     "product_id" INTEGER NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "seller_id" INTEGER NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
 
-    "quantity" INTEGER NOT NULL,
 
+    "quantity" INTEGER NOT NULL,
     "amount_units" BIGINT NOT NULL,
     "amount_nanos" INTEGER NOT NULL,
     "amount_currency" VARCHAR(4) NOT NULL

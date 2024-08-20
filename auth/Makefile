@@ -4,6 +4,10 @@ CONTAINER_NAME = auth
 docs:
 	cp -r ./proto/ ../docs/proto/auth
 
+buf:
+	buf dep update
+	buf generate
+
 run:
 	go run cmd/main.go
 

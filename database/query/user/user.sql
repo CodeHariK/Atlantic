@@ -1,6 +1,7 @@
 -- name: CreateUser :one
 INSERT INTO
     users (
+        id,
         username,
         email,
         phone_number,
@@ -9,7 +10,16 @@ INSERT INTO
         date_of_birth,
         location
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id,
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8
+    ) RETURNING id,
     created_at,
     updated_at;
 

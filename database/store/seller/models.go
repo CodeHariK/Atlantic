@@ -16,7 +16,7 @@ type Attribute struct {
 
 type Cart struct {
 	ID        int32            `json:"id"`
-	UserID    int32            `json:"user_id"`
+	UserID    pgtype.UUID      `json:"user_id"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
@@ -57,7 +57,7 @@ type Location struct {
 
 type Order struct {
 	ID             int32            `json:"id"`
-	UserID         int32            `json:"user_id"`
+	UserID         pgtype.UUID      `json:"user_id"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
 	AmountUnits    int64            `json:"amount_units"`
@@ -126,7 +126,7 @@ type ProductPromotion struct {
 
 type ProductReview struct {
 	ID        int32       `json:"id"`
-	UserID    int32       `json:"user_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 	ProductID int32       `json:"product_id"`
 	SellerID  int32       `json:"seller_id"`
 	Rating    int32       `json:"rating"`
@@ -146,7 +146,7 @@ type Seller struct {
 }
 
 type User struct {
-	ID           int32            `json:"id"`
+	ID           pgtype.UUID      `json:"id"`
 	Username     string           `json:"username"`
 	PasswordHash string           `json:"password_hash"`
 	Email        string           `json:"email"`

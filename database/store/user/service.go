@@ -8,6 +8,7 @@ import (
 	"log/slog"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 
 	pb "github.com/codeharik/Atlantic/database/api/user/v1"
@@ -22,6 +23,12 @@ type Service struct {
 
 func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.CreateUserRequest]) (*connect.Response[pb.CreateUserResponse], error) {
 	var arg CreateUserParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
 	arg.Username = req.Msg.GetUsername()
 	arg.Email = req.Msg.GetEmail()
 	arg.PhoneNumber = req.Msg.GetPhoneNumber()
@@ -50,7 +57,13 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 }
 
 func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[pb.DeleteUserResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	err := s.querier.DeleteUser(ctx, id)
 	if err != nil {
@@ -83,7 +96,13 @@ func (s *Service) GetAuthUserByEmail(ctx context.Context, req *connect.Request[p
 }
 
 func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUserByIDRequest]) (*connect.Response[pb.GetUserByIDResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	result, err := s.querier.GetUserByID(ctx, id)
 	if err != nil {
@@ -130,7 +149,12 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 	if v := req.Msg.GetLocation(); v != nil {
 		arg.Location = pgtype.Int4{Valid: true, Int32: v.Value}
 	}
-	arg.ID = req.Msg.GetId()
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
 
 	result, err := s.querier.UpdateUser(ctx, arg)
 	if err != nil {

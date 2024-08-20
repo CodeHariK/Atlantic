@@ -30,7 +30,7 @@ func CORSMiddleware(handler http.Handler, config config.Config) http.Handler {
 		handlers.AllowedOrigins([]string{
 			// Only allow requests from this specific origin
 			// "http://" + config.ServerUrl(),
-			"*",
+			"http://localhost:8080",
 		}),
 		handlers.AllowedMethods([]string{
 			http.MethodGet,

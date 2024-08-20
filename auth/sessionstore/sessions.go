@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 
 	"github.com/codeharik/Atlantic/auth/types"
@@ -19,9 +20,9 @@ const (
 
 type ISessionStore interface {
 	Get(r *http.Request, name string) (*sessions.Session, error)
-	StoreSessionKey(userID, sessionKey string) error
-	GetAllSessionsForUser(userID string) ([]string, error)
-	InvalidateAllSessionsForUser(userID string) error
+	StoreSessionKey(userID uuid.UUID, sessionKey string) error
+	GetAllSessionsForUser(userID uuid.UUID) ([]string, error)
+	InvalidateAllSessionsForUser(userID uuid.UUID) error
 	Close() error
 }
 

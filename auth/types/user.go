@@ -1,15 +1,16 @@
 package types
 
 import (
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 )
 
 type AuthUser struct {
-	ID       string  `json:"id"`
-	Username string  `json:"username"`
-	Avatar   *string `json:"avatar"`
-	Email    string  `json:"email"`
-	Verified bool    `json:"verified"`
+	ID       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
+	Avatar   *string   `json:"avatar"`
+	Email    string    `json:"email"`
+	Verified bool      `json:"verified"`
 }
 
 var (

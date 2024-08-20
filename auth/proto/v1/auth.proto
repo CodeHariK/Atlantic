@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package auth.v1;
 
+import "buf/validate/validate.proto";
+
 option go_package = "github.com/codeharik/Atlantic/auth/api/v1";
 
 service AuthService {
@@ -21,4 +23,62 @@ message EmailLoginResponse {
   string username = 2;
   string email = 3;
   string error_message = 4;
+}
+
+// The profile service definition
+service ProfileService {
+  // Retrieves the profile of a user by ID
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
+
+  // Updates a user's profile
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+}
+
+// The message for fetching a profile
+message GetProfileRequest {
+  string id = 1 [(buf.validate.field).string = {
+    min_len: 1
+  }]; // ID is required and must not be empty
+}
+
+message GetProfileResponse {
+  AuthUser user = 1;
+}
+
+// The message for updating a profile
+message UpdateProfileRequest {
+  AuthUser user = 1 [(buf.validate.field).required = true]; // AuthUser is required
+}
+
+message UpdateProfileResponse {
+  bool success = 1;
+}
+
+// The user profile message
+message AuthUser {
+  uint32 id = 1 [(buf.validate.field).string = {
+    min_len: 1
+  }]; // ID is required and must not be empty
+  string username = 2 [(buf.validate.field).string = {
+    min_len: 8,
+    max_len: 24
+  }]; // Username must be 8-24 characters
+
+  string phone_number = 3 [(buf.validate.field) = {
+    string: {
+      // `pattern` specifies a regex pattern and validates that the string field
+      // must match it.
+      pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$",
+    },
+    ignore_empty: true,
+  }];
+  
+  string avatar = 4 [(buf.validate.field).string = {
+    uri: true
+  }]; // Avatar must be a valid URL
+
+  // `email` validates that a string field is a valid email.
+  string email = 5 [(buf.validate.field).string.email = true];
+
+  bool verified = 6;
 }

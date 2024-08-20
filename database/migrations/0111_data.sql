@@ -22,6 +22,7 @@ VALUES (
 
 INSERT INTO
     "users" (
+        "id",
         "username",
         "password_hash",
         "email",
@@ -32,6 +33,7 @@ INSERT INTO
         "location"
     )
 VALUES (
+        '66173097-653b-400b-9e98-78830fdd630e',
         '123',
         '$2a$10$WRvV0s.re29MDH7e4EM3eeWosEgrNI176.kNyVoD6eHcVDu/Nq.aG',
         '123@123.com',

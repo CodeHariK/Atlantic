@@ -12,7 +12,7 @@ import (
 func toCreateUserRow(in CreateUserRow) *pb.CreateUserRow {
 
 	out := new(pb.CreateUserRow)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	if in.CreatedAt.Valid {
 		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
 	}
@@ -25,7 +25,7 @@ func toCreateUserRow(in CreateUserRow) *pb.CreateUserRow {
 func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow {
 
 	out := new(pb.FindUserByUsernameRow)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	out.Username = in.Username
 	out.Email = in.Email
 	out.PhoneNumber = in.PhoneNumber
@@ -49,7 +49,7 @@ func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow
 func toGetAuthUserByEmailRow(in GetAuthUserByEmailRow) *pb.GetAuthUserByEmailRow {
 
 	out := new(pb.GetAuthUserByEmailRow)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	out.Username = in.Username
 	out.Email = in.Email
 	out.PasswordHash = in.PasswordHash
@@ -59,7 +59,7 @@ func toGetAuthUserByEmailRow(in GetAuthUserByEmailRow) *pb.GetAuthUserByEmailRow
 func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
 
 	out := new(pb.GetUserByIDRow)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	out.Username = in.Username
 	out.Email = in.Email
 	out.PhoneNumber = in.PhoneNumber
@@ -83,7 +83,7 @@ func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
 func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 
 	out := new(pb.ListUsersRow)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	out.Username = in.Username
 	out.Email = in.Email
 	out.PhoneNumber = in.PhoneNumber
@@ -107,7 +107,7 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 func toUpdateUserRow(in UpdateUserRow) *pb.UpdateUserRow {
 
 	out := new(pb.UpdateUserRow)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	if in.UpdatedAt.Valid {
 		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}

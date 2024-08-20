@@ -31,7 +31,7 @@ message Attribute {
 
 message Cart {
   int32 id = 1;
-  int32 user_id = 2;
+  string user_id = 2;
   google.protobuf.Timestamp updated_at = 3;
 }
 
@@ -43,13 +43,14 @@ message CartItem {
 }
 
 message CreateUserRequest {
-  string username = 1;
-  string email = 2;
-  string phone_number = 3;
-  string gender = 4;
-  bool is_admin = 5;
-  google.protobuf.Timestamp date_of_birth = 6;
-  google.protobuf.Int32Value location = 7;
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string phone_number = 4;
+  string gender = 5;
+  bool is_admin = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  google.protobuf.Int32Value location = 8;
 }
 
 message CreateUserResponse {
@@ -57,13 +58,13 @@ message CreateUserResponse {
 }
 
 message CreateUserRow {
-  int32 id = 1;
+  string id = 1;
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;
 }
 
 message DeleteUserRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message DeleteUserResponse {}
@@ -77,7 +78,7 @@ message FindUserByUsernameResponse {
 }
 
 message FindUserByUsernameRow {
-  int32 id = 1;
+  string id = 1;
   string username = 2;
   string email = 3;
   string phone_number = 4;
@@ -98,14 +99,14 @@ message GetAuthUserByEmailResponse {
 }
 
 message GetAuthUserByEmailRow {
-  int32 id = 1;
+  string id = 1;
   string username = 2;
   string email = 3;
   string password_hash = 4;
 }
 
 message GetUserByIDRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message GetUserByIDResponse {
@@ -113,7 +114,7 @@ message GetUserByIDResponse {
 }
 
 message GetUserByIDRow {
-  int32 id = 1;
+  string id = 1;
   string username = 2;
   string email = 3;
   string phone_number = 4;
@@ -152,7 +153,7 @@ message ListUsersResponse {
 }
 
 message ListUsersRow {
-  int32 id = 1;
+  string id = 1;
   string username = 2;
   string email = 3;
   string phone_number = 4;
@@ -177,7 +178,7 @@ message Location {
 
 message Order {
   int32 id = 1;
-  int32 user_id = 2;
+  string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
   int64 amount_units = 5;
@@ -246,7 +247,7 @@ message ProductPromotion {
 
 message ProductReview {
   int32 id = 1;
-  int32 user_id = 2;
+  string user_id = 2;
   int32 product_id = 3;
   int32 seller_id = 4;
   int32 rating = 5;
@@ -273,7 +274,7 @@ message UpdateUserRequest {
   bool is_admin = 5;
   google.protobuf.Timestamp date_of_birth = 6;
   google.protobuf.Int32Value location = 7;
-  int32 id = 8;
+  string id = 8;
 }
 
 message UpdateUserResponse {
@@ -281,12 +282,12 @@ message UpdateUserResponse {
 }
 
 message UpdateUserRow {
-  int32 id = 1;
+  string id = 1;
   google.protobuf.Timestamp updated_at = 2;
 }
 
 message User {
-  int32 id = 1;
+  string id = 1;
   string username = 2;
   string password_hash = 3;
   string email = 4;

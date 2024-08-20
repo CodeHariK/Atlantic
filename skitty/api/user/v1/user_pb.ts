@@ -65,9 +65,9 @@ export class Cart extends Message<Cart> {
   id = 0;
 
   /**
-   * @generated from field: int32 user_id = 2;
+   * @generated from field: string user_id = 2;
    */
-  userId = 0;
+  userId = "";
 
   /**
    * @generated from field: google.protobuf.Timestamp updated_at = 3;
@@ -83,7 +83,7 @@ export class Cart extends Message<Cart> {
   static readonly typeName = "user.v1.Cart";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
@@ -164,37 +164,42 @@ export class CartItem extends Message<CartItem> {
  */
 export class CreateUserRequest extends Message<CreateUserRequest> {
   /**
-   * @generated from field: string username = 1;
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string username = 2;
    */
   username = "";
 
   /**
-   * @generated from field: string email = 2;
+   * @generated from field: string email = 3;
    */
   email = "";
 
   /**
-   * @generated from field: string phone_number = 3;
+   * @generated from field: string phone_number = 4;
    */
   phoneNumber = "";
 
   /**
-   * @generated from field: string gender = 4;
+   * @generated from field: string gender = 5;
    */
   gender = "";
 
   /**
-   * @generated from field: bool is_admin = 5;
+   * @generated from field: bool is_admin = 6;
    */
   isAdmin = false;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 6;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 7;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Int32Value location = 7;
+   * @generated from field: google.protobuf.Int32Value location = 8;
    */
   location?: number;
 
@@ -206,13 +211,14 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.CreateUserRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 6, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 7, name: "location", kind: "message", T: Int32Value },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 8, name: "location", kind: "message", T: Int32Value },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUserRequest {
@@ -274,9 +280,9 @@ export class CreateUserResponse extends Message<CreateUserResponse> {
  */
 export class CreateUserRow extends Message<CreateUserRow> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: google.protobuf.Timestamp created_at = 2;
@@ -296,7 +302,7 @@ export class CreateUserRow extends Message<CreateUserRow> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.CreateUserRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "created_at", kind: "message", T: Timestamp },
     { no: 3, name: "updated_at", kind: "message", T: Timestamp },
   ]);
@@ -323,9 +329,9 @@ export class CreateUserRow extends Message<CreateUserRow> {
  */
 export class DeleteUserRequest extends Message<DeleteUserRequest> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   constructor(data?: PartialMessage<DeleteUserRequest>) {
     super();
@@ -335,7 +341,7 @@ export class DeleteUserRequest extends Message<DeleteUserRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.DeleteUserRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteUserRequest {
@@ -465,9 +471,9 @@ export class FindUserByUsernameResponse extends Message<FindUserByUsernameRespon
  */
 export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string username = 2;
@@ -522,7 +528,7 @@ export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.FindUserByUsernameRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -630,9 +636,9 @@ export class GetAuthUserByEmailResponse extends Message<GetAuthUserByEmailRespon
  */
 export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string username = 2;
@@ -657,7 +663,7 @@ export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.GetAuthUserByEmailRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -685,9 +691,9 @@ export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
  */
 export class GetUserByIDRequest extends Message<GetUserByIDRequest> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   constructor(data?: PartialMessage<GetUserByIDRequest>) {
     super();
@@ -697,7 +703,7 @@ export class GetUserByIDRequest extends Message<GetUserByIDRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.GetUserByIDRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByIDRequest {
@@ -759,9 +765,9 @@ export class GetUserByIDResponse extends Message<GetUserByIDResponse> {
  */
 export class GetUserByIDRow extends Message<GetUserByIDRow> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string username = 2;
@@ -816,7 +822,7 @@ export class GetUserByIDRow extends Message<GetUserByIDRow> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.GetUserByIDRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -1058,9 +1064,9 @@ export class ListUsersResponse extends Message<ListUsersResponse> {
  */
 export class ListUsersRow extends Message<ListUsersRow> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string username = 2;
@@ -1115,7 +1121,7 @@ export class ListUsersRow extends Message<ListUsersRow> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.ListUsersRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -1233,9 +1239,9 @@ export class Order extends Message<Order> {
   id = 0;
 
   /**
-   * @generated from field: int32 user_id = 2;
+   * @generated from field: string user_id = 2;
    */
-  userId = 0;
+  userId = "";
 
   /**
    * @generated from field: google.protobuf.Timestamp created_at = 3;
@@ -1281,7 +1287,7 @@ export class Order extends Message<Order> {
   static readonly typeName = "user.v1.Order";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "created_at", kind: "message", T: Timestamp },
     { no: 4, name: "updated_at", kind: "message", T: Timestamp },
     { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
@@ -1751,9 +1757,9 @@ export class ProductReview extends Message<ProductReview> {
   id = 0;
 
   /**
-   * @generated from field: int32 user_id = 2;
+   * @generated from field: string user_id = 2;
    */
-  userId = 0;
+  userId = "";
 
   /**
    * @generated from field: int32 product_id = 3;
@@ -1784,7 +1790,7 @@ export class ProductReview extends Message<ProductReview> {
   static readonly typeName = "user.v1.ProductReview";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 4, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "rating", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
@@ -1946,9 +1952,9 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   location?: number;
 
   /**
-   * @generated from field: int32 id = 8;
+   * @generated from field: string id = 8;
    */
-  id = 0;
+  id = "";
 
   constructor(data?: PartialMessage<UpdateUserRequest>) {
     super();
@@ -1965,7 +1971,7 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
     { no: 5, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 6, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 7, name: "location", kind: "message", T: Int32Value },
-    { no: 8, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 8, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserRequest {
@@ -2027,9 +2033,9 @@ export class UpdateUserResponse extends Message<UpdateUserResponse> {
  */
 export class UpdateUserRow extends Message<UpdateUserRow> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: google.protobuf.Timestamp updated_at = 2;
@@ -2044,7 +2050,7 @@ export class UpdateUserRow extends Message<UpdateUserRow> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.UpdateUserRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
@@ -2070,9 +2076,9 @@ export class UpdateUserRow extends Message<UpdateUserRow> {
  */
 export class User extends Message<User> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string username = 2;
@@ -2132,7 +2138,7 @@ export class User extends Message<User> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.User";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
