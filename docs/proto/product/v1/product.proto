@@ -228,10 +228,10 @@ message UpdateProductResponse {
 message User {
   google.protobuf.StringValue id = 1;
   string username = 2;
-  string password_hash = 3;
-  string email = 4;
-  string phone_number = 5;
-  string gender = 6;
+  google.protobuf.StringValue password_hash = 3;
+  google.protobuf.StringValue email = 4;
+  google.protobuf.StringValue phone_number = 5;
+  google.protobuf.StringValue gender = 6;
   bool is_admin = 7;
   google.protobuf.Timestamp date_of_birth = 8;
   google.protobuf.Timestamp created_at = 9;

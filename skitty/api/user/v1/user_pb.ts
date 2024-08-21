@@ -174,19 +174,19 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   username = "";
 
   /**
-   * @generated from field: string email = 3;
+   * @generated from field: google.protobuf.StringValue email = 3;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 4;
+   * @generated from field: google.protobuf.StringValue phone_number = 4;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 5;
+   * @generated from field: google.protobuf.StringValue gender = 5;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 6;
@@ -213,9 +213,9 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "message", T: StringValue },
+    { no: 4, name: "phone_number", kind: "message", T: StringValue },
+    { no: 5, name: "gender", kind: "message", T: StringValue },
     { no: 6, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 8, name: "location", kind: "message", T: Int32Value },
@@ -481,19 +481,19 @@ export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
   username = "";
 
   /**
-   * @generated from field: string email = 3;
+   * @generated from field: google.protobuf.StringValue email = 3;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 4;
+   * @generated from field: google.protobuf.StringValue phone_number = 4;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 5;
+   * @generated from field: google.protobuf.StringValue gender = 5;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 6;
@@ -530,9 +530,9 @@ export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "message", T: StringValue },
+    { no: 4, name: "phone_number", kind: "message", T: StringValue },
+    { no: 5, name: "gender", kind: "message", T: StringValue },
     { no: 6, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 8, name: "created_at", kind: "message", T: Timestamp },
@@ -562,9 +562,9 @@ export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
  */
 export class GetAuthUserByEmailRequest extends Message<GetAuthUserByEmailRequest> {
   /**
-   * @generated from field: string email = 1;
+   * @generated from field: google.protobuf.StringValue email = 1;
    */
-  email = "";
+  email?: string;
 
   constructor(data?: PartialMessage<GetAuthUserByEmailRequest>) {
     super();
@@ -574,7 +574,7 @@ export class GetAuthUserByEmailRequest extends Message<GetAuthUserByEmailRequest
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.GetAuthUserByEmailRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "email", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailRequest {
@@ -646,14 +646,14 @@ export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
   username = "";
 
   /**
-   * @generated from field: string email = 3;
+   * @generated from field: google.protobuf.StringValue email = 3;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string password_hash = 4;
+   * @generated from field: google.protobuf.StringValue password_hash = 4;
    */
-  passwordHash = "";
+  passwordHash?: string;
 
   constructor(data?: PartialMessage<GetAuthUserByEmailRow>) {
     super();
@@ -665,8 +665,8 @@ export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "message", T: StringValue },
+    { no: 4, name: "password_hash", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailRow {
@@ -775,19 +775,19 @@ export class GetUserByIDRow extends Message<GetUserByIDRow> {
   username = "";
 
   /**
-   * @generated from field: string email = 3;
+   * @generated from field: google.protobuf.StringValue email = 3;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 4;
+   * @generated from field: google.protobuf.StringValue phone_number = 4;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 5;
+   * @generated from field: google.protobuf.StringValue gender = 5;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 6;
@@ -824,9 +824,9 @@ export class GetUserByIDRow extends Message<GetUserByIDRow> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "message", T: StringValue },
+    { no: 4, name: "phone_number", kind: "message", T: StringValue },
+    { no: 5, name: "gender", kind: "message", T: StringValue },
     { no: 6, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 8, name: "created_at", kind: "message", T: Timestamp },
@@ -1074,19 +1074,19 @@ export class ListUsersRow extends Message<ListUsersRow> {
   username = "";
 
   /**
-   * @generated from field: string email = 3;
+   * @generated from field: google.protobuf.StringValue email = 3;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 4;
+   * @generated from field: google.protobuf.StringValue phone_number = 4;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 5;
+   * @generated from field: google.protobuf.StringValue gender = 5;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 6;
@@ -1123,9 +1123,9 @@ export class ListUsersRow extends Message<ListUsersRow> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "email", kind: "message", T: StringValue },
+    { no: 4, name: "phone_number", kind: "message", T: StringValue },
+    { no: 5, name: "gender", kind: "message", T: StringValue },
     { no: 6, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 8, name: "created_at", kind: "message", T: Timestamp },
@@ -1922,19 +1922,19 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   username = "";
 
   /**
-   * @generated from field: string email = 2;
+   * @generated from field: google.protobuf.StringValue email = 2;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 3;
+   * @generated from field: google.protobuf.StringValue phone_number = 3;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 4;
+   * @generated from field: google.protobuf.StringValue gender = 4;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 5;
@@ -1965,9 +1965,9 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   static readonly typeName = "user.v1.UpdateUserRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "email", kind: "message", T: StringValue },
+    { no: 3, name: "phone_number", kind: "message", T: StringValue },
+    { no: 4, name: "gender", kind: "message", T: StringValue },
     { no: 5, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 6, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 7, name: "location", kind: "message", T: Int32Value },
@@ -2086,24 +2086,24 @@ export class User extends Message<User> {
   username = "";
 
   /**
-   * @generated from field: string password_hash = 3;
+   * @generated from field: google.protobuf.StringValue password_hash = 3;
    */
-  passwordHash = "";
+  passwordHash?: string;
 
   /**
-   * @generated from field: string email = 4;
+   * @generated from field: google.protobuf.StringValue email = 4;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 5;
+   * @generated from field: google.protobuf.StringValue phone_number = 5;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 6;
+   * @generated from field: google.protobuf.StringValue gender = 6;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 7;
@@ -2140,10 +2140,10 @@ export class User extends Message<User> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "password_hash", kind: "message", T: StringValue },
+    { no: 4, name: "email", kind: "message", T: StringValue },
+    { no: 5, name: "phone_number", kind: "message", T: StringValue },
+    { no: 6, name: "gender", kind: "message", T: StringValue },
     { no: 7, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 9, name: "created_at", kind: "message", T: Timestamp },

@@ -40,11 +40,11 @@ func main() {
 
 	cookiestore := sessionstore.CreateCookieSessionStore(cfg)
 	if err != nil {
-		log.Fatalf("Could not create Session Store")
+		log.Fatalf("Could not create Cookie Session Store")
 	}
 	dragonstore, err := sessionstore.CreateDragonSessionStore(cfg)
 	if err != nil {
-		log.Fatalf("Could not create Session Store")
+		log.Fatalf("Could not create Dragon Session Store")
 	}
 
 	handler.Serve(

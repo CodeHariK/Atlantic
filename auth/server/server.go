@@ -26,7 +26,7 @@ func ServerPortUrl(config config.Config) string {
 	return fmt.Sprintf(":%d", config.AuthService.Port)
 }
 
-func Serve(storeInstance store.Store, dragonstore *sessionstore.SessionStore, cookiestore *sessionstore.SessionStore, config config.Config) {
+func Serve(storeInstance store.Store, dragonstore *sessionstore.DragonSessionStore, cookiestore *sessionstore.CookieSessionStore, config config.Config) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(
 		context.Background(),

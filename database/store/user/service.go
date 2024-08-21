@@ -30,9 +30,15 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 		arg.ID = v
 	}
 	arg.Username = req.Msg.GetUsername()
-	arg.Email = req.Msg.GetEmail()
-	arg.PhoneNumber = req.Msg.GetPhoneNumber()
-	arg.Gender = req.Msg.GetGender()
+	if v := req.Msg.GetEmail(); v != nil {
+		arg.Email = pgtype.Text{Valid: true, String: v.Value}
+	}
+	if v := req.Msg.GetPhoneNumber(); v != nil {
+		arg.PhoneNumber = pgtype.Text{Valid: true, String: v.Value}
+	}
+	if v := req.Msg.GetGender(); v != nil {
+		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
+	}
 	arg.IsAdmin = req.Msg.GetIsAdmin()
 	if v := req.Msg.GetDateOfBirth(); v != nil {
 		if err := v.CheckValid(); err != nil {
@@ -85,7 +91,10 @@ func (s *Service) FindUserByUsername(ctx context.Context, req *connect.Request[p
 }
 
 func (s *Service) GetAuthUserByEmail(ctx context.Context, req *connect.Request[pb.GetAuthUserByEmailRequest]) (*connect.Response[pb.GetAuthUserByEmailResponse], error) {
-	email := req.Msg.GetEmail()
+	var email pgtype.Text
+	if v := req.Msg.GetEmail(); v != nil {
+		email = pgtype.Text{Valid: true, String: v.Value}
+	}
 
 	result, err := s.querier.GetAuthUserByEmail(ctx, email)
 	if err != nil {
@@ -132,9 +141,15 @@ func (s *Service) ListUsers(ctx context.Context, req *connect.Request[pb.ListUse
 func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.UpdateUserRequest]) (*connect.Response[pb.UpdateUserResponse], error) {
 	var arg UpdateUserParams
 	arg.Username = req.Msg.GetUsername()
-	arg.Email = req.Msg.GetEmail()
-	arg.PhoneNumber = req.Msg.GetPhoneNumber()
-	arg.Gender = req.Msg.GetGender()
+	if v := req.Msg.GetEmail(); v != nil {
+		arg.Email = pgtype.Text{Valid: true, String: v.Value}
+	}
+	if v := req.Msg.GetPhoneNumber(); v != nil {
+		arg.PhoneNumber = pgtype.Text{Valid: true, String: v.Value}
+	}
+	if v := req.Msg.GetGender(); v != nil {
+		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
+	}
 	arg.IsAdmin = req.Msg.GetIsAdmin()
 	if v := req.Msg.GetDateOfBirth(); v != nil {
 		if err := v.CheckValid(); err != nil {

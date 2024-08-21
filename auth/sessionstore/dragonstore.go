@@ -14,9 +14,17 @@ import (
 	dragon "github.com/redis/go-redis/v9"
 )
 
+type DragonSessionStore struct {
+	*sessionStore
+}
+
 type DragonStore struct {
 	*dragon.Client
 	*dragonstore.RedisStore
+}
+
+func (store *DragonStore) NewSession() *sessions.Session {
+	return sessions.NewSession(store.RedisStore, "dragon")
 }
 
 func (store *DragonStore) StoreSessionKey(userID uuid.UUID, sessionKey string) error {
@@ -55,7 +63,7 @@ func (store *DragonStore) InvalidateAllSessionsForUser(userID uuid.UUID) error {
 	return nil
 }
 
-func CreateDragonSessionStore(cfg config.Config) (*SessionStore, error) {
+func CreateDragonSessionStore(cfg config.Config) (*DragonSessionStore, error) {
 	config := config.LoadConfig("config.json", "../config/config.json")
 
 	dragonURI := config.DragonConnectionUri()
@@ -83,7 +91,7 @@ func CreateDragonSessionStore(cfg config.Config) (*SessionStore, error) {
 
 	dragonSessionStore.Options(sessions.Options{
 		Path:     "/",
-		MaxAge:   2592000,
+		MaxAge:   60 * 50,
 		HttpOnly: true,
 		Secure:   false,
 		// SameSite: http.SameSiteLaxMode,
@@ -91,10 +99,13 @@ func CreateDragonSessionStore(cfg config.Config) (*SessionStore, error) {
 
 	gob.Register(types.AuthUser{})
 
-	return &SessionStore{
-		&DragonStore{
-			dragonClient,
-			dragonSessionStore,
-		},
+	return &DragonSessionStore{
+		CreateSessionStore(
+			"dragon",
+			&DragonStore{
+				dragonClient,
+				dragonSessionStore,
+			},
+		),
 	}, nil
 }

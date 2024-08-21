@@ -165,12 +165,12 @@ class Seller:
 class User:
     id: uuid.UUID
     username: str
-    password_hash: str
-    email: str
-    phone_number: str
-    gender: str
+    password_hash: Optional[str]
+    email: Optional[str]
+    phone_number: Optional[str]
+    gender: Optional[str]
     is_admin: bool
-    date_of_birth: datetime.date
+    date_of_birth: Optional[datetime.date]
     created_at: datetime.datetime
     updated_at: datetime.datetime
     location: Optional[int]

@@ -148,10 +148,10 @@ type Seller struct {
 type User struct {
 	ID           pgtype.UUID      `json:"id"`
 	Username     string           `json:"username"`
-	PasswordHash string           `json:"password_hash"`
-	Email        string           `json:"email"`
-	PhoneNumber  string           `json:"phone_number"`
-	Gender       string           `json:"gender"`
+	PasswordHash pgtype.Text      `json:"password_hash"`
+	Email        pgtype.Text      `json:"email"`
+	PhoneNumber  pgtype.Text      `json:"phone_number"`
+	Gender       pgtype.Text      `json:"gender"`
 	IsAdmin      bool             `json:"is_admin"`
 	DateOfBirth  pgtype.Date      `json:"date_of_birth"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`

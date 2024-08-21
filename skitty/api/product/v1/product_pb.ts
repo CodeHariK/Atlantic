@@ -1655,24 +1655,24 @@ export class User extends Message<User> {
   username = "";
 
   /**
-   * @generated from field: string password_hash = 3;
+   * @generated from field: google.protobuf.StringValue password_hash = 3;
    */
-  passwordHash = "";
+  passwordHash?: string;
 
   /**
-   * @generated from field: string email = 4;
+   * @generated from field: google.protobuf.StringValue email = 4;
    */
-  email = "";
+  email?: string;
 
   /**
-   * @generated from field: string phone_number = 5;
+   * @generated from field: google.protobuf.StringValue phone_number = 5;
    */
-  phoneNumber = "";
+  phoneNumber?: string;
 
   /**
-   * @generated from field: string gender = 6;
+   * @generated from field: google.protobuf.StringValue gender = 6;
    */
-  gender = "";
+  gender?: string;
 
   /**
    * @generated from field: bool is_admin = 7;
@@ -1709,10 +1709,10 @@ export class User extends Message<User> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "message", T: StringValue },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "password_hash", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "gender", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "password_hash", kind: "message", T: StringValue },
+    { no: 4, name: "email", kind: "message", T: StringValue },
+    { no: 5, name: "phone_number", kind: "message", T: StringValue },
+    { no: 6, name: "gender", kind: "message", T: StringValue },
     { no: 7, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 9, name: "created_at", kind: "message", T: Timestamp },

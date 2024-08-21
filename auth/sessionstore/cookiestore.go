@@ -10,8 +10,16 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+type CookieSessionStore struct {
+	*sessionStore
+}
+
 type CookieStore struct {
 	*sessions.CookieStore
+}
+
+func (store *CookieStore) NewSession() *sessions.Session {
+	return sessions.NewSession(store.CookieStore, "cookie")
 }
 
 func (store *CookieStore) StoreSessionKey(userID uuid.UUID, sessionKey string) error {
@@ -30,7 +38,7 @@ func (store *CookieStore) Close() error {
 	return nil
 }
 
-func CreateCookieSessionStore(cfg config.Config) *SessionStore {
+func CreateCookieSessionStore(cfg config.Config) *CookieSessionStore {
 	// store := sessions.NewCookieStore(
 	// 	[]byte(cfg.Session.AuthKey), []byte(cfg.Session.EncryptionKey),
 	// )
@@ -41,7 +49,7 @@ func CreateCookieSessionStore(cfg config.Config) *SessionStore {
 
 	store.Options = &sessions.Options{
 		Path:     "/",
-		MaxAge:   900,
+		MaxAge:   300,
 		HttpOnly: true,
 		Secure:   false,
 		// SameSite: http.SameSiteLaxMode,
@@ -49,7 +57,10 @@ func CreateCookieSessionStore(cfg config.Config) *SessionStore {
 
 	gob.Register(types.AuthUser{})
 
-	return &SessionStore{
-		&CookieStore{store},
+	return &CookieSessionStore{
+		CreateSessionStore(
+			"cookie",
+			&CookieStore{store},
+		),
 	}
 }

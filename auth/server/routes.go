@@ -16,6 +16,8 @@ import (
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
+	"go.opentelemetry.io/contrib/bridges/otelslog"
+	"go.opentelemetry.io/otel"
 
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"
@@ -23,11 +25,19 @@ import (
 	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 )
 
+const name = "Atlantic/Otel"
+
+var (
+	tracer = otel.Tracer(name)
+	meter  = otel.Meter(name)
+	logger = otelslog.NewLogger(name)
+)
+
 func CreateRoutes(
 	router *http.ServeMux,
 	storeInstance store.Store,
-	dragonstore *sessionstore.SessionStore,
-	cookiestore *sessionstore.SessionStore,
+	dragonstore *sessionstore.DragonSessionStore,
+	cookiestore *sessionstore.CookieSessionStore,
 	config config.Config,
 ) {
 	UserHandler.CreateUserRoutes(router, storeInstance.UserStore)
@@ -44,7 +54,11 @@ func CreateRoutes(
 
 	var interceptors []connect.Interceptor
 	if config.OTLP.GRPC != "" {
-		observability, err := otelconnect.NewInterceptor()
+		observability, err := otelconnect.NewInterceptor(
+			otelconnect.WithTracerProvider(otel.GetTracerProvider()),
+			otelconnect.WithMeterProvider(otel.GetMeterProvider()),
+			otelconnect.WithPropagator(otel.GetTextMapPropagator()),
+		)
 		if err != nil {
 			log.Fatalf("%v", err.Error())
 		}

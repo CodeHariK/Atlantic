@@ -27,9 +27,15 @@ func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow
 	out := new(pb.FindUserByUsernameRow)
 	out.Id = in.ID.String()
 	out.Username = in.Username
-	out.Email = in.Email
-	out.PhoneNumber = in.PhoneNumber
-	out.Gender = in.Gender
+	if in.Email.Valid {
+		out.Email = wrapperspb.String(in.Email.String)
+	}
+	if in.PhoneNumber.Valid {
+		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
+	}
+	if in.Gender.Valid {
+		out.Gender = wrapperspb.String(in.Gender.String)
+	}
 	out.IsAdmin = in.IsAdmin
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
@@ -51,8 +57,12 @@ func toGetAuthUserByEmailRow(in GetAuthUserByEmailRow) *pb.GetAuthUserByEmailRow
 	out := new(pb.GetAuthUserByEmailRow)
 	out.Id = in.ID.String()
 	out.Username = in.Username
-	out.Email = in.Email
-	out.PasswordHash = in.PasswordHash
+	if in.Email.Valid {
+		out.Email = wrapperspb.String(in.Email.String)
+	}
+	if in.PasswordHash.Valid {
+		out.PasswordHash = wrapperspb.String(in.PasswordHash.String)
+	}
 	return out
 }
 
@@ -61,9 +71,15 @@ func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
 	out := new(pb.GetUserByIDRow)
 	out.Id = in.ID.String()
 	out.Username = in.Username
-	out.Email = in.Email
-	out.PhoneNumber = in.PhoneNumber
-	out.Gender = in.Gender
+	if in.Email.Valid {
+		out.Email = wrapperspb.String(in.Email.String)
+	}
+	if in.PhoneNumber.Valid {
+		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
+	}
+	if in.Gender.Valid {
+		out.Gender = wrapperspb.String(in.Gender.String)
+	}
 	out.IsAdmin = in.IsAdmin
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
@@ -85,9 +101,15 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 	out := new(pb.ListUsersRow)
 	out.Id = in.ID.String()
 	out.Username = in.Username
-	out.Email = in.Email
-	out.PhoneNumber = in.PhoneNumber
-	out.Gender = in.Gender
+	if in.Email.Valid {
+		out.Email = wrapperspb.String(in.Email.String)
+	}
+	if in.PhoneNumber.Valid {
+		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
+	}
+	if in.Gender.Valid {
+		out.Gender = wrapperspb.String(in.Gender.String)
+	}
 	out.IsAdmin = in.IsAdmin
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)

@@ -6,25 +6,27 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
+	"os"
 
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/database/store/user"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 
 	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 )
 
 type AuthHandler struct {
 	userStore   *user.Queries
-	dragonstore *sessionstore.SessionStore
-	cookiestore *sessionstore.SessionStore
+	dragonstore *sessionstore.DragonSessionStore
+	cookiestore *sessionstore.CookieSessionStore
 }
 
 func CreateAuthRoutes(
 	router *http.ServeMux,
-	dragonstore *sessionstore.SessionStore,
-	cookiestore *sessionstore.SessionStore,
+	dragonstore *sessionstore.DragonSessionStore,
+	cookiestore *sessionstore.CookieSessionStore,
 	userstore *user.Queries,
 ) *AuthHandler {
 	authHandler := &AuthHandler{
@@ -149,7 +151,13 @@ func (authHandler *AuthHandler) EmailLoginPageHandler(w http.ResponseWriter, r *
 }
 
 func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := authHandler.dragonstore.GetUser(r)
+	_, err := authHandler.cookiestore.GetUser(r)
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	_, err = authHandler.dragonstore.GetUser(r)
 	if err == nil {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
@@ -159,14 +167,24 @@ func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http
 	password := r.FormValue("password")
 
 	// Fetch user by email
-	user, err := authHandler.userStore.GetAuthUserByEmail(context.Background(), email)
+	user, err := authHandler.userStore.GetAuthUserByEmail(
+		context.Background(),
+		pgtype.Text{String: email, Valid: true})
 	if err != nil {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		http.Error(w, "Email Not Found", http.StatusUnauthorized)
 		return
 	}
 
+	if !user.Email.Valid {
+		http.Error(w, "Email not present", http.StatusUnauthorized)
+		return
+	}
+	if !user.PasswordHash.Valid {
+		http.Error(w, "No password set", http.StatusUnauthorized)
+		return
+	}
 	// Verify password
-	if err := sessionstore.CheckPassword(user.PasswordHash, password); err != nil {
+	if err := sessionstore.CheckPassword(user.PasswordHash.String, password); err != nil {
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
@@ -175,9 +193,14 @@ func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http
 
 	u := types.AuthUser{
 		ID:    user.ID,
-		Email: user.Email,
+		Email: user.Email.String,
 	}
 
+	err = authHandler.cookiestore.SaveUserSession(r, w, u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	err = authHandler.dragonstore.SaveUserSession(r, w, u)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -188,7 +211,13 @@ func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http
 }
 
 func (authHandler *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	_, err := authHandler.dragonstore.GetUser(r)
+	_, err := authHandler.cookiestore.GetUser(r)
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	_, err = authHandler.dragonstore.GetUser(r)
 	if err == nil {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
@@ -218,32 +247,62 @@ func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	fmt.Printf("acc : %s\nref : %s\nta : %s\nexp : %s\nvalid : %v\n",
-		token.AccessToken,
-		token.RefreshToken,
-		time.Now().Add(time.Second*60*60*24*30),
-		token.Expiry,
-		token.Valid(),
-	)
-
 	client := types.DiscordOauthConfig.Client(context.Background(), token)
 	response, err := client.Get("https://discord.com/api/users/@me")
 	if err != nil {
-		log.Println("Failed to get user info: ", err)
+		fmt.Fprintf(os.Stderr, "Failed to get user info: %v", err)
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
 	}
 
 	defer response.Body.Close()
 
-	var user types.AuthUser
-	if err := json.NewDecoder(response.Body).Decode(&user); err != nil {
+	var discorduser types.DiscordUser
+	if err := json.NewDecoder(response.Body).Decode(&discorduser); err != nil {
 		log.Println("Failed to decode user info: ", err)
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
 	}
 
+	u, err := authHandler.userStore.GetAuthUserByEmail(
+		context.Background(),
+		pgtype.Text{String: discorduser.Email, Valid: true})
+
+	uid := u.ID
+
+	if err != nil {
+		uid, err = uuid.NewV7()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, err := authHandler.userStore.CreateUser(context.Background(), user.CreateUserParams{
+			ID:       uid,
+			Username: discorduser.Username,
+			Email:    pgtype.Text{String: discorduser.Email, Valid: true},
+			IsAdmin:  false,
+		})
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	user := types.AuthUser{
+		ID:       uid,
+		Username: discorduser.Username,
+		Avatar:   discorduser.Avatar,
+		Email:    discorduser.Email,
+		Verified: discorduser.Verified,
+	}
+
 	err = authHandler.dragonstore.SaveUserSession(r, w, user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = authHandler.cookiestore.SaveUserSession(r, w, user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -292,20 +351,39 @@ func (authHandler *AuthHandler) InvalidateAllSessionsForUser(w http.ResponseWrit
 }
 
 func (authHandler *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	err := authHandler.dragonstore.RevokeSession(w, r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	_ = authHandler.dragonstore.RevokeSession(w, r)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+	_ = authHandler.cookiestore.RevokeSession(w, r)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 func (authHandler *AuthHandler) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, err := authHandler.dragonstore.GetUser(r)
+		user, err := authHandler.cookiestore.GetUser(r)
+		fmt.Println("------")
+		fmt.Println(user)
+		fmt.Println(err)
 		if err != nil {
-			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-			return
+			user, err = authHandler.dragonstore.GetUser(r)
+			if err != nil {
+				http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+				return
+			}
+			fmt.Println(user)
+			err := authHandler.cookiestore.SaveUserSession(r, w, user)
+			if err != nil {
+				http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+				return
+			}
+			fmt.Println(err)
 		}
 
 		ctx := sessionstore.SetContextWithUser(r, user)

@@ -60,14 +60,14 @@ func (s *AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (
 type AuthServiceServer struct {
 	auth_v1connect.UnimplementedAuthServiceHandler
 	userStore   *user.Queries
-	dragonstore *sessionstore.SessionStore
-	cookiestore *sessionstore.SessionStore
+	dragonstore *sessionstore.DragonSessionStore
+	cookiestore *sessionstore.CookieSessionStore
 }
 
 func CreateNewAuthServiceServer(
 	userStore *user.Queries,
-	dragonstore *sessionstore.SessionStore,
-	cookiestore *sessionstore.SessionStore,
+	dragonstore *sessionstore.DragonSessionStore,
+	cookiestore *sessionstore.CookieSessionStore,
 ) AuthServiceServer {
 	return AuthServiceServer{
 		userStore:   userStore,

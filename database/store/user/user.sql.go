@@ -41,9 +41,9 @@ VALUES (
 type CreateUserParams struct {
 	ID          uuid.UUID   `json:"id"`
 	Username    string      `json:"username"`
-	Email       string      `json:"email"`
-	PhoneNumber string      `json:"phone_number"`
-	Gender      string      `json:"gender"`
+	Email       pgtype.Text `json:"email"`
+	PhoneNumber pgtype.Text `json:"phone_number"`
+	Gender      pgtype.Text `json:"gender"`
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.Int4 `json:"location"`
@@ -100,9 +100,9 @@ WHERE
 type FindUserByUsernameRow struct {
 	ID          uuid.UUID        `json:"id"`
 	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	Gender      string           `json:"gender"`
+	Email       pgtype.Text      `json:"email"`
+	PhoneNumber pgtype.Text      `json:"phone_number"`
+	Gender      pgtype.Text      `json:"gender"`
 	IsAdmin     bool             `json:"is_admin"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
@@ -140,13 +140,13 @@ WHERE
 `
 
 type GetAuthUserByEmailRow struct {
-	ID           uuid.UUID `json:"id"`
-	Username     string    `json:"username"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"password_hash"`
+	ID           uuid.UUID   `json:"id"`
+	Username     string      `json:"username"`
+	Email        pgtype.Text `json:"email"`
+	PasswordHash pgtype.Text `json:"password_hash"`
 }
 
-func (q *Queries) GetAuthUserByEmail(ctx context.Context, email string) (GetAuthUserByEmailRow, error) {
+func (q *Queries) GetAuthUserByEmail(ctx context.Context, email pgtype.Text) (GetAuthUserByEmailRow, error) {
 	row := q.db.QueryRow(ctx, getAuthUserByEmail, email)
 	var i GetAuthUserByEmailRow
 	err := row.Scan(
@@ -178,9 +178,9 @@ WHERE
 type GetUserByIDRow struct {
 	ID          uuid.UUID        `json:"id"`
 	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	Gender      string           `json:"gender"`
+	Email       pgtype.Text      `json:"email"`
+	PhoneNumber pgtype.Text      `json:"phone_number"`
+	Gender      pgtype.Text      `json:"gender"`
 	IsAdmin     bool             `json:"is_admin"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
@@ -232,9 +232,9 @@ type ListUsersParams struct {
 type ListUsersRow struct {
 	ID          uuid.UUID        `json:"id"`
 	Username    string           `json:"username"`
-	Email       string           `json:"email"`
-	PhoneNumber string           `json:"phone_number"`
-	Gender      string           `json:"gender"`
+	Email       pgtype.Text      `json:"email"`
+	PhoneNumber pgtype.Text      `json:"phone_number"`
+	Gender      pgtype.Text      `json:"gender"`
 	IsAdmin     bool             `json:"is_admin"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
@@ -291,9 +291,9 @@ WHERE
 
 type UpdateUserParams struct {
 	Username    string      `json:"username"`
-	Email       string      `json:"email"`
-	PhoneNumber string      `json:"phone_number"`
-	Gender      string      `json:"gender"`
+	Email       pgtype.Text `json:"email"`
+	PhoneNumber pgtype.Text `json:"phone_number"`
+	Gender      pgtype.Text `json:"gender"`
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.Int4 `json:"location"`

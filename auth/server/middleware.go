@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -53,6 +54,7 @@ func CORSMiddleware(handler http.Handler, config config.Config) http.Handler {
 
 func RouteTaggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("---@" + r.URL.Path)
 		// Create a new handler with route tagging for OpenTelemetry
 		taggedHandler := otelhttp.WithRouteTag(r.URL.Path, next)
 		taggedHandler.ServeHTTP(w, r)

@@ -5,6 +5,14 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type DiscordUser struct {
+	ID       string  `json:"id"`
+	Username string  `json:"username"`
+	Avatar   *string `json:"avatar"`
+	Email    string  `json:"email"`
+	Verified bool    `json:"verified"`
+}
+
 type AuthUser struct {
 	ID       uuid.UUID `json:"id"`
 	Username string    `json:"username"`

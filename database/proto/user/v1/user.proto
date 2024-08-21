@@ -45,9 +45,9 @@ message CartItem {
 message CreateUserRequest {
   string id = 1;
   string username = 2;
-  string email = 3;
-  string phone_number = 4;
-  string gender = 5;
+  google.protobuf.StringValue email = 3;
+  google.protobuf.StringValue phone_number = 4;
+  google.protobuf.StringValue gender = 5;
   bool is_admin = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Int32Value location = 8;
@@ -80,9 +80,9 @@ message FindUserByUsernameResponse {
 message FindUserByUsernameRow {
   string id = 1;
   string username = 2;
-  string email = 3;
-  string phone_number = 4;
-  string gender = 5;
+  google.protobuf.StringValue email = 3;
+  google.protobuf.StringValue phone_number = 4;
+  google.protobuf.StringValue gender = 5;
   bool is_admin = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
@@ -91,7 +91,7 @@ message FindUserByUsernameRow {
 }
 
 message GetAuthUserByEmailRequest {
-  string email = 1;
+  google.protobuf.StringValue email = 1;
 }
 
 message GetAuthUserByEmailResponse {
@@ -101,8 +101,8 @@ message GetAuthUserByEmailResponse {
 message GetAuthUserByEmailRow {
   string id = 1;
   string username = 2;
-  string email = 3;
-  string password_hash = 4;
+  google.protobuf.StringValue email = 3;
+  google.protobuf.StringValue password_hash = 4;
 }
 
 message GetUserByIDRequest {
@@ -116,9 +116,9 @@ message GetUserByIDResponse {
 message GetUserByIDRow {
   string id = 1;
   string username = 2;
-  string email = 3;
-  string phone_number = 4;
-  string gender = 5;
+  google.protobuf.StringValue email = 3;
+  google.protobuf.StringValue phone_number = 4;
+  google.protobuf.StringValue gender = 5;
   bool is_admin = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
@@ -155,9 +155,9 @@ message ListUsersResponse {
 message ListUsersRow {
   string id = 1;
   string username = 2;
-  string email = 3;
-  string phone_number = 4;
-  string gender = 5;
+  google.protobuf.StringValue email = 3;
+  google.protobuf.StringValue phone_number = 4;
+  google.protobuf.StringValue gender = 5;
   bool is_admin = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
@@ -268,9 +268,9 @@ message Seller {
 
 message UpdateUserRequest {
   string username = 1;
-  string email = 2;
-  string phone_number = 3;
-  string gender = 4;
+  google.protobuf.StringValue email = 2;
+  google.protobuf.StringValue phone_number = 3;
+  google.protobuf.StringValue gender = 4;
   bool is_admin = 5;
   google.protobuf.Timestamp date_of_birth = 6;
   google.protobuf.Int32Value location = 7;
@@ -289,10 +289,10 @@ message UpdateUserRow {
 message User {
   string id = 1;
   string username = 2;
-  string password_hash = 3;
-  string email = 4;
-  string phone_number = 5;
-  string gender = 6;
+  google.protobuf.StringValue password_hash = 3;
+  google.protobuf.StringValue email = 4;
+  google.protobuf.StringValue phone_number = 5;
+  google.protobuf.StringValue gender = 6;
   bool is_admin = 7;
   google.protobuf.Timestamp date_of_birth = 8;
   google.protobuf.Timestamp created_at = 9;

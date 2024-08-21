@@ -14,8 +14,7 @@ import (
 )
 
 const (
-	ConstAuthSession = "session-name"
-	ConstAuthUser    = "user"
+	ConstAuthUser = "user"
 )
 
 type ISessionStore interface {
@@ -23,24 +22,36 @@ type ISessionStore interface {
 	StoreSessionKey(userID uuid.UUID, sessionKey string) error
 	GetAllSessionsForUser(userID uuid.UUID) ([]string, error)
 	InvalidateAllSessionsForUser(userID uuid.UUID) error
+	NewSession() *sessions.Session
 	Close() error
 }
 
-type SessionStore struct {
+type sessionStore struct {
+	name string
 	ISessionStore
 }
 
+func CreateSessionStore(name string, store ISessionStore) *sessionStore {
+	return &sessionStore{
+		name,
+		store,
+	}
+}
+
 // GetSession retrieves a session from the request.
-func (sessionStore *SessionStore) getSession(r *http.Request) (*sessions.Session, error) {
-	session, err := sessionStore.Get(r, ConstAuthSession)
+func (sessionStore *sessionStore) getSession(r *http.Request) (*sessions.Session, error) {
+	session, err := sessionStore.Get(r, sessionStore.name)
+	fmt.Println(sessionStore.name + "-->")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get session: %v", err)
+		fmt.Println(sessionStore.name + " ?")
+
+		return sessionStore.NewSession(), nil
 	}
 
 	return session, nil
 }
 
-func (sessionStore *SessionStore) GetUser(r *http.Request) (types.AuthUser, error) {
+func (sessionStore *sessionStore) GetUser(r *http.Request) (types.AuthUser, error) {
 	session, err := sessionStore.getSession(r)
 	if err != nil {
 		return types.AuthUser{}, err
@@ -65,7 +76,7 @@ func (sessionStore *SessionStore) GetUser(r *http.Request) (types.AuthUser, erro
 	return user, nil
 }
 
-func (sessionStore *SessionStore) SaveUserSession(r *http.Request, w http.ResponseWriter, user types.AuthUser) error {
+func (sessionStore *sessionStore) SaveUserSession(r *http.Request, w http.ResponseWriter, user types.AuthUser) error {
 	session, err := sessionStore.getSession(r)
 	if err != nil {
 		return err
@@ -76,13 +87,14 @@ func (sessionStore *SessionStore) SaveUserSession(r *http.Request, w http.Respon
 		return fmt.Errorf("error json marshal %v", err)
 	}
 
+	fmt.Println(sessionStore.name + "--*")
 	session.Values[ConstAuthUser] = string(marshalUser)
 	sessionStore.StoreSessionKey(user.ID, session.ID)
 	return session.Save(r, w)
 }
 
 // RevokeSession destroys a session by deleting its cookie.
-func (sessionStore *SessionStore) RevokeSession(w http.ResponseWriter, r *http.Request) error {
+func (sessionStore *sessionStore) RevokeSession(w http.ResponseWriter, r *http.Request) error {
 	session, err := sessionStore.getSession(r)
 	if err != nil {
 		return fmt.Errorf("failed to get session for revocation: %v", err)
