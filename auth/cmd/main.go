@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"log"
 
-	handler "github.com/codeharik/Atlantic/auth/server"
+	"github.com/codeharik/Atlantic/auth/server"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/auth/types"
@@ -47,7 +47,7 @@ func main() {
 		log.Fatalf("Could not create Dragon Session Store")
 	}
 
-	handler.Serve(
+	server.Serve(
 		storeInstance,
 		dragonstore,
 		cookiestore,

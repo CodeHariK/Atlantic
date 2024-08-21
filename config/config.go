@@ -47,8 +47,9 @@ type Config struct {
 		BetaAccess bool `json:"beta_access"`
 	} `json:"feature_flags"`
 	OTLP struct {
-		GRPC string `json:"grpc"`
-		HTTP string `json:"http"`
+		GRPC    string            `json:"grpc"`
+		HTTP    string            `json:"http"`
+		Headers map[string]string `json:"headers"`
 	} `json:"otlp"`
 }
 

@@ -3,19 +3,40 @@ package AuthHandler
 import (
 	"context"
 	"crypto/subtle"
+	"errors"
 	"fmt"
+	"net/http"
 
 	"connectrpc.com/connect"
 	"github.com/codeharik/Atlantic/auth/server/authn"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/database/store/user"
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 
 	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 
 	auth_app "github.com/codeharik/Atlantic/auth/api/v1"
 )
+
+type AuthServiceServer struct {
+	auth_v1connect.UnimplementedAuthServiceHandler
+	userStore   *user.Queries
+	dragonstore *sessionstore.DragonSessionStore
+	cookiestore *sessionstore.CookieSessionStore
+}
+
+func CreateNewAuthServiceServer(
+	userStore *user.Queries,
+	dragonstore *sessionstore.DragonSessionStore,
+	cookiestore *sessionstore.CookieSessionStore,
+) AuthServiceServer {
+	return AuthServiceServer{
+		userStore:   userStore,
+		dragonstore: dragonstore,
+		cookiestore: cookiestore,
+	}
+}
 
 func equal(left, right string) bool {
 	// Using subtle prevents some timing attacks.
@@ -23,11 +44,22 @@ func equal(left, right string) bool {
 }
 
 func (s *AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (any, error) {
-	user, _ := s.dragonstore.GetUser(req.Request)
-	// if err != nil {
-	// 	return nil, authn.Errorf("Dragon error : %v", err)
-	// }
+	r, w := req.Request, req.Writer
+	user, err := s.cookiestore.GetUser(r)
+	if err != nil {
+		user, err = s.dragonstore.GetUser(r)
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			return nil, nil
+		}
+		err := s.cookiestore.SaveUserSession(r, w, user)
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			return nil, nil
+		}
+	}
 
+	sessionstore.SetContextWithUser(r, user)
 	// s.dragonstore.SaveUserSession(req.Request, req.Writer, types.AuthUser{ID: "hello123"})
 
 	// req.Writer.Header().Set("Content-Type", "text/html")
@@ -57,30 +89,24 @@ func (s *AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (
 	return req, nil
 }
 
-type AuthServiceServer struct {
-	auth_v1connect.UnimplementedAuthServiceHandler
-	userStore   *user.Queries
-	dragonstore *sessionstore.DragonSessionStore
-	cookiestore *sessionstore.CookieSessionStore
-}
-
-func CreateNewAuthServiceServer(
-	userStore *user.Queries,
-	dragonstore *sessionstore.DragonSessionStore,
-	cookiestore *sessionstore.CookieSessionStore,
-) AuthServiceServer {
-	return AuthServiceServer{
-		userStore:   userStore,
-		dragonstore: dragonstore,
-		cookiestore: cookiestore,
-	}
-}
-
 func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[auth_app.EmailLoginRequest]) (*connect.Response[auth_app.EmailLoginResponse], error) {
+	authreq := authn.GetInfo(ctx).(authn.Request)
+	r, w := authreq.Request, authreq.Writer
+
+	_, err := s.cookiestore.GetUser(r)
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return nil, nil
+	}
+
+	_, err = s.dragonstore.GetUser(r)
+	if err == nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return nil, nil
+	}
+
 	email := req.Msg.Email
 	password := req.Msg.Password
-
-	r := authn.GetInfo(ctx).(authn.Request)
 
 	// r.Writer.Header().Set("Content-Type", "text/html")
 	// http.Redirect(
@@ -89,68 +115,47 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 	// 	"/",
 	// 	http.StatusTemporaryRedirect)
 
-	newid, _ := uuid.NewV7()
-	s.cookiestore.SaveUserSession(r.Request, r.Writer, types.AuthUser{ID: newid})
+	// Fetch user by email
+	user, err := s.userStore.GetAuthUserByEmail(
+		context.Background(),
+		pgtype.Text{String: email, Valid: true})
+	if err != nil || !user.Email.Valid || !user.PasswordHash.Valid {
+		http.Error(w, "Invalid Email or password", http.StatusUnauthorized)
 
-	fmt.Printf("-> email:%s password:%s info:%v\n\n", email, password, authn.GetInfo(ctx))
-
-	if password == "hello" {
-		return connect.NewResponse(
-			&auth_app.EmailLoginResponse{
-				Id:       2,
-				Username: "hellouser",
-				Email:    "hellomail",
-			}), nil
+		return connect.NewResponse(&auth_app.EmailLoginResponse{}),
+			connect.NewError(connect.CodePermissionDenied, errors.New("Invalid Email or password"))
 	}
 
-	// _, err := s.dragonstore.GetUser(r)
-	// if err == nil {
-	// 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-	// 	return
-	// }
+	// Verify password
+	if err := sessionstore.CheckPassword(user.PasswordHash.String, password); err != nil {
+		http.Error(w, "Invalid Email or password", http.StatusUnauthorized)
 
-	// // Authentication logic (this is just a dummy example)
-	// if email == "user@example.com" && password == "password123" {
-	// 	return &auth_app.EmailLoginResponse{
-	// 		Id:       1,
-	// 		Username: "username",
-	// 		Email:    email,
-	// 	}, nil
-	// }
+		return connect.NewResponse(&auth_app.EmailLoginResponse{}),
+			connect.NewError(connect.CodePermissionDenied, errors.New("Invalid Email or password"))
+	}
 
+	u := types.AuthUser{
+		ID:    user.ID,
+		Email: user.Email.String,
+	}
+
+	err = s.cookiestore.SaveUserSession(r, w, u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return connect.NewResponse(&auth_app.EmailLoginResponse{}),
+			connect.NewError(connect.CodeInternal, err)
+	}
+	err = s.dragonstore.SaveUserSession(r, w, u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return connect.NewResponse(&auth_app.EmailLoginResponse{}),
+			connect.NewError(connect.CodeInternal, err)
+	}
+
+	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 	return connect.NewResponse(
-		&auth_app.EmailLoginResponse{
-			ErrorMessage: "Invalid credentials",
-		}), connect.NewError(connect.CodePermissionDenied, fmt.Errorf("Invaled Credentials"))
-
-	// email := r.FormValue("email")
-	// password := r.FormValue("password")
-
-	// // Fetch user by email
-	// user, err := authHandler.userStore.GetAuthUserByEmail(context.Background(), email)
-	// if err != nil {
-	// 	http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-	// 	return
-	// }
-
-	// // Verify password
-	// if err := sessionstore.CheckPassword(user.PasswordHash, password); err != nil {
-	// 	http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-	// 	return
-	// }
-
-	// fmt.Println(r.Header.Get("User-Agent"))
-
-	// u := types.AuthUser{
-	// 	ID:    string(user.ID),
-	// 	Email: user.Email,
-	// }
-
-	// err = authHandler.dragonstore.SaveUserSession(r, w, u)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// http.Redirect(w, r, "/profile", http.StatusSeeOther)
+			&auth_app.EmailLoginResponse{
+				Id: user.ID[:],
+			}),
+		nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/codeharik/Atlantic/config"
 
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
 	"go.opentelemetry.io/otel/log/global"
 	sdklog "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -30,11 +31,24 @@ func CreateLoggerProvider(exporter sdklog.Exporter, config config.Config) *sdklo
 	return loggerProvider
 }
 
+func CreateLogsExporterHTTP(ctx context.Context, config config.Config) (sdklog.Exporter, error) {
+	exporter, err := otlploghttp.New(
+		ctx,
+		otlploghttp.WithEndpoint(config.OTLP.HTTP),
+		otlploghttp.WithHeaders(config.OTLP.Headers),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to create OTLP Log exporter: %v", err)
+	}
+	return exporter, nil
+}
+
 func CreateLogsExporterGRPC(ctx context.Context, config config.Config) (sdklog.Exporter, error) {
 	exporter, err := otlploggrpc.New(
 		ctx,
 		otlploggrpc.WithEndpoint(config.OTLP.GRPC),
-		otlploggrpc.WithInsecure(),
+		// otlploggrpc.WithInsecure(),
+		otlploggrpc.WithHeaders(config.OTLP.Headers),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create OTLP Log exporter: %v", err)

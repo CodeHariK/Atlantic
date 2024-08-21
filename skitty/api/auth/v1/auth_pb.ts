@@ -58,24 +58,9 @@ export class EmailLoginRequest extends Message<EmailLoginRequest> {
  */
 export class EmailLoginResponse extends Message<EmailLoginResponse> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: bytes id = 1;
    */
-  id = 0;
-
-  /**
-   * @generated from field: string username = 2;
-   */
-  username = "";
-
-  /**
-   * @generated from field: string email = 3;
-   */
-  email = "";
-
-  /**
-   * @generated from field: string error_message = 4;
-   */
-  errorMessage = "";
+  id = new Uint8Array(0);
 
   constructor(data?: PartialMessage<EmailLoginResponse>) {
     super();
@@ -85,10 +70,7 @@ export class EmailLoginResponse extends Message<EmailLoginResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "auth.v1.EmailLoginResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "error_message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "id", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EmailLoginResponse {

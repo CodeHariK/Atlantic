@@ -13,8 +13,18 @@ import (
 	"github.com/codeharik/Atlantic/database/store/user"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
+	"go.opentelemetry.io/contrib/bridges/otelslog"
+	"go.opentelemetry.io/otel"
 
 	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+)
+
+const name = "Atlantic/Auth"
+
+var (
+	tracer = otel.Tracer(name)
+	meter  = otel.Meter(name)
+	logger = otelslog.NewLogger(name)
 )
 
 type AuthHandler struct {
@@ -170,26 +180,16 @@ func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http
 	user, err := authHandler.userStore.GetAuthUserByEmail(
 		context.Background(),
 		pgtype.Text{String: email, Valid: true})
-	if err != nil {
-		http.Error(w, "Email Not Found", http.StatusUnauthorized)
+	if err != nil || !user.Email.Valid || !user.PasswordHash.Valid {
+		http.Error(w, "Invalid Email or password", http.StatusUnauthorized)
 		return
 	}
 
-	if !user.Email.Valid {
-		http.Error(w, "Email not present", http.StatusUnauthorized)
-		return
-	}
-	if !user.PasswordHash.Valid {
-		http.Error(w, "No password set", http.StatusUnauthorized)
-		return
-	}
 	// Verify password
 	if err := sessionstore.CheckPassword(user.PasswordHash.String, password); err != nil {
-		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		http.Error(w, "Invalid Email or password", http.StatusUnauthorized)
 		return
 	}
-
-	fmt.Println(r.Header.Get("User-Agent"))
 
 	u := types.AuthUser{
 		ID:    user.ID,
@@ -368,22 +368,17 @@ func (authHandler *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 func (authHandler *AuthHandler) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user, err := authHandler.cookiestore.GetUser(r)
-		fmt.Println("------")
-		fmt.Println(user)
-		fmt.Println(err)
 		if err != nil {
 			user, err = authHandler.dragonstore.GetUser(r)
 			if err != nil {
 				http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 				return
 			}
-			fmt.Println(user)
 			err := authHandler.cookiestore.SaveUserSession(r, w, user)
 			if err != nil {
 				http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 				return
 			}
-			fmt.Println(err)
 		}
 
 		ctx := sessionstore.SetContextWithUser(r, user)

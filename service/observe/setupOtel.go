@@ -15,13 +15,13 @@ import (
 // setupOTelSDK bootstraps the OpenTelemetry pipeline.
 // If it does not return an error, make sure to call shutdown for proper cleanup.
 func SetupOTelSDK(ctx context.Context, config config.Config) (shutdown func(context.Context) error, err error) {
-	if config.OTLP.GRPC == "" || !config.Service.EnableMetrics {
+	if config.OTLP.HTTP == "" || !config.Service.EnableMetrics {
 		return (func(ctx context.Context) error {
 			return nil
 		}), fmt.Errorf("OpenTelemetry not running.")
 	}
 
-	fmt.Println("OpenTelemetry Collector running on http://" + config.OTLP.GRPC)
+	fmt.Println("OpenTelemetry Collector running on http://" + config.OTLP.HTTP)
 
 	var shutdownFuncs []func(context.Context) error
 

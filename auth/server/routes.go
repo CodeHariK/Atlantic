@@ -1,4 +1,4 @@
-package handler
+package server
 
 import (
 	"log"
@@ -16,21 +16,12 @@ import (
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
-	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/otel"
 
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"
 
 	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
-)
-
-const name = "Atlantic/Otel"
-
-var (
-	tracer = otel.Tracer(name)
-	meter  = otel.Meter(name)
-	logger = otelslog.NewLogger(name)
 )
 
 func CreateRoutes(
