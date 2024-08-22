@@ -61,6 +61,7 @@ func (authHandler *AuthHandler) GrpcEmailLoginPageHandler(w http.ResponseWriter,
 	// Set the correct content type for the response
 	w.Header().Set("Content-Type", "text/html")
 
+	fmt.Println(auth_v1connect.AuthServiceName)
 	fmt.Println(auth_v1connect.AuthServiceEmailLoginProcedure)
 
 	// ///////
