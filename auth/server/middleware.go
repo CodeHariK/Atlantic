@@ -26,7 +26,7 @@ var CSRFMiddleware = csrf.Protect(
 	csrf.RequestHeader("X-CSRF-Token"), // Must be in CORS Allowed and Exposed Headers
 )
 
-func CORSMiddleware(handler http.Handler, config config.Config) http.Handler {
+func CORSMiddleware(handler http.Handler, config *config.Config) http.Handler {
 	return handlers.CORS(
 		handlers.AllowedOrigins([]string{
 			// Only allow requests from this specific origin

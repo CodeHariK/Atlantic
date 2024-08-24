@@ -29,12 +29,13 @@ func CreateRoutes(
 	storeInstance store.Store,
 	dragonstore *sessionstore.DragonSessionStore,
 	cookiestore *sessionstore.CookieSessionStore,
-	config config.Config,
+	config *config.Config,
 ) {
 	UserHandler.CreateUserRoutes(router, storeInstance.UserStore)
 
 	authHandler := AuthHandler.CreateAuthRoutes(
 		router,
+		config,
 		dragonstore,
 		cookiestore,
 		storeInstance.UserStore)

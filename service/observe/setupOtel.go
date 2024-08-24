@@ -14,7 +14,7 @@ import (
 
 // setupOTelSDK bootstraps the OpenTelemetry pipeline.
 // If it does not return an error, make sure to call shutdown for proper cleanup.
-func SetupOTelSDK(ctx context.Context, config config.Config) (shutdown func(context.Context) error, err error) {
+func SetupOTelSDK(ctx context.Context, config *config.Config) (shutdown func(context.Context) error, err error) {
 	if config.OTLP.HTTP == "" || !config.Service.EnableMetrics {
 		return (func(ctx context.Context) error {
 			return nil

@@ -10,6 +10,7 @@ import (
 
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/types"
+	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -28,6 +29,7 @@ var (
 )
 
 type AuthHandler struct {
+	config      *config.Config
 	userStore   *user.Queries
 	dragonstore *sessionstore.DragonSessionStore
 	cookiestore *sessionstore.CookieSessionStore
@@ -35,11 +37,13 @@ type AuthHandler struct {
 
 func CreateAuthRoutes(
 	router *http.ServeMux,
+	config *config.Config,
 	dragonstore *sessionstore.DragonSessionStore,
 	cookiestore *sessionstore.CookieSessionStore,
 	userstore *user.Queries,
 ) *AuthHandler {
 	authHandler := &AuthHandler{
+		config:      config,
 		userStore:   userstore,
 		dragonstore: dragonstore,
 		cookiestore: cookiestore,
@@ -224,7 +228,7 @@ func (authHandler *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	url := types.DiscordOauthConfig.AuthCodeURL(types.OauthStateString)
+	url := authHandler.config.AuthService.OAuth.Discord.Config.AuthCodeURL(types.OauthStateString)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
@@ -241,14 +245,14 @@ func (authHandler *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Reque
 // }
 
 func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Request) {
-	token, err := types.DiscordOauthConfig.Exchange(context.Background(), r.FormValue("code"))
+	token, err := authHandler.config.AuthService.OAuth.Discord.Config.Exchange(context.Background(), r.FormValue("code"))
 	if err != nil {
 		log.Println("Code exchange failed: ", err)
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 		return
 	}
 
-	client := types.DiscordOauthConfig.Client(context.Background(), token)
+	client := authHandler.config.AuthService.OAuth.Discord.Config.Client(context.Background(), token)
 	response, err := client.Get("https://discord.com/api/users/@me")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to get user info: %v", err)

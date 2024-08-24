@@ -14,7 +14,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func CreateTracerProvider(exporter sdktrace.SpanExporter, config config.Config) *sdktrace.TracerProvider {
+func CreateTracerProvider(exporter sdktrace.SpanExporter, config *config.Config) *sdktrace.TracerProvider {
 	tracerProvider := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(exporter),
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
@@ -31,7 +31,7 @@ func CreateTracerProvider(exporter sdktrace.SpanExporter, config config.Config) 
 	return tracerProvider
 }
 
-func CreateTraceExporterHTTP(ctx context.Context, config config.Config) (sdktrace.SpanExporter, error) {
+func CreateTraceExporterHTTP(ctx context.Context, config *config.Config) (sdktrace.SpanExporter, error) {
 	exporter, err := otlptracehttp.New(
 		ctx,
 		otlptracehttp.WithEndpoint(config.OTLP.HTTP),
@@ -43,7 +43,7 @@ func CreateTraceExporterHTTP(ctx context.Context, config config.Config) (sdktrac
 	return exporter, err
 }
 
-func CreateTraceExporterGRPC(ctx context.Context, config config.Config) (sdktrace.SpanExporter, error) {
+func CreateTraceExporterGRPC(ctx context.Context, config *config.Config) (sdktrace.SpanExporter, error) {
 	exporter, err := otlptracegrpc.New(
 		ctx,
 		otlptracegrpc.WithEndpoint(config.OTLP.GRPC),

@@ -15,7 +15,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 )
 
-func CreateMeterProvider(exporter sdkmetric.Exporter, config config.Config) *sdkmetric.MeterProvider {
+func CreateMeterProvider(exporter sdkmetric.Exporter, config *config.Config) *sdkmetric.MeterProvider {
 	meterProvider := sdkmetric.NewMeterProvider(
 		sdkmetric.WithReader(
 			sdkmetric.NewPeriodicReader(
@@ -35,7 +35,7 @@ func CreateMeterProvider(exporter sdkmetric.Exporter, config config.Config) *sdk
 	return meterProvider
 }
 
-func CreateMetricExporterHTTP(ctx context.Context, config config.Config) (sdkmetric.Exporter, error) {
+func CreateMetricExporterHTTP(ctx context.Context, config *config.Config) (sdkmetric.Exporter, error) {
 	exporter, err := otlpmetrichttp.New(
 		ctx,
 		otlpmetrichttp.WithEndpoint(config.OTLP.HTTP),
@@ -47,7 +47,7 @@ func CreateMetricExporterHTTP(ctx context.Context, config config.Config) (sdkmet
 	return exporter, nil
 }
 
-func CreateMetricExporterGRPC(ctx context.Context, config config.Config) (sdkmetric.Exporter, error) {
+func CreateMetricExporterGRPC(ctx context.Context, config *config.Config) (sdkmetric.Exporter, error) {
 	exporter, err := otlpmetricgrpc.New(
 		ctx,
 		otlpmetricgrpc.WithEndpoint(config.OTLP.GRPC),

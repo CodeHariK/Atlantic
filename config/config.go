@@ -1,12 +1,31 @@
 package config
 
 import (
+	"crypto/ed25519"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"os"
+
+	"github.com/codeharik/Atlantic/config/secret"
+	"golang.org/x/oauth2"
 )
+
+type OAuth struct {
+	Discord OAuthService `json:"discord"`
+}
+
+type OAuthService struct {
+	ClientID     string   `json:"client_id"`
+	ClientSecret string   `json:"client_secret"`
+	Scopes       []string `json:"scopes"`
+	RedirectURI  string   `json:"redirect_uri"`
+	AuthURL      string   `json:"auth_url"`
+	TokenURL     string   `json:"token_url"`
+
+	Config *oauth2.Config
+}
 
 type Config struct {
 	Service struct {
@@ -17,6 +36,13 @@ type Config struct {
 	AuthService struct {
 		Address string `json:"address"`
 		Port    int    `json:"port"`
+
+		KeyMod      int    `json:"keymod"`
+		JwtKeyPath  string `json:"jwt_keys"`
+		PublicKeys  []ed25519.PublicKey
+		PrivateKeys []ed25519.PrivateKey
+
+		OAuth OAuth `json:"oauth"`
 	} `json:"auth_service"`
 	Database struct {
 		Host           string `json:"host"`
@@ -34,14 +60,6 @@ type Config struct {
 		User     string `json:"user"`
 		Password string `json:"password"`
 	} `json:"dragonfly"`
-	Discord struct {
-		ClientID     string   `json:"client_id"`
-		ClientSecret string   `json:"client_secret"`
-		Scopes       []string `json:"scopes"`
-		RedirectURI  string   `json:"redirect_uri"`
-		AuthURL      string   `json:"auth_url"`
-		TokenURL     string   `json:"token_url"`
-	} `json:"discord"`
 	FeatureFlags struct {
 		NewFeature bool `json:"new_feature"`
 		BetaAccess bool `json:"beta_access"`
@@ -53,7 +71,7 @@ type Config struct {
 	} `json:"otlp"`
 }
 
-func LoadConfig(paths ...string) Config {
+func LoadConfig(load bool, paths ...string) Config {
 	var filePath string
 	fileExists := false
 
@@ -89,6 +107,11 @@ func LoadConfig(paths ...string) Config {
 		log.Fatalf("error unmarshaling config: %v", err)
 	}
 
+	if load {
+		loadSecretKeys(&cfg)
+		loadOauthConfig(&cfg)
+	}
+
 	return cfg
 }
 
@@ -110,4 +133,39 @@ func (config *Config) DragonConnectionUri() string {
 		config.Dragon.Host,
 		config.Dragon.Port,
 	)
+}
+
+func loadSecretKeys(cfg *Config) {
+	for i := range cfg.AuthService.KeyMod {
+		privateKeyPath := (fmt.Sprintf("%sjwt_%d_private_key.pem", cfg.AuthService.JwtKeyPath, i))
+		publicKeyPath := (fmt.Sprintf("%sjwt_%d_public_key.pem", cfg.AuthService.JwtKeyPath, i))
+
+		privateKey, err := secret.ReadPrivateKeyFromFile(privateKeyPath)
+		if err != nil {
+			fmt.Println("Error reading private key:", err)
+			os.Exit(1)
+		}
+		cfg.AuthService.PrivateKeys = append(cfg.AuthService.PrivateKeys, privateKey)
+
+		publicKey, err := secret.ReadPublicKeyFromFile(publicKeyPath)
+		if err != nil {
+			fmt.Println("Error reading public key:", err)
+			os.Exit(1)
+		}
+		cfg.AuthService.PublicKeys = append(cfg.AuthService.PublicKeys, publicKey)
+	}
+}
+
+// Setup OAuth2 configuration
+func loadOauthConfig(cfg *Config) {
+	cfg.AuthService.OAuth.Discord.Config = &oauth2.Config{
+		RedirectURL:  cfg.AuthService.OAuth.Discord.RedirectURI,
+		ClientID:     cfg.AuthService.OAuth.Discord.ClientID,
+		ClientSecret: cfg.AuthService.OAuth.Discord.ClientSecret,
+		Scopes:       cfg.AuthService.OAuth.Discord.Scopes,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  cfg.AuthService.OAuth.Discord.AuthURL,
+			TokenURL: cfg.AuthService.OAuth.Discord.TokenURL,
+		},
+	}
 }

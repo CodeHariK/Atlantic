@@ -2,7 +2,6 @@ package types
 
 import (
 	"github.com/google/uuid"
-	"golang.org/x/oauth2"
 )
 
 type DiscordUser struct {
@@ -22,7 +21,6 @@ type AuthUser struct {
 }
 
 var (
-	DiscordOauthConfig *oauth2.Config
-	OauthStateString   = "oauthStateString"
-	CSRFkey            = []byte("->DM!(sxXx.Q(XVVZ(kqnF1}BwNXRzZL")
+	OauthStateString = "oauthStateString"
+	CSRFkey          = []byte("->DM!(sxXx.Q(XVVZ(kqnF1}BwNXRzZL")
 )

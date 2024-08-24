@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	StatusConfig := config.LoadConfig("../config/config.json")
+	StatusConfig := config.LoadConfig(true, "../config/config.json")
 
 	connString := StatusConfig.DatabaseConnectionUri()
 

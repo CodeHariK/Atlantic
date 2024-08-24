@@ -3,6 +3,8 @@ config.json
 *.pyc
 .DS_Store
 
+*.pem
+
 __pycache__
 *.pyc
 .git

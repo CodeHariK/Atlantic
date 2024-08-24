@@ -63,10 +63,8 @@ func (store *DragonStore) InvalidateAllSessionsForUser(userID uuid.UUID) error {
 	return nil
 }
 
-func CreateDragonSessionStore(cfg config.Config) (*DragonSessionStore, error) {
-	config := config.LoadConfig("config.json", "../config/config.json")
-
-	dragonURI := config.DragonConnectionUri()
+func CreateDragonSessionStore(cfg *config.Config) (*DragonSessionStore, error) {
+	dragonURI := cfg.DragonConnectionUri()
 
 	options, err := dragon.ParseURL(dragonURI)
 	if err != nil {
