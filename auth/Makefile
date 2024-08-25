@@ -11,6 +11,11 @@ buf:
 run:
 	go run cmd/main.go
 
+bench:
+	go test -bench=./... -v
+test:
+	go test ./...
+
 dockerbuild:
 	docker build -f Dockerfile.$(CONTAINER_NAME) -t $(CONTAINER_NAME) .
 dockersh:

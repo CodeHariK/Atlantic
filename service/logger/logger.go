@@ -1,9 +1,11 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os"
+	"runtime/debug"
 
 	"github.com/codeharik/Atlantic/config"
 )
@@ -11,20 +13,20 @@ import (
 const (
 	colorNone = "\033[0m"
 
-	Red     = "\033[0;31m"
-	Yellow  = "\033[38;5;11m"
-	Green   = "\033[38;5;76m"
-	Blue    = "\033[38;5;39m"
-	Magenta = "\x1b[35m"
+	red     = "\033[0;31m"
+	green   = "\033[38;5;76m"
+	blue    = "\033[38;5;39m"
+	magenta = "\x1b[35m"
 
-	WhiteBack   = "\033[40;5;135m"
-	RedBack     = "\033[41;5;135m"
-	GreenBack   = "\033[42;5;135m"
-	YellowBack  = "\033[43;5;135m"
-	BlueBack    = "\033[44;5;135m"
-	MagentaBack = "\033[45;5;135m"
-	PurpleBack  = "\033[48;5;135m"
+	whiteBg   = "\033[40;5;135m"
+	redBg     = "\033[41;5;135m"
+	greenBg   = "\033[42;5;135m"
+	blueBg    = "\033[44;5;135m"
+	magentaBg = "\033[45;5;135m"
+	purpleBg  = "\033[48;5;135m"
 )
+
+var colors = []string{magenta, blue, green}
 
 func SetLogger(config config.Config) {
 	var handler slog.Handler
@@ -42,6 +44,19 @@ func SetLogger(config config.Config) {
 	slog.SetDefault(logger)
 }
 
-func Lava(msg string) {
-	fmt.Fprintf(os.Stdout, Red+msg+colorNone)
+func Log(msgs ...any) {
+	for i, msg := range msgs {
+
+		if err, ok := msg.(error); ok {
+			fmt.Fprintf(os.Stderr, red+err.Error()+colorNone+"\n")
+			fmt.Fprintf(os.Stderr, red+string(debug.Stack())+colorNone+"\n")
+			continue
+		}
+
+		b, err := json.MarshalIndent(msg, "", "  ")
+		if err != nil {
+			fmt.Println("Log Error")
+		}
+		fmt.Fprintf(os.Stdout, colors[i%len(colors)]+string(b)+colorNone+"\n")
+	}
 }
