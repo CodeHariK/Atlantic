@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/rs/cors"
 
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/handlers"
@@ -27,29 +29,49 @@ var CSRFMiddleware = csrf.Protect(
 )
 
 func CORSMiddleware(handler http.Handler, config *config.Config) http.Handler {
-	return handlers.CORS(
-		handlers.AllowedOrigins([]string{
-			// Only allow requests from this specific origin
-			// "http://" + config.ServerUrl(),
-			"http://localhost:8080",
-		}),
-		handlers.AllowedMethods([]string{
+	return cors.New(cors.Options{
+		AllowedMethods: []string{
+			http.MethodHead,
 			http.MethodGet,
 			http.MethodPost,
 			http.MethodPut,
+			http.MethodPatch,
 			http.MethodDelete,
-		}),
-		handlers.AllowedHeaders([]string{
-			"X-Requested-With",
-			"Content-Type",
-			"Authorization",
-		}),
-		handlers.ExposedHeaders([]string{
-			"Content-Type",
-			"Authorization",
-		}),
-		handlers.AllowCredentials(),
-	)(handler)
+		},
+		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowCredentials: true,
+		AllowedHeaders: []string{
+			"*",
+			// "Content-Type",
+			// "Authorization",
+		},
+		OptionsPassthrough: false, // Ensure CORS headers are handled correctly for preflight
+		Debug:              false, // Optional: Useful for debugging CORS issues
+		ExposedHeaders: []string{
+			"Accept",
+			// "X-Requested-With",
+			// "Content-Type",
+			// "Authorization",
+			"Accept-Encoding",
+			"Accept-Post",
+			"Connect-Accept-Encoding",
+			"Connect-Content-Encoding",
+			"Content-Encoding",
+			"Grpc-Accept-Encoding",
+			"Grpc-Encoding",
+			"Grpc-Message",
+			"Grpc-Status",
+			"Grpc-Status-Details-Bin",
+
+			//
+			"Redirect-To",
+		},
+		// Let browsers cache CORS information for longer, which reduces the number
+		// of preflight requests. Any changes to ExposedHeaders won't take effect
+		// until the cached data expires. FF caps this value at 24h, and modern
+		// Chrome caps it at 2h.
+		MaxAge: int(2 * time.Hour / time.Second),
+	}).Handler(handler)
 }
 
 func RouteTaggingMiddleware(next http.Handler) http.Handler {

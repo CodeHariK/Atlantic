@@ -37,8 +37,12 @@ type Config struct {
 		Address string `json:"address"`
 		Port    int    `json:"port"`
 
-		KeyMod      int    `json:"keymod"`
-		JwtKeyPath  string `json:"jwt_keys"`
+		KeyMod     int    `json:"keymod"`
+		JwtKeyPath string `json:"jwt_keys"`
+
+		Encrypt_Key string `json:"encypt_key"`
+		EncryptKey  []byte
+
 		PublicKeys  []ed25519.PublicKey
 		PrivateKeys []ed25519.PrivateKey
 
@@ -110,6 +114,8 @@ func LoadConfig(load bool, paths ...string) Config {
 	if load {
 		loadSecretKeys(&cfg)
 		loadOauthConfig(&cfg)
+
+		cfg.AuthService.EncryptKey = []byte(cfg.AuthService.Encrypt_Key)
 	}
 
 	return cfg

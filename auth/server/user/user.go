@@ -1,4 +1,4 @@
-package UserHandler
+package user
 
 import (
 	"context"

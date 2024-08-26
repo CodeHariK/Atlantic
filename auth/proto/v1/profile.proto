@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package profile.v1;
+
+import "v1/auth.proto";
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/codeharik/Atlantic/auth/api/v1";
+
+// The profile service definition
+service ProfileService {
+    // Retrieves the profile of a user by ID
+    rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
+  
+    // Updates a user's profile
+    rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+  }
+  
+  // The message for fetching a profile
+  message GetProfileRequest {
+    string id = 1 [(buf.validate.field).string = {
+      min_len: 1
+    }]; // ID is required and must not be empty
+  }
+  
+  message GetProfileResponse {
+    auth.v1.AuthUser user = 1;
+  }
+  
+  // The message for updating a profile
+  message UpdateProfileRequest {
+    auth.v1.AuthUser user = 1 [(buf.validate.field).required = true]; // AuthUser is required
+  }
+  
+  message UpdateProfileResponse {
+    bool success = 1;
+  }
+  

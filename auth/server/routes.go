@@ -8,10 +8,10 @@ import (
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
 	"connectrpc.com/otelconnect"
-	AuthHandler "github.com/codeharik/Atlantic/auth/server/auth"
+	"github.com/codeharik/Atlantic/auth/server/auth"
 	"github.com/codeharik/Atlantic/auth/server/authn"
-	ProfileHandler "github.com/codeharik/Atlantic/auth/server/profile"
-	UserHandler "github.com/codeharik/Atlantic/auth/server/user"
+	"github.com/codeharik/Atlantic/auth/server/profile"
+	"github.com/codeharik/Atlantic/auth/server/user"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
@@ -21,28 +21,25 @@ import (
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"
 
-	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+	"github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 )
 
 func CreateRoutes(
 	router *http.ServeMux,
 	storeInstance store.Store,
-	dragonstore *sessionstore.DragonSessionStore,
-	cookiestore *sessionstore.CookieSessionStore,
 	config *config.Config,
 ) {
-	UserHandler.CreateUserRoutes(router, storeInstance.UserStore)
+	user.CreateUserRoutes(router, storeInstance.UserStore)
 
-	authHandler := AuthHandler.CreateAuthRoutes(
-		router,
-		config,
-		dragonstore,
-		cookiestore,
-		storeInstance.UserStore)
+	sessionstore.CreateJwtAuthRoutes(router, config, storeInstance.UserStore)
 
-	ProfileHandler.CreateProfileRoutes(router, storeInstance.UserStore, authHandler)
+	//------------------
+	// Docs
 
 	docs.OpenapiHandler(router, "auth", "Auth")
+
+	//------------------
+	// Interceptors
 
 	var interceptors []connect.Interceptor
 	if config.OTLP.GRPC != "" {
@@ -59,17 +56,42 @@ func CreateRoutes(
 
 	compress1KB := connect.WithCompressMinBytes(1024)
 
-	authService := AuthHandler.CreateNewAuthServiceServer(
+	//------------------
+	// AuthService
+
+	authService := auth.CreateAuthServiceServer(
+		config,
 		storeInstance.UserStore,
-		dragonstore,
-		cookiestore,
 	)
-	authPath, authHandle := auth_v1connect.NewAuthServiceHandler(
+	authPath, authHandler := v1connect.NewAuthServiceHandler(
 		authService,
 		connect.WithInterceptors(interceptors...), compress1KB,
 	)
-	aut := authn.NewMiddleware(authService.Authenticate).Wrap(authHandle)
-	router.Handle(authPath, aut)
+
+	shield := authn.NewMiddleware(authService.Authenticate)
+
+	router.Handle(
+		authPath,
+		shield.Wrap(authHandler),
+	)
+
+	//------------------
+	// ProfileService
+
+	profileService := profile.CreateProfileServiceServer(
+		config,
+	)
+	profilePath, profileHandler := v1connect.NewProfileServiceHandler(
+		profileService,
+		connect.WithInterceptors(interceptors...), compress1KB,
+	)
+	router.Handle(
+		profilePath,
+		shield.Wrap(profileHandler),
+	)
+
+	//------------------
+	// UserService
 
 	userService := user_app.NewService(
 		user_app.New(storeInstance.Db),
@@ -78,11 +100,19 @@ func CreateRoutes(
 		userService,
 		connect.WithInterceptors(interceptors...), compress1KB,
 	)
-	router.Handle(userPath, userHandler)
+	router.Handle(
+		userPath,
+		// shield.Wrap(userHandler),
+		userHandler,
+	)
+
+	//------------------
+	// Reflectors
 
 	reflector := grpcreflect.NewStaticReflector(
 		user_v1connect.UserServiceName,
-		auth_v1connect.AuthServiceName,
+		v1connect.AuthServiceName,
+		v1connect.ProfileServiceName,
 	)
 	router.Handle(grpcreflect.NewHandlerV1(reflector))
 	router.Handle(grpcreflect.NewHandlerV1Alpha(reflector))

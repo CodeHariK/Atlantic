@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { EmailLoginRequest, EmailLoginResponse, GetProfileRequest, GetProfileResponse, UpdateProfileRequest, UpdateProfileResponse } from "./auth_pb.js";
+import { EmailLoginRequest, EmailLoginResponse, GetAllSessionsRequest, GetAllSessionsResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, LogoutRequest, LogoutResponse, RefreshRequest, RefreshResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -23,37 +23,48 @@ export const AuthService = {
       O: EmailLoginResponse,
       kind: MethodKind.Unary,
     },
-  }
-} as const;
-
-/**
- * The profile service definition
- *
- * @generated from service auth.v1.ProfileService
- */
-export const ProfileService = {
-  typeName: "auth.v1.ProfileService",
-  methods: {
     /**
-     * Retrieves the profile of a user by ID
+     * Defines the EmailLogin RPC method
      *
-     * @generated from rpc auth.v1.ProfileService.GetProfile
+     * @generated from rpc auth.v1.AuthService.AuthRefresh
      */
-    getProfile: {
-      name: "GetProfile",
-      I: GetProfileRequest,
-      O: GetProfileResponse,
+    authRefresh: {
+      name: "AuthRefresh",
+      I: RefreshRequest,
+      O: RefreshResponse,
       kind: MethodKind.Unary,
     },
     /**
-     * Updates a user's profile
+     * Defines the Logout RPC method
      *
-     * @generated from rpc auth.v1.ProfileService.UpdateProfile
+     * @generated from rpc auth.v1.AuthService.Logout
      */
-    updateProfile: {
-      name: "UpdateProfile",
-      I: UpdateProfileRequest,
-      O: UpdateProfileResponse,
+    logout: {
+      name: "Logout",
+      I: LogoutRequest,
+      O: LogoutResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Defines the GetAllSessions RPC method
+     *
+     * @generated from rpc auth.v1.AuthService.GetAllSessions
+     */
+    getAllSessions: {
+      name: "GetAllSessions",
+      I: GetAllSessionsRequest,
+      O: GetAllSessionsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Defines the InvalidateAllSessions RPC method
+     *
+     * @generated from rpc auth.v1.AuthService.InvalidateAllSessions
+     */
+    invalidateAllSessions: {
+      name: "InvalidateAllSessions",
+      I: InvalidateAllSessionsRequest,
+      O: InvalidateAllSessionsResponse,
       kind: MethodKind.Unary,
     },
   }

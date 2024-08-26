@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/service/basecontext"
@@ -26,7 +25,7 @@ func ServerPortUrl(config *config.Config) string {
 	return fmt.Sprintf(":%d", config.AuthService.Port)
 }
 
-func Serve(storeInstance store.Store, dragonstore *sessionstore.DragonSessionStore, cookiestore *sessionstore.CookieSessionStore, config *config.Config) {
+func Serve(storeInstance store.Store, config *config.Config) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -42,16 +41,16 @@ func Serve(storeInstance store.Store, dragonstore *sessionstore.DragonSessionSto
 
 	router := http.NewServeMux()
 
-	CreateRoutes(router, storeInstance, dragonstore, cookiestore, config)
+	CreateRoutes(router, storeInstance, config)
 
-	mux := RouteTaggingMiddleware(
-		loggingMiddleware(
-			// CSRFMiddleware(
-			CORSMiddleware(
-				router, config,
+	mux := CORSMiddleware(
+		RouteTaggingMiddleware(
+			loggingMiddleware(
+				// CSRFMiddleware(
+				router,
+				// ),
 			),
-			// ),
-		),
+		), config,
 	)
 	omux := otelhttp.NewHandler(mux, "/")
 
@@ -88,7 +87,6 @@ func Serve(storeInstance store.Store, dragonstore *sessionstore.DragonSessionSto
 
 		storeInstance.Db.Close()
 
-		err = dragonstore.Close()
 		if err != nil {
 			fmt.Printf("Error shutting down SessionStore: %v", err)
 		}

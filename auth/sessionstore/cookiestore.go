@@ -1,66 +1,66 @@
 package sessionstore
 
-import (
-	"encoding/gob"
+// import (
+// 	"encoding/gob"
 
-	"github.com/codeharik/Atlantic/auth/types"
-	"github.com/codeharik/Atlantic/config"
-	"github.com/google/uuid"
-	"github.com/gorilla/securecookie"
-	"github.com/gorilla/sessions"
-)
+// 	"github.com/codeharik/Atlantic/auth/types"
+// 	"github.com/codeharik/Atlantic/config"
+// 	"github.com/google/uuid"
+// 	"github.com/gorilla/securecookie"
+// 	"github.com/gorilla/sessions"
+// )
 
-type CookieSessionStore struct {
-	*sessionStore
-}
+// type CookieSessionStore struct {
+// 	*sessionStore
+// }
 
-type CookieStore struct {
-	*sessions.CookieStore
-}
+// type CookieStore struct {
+// 	*sessions.CookieStore
+// }
 
-func (store *CookieStore) NewSession() *sessions.Session {
-	return sessions.NewSession(store.CookieStore, "cookie")
-}
+// func (store *CookieStore) NewSession() *sessions.Session {
+// 	return sessions.NewSession(store.CookieStore, "cookie")
+// }
 
-func (store *CookieStore) StoreSessionKey(userID uuid.UUID, sessionKey string) error {
-	return nil
-}
+// func (store *CookieStore) StoreSessionKey(userID uuid.UUID, sessionKey string) error {
+// 	return nil
+// }
 
-func (store *CookieStore) GetAllSessionsForUser(userID uuid.UUID) ([]string, error) {
-	return nil, nil
-}
+// func (store *CookieStore) GetAllSessionsForUser(userID uuid.UUID) ([]string, error) {
+// 	return nil, nil
+// }
 
-func (store *CookieStore) InvalidateAllSessionsForUser(userID uuid.UUID) error {
-	return nil
-}
+// func (store *CookieStore) InvalidateAllSessionsForUser(userID uuid.UUID) error {
+// 	return nil
+// }
 
-func (store *CookieStore) Close() error {
-	return nil
-}
+// func (store *CookieStore) Close() error {
+// 	return nil
+// }
 
-func CreateCookieSessionStore(cfg config.Config) *CookieSessionStore {
-	// store := sessions.NewCookieStore(
-	// 	[]byte(cfg.Session.AuthKey), []byte(cfg.Session.EncryptionKey),
-	// )
-	store := sessions.NewCookieStore(
-		securecookie.GenerateRandomKey(32),
-		securecookie.GenerateRandomKey(32),
-	)
+// func CreateCookieSessionStore(cfg config.Config) *CookieSessionStore {
+// 	// store := sessions.NewCookieStore(
+// 	// 	[]byte(cfg.Session.AuthKey), []byte(cfg.Session.EncryptionKey),
+// 	// )
+// 	store := sessions.NewCookieStore(
+// 		securecookie.GenerateRandomKey(32),
+// 		securecookie.GenerateRandomKey(32),
+// 	)
 
-	store.Options = &sessions.Options{
-		Path:     "/",
-		MaxAge:   300,
-		HttpOnly: true,
-		Secure:   false,
-		// SameSite: http.SameSiteLaxMode,
-	}
+// 	store.Options = &sessions.Options{
+// 		Path:     "/",
+// 		MaxAge:   300,
+// 		HttpOnly: true,
+// 		Secure:   false,
+// 		// SameSite: http.SameSiteLaxMode,
+// 	}
 
-	gob.Register(types.AuthUser{})
+// 	gob.Register(types.AuthUser{})
 
-	return &CookieSessionStore{
-		CreateSessionStore(
-			"cookie",
-			&CookieStore{store},
-		),
-	}
-}
+// 	return &CookieSessionStore{
+// 		CreateSessionStore(
+// 			"cookie",
+// 			&CookieStore{store},
+// 		),
+// 	}
+// }

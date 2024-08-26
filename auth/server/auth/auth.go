@@ -1,393 +1,178 @@
-package AuthHandler
+package auth
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
+	"errors"
+	"time"
 
+	"connectrpc.com/connect"
+	"github.com/codeharik/Atlantic/auth/server/authn"
+	"github.com/codeharik/Atlantic/auth/server/connectbox"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
-	"github.com/codeharik/Atlantic/auth/types"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
-	"go.opentelemetry.io/contrib/bridges/otelslog"
-	"go.opentelemetry.io/otel"
 
-	auth_v1connect "github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"github.com/codeharik/Atlantic/auth/server/authbox"
+
+	"github.com/codeharik/Atlantic/auth/server/dragon"
+
+	v1 "github.com/codeharik/Atlantic/auth/api/v1"
+	"github.com/codeharik/Atlantic/auth/api/v1/v1connect"
 )
 
-const name = "Atlantic/Auth"
+type AuthServiceServer struct {
+	v1connect.UnimplementedAuthServiceHandler
 
-var (
-	tracer = otel.Tracer(name)
-	meter  = otel.Meter(name)
-	logger = otelslog.NewLogger(name)
-)
-
-type AuthHandler struct {
-	config      *config.Config
-	userStore   *user.Queries
-	dragonstore *sessionstore.DragonSessionStore
-	cookiestore *sessionstore.CookieSessionStore
+	*sessionstore.JwtConfig
+	userStore *user.Queries
+	dragon    *dragon.Dragon
 }
 
-func CreateAuthRoutes(
-	router *http.ServeMux,
+func CreateAuthServiceServer(
 	config *config.Config,
-	dragonstore *sessionstore.DragonSessionStore,
-	cookiestore *sessionstore.CookieSessionStore,
-	userstore *user.Queries,
-) *AuthHandler {
-	authHandler := &AuthHandler{
-		config:      config,
-		userStore:   userstore,
-		dragonstore: dragonstore,
-		cookiestore: cookiestore,
+	userStore *user.Queries,
+) AuthServiceServer {
+	d := dragon.CreateDragon(config)
+
+	return AuthServiceServer{
+		JwtConfig: &sessionstore.JwtConfig{Config: config},
+		userStore: userStore,
+		dragon:    &d,
 	}
-
-	router.HandleFunc("/login", authHandler.HandleLogin)
-	router.HandleFunc("/emaillogin", authHandler.EmailLoginHandler)
-	router.HandleFunc("/emailpage", authHandler.EmailLoginPageHandler)
-	router.HandleFunc("/grpcemailpage", authHandler.GrpcEmailLoginPageHandler)
-	router.HandleFunc("/logout", authHandler.Logout)
-	router.HandleFunc("/getAllSessionsForUser", authHandler.GetAllSessionsForUser)
-	router.HandleFunc("/invalidateAllSessionsForUser", authHandler.InvalidateAllSessionsForUser)
-	router.HandleFunc("/auth/discord/callback", authHandler.HandleCallback)
-
-	return authHandler
 }
 
-func (authHandler *AuthHandler) GrpcEmailLoginPageHandler(w http.ResponseWriter, r *http.Request) {
-	// Set the correct content type for the response
-	w.Header().Set("Content-Type", "text/html")
+func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (any, error) {
+	r, w := req.Request, req.Writer
 
-	fmt.Println(auth_v1connect.AuthServiceName)
-	fmt.Println(auth_v1connect.AuthServiceEmailLoginProcedure)
-
-	// ///////
-	// ///////
-	// ///////
-	_, err := authHandler.cookiestore.GetUser(r)
-	if err == nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
+	user, sessionNumber, err := s.dragon.DragonSessionCheck(r, w, s.Config)
+	if err := connectbox.AuthRedirect(r, w, err); err != nil {
+		return nil, err
 	}
-	/////////
-	/////////
-	/////////
-	/////////
 
-	// Write the HTML content directly as a string
-	w.Write([]byte(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Login</title>
-</head>
-<body>
-    <h2>GrpcEmailLogin</h2>
-    <form id="login-form">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br><br>
-        <button type="submit">Login</button>
-    </form>
-
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            fetch('/auth.v1.AuthService/EmailLogin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            })
-            .then(response => {
-				if (response.redirected) {
-					window.location.href = response.url;
-				}
-				return response.json()
-			})
-            .then(data => {
-                // Handle the response, e.g., display a success message or redirect
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
-</body>
-</html>
-`))
+	return connectbox.ConnectBox{
+		User:          user,
+		SessionNumber: sessionNumber,
+		R:             r,
+		W:             w,
+	}, nil
 }
 
-func (authHandler *AuthHandler) EmailLoginPageHandler(w http.ResponseWriter, r *http.Request) {
-	// Set the correct content type for the response
-	w.Header().Set("Content-Type", "text/html")
+func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error) {
+	errorResponse, responserError := connect.NewResponse(
+		&v1.EmailLoginResponse{},
+	),
+		connect.NewError(
+			connect.CodePermissionDenied,
+			errors.New("Invalid Email or password"),
+		)
 
-	// Write the HTML content directly as a string
-	w.Write([]byte(`
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title>Email Login</title>
-			</head>
-			<body>
-				<h2>Login</h2>
-				<form action="/emaillogin" method="POST">
-					<label for="email">Email:</label>
-					<input type="email" id="email" name="email" required>
-					<br><br>
-					<label for="password">Password:</label>
-					<input type="password" id="password" name="password" required>
-					<br><br>
-					<button type="submit">Login</button>
-				</form>
-			</body>
-			</html>
-			`))
-}
-
-func (authHandler *AuthHandler) EmailLoginHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := authHandler.cookiestore.GetUser(r)
-	if err == nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
+	cb, ok := connectbox.GetConnectBox(ctx)
+	if !ok {
+		return errorResponse, responserError
 	}
 
-	_, err = authHandler.dragonstore.GetUser(r)
-	if err == nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
-
-	email := r.FormValue("email")
-	password := r.FormValue("password")
+	email := req.Msg.Email
+	password := req.Msg.Password
 
 	// Fetch user by email
-	user, err := authHandler.userStore.GetAuthUserByEmail(
+	user, err := s.userStore.GetAuthUserByEmail(
 		context.Background(),
 		pgtype.Text{String: email, Valid: true})
 	if err != nil || !user.Email.Valid || !user.PasswordHash.Valid {
-		http.Error(w, "Invalid Email or password", http.StatusUnauthorized)
-		return
+		return errorResponse, responserError
 	}
 
 	// Verify password
 	if err := sessionstore.CheckPassword(user.PasswordHash.String, password); err != nil {
-		http.Error(w, "Invalid Email or password", http.StatusUnauthorized)
-		return
+		return errorResponse, responserError
 	}
 
-	u := types.AuthUser{
-		ID:    user.ID,
-		Email: user.Email.String,
+	use := &v1.AuthUser{
+		ID:       user.ID.String(),
+		Username: user.Username,
+		Email:    user.Email.String,
 	}
 
-	err = authHandler.cookiestore.SaveUserSession(r, w, u)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = authHandler.dragonstore.SaveUserSession(r, w, u)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	http.Redirect(w, r, "/profile", http.StatusSeeOther)
-}
-
-func (authHandler *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-	_, err := authHandler.cookiestore.GetUser(r)
+	uu, err := s.dragon.GetDragonUser(cb.R, cb.W, user.ID.String())
 	if err == nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
+		use.Sessions = uu.Sessions
 	}
 
-	_, err = authHandler.dragonstore.GetUser(r)
-	if err == nil {
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
+	session := &v1.Session{
+		ID:    user.ID.String(),
+		Agent: cb.R.UserAgent(),
+		Iat:   timestamppb.New(time.Now()),
+		Exp:   timestamppb.New(time.Now().Add(time.Hour * 24 * 7)),
 	}
 
-	url := authHandler.config.AuthService.OAuth.Discord.Config.AuthCodeURL(types.OauthStateString)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	sessionId, err := authbox.SaveSession(cb.R, cb.W, s.Config, session)
+	if err != nil {
+		return errorResponse, responserError
+	}
+
+	use.Sessions = append(use.Sessions, session)
+
+	err = s.dragon.SaveUser(cb.R, cb.W, use)
+	if err != nil {
+		return errorResponse, responserError
+	}
+
+	connectbox.AddRedirect(cb.W, "http://localhost:8080/profile")
+
+	return connect.NewResponse(
+			&v1.EmailLoginResponse{
+				SessionId: sessionId,
+			}),
+		nil
 }
 
-// func (authHandler *AuthHandler) RefreshTokenIfNeeded(token *oauth2.Token) (*oauth2.Token, error) {
-// 	if token.Expiry.Before(time.Now()) {
-// 		tokenSource := types.DiscordOauthConfig.TokenSource(context.Background(), token)
-// 		newToken, err := tokenSource.Token()
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		return newToken, nil
-// 	}
-// 	return token, nil
-// }
+func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
+	cb, ok := connectbox.GetConnectBox(ctx)
 
-func (authHandler *AuthHandler) HandleCallback(w http.ResponseWriter, r *http.Request) {
-	token, err := authHandler.config.AuthService.OAuth.Discord.Config.Exchange(context.Background(), r.FormValue("code"))
+	errorResponse, responserError := connect.NewResponse(&v1.RefreshResponse{}), connect.NewError(
+		connect.CodeInternal,
+		errors.New("Internal server error"),
+	)
+
+	if !ok {
+		return errorResponse, responserError
+	}
+
+	session := cb.User.Sessions[cb.SessionNumber]
+	session.Agent = cb.R.UserAgent() + time.Now().String()
+	session.Iat = timestamppb.New(time.Now())
+	session.Exp = timestamppb.New(time.Now().Add(time.Hour * 24 * 7))
+
+	sessionId, err := authbox.SaveSession(cb.R, cb.W, s.Config, session)
 	if err != nil {
-		log.Println("Code exchange failed: ", err)
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
+		return errorResponse, responserError
 	}
 
-	client := authHandler.config.AuthService.OAuth.Discord.Config.Client(context.Background(), token)
-	response, err := client.Get("https://discord.com/api/users/@me")
+	cb.User.Sessions[cb.SessionNumber] = session
+
+	err = s.dragon.SaveUser(cb.R, cb.W, cb.User)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get user info: %v", err)
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
+		return errorResponse, responserError
 	}
 
-	defer response.Body.Close()
-
-	var discorduser types.DiscordUser
-	if err := json.NewDecoder(response.Body).Decode(&discorduser); err != nil {
-		log.Println("Failed to decode user info: ", err)
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
-	}
-
-	u, err := authHandler.userStore.GetAuthUserByEmail(
-		context.Background(),
-		pgtype.Text{String: discorduser.Email, Valid: true})
-
-	uid := u.ID
-
-	if err != nil {
-		uid, err = uuid.NewV7()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		_, err := authHandler.userStore.CreateUser(context.Background(), user.CreateUserParams{
-			ID:       uid,
-			Username: discorduser.Username,
-			Email:    pgtype.Text{String: discorduser.Email, Valid: true},
-			IsAdmin:  false,
-		})
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-
-	user := types.AuthUser{
-		ID:       uid,
-		Username: discorduser.Username,
-		Avatar:   discorduser.Avatar,
-		Email:    discorduser.Email,
-		Verified: discorduser.Verified,
-	}
-
-	err = authHandler.dragonstore.SaveUserSession(r, w, user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = authHandler.cookiestore.SaveUserSession(r, w, user)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	http.Redirect(w, r, "/profile", http.StatusSeeOther)
+	return connect.NewResponse(
+			&v1.RefreshResponse{
+				SessionId: sessionId,
+			}),
+		nil
 }
 
-func (authHandler *AuthHandler) GetAllSessionsForUser(w http.ResponseWriter, r *http.Request) {
-	user, err := authHandler.dragonstore.GetUser(r)
-	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
-	}
-
-	sessions, err := authHandler.dragonstore.GetAllSessionsForUser(user.ID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	sessionsJSON, err := json.Marshal(sessions)
-	if err != nil {
-		http.Error(w, "Failed to marshal sessions to JSON", http.StatusInternalServerError)
-		return
-	}
-	w.Write(sessionsJSON)
+func (s AuthServiceServer) Logout(ctx context.Context, req *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.JwtAuthService.Logout is not implemented"))
 }
 
-// InvalidateAllSessionsForUser invalidates all sessions for the user
-func (authHandler *AuthHandler) InvalidateAllSessionsForUser(w http.ResponseWriter, r *http.Request) {
-	user, err := authHandler.dragonstore.GetUser(r)
-	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
-	}
-
-	err = authHandler.dragonstore.InvalidateAllSessionsForUser(user.ID)
-	if err != nil {
-		http.Error(w, "Failed to invalidate sessions: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
+func (s AuthServiceServer) GetAllSessions(ctx context.Context, req *connect.Request[v1.GetAllSessionsRequest]) (*connect.Response[v1.GetAllSessionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.JwtAuthService.GetAllSessions is not implemented"))
 }
 
-func (authHandler *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	_ = authHandler.dragonstore.RevokeSession(w, r)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	_ = authHandler.cookiestore.RevokeSession(w, r)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	http.Redirect(w, r, "/", http.StatusFound)
-}
-
-func (authHandler *AuthHandler) AuthMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, err := authHandler.cookiestore.GetUser(r)
-		if err != nil {
-			user, err = authHandler.dragonstore.GetUser(r)
-			if err != nil {
-				http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-				return
-			}
-			err := authHandler.cookiestore.SaveUserSession(r, w, user)
-			if err != nil {
-				http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-				return
-			}
-		}
-
-		ctx := sessionstore.SetContextWithUser(r, user)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.JwtAuthService.InvalidateAllSessions is not implemented"))
 }

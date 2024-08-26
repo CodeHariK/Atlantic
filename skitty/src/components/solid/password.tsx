@@ -2,7 +2,7 @@ import { createSignal, onCleanup, createEffect } from "solid-js";
 
 export function Password() {
     return <>
-        {/* <div class="relative">
+        <div class="relative">
             <input
                 type="password"
                 class="peer py-3 px-4 ps-11 block w-full bg-gray-100 border-transparent rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:border-transparent dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -82,7 +82,7 @@ export function Password() {
                     H
                 </button>
             </div>
-        </div> */}
+        </div>
     </>
 }
 

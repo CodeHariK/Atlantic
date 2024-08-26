@@ -1,36 +1,61 @@
-package ProfileHandler
+package profile
 
 import (
-	"fmt"
-	"net/http"
+	"context"
+	"errors"
 
-	AuthHandler "github.com/codeharik/Atlantic/auth/server/auth"
-	"github.com/codeharik/Atlantic/auth/sessionstore"
-	"github.com/codeharik/Atlantic/database/store/user"
+	"connectrpc.com/connect"
+	"github.com/codeharik/Atlantic/config"
+
+	dragon "github.com/redis/go-redis/v9"
+
+	// auth_app "github.com/codeharik/Atlantic/auth/api/v1"
+	v1 "github.com/codeharik/Atlantic/auth/api/v1"
+	"github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+	"github.com/codeharik/Atlantic/auth/server/connectbox"
 )
 
-type ProfileHandler struct {
-	store       *user.Queries
-	authHandler *AuthHandler.AuthHandler
+type ProfileServiceServer struct {
+	v1connect.UnimplementedProfileServiceHandler
+
+	dragon *dragon.Client
 }
 
-func CreateProfileRoutes(router *http.ServeMux, store *user.Queries, authHandler *AuthHandler.AuthHandler) {
-	profileHandler := &ProfileHandler{
-		store:       store,
-		authHandler: authHandler,
+func CreateProfileServiceServer(
+	config *config.Config,
+) ProfileServiceServer {
+	dragonURI := config.DragonConnectionUri()
+
+	options, err := dragon.ParseURL(dragonURI)
+	if err != nil {
+		panic(err)
 	}
 
-	router.Handle("/profile", authHandler.AuthMiddleware(
-		http.HandlerFunc(profileHandler.HandleProfile)),
-	)
+	dragonClient := dragon.NewClient(options)
+
+	return ProfileServiceServer{
+		dragon: dragonClient,
+	}
 }
 
-func (profileHandler *ProfileHandler) HandleProfile(w http.ResponseWriter, r *http.Request) {
-	user, shouldReturn := sessionstore.GetUserFromContext(r, w)
-	if shouldReturn {
-		return
+func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect.Request[v1.GetProfileRequest]) (*connect.Response[v1.GetProfileResponse], error) {
+	cb, ok := connectbox.GetConnectBox(ctx)
+
+	errorResponse, responserError := connect.NewResponse(&v1.GetProfileResponse{}),
+		connect.NewError(
+			connect.CodeInternal,
+			errors.New("Internal server error"),
+		)
+
+	if !ok {
+		return errorResponse, responserError
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "User Info:\nID: %s\nUsername: %s\nEmail: %s", user.ID, user.Username, user.Email)
+	return connect.NewResponse(&v1.GetProfileResponse{User: cb.User}), nil
+}
+
+func (profile ProfileServiceServer) UpdateProfile(context.Context, *connect.Request[v1.UpdateProfileRequest]) (*connect.Response[v1.UpdateProfileResponse], error) {
+	return nil, connect.NewError(
+		connect.CodeUnimplemented,
+		errors.New("UpdateProfile is not implemented"))
 }

@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -18,6 +20,8 @@ type AuthUser struct {
 	Avatar   *string   `json:"avatar"`
 	Email    string    `json:"email"`
 	Verified bool      `json:"verified"`
+	IssuedAt time.Time `json:"iat"`
+	ExpireAt time.Time `json:"exp"`
 }
 
 var (
