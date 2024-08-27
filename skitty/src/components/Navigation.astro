@@ -1,6 +1,6 @@
 ---
 import { Soc } from "../data/Constants.astro";
-import ThemeIcon from "./ThemeIcon.astro";
+import { ThemeToggle } from "../components/theme_toggle";
 ---
 
 <div class="nav-bar">
@@ -11,6 +11,6 @@ import ThemeIcon from "./ThemeIcon.astro";
         <a title="About" href="/about">About</a>
         <a title="Blog" href={Soc.Blog}>Blog</a>
         <a title="Github" href={Soc.Github} target="_blank">GitHub</a>
-        <ThemeIcon />
+        <ThemeToggle client:only="solid" />
     </div>
 </div>

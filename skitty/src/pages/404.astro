@@ -1,11 +1,11 @@
 ---
 import RainbowText from "../components/RainbowText.astro";
-import SpaceLayout from "../layouts/SpaceLayout.astro";
+import AstroLayout from "../layouts/AstroLayout.astro";
 
 const title = "404: Not Found";
 ---
 
-<SpaceLayout overflow center title={title}>
+<AstroLayout title={title}>
     <img title="Astro" src="/logos/astro.svg" />
 
     <h3>Path: {Astro.url.pathname}</h3>
@@ -15,7 +15,7 @@ const title = "404: Not Found";
             <RainbowText>Return to Home</RainbowText>
         </a>
     </h2>
-</SpaceLayout>
+</AstroLayout>
 
 <style is:inline>
     img {

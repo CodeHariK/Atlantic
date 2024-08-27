@@ -1,12 +1,10 @@
 ---
 import AstroLayout from "../layouts/AstroLayout.astro";
-import ThemeIconSolid from "../components/ThemeIconSolid.astro";
 
 import { ProfilePage } from "../components/profile";
 ---
 
-<AstroLayout title={"Docs"} center={false}>
-    <ThemeIconSolid />
+<AstroLayout title={"Docs"}>
     <div class="flex h-full">
         <ProfilePage client:only="solid" />
     </div>

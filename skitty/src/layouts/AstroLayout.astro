@@ -2,15 +2,18 @@
 import { ViewTransitions } from "astro:transitions";
 import { fade } from "astro:transitions";
 import { SEO } from "astro-seo";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 import { Soc, Urls, StructuredSchema } from "../data/Constants.astro";
+import "../styles/global.css";
 
 interface Props {
 	title: string;
-	overflow?: boolean;
-	center?: boolean;
+	one?: boolean;
+	two?: boolean;
 }
 
-const { title, overflow, center } = Astro.props;
+const { title, one, two } = Astro.props;
 ---
 
 <!doctype html>
@@ -23,8 +26,6 @@ const { title, overflow, center } = Astro.props;
 		<link rel="apple-touch-icon" href={Urls.LogoImg} />
 		<meta name="robots" content="index, follow" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<meta
 			name="keywords"
 			content="Flutter, Firebase, cross-platform app, developer, mobile app, real-time data, cloud firestore, cloud function, authentication, security rules, ios, android, web, cloud, cost-effective, stunning, performance, expertise, figma, stunning, time, commited, consistent"
@@ -32,20 +33,6 @@ const { title, overflow, center } = Astro.props;
 
 		<script type="application/ld+json" set:html={StructuredSchema} />
 
-		<link
-			rel="preload"
-			href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-			as="style"
-			onload="
-			this.onload = null; this.rel = 'stylesheet'
-			"
-		/>
-		<noscript
-			><link
-				href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
-				rel="stylesheet"
-			/></noscript
-		>
 		<meta name="generator" content={Astro.generator} />
 		<title>
 			{title}
@@ -86,24 +73,24 @@ const { title, overflow, center } = Astro.props;
 		/>
 	</head>
 	<body
-		class="h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+		class={`${one ? "h-full" : ""} ${two ? "h-screen" : ""} flex flex-col items-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white`}
 	>
+		<Header />
 		<main
-			class:list={[{ "h-screen": true, overflow, center }]}
+			class={`w-full items-center text-center ${two ? "h-full overflow-y-scroll" : ""}`}
 			transition:animate={fade({ duration: "0.4s" })}
 		>
-			<article class:list={[{ "h-screen": true, center }]}>
-				<slot />
-			</article>
+			<slot />
 		</main>
+		<Footer />
 	</body>
 </html>
 
 <script is:inline>
 	function colorMode() {
 		if (
-			localStorage.getItem("color-theme") === "dark" ||
-			(!("color-theme" in localStorage) &&
+			localStorage.getItem("theme") === "dark" ||
+			(!("theme" in localStorage) &&
 				window.matchMedia("(prefers-color-scheme: dark)").matches)
 		) {
 			document.documentElement.classList.add("dark");

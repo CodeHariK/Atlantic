@@ -2,21 +2,21 @@ import { CheckboxGroup } from "./checkbox";
 import { RadioGroup } from "./radio";
 import { SearchInput } from "./search";
 import { Select } from "./select";
+import { Password } from "./password";
 import { SpaceForm, SpaceDebugInfo, SpaceFormError } from "./spaceform";
 import { TextInput } from "./textinput";
 import * as yup from 'yup';
 
 export const validationSchema = yup.object().shape({
     first_name: yup.string().required('First name is required'),
-    last_name: yup.string().required('Last name is required'),
-    company: yup.string().required('Company is required'),
-    phone: yup.string().matches(/^[0-9]{3}-[0-9]{2}-[0-9]{3}$/, 'Phone number must be in the format 123-45-678').required('Phone number is required'),
-    website: yup.string().url('Must be a valid URL').required('Website URL is required'),
-    visitors: yup.number().positive('Must be a positive number').required('Unique visitors are required'),
-    email: yup.string().email('Invalid email address').required('Email address is required'),
-    password: yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required'),
-    confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Confirm password is required'),
-    remember: yup.bool().oneOf([true], 'You must accept the terms and conditions'),
+    // company: yup.string().required('Company is required'),
+    // phone: yup.string().matches(/^[0-9]{3}-[0-9]{2}-[0-9]{3}$/, 'Phone number must be in the format 123-45-678').required('Phone number is required'),
+    // website: yup.string().url('Must be a valid URL').required('Website URL is required'),
+    // visitors: yup.number().positive('Must be a positive number').required('Unique visitors are required'),
+    // email: yup.string().email('Invalid email address').required('Email address is required'),
+    // password: yup.string().min(8, 'Password must be at least 8 characters long').required('Password is required'),
+    // confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Confirm password is required'),
+    // remember: yup.bool().oneOf([true], 'You must accept the terms and conditions'),
 });
 
 export function ClassicForm() {
@@ -89,7 +89,11 @@ export function ClassicForm() {
                 ]}
             />
 
+            <Password name="password" type="password" placeholder="placeholder" />
+
             <SpaceFormError />
+
+            <button type="submit">Submit</button>
         </SpaceForm>
     </>
 }

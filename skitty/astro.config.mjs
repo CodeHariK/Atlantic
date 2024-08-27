@@ -1,7 +1,6 @@
 
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
-import purgecss from 'astro-purgecss';
 import solid from '@astrojs/solid-js';
 
 import sitemap from '@astrojs/sitemap';
@@ -13,8 +12,7 @@ export default defineConfig({
     integrations: [
         solid(),
 
-        tailwind(),
-        purgecss(),
+        tailwind({ applyBaseStyles: false, }),
 
         sitemap(),
         robotsTxt(),

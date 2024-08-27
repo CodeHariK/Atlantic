@@ -1,12 +1,10 @@
 ---
 import AstroLayout from "../layouts/AstroLayout.astro";
-import ThemeIconSolid from "../components/ThemeIconSolid.astro";
 import RefreshButton from "../components/refresh_button";
 import LoginBox from "../components/login";
 ---
 
-<AstroLayout title={"Docs"} center={false}>
-    <ThemeIconSolid />
+<AstroLayout title={"Docs"}>
     <div class="flex h-full">
         <LoginBox client:only="solid" />
         <RefreshButton client:only="solid" />

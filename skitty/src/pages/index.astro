@@ -1,11 +1,8 @@
 ---
-import ThemeIconSolid from "../components/ThemeIconSolid.astro";
 import AstroLayout from "../layouts/AstroLayout.astro";
 
-import "../components/solid/solidstyle.css";
-
 import { ClassicForm } from "../components/solid/form";
-import { Password } from "../components/solid/password";
+
 import {
     ToggleOptions,
     PositionBox,
@@ -15,16 +12,13 @@ import {
 const title = "Hari Krishnan : Flutter Firebase Freelance Developer";
 ---
 
-<AstroLayout title={title}>
-    <ThemeIconSolid />
-
-    <Password client:only="solid" />
-
+<AstroLayout two title={title}>
     <!-- <div style="right: 50%; top: 50%; position: absolute;">
         <ToggleOptions client:only="solid" />
     </div> -->
 
     <ClassicForm client:only="solid" />
+    <!-- <ClassicForm client:only="solid" /> -->
 </AstroLayout>
 
 <style>

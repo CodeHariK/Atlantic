@@ -2,14 +2,11 @@
 module.exports = {
     content: [
         './src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
-        "./node_modules/flowbite/**/*.js",
     ],
 
-    // purge: ['./src/**/*.html', './src/**/*.jsx', './src/**/*.tsx'],
+    purge: ['./src/**/*.html', './src/**/*.jsx', './src/**/*.astro', './src/**/*.tsx'],
 
-    plugins: [
-        require('flowbite/plugin'),
-    ],
+    plugins: [],
 
     darkMode: 'class',
 
@@ -36,10 +33,10 @@ module.exports = {
             xl: '1440px',
         },
         fontFamily: {
-            sans: ['Menlo', 'Pacifico', 'Graphik', 'sans-serif'],
-            serif: ['Menlo', 'Pacifico', 'Merriweather', 'serif'],
+            sans: ['Menlo', 'sans-serif'],
+            serif: ['Menlo', 'Merriweather', 'serif'],
             'body': [
-                'Menlo', 'Pacifico',
+                'Menlo',
                 'ui-sans-serif',
                 'system-ui',
             ],

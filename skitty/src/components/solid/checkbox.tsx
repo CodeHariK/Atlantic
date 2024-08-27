@@ -36,7 +36,6 @@ export function CheckboxGroup(props: CheckboxGroupProps) {
                                 } else {
                                     s.add(option().name)
                                 }
-
                                 handleChange(props.id, props.checkboxes.filter((c) => s.has(c.name)).map((c) => c.name))
                             }}
                         />
