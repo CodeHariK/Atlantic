@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package profile.v1;
 
-import "v1/auth.proto";
+import "auth/v1/auth.proto";
 import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/codeharik/Atlantic/auth/api/v1";
+option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
 // The profile service definition
 service ProfileService {

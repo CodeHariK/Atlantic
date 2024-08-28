@@ -1,0 +1,31 @@
+{
+  "name": "skitty",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@bufbuild/buf": "^1.38.0",
+    "@bufbuild/protobuf": "^1.10.0",
+    "@bufbuild/protoc-gen-es": "^1.10.0",
+    "@connectrpc/connect": "^1.4.0",
+    "@connectrpc/connect-web": "^1.4.0",
+    "@connectrpc/protoc-gen-connect-es": "^1.4.0",
+    "@solid-primitives/keyed": "^1.2.2",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.14.3",
+    "solid-js": "^1.8.21",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.2",
+    "vite-plugin-solid": "^2.10.2"
+  }
+}

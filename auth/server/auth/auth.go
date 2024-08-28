@@ -19,8 +19,8 @@ import (
 
 	"github.com/codeharik/Atlantic/auth/server/dragon"
 
-	v1 "github.com/codeharik/Atlantic/auth/api/v1"
-	"github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
+	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
 )
 
 type AuthServiceServer struct {

@@ -1,0 +1,51 @@
+import { type JSX } from 'solid-js';
+
+import { createContext, useContext } from 'solid-js';
+import { createStore } from 'solid-js/store';
+import { createConnectTransport } from "@connectrpc/connect-web";
+import { createPromiseClient, PromiseClient } from '@connectrpc/connect';
+import { AuthService } from "../../api/auth/v1/auth_connect.ts";
+import { ProfileService } from "../../api/auth/v1/profile_connect.ts";
+import { Service } from '../data/Constants.ts';
+
+// Define the types for the services
+type AuthConnect = PromiseClient<typeof AuthService>;
+type ProfileConnect = PromiseClient<typeof ProfileService>;
+
+interface ConnectContextType {
+    authclient: AuthConnect;
+    profileclient: ProfileConnect;
+}
+
+// Create the context with a default value of undefined
+const ConnectContext = createContext<ConnectContextType | undefined>(undefined);
+
+type ConnectProviderProps = {
+    children: JSX.Element;
+};
+
+export function ConnectProvider(props: ConnectProviderProps) {
+    const transport = createConnectTransport({
+        baseUrl: Service.Auth,
+        credentials: "include",
+    });
+
+    const [clients] = createStore<ConnectContextType>({
+        authclient: createPromiseClient(AuthService, transport),
+        profileclient: createPromiseClient(ProfileService, transport),
+    });
+
+    return (
+        <ConnectContext.Provider value={clients}>
+            {props.children}
+        </ConnectContext.Provider>
+    );
+}
+
+export function useConnect(): ConnectContextType {
+    const context = useContext(ConnectContext);
+    if (!context) {
+        throw new Error("useClients must be used within a ClientsProvider");
+    }
+    return context;
+}

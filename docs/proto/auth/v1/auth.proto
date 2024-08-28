@@ -2,11 +2,56 @@ syntax = "proto3";
 
 package auth.v1;
 
-option go_package = "github.com/codeharik/Atlantic/auth/api/v1";
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
 service AuthService {
   // Defines the EmailLogin RPC method
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse);
+
+  // Defines the EmailLogin RPC method
+  rpc AuthRefresh(RefreshRequest) returns (RefreshResponse);
+
+  // Defines the Logout RPC method
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+
+  // Defines the GetAllSessions RPC method
+  rpc GetAllSessions(GetAllSessionsRequest) returns (GetAllSessionsResponse);
+
+  // Defines the InvalidateAllSessions RPC method
+  rpc InvalidateAllSessions(InvalidateAllSessionsRequest) returns (InvalidateAllSessionsResponse);
+}
+
+// The user profile message
+message AuthUser {
+  string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
+  string username = 2 [(buf.validate.field).string = {
+    min_len: 8,
+    max_len: 24
+  }]; // Username must be 8-24 characters
+
+  string phone_number = 3 [(buf.validate.field) = {
+    string: {
+      // `pattern` specifies a regex pattern and validates that the string field
+      // must match it.
+      pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$",
+    },
+    ignore_empty: true,
+  }];
+  
+  string avatar = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_DEFAULT_VALUE,
+    (buf.validate.field).string.uri = true
+  ]; // Avatar must be a valid URL
+
+  // `email` validates that a string field is a valid email.
+  string email = 5 [(buf.validate.field).string.email = true];
+
+  bool verified = 6;
+
+  repeated Session sessions = 7;
 }
 
 // The request message for the EmailLogin method
@@ -17,8 +62,50 @@ message EmailLoginRequest {
 
 // The response message for the EmailLogin method
 message EmailLoginResponse {
-  int32 id = 1;
-  string username = 2;
-  string email = 3;
-  string error_message = 4;
+  string sessionId = 1;
+  string accessToken = 2;
+}
+
+message RefreshRequest {
+  string sessionId = 1;
+}
+
+message RefreshResponse {
+  string sessionId = 1;
+  string accessToken = 2;
+}
+
+// Logout Messages
+message LogoutRequest {
+  string token = 1;
+}
+
+message LogoutResponse {
+  bool success = 1;
+}
+
+// GetAllSessions Messages
+message GetAllSessionsRequest {
+  string userId = 1;
+}
+
+message GetAllSessionsResponse {
+  repeated Session sessions = 1;
+}
+
+// Define Session message
+message Session {
+  string ID = 1 [(buf.validate.field).string.uuid = true];
+  string agent = 2; // UserAgent
+  google.protobuf.Timestamp iat = 3; // IssuedAt time
+  google.protobuf.Timestamp exp = 4; // ExpireAt time
+}
+
+// InvalidateAllSessions Messages
+message InvalidateAllSessionsRequest {
+  string userId = 1;
+}
+
+message InvalidateAllSessionsResponse {
+  bool success = 1;
 }

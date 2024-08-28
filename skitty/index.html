@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+   <link rel="icon" type="image/svg+xml" href="/logos/vite.svg" />
+   <link rel="apple-touch-icon" href="/vite.svg" />
+
+   <meta name="robots" content="index, follow" />
+   <link rel="sitemap" href="/sitemap-index.xml" />
+
+   <meta name="keywords" content="atlantic, shopping, payments" />
+   <meta name="description" content="atlantic, shopping, payments">
+
+   <meta name="author" content="Atlantic">
+   <link rel="canonical" href="https://www.atlantic.shark.run/">
+
+   <!-- Open Graph meta tags -->
+   <meta property="og:title" content="Atlantic">
+   <meta property="og:type" content="website">
+   <meta property="og:image" content="/logos/vite.svg">
+   <meta property="og:url" content="https://www.atlantic.shark.run/">
+   <meta property="og:locale" content="en_IN">
+   <meta property="og:site_name" content="Atlantic">
+
+   <!-- Twitter meta tags -->
+   <meta name="twitter:creator" content="@codeharik">
+   <meta name="twitter:card" content="summary_large_image">
+   <meta name="twitter:site" content="@codeharik">
+   <meta name="twitter:title" content="Atlantic">
+   <meta name="twitter:description" content="atlantic, shopping, payments">
+   <meta name="twitter:image" content="/logos/vite.svg">
+   <meta name="twitter:image:alt" content="Atlantic">
+
+   <!-- Structured Data (JSON-LD) -->
+   <script type="application/ld+json">
+      {
+         "@context": "http://schema.org",
+         "@type": "Person",
+         "name": "Atlantic",
+         "url": "https://www.atlantic.shark.run/",
+         "sameAs": [
+            "https://www.linkedin.com/in/codeharik",
+            "https://twitter.com/codeharik",
+            "https://hashnode.com/@CodeHariK",
+            "https://blog.shark.run",
+            "https://github.com/codeharik"
+         ]
+      }
+   </script>
+
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+   <script type="module" src="/src/index.tsx"></script>
+   <script>
+      function colorMode() {
+         if (
+            localStorage.getItem("theme") === "dark" ||
+            (!("theme" in localStorage) &&
+               window.matchMedia("(prefers-color-scheme: dark)").matches)
+         ) {
+            document.documentElement.classList.add("dark");
+         } else {
+            document.documentElement.classList.remove("dark");
+         }
+      }
+      colorMode();
+   </script>
+</body>
+
+</html>

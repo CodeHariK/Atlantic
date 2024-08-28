@@ -5,7 +5,7 @@ package auth.v1;
 import "buf/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/codeharik/Atlantic/auth/api/v1";
+option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
 service AuthService {
   // Defines the EmailLogin RPC method

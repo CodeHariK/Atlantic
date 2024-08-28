@@ -81,7 +81,7 @@ func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
 
 	window.onload = () => {
 		window.ui = SwaggerUIBundle({
-			url: '%s',
+			url: '/docs/openapi.json',
 			dom_id: 'body',
 		});
 
@@ -92,6 +92,6 @@ func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
 
 </script>
 
-</html>`, serviceName, "/docs/openapi.json", serviceName)))
+</html>`, serviceName, serviceName)))
 	})
 }

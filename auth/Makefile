@@ -2,7 +2,7 @@ PORT = 8080
 CONTAINER_NAME = auth
 
 docs:
-	cp -r ./proto/ ../docs/proto/auth
+	cp -r ./proto/ ../docs/proto
 
 buf:
 	buf dep update

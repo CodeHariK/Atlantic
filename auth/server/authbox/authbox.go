@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	v1 "github.com/codeharik/Atlantic/auth/api/v1"
+	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/config"
 )

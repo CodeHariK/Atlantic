@@ -10,8 +10,9 @@ plugins:
     opt: paths=source_relative
 
   - remote: buf.build/connectrpc/es:v1.4.0
-    out: ../skitty/api/auth
+    out: ../skitty/api
     opt: target=ts
   - remote: buf.build/bufbuild/es:v1.10.0
-    out: ../skitty/api/auth
+    out: ../skitty/api
     opt: target=ts
+

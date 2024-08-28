@@ -9,9 +9,9 @@ import (
 
 	dragon "github.com/redis/go-redis/v9"
 
-	// auth_app "github.com/codeharik/Atlantic/auth/api/v1"
-	v1 "github.com/codeharik/Atlantic/auth/api/v1"
-	"github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+	// auth_app "github.com/codeharik/Atlantic/auth/api/auth/v1"
+	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
+	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
 	"github.com/codeharik/Atlantic/auth/server/connectbox"
 )
 

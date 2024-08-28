@@ -1,12 +1,15 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/auth/v1/auth.proto",
+    "title": "auth/v1/auth.proto",
     "version": "version not set"
   },
   "tags": [
     {
       "name": "AuthService"
+    },
+    {
+      "name": "ProfileService"
     },
     {
       "name": "UserService"
@@ -19,6 +22,39 @@
     "application/json"
   ],
   "paths": {
+    "/auth.v1.AuthService/AuthRefresh": {
+      "post": {
+        "summary": "Defines the EmailLogin RPC method",
+        "operationId": "AuthService_AuthRefresh",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RefreshResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RefreshRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
     "/auth.v1.AuthService/EmailLogin": {
       "post": {
         "summary": "Defines the EmailLogin RPC method",
@@ -49,6 +85,171 @@
         ],
         "tags": [
           "AuthService"
+        ]
+      }
+    },
+    "/auth.v1.AuthService/GetAllSessions": {
+      "post": {
+        "summary": "Defines the GetAllSessions RPC method",
+        "operationId": "AuthService_GetAllSessions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAllSessionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetAllSessionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/auth.v1.AuthService/InvalidateAllSessions": {
+      "post": {
+        "summary": "Defines the InvalidateAllSessions RPC method",
+        "operationId": "AuthService_InvalidateAllSessions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1InvalidateAllSessionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1InvalidateAllSessionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/auth.v1.AuthService/Logout": {
+      "post": {
+        "summary": "Defines the Logout RPC method",
+        "operationId": "AuthService_Logout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LogoutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LogoutRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/profile.v1.ProfileService/GetProfile": {
+      "post": {
+        "summary": "Retrieves the profile of a user by ID",
+        "operationId": "ProfileService_GetProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
+        ]
+      }
+    },
+    "/profile.v1.ProfileService/UpdateProfile": {
+      "post": {
+        "summary": "Updates a user's profile",
+        "operationId": "ProfileService_UpdateProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProfileService"
         ]
       }
     },
@@ -306,9 +507,47 @@
         }
       }
     },
+    "v1AuthUser": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "title": "ID is required and must not be empty"
+        },
+        "username": {
+          "type": "string",
+          "title": "Username must be 8-24 characters"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "title": "Avatar must be a valid URL"
+        },
+        "email": {
+          "type": "string",
+          "description": "`email` validates that a string field is a valid email."
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Session"
+          }
+        }
+      },
+      "title": "The user profile message"
+    },
     "v1CreateUserRequest": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "username": {
           "type": "string"
         },
@@ -346,8 +585,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "createdAt": {
           "type": "string",
@@ -363,8 +601,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -386,17 +623,10 @@
     "v1EmailLoginResponse": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "username": {
+        "sessionId": {
           "type": "string"
         },
-        "email": {
-          "type": "string"
-        },
-        "errorMessage": {
+        "accessToken": {
           "type": "string"
         }
       },
@@ -422,8 +652,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "username": {
           "type": "string"
@@ -455,6 +684,27 @@
         "location": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "v1GetAllSessionsRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      },
+      "title": "GetAllSessions Messages"
+    },
+    "v1GetAllSessionsResponse": {
+      "type": "object",
+      "properties": {
+        "sessions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Session"
+          }
         }
       }
     },
@@ -478,8 +728,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "username": {
           "type": "string"
@@ -492,12 +741,29 @@
         }
       }
     },
+    "v1GetProfileRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ID is required and must not be empty"
+        }
+      },
+      "title": "The message for fetching a profile"
+    },
+    "v1GetProfileResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1AuthUser"
+        }
+      }
+    },
     "v1GetUserByIDRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -513,8 +779,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "username": {
           "type": "string"
@@ -546,6 +811,23 @@
         "location": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "v1InvalidateAllSessionsRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      },
+      "title": "InvalidateAllSessions Messages"
+    },
+    "v1InvalidateAllSessionsResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
         }
       }
     },
@@ -578,8 +860,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "username": {
           "type": "string"
@@ -614,6 +895,83 @@
         }
       }
     },
+    "v1LogoutRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "Logout Messages"
+    },
+    "v1LogoutResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1RefreshRequest": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1RefreshResponse": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Session": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "agent": {
+          "type": "string",
+          "title": "UserAgent"
+        },
+        "iat": {
+          "type": "string",
+          "format": "date-time",
+          "title": "IssuedAt time"
+        },
+        "exp": {
+          "type": "string",
+          "format": "date-time",
+          "title": "ExpireAt time"
+        }
+      },
+      "title": "Define Session message"
+    },
+    "v1UpdateProfileRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1AuthUser",
+          "title": "AuthUser is required"
+        }
+      },
+      "title": "The message for updating a profile"
+    },
+    "v1UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
     "v1UpdateUserRequest": {
       "type": "object",
       "properties": {
@@ -641,8 +999,7 @@
           "format": "int32"
         },
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -658,8 +1015,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "updatedAt": {
           "type": "string",

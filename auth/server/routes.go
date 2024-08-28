@@ -21,7 +21,7 @@ import (
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"
 
-	"github.com/codeharik/Atlantic/auth/api/v1/v1connect"
+	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
 )
 
 func CreateRoutes(
