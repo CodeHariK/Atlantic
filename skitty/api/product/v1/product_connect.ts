@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateProductRequest, CreateProductResponse, DeleteProductRequest, DeleteProductResponse, GetCategoryPathRequest, GetCategoryPathResponse, GetProductByIDRequest, GetProductByIDResponse, GetProductWithCategoryPathRequest, GetProductWithCategoryPathResponse, ListProductsRequest, ListProductsResponse, UpdateProductRequest, UpdateProductResponse } from "./product_pb.js";
+import { CreateProductCategoryRequest, CreateProductCategoryResponse, CreateProductCommentRequest, CreateProductCommentResponse, CreateProductRequest, CreateProductResponse, CreateProductReviewRequest, CreateProductReviewResponse, DeleteProductCategoryRequest, DeleteProductCategoryResponse, DeleteProductCommentRequest, DeleteProductCommentResponse, DeleteProductRequest, DeleteProductResponse, DeleteProductReviewRequest, DeleteProductReviewResponse, GetCategoryPathRequest, GetCategoryPathResponse, GetProductByIDRequest, GetProductByIDResponse, GetProductCategoryByIDRequest, GetProductCategoryByIDResponse, GetProductCommentByIDRequest, GetProductCommentByIDResponse, GetProductReviewByIDRequest, GetProductReviewByIDResponse, GetProductWithCategoryPathRequest, GetProductWithCategoryPathResponse, ListCategoriesByParentIDRequest, ListCategoriesByParentIDResponse, ListProductReviewsRequest, ListProductReviewsResponse, ListProductsRequest, ListProductsResponse, ListReviewsWithCommentsRequest, ListReviewsWithCommentsResponse, ListRootCategoriesRequest, ListRootCategoriesResponse, UpdateProductCategoryRequest, UpdateProductCategoryResponse, UpdateProductCommentRequest, UpdateProductCommentResponse, UpdateProductRequest, UpdateProductResponse, UpdateProductReviewRequest, UpdateProductReviewResponse } from "./product_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -22,12 +22,66 @@ export const ProductService = {
       kind: MethodKind.Unary,
     },
     /**
+     * @generated from rpc product.v1.ProductService.CreateProductCategory
+     */
+    createProductCategory: {
+      name: "CreateProductCategory",
+      I: CreateProductCategoryRequest,
+      O: CreateProductCategoryResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.CreateProductComment
+     */
+    createProductComment: {
+      name: "CreateProductComment",
+      I: CreateProductCommentRequest,
+      O: CreateProductCommentResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.CreateProductReview
+     */
+    createProductReview: {
+      name: "CreateProductReview",
+      I: CreateProductReviewRequest,
+      O: CreateProductReviewResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
      * @generated from rpc product.v1.ProductService.DeleteProduct
      */
     deleteProduct: {
       name: "DeleteProduct",
       I: DeleteProductRequest,
       O: DeleteProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.DeleteProductCategory
+     */
+    deleteProductCategory: {
+      name: "DeleteProductCategory",
+      I: DeleteProductCategoryRequest,
+      O: DeleteProductCategoryResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.DeleteProductComment
+     */
+    deleteProductComment: {
+      name: "DeleteProductComment",
+      I: DeleteProductCommentRequest,
+      O: DeleteProductCommentResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.DeleteProductReview
+     */
+    deleteProductReview: {
+      name: "DeleteProductReview",
+      I: DeleteProductReviewRequest,
+      O: DeleteProductReviewResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -49,12 +103,57 @@ export const ProductService = {
       kind: MethodKind.Unary,
     },
     /**
+     * @generated from rpc product.v1.ProductService.GetProductCategoryByID
+     */
+    getProductCategoryByID: {
+      name: "GetProductCategoryByID",
+      I: GetProductCategoryByIDRequest,
+      O: GetProductCategoryByIDResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.GetProductCommentByID
+     */
+    getProductCommentByID: {
+      name: "GetProductCommentByID",
+      I: GetProductCommentByIDRequest,
+      O: GetProductCommentByIDResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.GetProductReviewByID
+     */
+    getProductReviewByID: {
+      name: "GetProductReviewByID",
+      I: GetProductReviewByIDRequest,
+      O: GetProductReviewByIDResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
      * @generated from rpc product.v1.ProductService.GetProductWithCategoryPath
      */
     getProductWithCategoryPath: {
       name: "GetProductWithCategoryPath",
       I: GetProductWithCategoryPathRequest,
       O: GetProductWithCategoryPathResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.ListCategoriesByParentID
+     */
+    listCategoriesByParentID: {
+      name: "ListCategoriesByParentID",
+      I: ListCategoriesByParentIDRequest,
+      O: ListCategoriesByParentIDResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.ListProductReviews
+     */
+    listProductReviews: {
+      name: "ListProductReviews",
+      I: ListProductReviewsRequest,
+      O: ListProductReviewsResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -67,12 +166,57 @@ export const ProductService = {
       kind: MethodKind.Unary,
     },
     /**
+     * @generated from rpc product.v1.ProductService.ListReviewsWithComments
+     */
+    listReviewsWithComments: {
+      name: "ListReviewsWithComments",
+      I: ListReviewsWithCommentsRequest,
+      O: ListReviewsWithCommentsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.ListRootCategories
+     */
+    listRootCategories: {
+      name: "ListRootCategories",
+      I: ListRootCategoriesRequest,
+      O: ListRootCategoriesResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
      * @generated from rpc product.v1.ProductService.UpdateProduct
      */
     updateProduct: {
       name: "UpdateProduct",
       I: UpdateProductRequest,
       O: UpdateProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.UpdateProductCategory
+     */
+    updateProductCategory: {
+      name: "UpdateProductCategory",
+      I: UpdateProductCategoryRequest,
+      O: UpdateProductCategoryResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.UpdateProductComment
+     */
+    updateProductComment: {
+      name: "UpdateProductComment",
+      I: UpdateProductCommentRequest,
+      O: UpdateProductCommentResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.UpdateProductReview
+     */
+    updateProductReview: {
+      name: "UpdateProductReview",
+      I: UpdateProductReviewRequest,
+      O: UpdateProductReviewResponse,
       kind: MethodKind.Unary,
     },
   }

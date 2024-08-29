@@ -568,8 +568,7 @@
           "format": "date-time"
         },
         "location": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -682,8 +681,7 @@
           "format": "date-time"
         },
         "location": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -809,8 +807,7 @@
           "format": "date-time"
         },
         "location": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -890,8 +887,7 @@
           "format": "date-time"
         },
         "location": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -995,8 +991,7 @@
           "format": "date-time"
         },
         "location": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "id": {
           "type": "string"

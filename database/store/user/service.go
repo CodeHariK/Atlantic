@@ -4,6 +4,7 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 
@@ -51,7 +52,10 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 		}
 	}
 	if v := req.Msg.GetLocation(); v != nil {
-		arg.Location = pgtype.Int4{Valid: true, Int32: v.Value}
+		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
 	}
 
 	result, err := s.querier.CreateUser(ctx, arg)
@@ -162,7 +166,10 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 		}
 	}
 	if v := req.Msg.GetLocation(); v != nil {
-		arg.Location = pgtype.Int4{Valid: true, Int32: v.Value}
+		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
 	}
 	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
 		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)

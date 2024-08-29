@@ -2,8 +2,8 @@
 
 -- Create the product_variants table
 CREATE TABLE IF NOT EXISTS "product_variants" (
-    "id" SERIAL PRIMARY KEY,
-    "product_id" INT NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+    "id" UUID PRIMARY KEY,
+    "product_id" UUID NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
     "variant_name" VARCHAR(255) NOT NULL
 );
 

@@ -4,13 +4,16 @@ package seller
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log/slog"
 
 	"connectrpc.com/connect"
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
 
 	pb "github.com/codeharik/Atlantic/database/api/seller/v1"
 	"github.com/codeharik/Atlantic/database/api/seller/v1/v1connect"
+	"github.com/codeharik/Atlantic/database/internal/validation"
 )
 
 type Service struct {
@@ -20,21 +23,36 @@ type Service struct {
 
 func (s *Service) CreateSeller(ctx context.Context, req *connect.Request[pb.CreateSellerRequest]) (*connect.Response[pb.CreateSellerResponse], error) {
 	var arg CreateSellerParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
 	arg.Name = req.Msg.GetName()
 	if v := req.Msg.GetLocation(); v != nil {
-		arg.Location = pgtype.Int4{Valid: true, Int32: v.Value}
+		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
 	}
 
-	err := s.querier.CreateSeller(ctx, arg)
+	result, err := s.querier.CreateSeller(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "CreateSeller")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateSellerResponse{}), nil
+	return connect.NewResponse(&pb.CreateSellerResponse{CreateSellerRow: toCreateSellerRow(result)}), nil
 }
 
 func (s *Service) DeleteSeller(ctx context.Context, req *connect.Request[pb.DeleteSellerRequest]) (*connect.Response[pb.DeleteSellerResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	err := s.querier.DeleteSeller(ctx, id)
 	if err != nil {
@@ -45,14 +63,20 @@ func (s *Service) DeleteSeller(ctx context.Context, req *connect.Request[pb.Dele
 }
 
 func (s *Service) GetSellerByID(ctx context.Context, req *connect.Request[pb.GetSellerByIDRequest]) (*connect.Response[pb.GetSellerByIDResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	result, err := s.querier.GetSellerByID(ctx, id)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "GetSellerByID")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.GetSellerByIDResponse{Seller: toSeller(result)}), nil
+	return connect.NewResponse(&pb.GetSellerByIDResponse{GetSellerByIdRow: toGetSellerByIDRow(result)}), nil
 }
 
 func (s *Service) ListSellers(ctx context.Context, req *connect.Request[pb.ListSellersRequest]) (*connect.Response[pb.ListSellersResponse], error) {
@@ -64,18 +88,26 @@ func (s *Service) ListSellers(ctx context.Context, req *connect.Request[pb.ListS
 	}
 	res := new(pb.ListSellersResponse)
 	for _, r := range result {
-		res.List = append(res.List, toSeller(r))
+		res.List = append(res.List, toListSellersRow(r))
 	}
 	return connect.NewResponse(res), nil
 }
 
 func (s *Service) UpdateSeller(ctx context.Context, req *connect.Request[pb.UpdateSellerRequest]) (*connect.Response[pb.UpdateSellerResponse], error) {
 	var arg UpdateSellerParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
 	arg.Name = req.Msg.GetName()
 	if v := req.Msg.GetLocation(); v != nil {
-		arg.Location = pgtype.Int4{Valid: true, Int32: v.Value}
+		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
 	}
-	arg.ID = req.Msg.GetId()
 
 	err := s.querier.UpdateSeller(ctx, arg)
 	if err != nil {

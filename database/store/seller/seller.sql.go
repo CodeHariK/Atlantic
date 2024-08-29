@@ -8,28 +8,42 @@ package seller
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createSeller = `-- name: CreateSeller :exec
-INSERT INTO seller (name, location) VALUES ($1, $2) RETURNING id
+const createSeller = `-- name: CreateSeller :one
+INSERT INTO
+    seller (id, name, location)
+VALUES ($1, $2, $3) RETURNING id,
+    created_at,
+    updated_at
 `
 
 type CreateSellerParams struct {
+	ID       uuid.UUID   `json:"id"`
 	Name     string      `json:"name"`
-	Location pgtype.Int4 `json:"location"`
+	Location pgtype.UUID `json:"location"`
 }
 
-func (q *Queries) CreateSeller(ctx context.Context, arg CreateSellerParams) error {
-	_, err := q.db.Exec(ctx, createSeller, arg.Name, arg.Location)
-	return err
+type CreateSellerRow struct {
+	ID        uuid.UUID        `json:"id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+}
+
+func (q *Queries) CreateSeller(ctx context.Context, arg CreateSellerParams) (CreateSellerRow, error) {
+	row := q.db.QueryRow(ctx, createSeller, arg.ID, arg.Name, arg.Location)
+	var i CreateSellerRow
+	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
+	return i, err
 }
 
 const deleteSeller = `-- name: DeleteSeller :exec
 DELETE FROM seller WHERE id = $1
 `
 
-func (q *Queries) DeleteSeller(ctx context.Context, id int32) error {
+func (q *Queries) DeleteSeller(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteSeller, id)
 	return err
 }
@@ -38,9 +52,15 @@ const getSellerByID = `-- name: GetSellerByID :one
 SELECT id, name, location FROM seller WHERE id = $1
 `
 
-func (q *Queries) GetSellerByID(ctx context.Context, id int32) (Seller, error) {
+type GetSellerByIDRow struct {
+	ID       uuid.UUID   `json:"id"`
+	Name     string      `json:"name"`
+	Location pgtype.UUID `json:"location"`
+}
+
+func (q *Queries) GetSellerByID(ctx context.Context, id uuid.UUID) (GetSellerByIDRow, error) {
 	row := q.db.QueryRow(ctx, getSellerByID, id)
-	var i Seller
+	var i GetSellerByIDRow
 	err := row.Scan(&i.ID, &i.Name, &i.Location)
 	return i, err
 }
@@ -49,15 +69,21 @@ const listSellers = `-- name: ListSellers :many
 SELECT id, name, location FROM seller
 `
 
-func (q *Queries) ListSellers(ctx context.Context) ([]Seller, error) {
+type ListSellersRow struct {
+	ID       uuid.UUID   `json:"id"`
+	Name     string      `json:"name"`
+	Location pgtype.UUID `json:"location"`
+}
+
+func (q *Queries) ListSellers(ctx context.Context) ([]ListSellersRow, error) {
 	rows, err := q.db.Query(ctx, listSellers)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Seller{}
+	items := []ListSellersRow{}
 	for rows.Next() {
-		var i Seller
+		var i ListSellersRow
 		if err := rows.Scan(&i.ID, &i.Name, &i.Location); err != nil {
 			return nil, err
 		}
@@ -70,16 +96,16 @@ func (q *Queries) ListSellers(ctx context.Context) ([]Seller, error) {
 }
 
 const updateSeller = `-- name: UpdateSeller :exec
-UPDATE seller SET name = $1, location = $2 WHERE id = $3
+UPDATE seller SET name = $2, location = $3 WHERE id = $1
 `
 
 type UpdateSellerParams struct {
+	ID       uuid.UUID   `json:"id"`
 	Name     string      `json:"name"`
-	Location pgtype.Int4 `json:"location"`
-	ID       int32       `json:"id"`
+	Location pgtype.UUID `json:"location"`
 }
 
 func (q *Queries) UpdateSeller(ctx context.Context, arg UpdateSellerParams) error {
-	_, err := q.db.Exec(ctx, updateSeller, arg.Name, arg.Location, arg.ID)
+	_, err := q.db.Exec(ctx, updateSeller, arg.ID, arg.Name, arg.Location)
 	return err
 }

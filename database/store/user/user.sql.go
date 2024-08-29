@@ -46,7 +46,7 @@ type CreateUserParams struct {
 	Gender      pgtype.Text `json:"gender"`
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
-	Location    pgtype.Int4 `json:"location"`
+	Location    pgtype.UUID `json:"location"`
 }
 
 type CreateUserRow struct {
@@ -107,7 +107,7 @@ type FindUserByUsernameRow struct {
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+	Location    pgtype.UUID      `json:"location"`
 }
 
 func (q *Queries) FindUserByUsername(ctx context.Context, username string) (FindUserByUsernameRow, error) {
@@ -185,7 +185,7 @@ type GetUserByIDRow struct {
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+	Location    pgtype.UUID      `json:"location"`
 }
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow, error) {
@@ -239,7 +239,7 @@ type ListUsersRow struct {
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.Int4      `json:"location"`
+	Location    pgtype.UUID      `json:"location"`
 }
 
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
@@ -296,7 +296,7 @@ type UpdateUserParams struct {
 	Gender      pgtype.Text `json:"gender"`
 	IsAdmin     bool        `json:"is_admin"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
-	Location    pgtype.Int4 `json:"location"`
+	Location    pgtype.UUID `json:"location"`
 	ID          uuid.UUID   `json:"id"`
 }
 

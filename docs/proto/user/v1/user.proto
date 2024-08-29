@@ -24,21 +24,22 @@ service UserService {
 }
 
 message Attribute {
-  int32 id = 1;
+  string id = 1;
   string attribute_name = 2;
   string attribute_value = 3;
 }
 
 message Cart {
-  int32 id = 1;
+  string id = 1;
   string user_id = 2;
-  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
 }
 
 message CartItem {
-  int32 id = 1;
-  int32 cart_id = 2;
-  int32 product_id = 3;
+  string id = 1;
+  string cart_id = 2;
+  string product_id = 3;
   int32 quantity = 4;
 }
 
@@ -50,7 +51,7 @@ message CreateUserRequest {
   google.protobuf.StringValue gender = 5;
   bool is_admin = 6;
   google.protobuf.Timestamp date_of_birth = 7;
-  google.protobuf.Int32Value location = 8;
+  google.protobuf.StringValue location = 8;
 }
 
 message CreateUserResponse {
@@ -87,7 +88,7 @@ message FindUserByUsernameRow {
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
-  google.protobuf.Int32Value location = 10;
+  google.protobuf.StringValue location = 10;
 }
 
 message GetAuthUserByEmailRequest {
@@ -123,7 +124,7 @@ message GetUserByIDRow {
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
-  google.protobuf.Int32Value location = 10;
+  google.protobuf.StringValue location = 10;
 }
 
 message GooseDbVersion {
@@ -134,9 +135,9 @@ message GooseDbVersion {
 }
 
 message Inventory {
-  int32 id = 1;
-  int32 product_id = 2;
-  int32 seller_id = 3;
+  string id = 1;
+  string variant_id = 2;
+  string seller_id = 3;
   int32 quantity = 4;
   int64 amount_units = 5;
   int32 amount_nanos = 6;
@@ -162,11 +163,11 @@ message ListUsersRow {
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
-  google.protobuf.Int32Value location = 10;
+  google.protobuf.StringValue location = 10;
 }
 
 message Location {
-  int32 id = 1;
+  string id = 1;
   string address = 2;
   string city = 3;
   string state = 4;
@@ -177,7 +178,7 @@ message Location {
 }
 
 message Order {
-  int32 id = 1;
+  string id = 1;
   string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
@@ -189,10 +190,10 @@ message Order {
 }
 
 message OrderItem {
-  int32 id = 1;
-  int32 order_id = 2;
-  int32 product_id = 3;
-  int32 seller_id = 4;
+  string id = 1;
+  string order_id = 2;
+  string product_id = 3;
+  string seller_id = 4;
   int32 quantity = 5;
   int64 amount_units = 6;
   int32 amount_nanos = 7;
@@ -202,68 +203,69 @@ message OrderItem {
 }
 
 message Product {
-  int32 id = 1;
+  string id = 1;
   google.protobuf.StringValue product_name = 2;
-  int32 category_id = 3;
+  string category_id = 3;
 }
 
 message ProductAttribute {
-  int32 id = 1;
-  int32 product_id = 2;
-  google.protobuf.Int32Value variant_id = 3;
-  int32 attribute_id = 4;
+  string id = 1;
+  string product_id = 2;
+  google.protobuf.StringValue variant_id = 3;
+  string attribute_id = 4;
 }
 
 message ProductCategory {
-  int32 id = 1;
+  string id = 1;
   string name = 2;
-  google.protobuf.Int32Value parent_id = 3;
+  google.protobuf.StringValue parent_id = 3;
 }
 
 message ProductComment {
-  int32 id = 1;
+  string id = 1;
   google.protobuf.StringValue comment = 2;
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp updated_at = 4;
 }
 
 message ProductDescription {
-  int32 id = 1;
-  int32 product_id = 2;
-  google.protobuf.Int32Value product_variant_id = 3;
+  string id = 1;
+  string product_id = 2;
+  google.protobuf.StringValue variant_id = 3;
   google.protobuf.StringValue description = 4;
   repeated string images = 5;
   repeated string videos = 6;
 }
 
 message ProductPromotion {
-  int32 id = 1;
-  string promotion_name = 2;
-  int32 discount = 3;
-  int32 product_id = 4;
+  string id = 1;
+  string variant_id = 2;
+  string promotion_name = 3;
+  int32 discount = 4;
   google.protobuf.Timestamp start_date = 5;
   google.protobuf.Timestamp end_date = 6;
 }
 
 message ProductReview {
-  int32 id = 1;
+  string id = 1;
   string user_id = 2;
-  int32 product_id = 3;
-  int32 seller_id = 4;
+  string product_id = 3;
+  string seller_id = 4;
   int32 rating = 5;
-  google.protobuf.Int32Value comment = 6;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message ProductVariant {
-  int32 id = 1;
-  int32 product_id = 2;
+  string id = 1;
+  string product_id = 2;
   string variant_name = 3;
 }
 
 message Seller {
-  int32 id = 1;
+  string id = 1;
   string name = 2;
-  google.protobuf.Int32Value location = 3;
+  google.protobuf.StringValue location = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
 }
 
 message UpdateUserRequest {
@@ -273,7 +275,7 @@ message UpdateUserRequest {
   google.protobuf.StringValue gender = 4;
   bool is_admin = 5;
   google.protobuf.Timestamp date_of_birth = 6;
-  google.protobuf.Int32Value location = 7;
+  google.protobuf.StringValue location = 7;
   string id = 8;
 }
 
@@ -295,7 +297,7 @@ message User {
   google.protobuf.StringValue gender = 6;
   bool is_admin = 7;
   google.protobuf.Timestamp date_of_birth = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
-  google.protobuf.Int32Value location = 11;
+  google.protobuf.StringValue location = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
 }

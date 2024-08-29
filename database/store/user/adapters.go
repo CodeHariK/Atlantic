@@ -3,6 +3,8 @@
 package user
 
 import (
+	"encoding/json"
+
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
@@ -46,8 +48,8 @@ func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow
 	if in.UpdatedAt.Valid {
 		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
-	if in.Location.Valid {
-		out.Location = wrapperspb.Int32(in.Location.Int32)
+	if v, err := json.Marshal(in.Location); err == nil {
+		out.Location = wrapperspb.String(string(v))
 	}
 	return out
 }
@@ -90,8 +92,8 @@ func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
 	if in.UpdatedAt.Valid {
 		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
-	if in.Location.Valid {
-		out.Location = wrapperspb.Int32(in.Location.Int32)
+	if v, err := json.Marshal(in.Location); err == nil {
+		out.Location = wrapperspb.String(string(v))
 	}
 	return out
 }
@@ -120,8 +122,8 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 	if in.UpdatedAt.Valid {
 		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
-	if in.Location.Valid {
-		out.Location = wrapperspb.Int32(in.Location.Int32)
+	if v, err := json.Marshal(in.Location); err == nil {
+		out.Location = wrapperspb.String(string(v))
 	}
 	return out
 }

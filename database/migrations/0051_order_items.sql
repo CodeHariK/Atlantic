@@ -2,15 +2,15 @@
 
 -- Create "order_items" table
 CREATE TABLE IF NOT EXISTS "order_items" (
-    "id" SERIAL PRIMARY KEY,
-    "order_id" INTEGER NOT NULL REFERENCES "orders" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "product_id" INTEGER NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "seller_id" INTEGER NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "id" UUID PRIMARY KEY,
+    "order_id" UUID NOT NULL REFERENCES "orders" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "product_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "seller_id" UUID NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "quantity" INTEGER NOT NULL,
-
     "amount_units" BIGINT NOT NULL,
     "amount_nanos" INTEGER NOT NULL,
     "amount_currency" VARCHAR(4) NOT NULL,
+
 
     "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
         "status" IN (
@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS "order_items" (
             'DELIVERED'
         )
     ),
-
     "payment_status" VARCHAR(12) NOT NULL CHECK (
         "status" IN (
             'REFUNDED',

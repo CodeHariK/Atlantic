@@ -48,6 +48,102 @@
         ]
       }
     },
+    "/product.v1.ProductService/CreateProductCategory": {
+      "post": {
+        "operationId": "ProductService_CreateProductCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateProductCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateProductCategoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/CreateProductComment": {
+      "post": {
+        "operationId": "ProductService_CreateProductComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateProductCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateProductCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/CreateProductReview": {
+      "post": {
+        "operationId": "ProductService_CreateProductReview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateProductReviewResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateProductReviewRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
     "/product.v1.ProductService/DeleteProduct": {
       "post": {
         "operationId": "ProductService_DeleteProduct",
@@ -72,6 +168,102 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1DeleteProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/DeleteProductCategory": {
+      "post": {
+        "operationId": "ProductService_DeleteProductCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteProductCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteProductCategoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/DeleteProductComment": {
+      "post": {
+        "operationId": "ProductService_DeleteProductComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteProductCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteProductCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/DeleteProductReview": {
+      "post": {
+        "operationId": "ProductService_DeleteProductReview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteProductReviewResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DeleteProductReviewRequest"
             }
           }
         ],
@@ -144,6 +336,102 @@
         ]
       }
     },
+    "/product.v1.ProductService/GetProductCategoryByID": {
+      "post": {
+        "operationId": "ProductService_GetProductCategoryByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProductCategoryByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetProductCategoryByIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/GetProductCommentByID": {
+      "post": {
+        "operationId": "ProductService_GetProductCommentByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProductCommentByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetProductCommentByIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/GetProductReviewByID": {
+      "post": {
+        "operationId": "ProductService_GetProductReviewByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProductReviewByIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetProductReviewByIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
     "/product.v1.ProductService/GetProductWithCategoryPath": {
       "post": {
         "operationId": "ProductService_GetProductWithCategoryPath",
@@ -168,6 +456,70 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1GetProductWithCategoryPathRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/ListCategoriesByParentID": {
+      "post": {
+        "operationId": "ProductService_ListCategoriesByParentID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListCategoriesByParentIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListCategoriesByParentIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/ListProductReviews": {
+      "post": {
+        "operationId": "ProductService_ListProductReviews",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListProductReviewsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListProductReviewsRequest"
             }
           }
         ],
@@ -208,6 +560,70 @@
         ]
       }
     },
+    "/product.v1.ProductService/ListReviewsWithComments": {
+      "post": {
+        "operationId": "ProductService_ListReviewsWithComments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListReviewsWithCommentsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListReviewsWithCommentsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/ListRootCategories": {
+      "post": {
+        "operationId": "ProductService_ListRootCategories",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRootCategoriesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ListRootCategoriesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
     "/product.v1.ProductService/UpdateProduct": {
       "post": {
         "operationId": "ProductService_UpdateProduct",
@@ -232,6 +648,102 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1UpdateProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/UpdateProductCategory": {
+      "post": {
+        "operationId": "ProductService_UpdateProductCategory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductCategoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductCategoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/UpdateProductComment": {
+      "post": {
+        "operationId": "ProductService_UpdateProductComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/UpdateProductReview": {
+      "post": {
+        "operationId": "ProductService_UpdateProductReview",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductReviewResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductReviewRequest"
             }
           }
         ],
@@ -270,44 +782,147 @@
         }
       }
     },
+    "v1CreateProductCategoryRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateProductCategoryResponse": {
+      "type": "object",
+      "properties": {
+        "productCategory": {
+          "$ref": "#/definitions/v1ProductCategory"
+        }
+      }
+    },
+    "v1CreateProductCommentRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateProductCommentResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "v1CreateProductRequest": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "productName": {
           "type": "string"
         },
         "categoryId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
     "v1CreateProductResponse": {
       "type": "object",
       "properties": {
-        "product": {
-          "$ref": "#/definitions/v1Product"
+        "value": {
+          "type": "string"
         }
       }
+    },
+    "v1CreateProductReviewRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "sellerId": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1CreateProductReviewResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DeleteProductCategoryRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DeleteProductCategoryResponse": {
+      "type": "object"
+    },
+    "v1DeleteProductCommentRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DeleteProductCommentResponse": {
+      "type": "object"
     },
     "v1DeleteProductRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
     "v1DeleteProductResponse": {
       "type": "object"
     },
+    "v1DeleteProductReviewRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DeleteProductReviewResponse": {
+      "type": "object"
+    },
     "v1GetCategoryPathRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -323,8 +938,7 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -336,12 +950,59 @@
         }
       }
     },
+    "v1GetProductCategoryByIDRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetProductCategoryByIDResponse": {
+      "type": "object",
+      "properties": {
+        "productCategory": {
+          "$ref": "#/definitions/v1ProductCategory"
+        }
+      }
+    },
+    "v1GetProductCommentByIDRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetProductCommentByIDResponse": {
+      "type": "object",
+      "properties": {
+        "productComment": {
+          "$ref": "#/definitions/v1ProductComment"
+        }
+      }
+    },
+    "v1GetProductReviewByIDRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetProductReviewByIDResponse": {
+      "type": "object",
+      "properties": {
+        "productReview": {
+          "$ref": "#/definitions/v1ProductReview"
+        }
+      }
+    },
     "v1GetProductWithCategoryPathRequest": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -357,18 +1018,61 @@
       "type": "object",
       "properties": {
         "productId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "productName": {
           "type": "string"
         },
         "categoryId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "categoryPath": {
           "type": "string"
+        }
+      }
+    },
+    "v1ListCategoriesByParentIDRequest": {
+      "type": "object",
+      "properties": {
+        "parentId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ListCategoriesByParentIDResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ProductCategory"
+          }
+        }
+      }
+    },
+    "v1ListProductReviewsRequest": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListProductReviewsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ProductReview"
+          }
         }
       }
     },
@@ -397,21 +1101,176 @@
         }
       }
     },
+    "v1ListReviewsWithCommentsRequest": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListReviewsWithCommentsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ListReviewsWithCommentsRow"
+          }
+        }
+      }
+    },
+    "v1ListReviewsWithCommentsRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "sellerId": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ListRootCategoriesRequest": {
+      "type": "object"
+    },
+    "v1ListRootCategoriesResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ProductCategory"
+          }
+        }
+      }
+    },
     "v1Product": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "productName": {
           "type": "string"
         },
         "categoryId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
+    },
+    "v1ProductCategory": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ProductComment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ProductReview": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "sellerId": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1UpdateProductCategoryRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateProductCategoryResponse": {
+      "type": "object"
+    },
+    "v1UpdateProductCommentRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateProductCommentResponse": {
+      "type": "object"
     },
     "v1UpdateProductRequest": {
       "type": "object",
@@ -420,12 +1279,10 @@
           "type": "string"
         },
         "categoryId": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         },
         "id": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string"
         }
       }
     },
@@ -436,6 +1293,30 @@
           "$ref": "#/definitions/v1Product"
         }
       }
+    },
+    "v1UpdateProductReviewRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "sellerId": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1UpdateProductReviewResponse": {
+      "type": "object"
     }
   }
 }

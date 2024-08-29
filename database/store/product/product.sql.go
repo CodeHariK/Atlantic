@@ -8,36 +8,34 @@ package product
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO
-    products (product_name, category_id)
-VALUES ($1, $2)
-RETURNING
-    id,
-    product_name,
-    category_id
+    products (id, product_name, category_id)
+VALUES ($1, $2, $3) RETURNING id
 `
 
 type CreateProductParams struct {
+	ID          uuid.UUID   `json:"id"`
 	ProductName pgtype.Text `json:"product_name"`
-	CategoryID  int32       `json:"category_id"`
+	CategoryID  uuid.UUID   `json:"category_id"`
 }
 
-func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
-	row := q.db.QueryRow(ctx, createProduct, arg.ProductName, arg.CategoryID)
-	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.CategoryID)
-	return i, err
+func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, createProduct, arg.ID, arg.ProductName, arg.CategoryID)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const deleteProduct = `-- name: DeleteProduct :exec
 DELETE FROM products WHERE id = $1
 `
 
-func (q *Queries) DeleteProduct(ctx context.Context, id int32) error {
+func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteProduct, id)
 	return err
 }
@@ -46,7 +44,7 @@ const getProductByID = `-- name: GetProductByID :one
 SELECT id, product_name, category_id FROM products WHERE id = $1
 `
 
-func (q *Queries) GetProductByID(ctx context.Context, id int32) (Product, error) {
+func (q *Queries) GetProductByID(ctx context.Context, id uuid.UUID) (Product, error) {
 	row := q.db.QueryRow(ctx, getProductByID, id)
 	var i Product
 	err := row.Scan(&i.ID, &i.ProductName, &i.CategoryID)
@@ -93,17 +91,15 @@ SET
     product_name = $1,
     category_id = $2
 WHERE
-    id = $3
-RETURNING
-    id,
+    id = $3 RETURNING id,
     product_name,
     category_id
 `
 
 type UpdateProductParams struct {
 	ProductName pgtype.Text `json:"product_name"`
-	CategoryID  int32       `json:"category_id"`
-	ID          int32       `json:"id"`
+	CategoryID  uuid.UUID   `json:"category_id"`
+	ID          uuid.UUID   `json:"id"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {

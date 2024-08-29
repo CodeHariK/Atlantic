@@ -9,23 +9,24 @@ import uuid
 
 @dataclasses.dataclass()
 class Attribute:
-    id: int
+    id: uuid.UUID
     attribute_name: str
     attribute_value: str
 
 
 @dataclasses.dataclass()
 class Cart:
-    id: int
+    id: uuid.UUID
     user_id: uuid.UUID
-    updated_at: Optional[datetime.datetime]
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
 
 
 @dataclasses.dataclass()
 class CartItem:
-    id: int
-    cart_id: int
-    product_id: int
+    id: uuid.UUID
+    cart_id: uuid.UUID
+    product_id: uuid.UUID
     quantity: int
 
 
@@ -39,9 +40,9 @@ class GooseDbVersion:
 
 @dataclasses.dataclass()
 class Inventory:
-    id: int
-    product_id: int
-    seller_id: int
+    id: uuid.UUID
+    variant_id: uuid.UUID
+    seller_id: uuid.UUID
     quantity: int
     amount_units: int
     amount_nanos: int
@@ -50,7 +51,7 @@ class Inventory:
 
 @dataclasses.dataclass()
 class Location:
-    id: int
+    id: uuid.UUID
     address: str
     city: str
     state: str
@@ -62,10 +63,10 @@ class Location:
 
 @dataclasses.dataclass()
 class Order:
-    id: int
+    id: uuid.UUID
     user_id: uuid.UUID
     created_at: datetime.datetime
-    updated_at: Optional[datetime.datetime]
+    updated_at: datetime.datetime
     amount_units: int
     amount_nanos: int
     amount_currency: str
@@ -75,10 +76,10 @@ class Order:
 
 @dataclasses.dataclass()
 class OrderItem:
-    id: int
-    order_id: int
-    product_id: int
-    seller_id: int
+    id: uuid.UUID
+    order_id: uuid.UUID
+    product_id: uuid.UUID
+    seller_id: uuid.UUID
     quantity: int
     amount_units: int
     amount_nanos: int
@@ -89,39 +90,37 @@ class OrderItem:
 
 @dataclasses.dataclass()
 class Product:
-    id: int
+    id: uuid.UUID
     product_name: Optional[str]
-    category_id: int
+    category_id: uuid.UUID
 
 
 @dataclasses.dataclass()
 class ProductAttribute:
-    id: int
-    product_id: int
-    variant_id: Optional[int]
-    attribute_id: int
+    id: uuid.UUID
+    product_id: uuid.UUID
+    variant_id: Optional[uuid.UUID]
+    attribute_id: uuid.UUID
 
 
 @dataclasses.dataclass()
 class ProductCategory:
-    id: int
+    id: uuid.UUID
     name: str
-    parent_id: Optional[int]
+    parent_id: Optional[uuid.UUID]
 
 
 @dataclasses.dataclass()
 class ProductComment:
-    id: int
+    id: uuid.UUID
     comment: Optional[str]
-    created_at: datetime.datetime
-    updated_at: Optional[datetime.datetime]
 
 
 @dataclasses.dataclass()
 class ProductDescription:
-    id: int
-    product_id: int
-    product_variant_id: Optional[int]
+    id: uuid.UUID
+    product_id: uuid.UUID
+    variant_id: Optional[uuid.UUID]
     description: Optional[str]
     images: Optional[List[str]]
     videos: Optional[List[str]]
@@ -129,36 +128,39 @@ class ProductDescription:
 
 @dataclasses.dataclass()
 class ProductPromotion:
-    id: int
+    id: uuid.UUID
+    variant_id: uuid.UUID
     promotion_name: str
     discount: int
-    product_id: int
     start_date: datetime.date
     end_date: datetime.date
 
 
 @dataclasses.dataclass()
 class ProductReview:
-    id: int
+    id: uuid.UUID
     user_id: uuid.UUID
-    product_id: int
-    seller_id: int
+    product_id: uuid.UUID
+    seller_id: uuid.UUID
     rating: int
-    comment: Optional[int]
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
 
 
 @dataclasses.dataclass()
 class ProductVariant:
-    id: int
-    product_id: int
+    id: uuid.UUID
+    product_id: uuid.UUID
     variant_name: str
 
 
 @dataclasses.dataclass()
 class Seller:
-    id: int
+    id: uuid.UUID
     name: str
-    location: Optional[int]
+    location: Optional[uuid.UUID]
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
 
 
 @dataclasses.dataclass()
@@ -171,6 +173,6 @@ class User:
     gender: Optional[str]
     is_admin: bool
     date_of_birth: Optional[datetime.date]
+    location: Optional[uuid.UUID]
     created_at: datetime.datetime
     updated_at: datetime.datetime
-    location: Optional[int]

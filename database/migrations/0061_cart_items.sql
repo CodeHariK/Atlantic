@@ -2,9 +2,9 @@
 
 -- Create "cart_items" table
 CREATE TABLE IF NOT EXISTS "cart_items" (
-    "id" SERIAL PRIMARY KEY,
-    "cart_id" INTEGER NOT NULL REFERENCES "carts" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "product_id" INTEGER NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "id" UUID PRIMARY KEY,
+    "cart_id" UUID NOT NULL REFERENCES "carts" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "product_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "quantity" INTEGER NOT NULL
 );
 

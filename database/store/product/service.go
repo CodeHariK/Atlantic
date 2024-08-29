@@ -4,13 +4,17 @@ package product
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log/slog"
 
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 
 	pb "github.com/codeharik/Atlantic/database/api/product/v1"
 	"github.com/codeharik/Atlantic/database/api/product/v1/v1connect"
+	"github.com/codeharik/Atlantic/database/internal/validation"
 )
 
 type Service struct {
@@ -20,21 +24,118 @@ type Service struct {
 
 func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.CreateProductRequest]) (*connect.Response[pb.CreateProductResponse], error) {
 	var arg CreateProductParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
 	if v := req.Msg.GetProductName(); v != nil {
 		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
 	}
-	arg.CategoryID = req.Msg.GetCategoryId()
+	if v, err := uuid.Parse(req.Msg.GetCategoryId()); err != nil {
+		err = fmt.Errorf("invalid CategoryID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.CategoryID = v
+	}
 
 	result, err := s.querier.CreateProduct(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "CreateProduct")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateProductResponse{Product: toProduct(result)}), nil
+	return connect.NewResponse(&pb.CreateProductResponse{Value: result.String()}), nil
+}
+
+func (s *Service) CreateProductCategory(ctx context.Context, req *connect.Request[pb.CreateProductCategoryRequest]) (*connect.Response[pb.CreateProductCategoryResponse], error) {
+	var arg CreateProductCategoryParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	arg.Name = req.Msg.GetName()
+	if v := req.Msg.GetParentId(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.ParentID); err != nil {
+			err = fmt.Errorf("invalid ParentID: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+
+	result, err := s.querier.CreateProductCategory(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateProductCategory")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateProductCategoryResponse{ProductCategory: toProductCategory(result)}), nil
+}
+
+func (s *Service) CreateProductComment(ctx context.Context, req *connect.Request[pb.CreateProductCommentRequest]) (*connect.Response[pb.CreateProductCommentResponse], error) {
+	var arg CreateProductCommentParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	if v := req.Msg.GetComment(); v != nil {
+		arg.Comment = pgtype.Text{Valid: true, String: v.Value}
+	}
+
+	result, err := s.querier.CreateProductComment(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateProductComment")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateProductCommentResponse{Value: result.String()}), nil
+}
+
+func (s *Service) CreateProductReview(ctx context.Context, req *connect.Request[pb.CreateProductReviewRequest]) (*connect.Response[pb.CreateProductReviewResponse], error) {
+	var arg CreateProductReviewParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.UserID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ProductID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetSellerId()); err != nil {
+		err = fmt.Errorf("invalid SellerID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.SellerID = v
+	}
+	arg.Rating = req.Msg.GetRating()
+
+	result, err := s.querier.CreateProductReview(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateProductReview")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateProductReviewResponse{Value: result.String()}), nil
 }
 
 func (s *Service) DeleteProduct(ctx context.Context, req *connect.Request[pb.DeleteProductRequest]) (*connect.Response[pb.DeleteProductResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	err := s.querier.DeleteProduct(ctx, id)
 	if err != nil {
@@ -44,8 +145,65 @@ func (s *Service) DeleteProduct(ctx context.Context, req *connect.Request[pb.Del
 	return connect.NewResponse(&pb.DeleteProductResponse{}), nil
 }
 
+func (s *Service) DeleteProductCategory(ctx context.Context, req *connect.Request[pb.DeleteProductCategoryRequest]) (*connect.Response[pb.DeleteProductCategoryResponse], error) {
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
+
+	err := s.querier.DeleteProductCategory(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "DeleteProductCategory")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.DeleteProductCategoryResponse{}), nil
+}
+
+func (s *Service) DeleteProductComment(ctx context.Context, req *connect.Request[pb.DeleteProductCommentRequest]) (*connect.Response[pb.DeleteProductCommentResponse], error) {
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
+
+	err := s.querier.DeleteProductComment(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "DeleteProductComment")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.DeleteProductCommentResponse{}), nil
+}
+
+func (s *Service) DeleteProductReview(ctx context.Context, req *connect.Request[pb.DeleteProductReviewRequest]) (*connect.Response[pb.DeleteProductReviewResponse], error) {
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
+
+	err := s.querier.DeleteProductReview(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "DeleteProductReview")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.DeleteProductReviewResponse{}), nil
+}
+
 func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.GetCategoryPathRequest]) (*connect.Response[pb.GetCategoryPathResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	result, err := s.querier.GetCategoryPath(ctx, id)
 	if err != nil {
@@ -56,7 +214,13 @@ func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.G
 }
 
 func (s *Service) GetProductByID(ctx context.Context, req *connect.Request[pb.GetProductByIDRequest]) (*connect.Response[pb.GetProductByIDResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	result, err := s.querier.GetProductByID(ctx, id)
 	if err != nil {
@@ -66,8 +230,65 @@ func (s *Service) GetProductByID(ctx context.Context, req *connect.Request[pb.Ge
 	return connect.NewResponse(&pb.GetProductByIDResponse{Product: toProduct(result)}), nil
 }
 
+func (s *Service) GetProductCategoryByID(ctx context.Context, req *connect.Request[pb.GetProductCategoryByIDRequest]) (*connect.Response[pb.GetProductCategoryByIDResponse], error) {
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
+
+	result, err := s.querier.GetProductCategoryByID(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetProductCategoryByID")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetProductCategoryByIDResponse{ProductCategory: toProductCategory(result)}), nil
+}
+
+func (s *Service) GetProductCommentByID(ctx context.Context, req *connect.Request[pb.GetProductCommentByIDRequest]) (*connect.Response[pb.GetProductCommentByIDResponse], error) {
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
+
+	result, err := s.querier.GetProductCommentByID(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetProductCommentByID")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetProductCommentByIDResponse{ProductComment: toProductComment(result)}), nil
+}
+
+func (s *Service) GetProductReviewByID(ctx context.Context, req *connect.Request[pb.GetProductReviewByIDRequest]) (*connect.Response[pb.GetProductReviewByIDResponse], error) {
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
+
+	result, err := s.querier.GetProductReviewByID(ctx, id)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetProductReviewByID")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetProductReviewByIDResponse{ProductReview: toProductReview(result)}), nil
+}
+
 func (s *Service) GetProductWithCategoryPath(ctx context.Context, req *connect.Request[pb.GetProductWithCategoryPathRequest]) (*connect.Response[pb.GetProductWithCategoryPathResponse], error) {
-	id := req.Msg.GetId()
+	var id uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		id = v
+	}
 
 	result, err := s.querier.GetProductWithCategoryPath(ctx, id)
 	if err != nil {
@@ -75,6 +296,44 @@ func (s *Service) GetProductWithCategoryPath(ctx context.Context, req *connect.R
 		return nil, err
 	}
 	return connect.NewResponse(&pb.GetProductWithCategoryPathResponse{GetProductWithCategoryPathRow: toGetProductWithCategoryPathRow(result)}), nil
+}
+
+func (s *Service) ListCategoriesByParentID(ctx context.Context, req *connect.Request[pb.ListCategoriesByParentIDRequest]) (*connect.Response[pb.ListCategoriesByParentIDResponse], error) {
+	var parentID pgtype.UUID
+	if v := req.Msg.GetParentId(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &parentID); err != nil {
+			err = fmt.Errorf("invalid ParentID: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+
+	result, err := s.querier.ListCategoriesByParentID(ctx, parentID)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "ListCategoriesByParentID")
+		return nil, err
+	}
+	res := new(pb.ListCategoriesByParentIDResponse)
+	for _, r := range result {
+		res.List = append(res.List, toProductCategory(r))
+	}
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) ListProductReviews(ctx context.Context, req *connect.Request[pb.ListProductReviewsRequest]) (*connect.Response[pb.ListProductReviewsResponse], error) {
+	var arg ListProductReviewsParams
+	arg.Limit = req.Msg.GetLimit()
+	arg.Offset = req.Msg.GetOffset()
+
+	result, err := s.querier.ListProductReviews(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "ListProductReviews")
+		return nil, err
+	}
+	res := new(pb.ListProductReviewsResponse)
+	for _, r := range result {
+		res.List = append(res.List, toProductReview(r))
+	}
+	return connect.NewResponse(res), nil
 }
 
 func (s *Service) ListProducts(ctx context.Context, req *connect.Request[pb.ListProductsRequest]) (*connect.Response[pb.ListProductsResponse], error) {
@@ -94,13 +353,54 @@ func (s *Service) ListProducts(ctx context.Context, req *connect.Request[pb.List
 	return connect.NewResponse(res), nil
 }
 
+func (s *Service) ListReviewsWithComments(ctx context.Context, req *connect.Request[pb.ListReviewsWithCommentsRequest]) (*connect.Response[pb.ListReviewsWithCommentsResponse], error) {
+	var arg ListReviewsWithCommentsParams
+	arg.Limit = req.Msg.GetLimit()
+	arg.Offset = req.Msg.GetOffset()
+
+	result, err := s.querier.ListReviewsWithComments(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "ListReviewsWithComments")
+		return nil, err
+	}
+	res := new(pb.ListReviewsWithCommentsResponse)
+	for _, r := range result {
+		res.List = append(res.List, toListReviewsWithCommentsRow(r))
+	}
+	return connect.NewResponse(res), nil
+}
+
+func (s *Service) ListRootCategories(ctx context.Context, req *connect.Request[pb.ListRootCategoriesRequest]) (*connect.Response[pb.ListRootCategoriesResponse], error) {
+
+	result, err := s.querier.ListRootCategories(ctx)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "ListRootCategories")
+		return nil, err
+	}
+	res := new(pb.ListRootCategoriesResponse)
+	for _, r := range result {
+		res.List = append(res.List, toProductCategory(r))
+	}
+	return connect.NewResponse(res), nil
+}
+
 func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.UpdateProductRequest]) (*connect.Response[pb.UpdateProductResponse], error) {
 	var arg UpdateProductParams
 	if v := req.Msg.GetProductName(); v != nil {
 		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
 	}
-	arg.CategoryID = req.Msg.GetCategoryId()
-	arg.ID = req.Msg.GetId()
+	if v, err := uuid.Parse(req.Msg.GetCategoryId()); err != nil {
+		err = fmt.Errorf("invalid CategoryID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.CategoryID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
 
 	result, err := s.querier.UpdateProduct(ctx, arg)
 	if err != nil {
@@ -108,4 +408,84 @@ func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.Upd
 		return nil, err
 	}
 	return connect.NewResponse(&pb.UpdateProductResponse{Product: toProduct(result)}), nil
+}
+
+func (s *Service) UpdateProductCategory(ctx context.Context, req *connect.Request[pb.UpdateProductCategoryRequest]) (*connect.Response[pb.UpdateProductCategoryResponse], error) {
+	var arg UpdateProductCategoryParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	arg.Name = req.Msg.GetName()
+	if v := req.Msg.GetParentId(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.ParentID); err != nil {
+			err = fmt.Errorf("invalid ParentID: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
+	}
+
+	err := s.querier.UpdateProductCategory(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateProductCategory")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateProductCategoryResponse{}), nil
+}
+
+func (s *Service) UpdateProductComment(ctx context.Context, req *connect.Request[pb.UpdateProductCommentRequest]) (*connect.Response[pb.UpdateProductCommentResponse], error) {
+	var arg UpdateProductCommentParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	if v := req.Msg.GetComment(); v != nil {
+		arg.Comment = pgtype.Text{Valid: true, String: v.Value}
+	}
+
+	err := s.querier.UpdateProductComment(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateProductComment")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateProductCommentResponse{}), nil
+}
+
+func (s *Service) UpdateProductReview(ctx context.Context, req *connect.Request[pb.UpdateProductReviewRequest]) (*connect.Response[pb.UpdateProductReviewResponse], error) {
+	var arg UpdateProductReviewParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.UserID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ProductID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetSellerId()); err != nil {
+		err = fmt.Errorf("invalid SellerID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.SellerID = v
+	}
+	arg.Rating = req.Msg.GetRating()
+
+	err := s.querier.UpdateProductReview(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateProductReview")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateProductReviewResponse{}), nil
 }

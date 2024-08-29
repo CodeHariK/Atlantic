@@ -10,22 +10,23 @@ import (
 )
 
 type Attribute struct {
-	ID             int32  `json:"id"`
-	AttributeName  string `json:"attribute_name"`
-	AttributeValue string `json:"attribute_value"`
+	ID             uuid.UUID `json:"id"`
+	AttributeName  string    `json:"attribute_name"`
+	AttributeValue string    `json:"attribute_value"`
 }
 
 type Cart struct {
-	ID        int32            `json:"id"`
+	ID        uuid.UUID        `json:"id"`
 	UserID    uuid.UUID        `json:"user_id"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 type CartItem struct {
-	ID        int32 `json:"id"`
-	CartID    int32 `json:"cart_id"`
-	ProductID int32 `json:"product_id"`
-	Quantity  int32 `json:"quantity"`
+	ID        uuid.UUID `json:"id"`
+	CartID    uuid.UUID `json:"cart_id"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int32     `json:"quantity"`
 }
 
 type GooseDbVersion struct {
@@ -36,28 +37,28 @@ type GooseDbVersion struct {
 }
 
 type Inventory struct {
-	ID             int32  `json:"id"`
-	ProductID      int32  `json:"product_id"`
-	SellerID       int32  `json:"seller_id"`
-	Quantity       int32  `json:"quantity"`
-	AmountUnits    int64  `json:"amount_units"`
-	AmountNanos    int32  `json:"amount_nanos"`
-	AmountCurrency string `json:"amount_currency"`
+	ID             uuid.UUID `json:"id"`
+	VariantID      uuid.UUID `json:"variant_id"`
+	SellerID       uuid.UUID `json:"seller_id"`
+	Quantity       int32     `json:"quantity"`
+	AmountUnits    int64     `json:"amount_units"`
+	AmountNanos    int32     `json:"amount_nanos"`
+	AmountCurrency string    `json:"amount_currency"`
 }
 
 type Location struct {
-	ID         int32   `json:"id"`
-	Address    string  `json:"address"`
-	City       string  `json:"city"`
-	State      string  `json:"state"`
-	Country    string  `json:"country"`
-	PostalCode string  `json:"postal_code"`
-	Latitude   float64 `json:"latitude"`
-	Longitude  float64 `json:"longitude"`
+	ID         uuid.UUID `json:"id"`
+	Address    string    `json:"address"`
+	City       string    `json:"city"`
+	State      string    `json:"state"`
+	Country    string    `json:"country"`
+	PostalCode string    `json:"postal_code"`
+	Latitude   float64   `json:"latitude"`
+	Longitude  float64   `json:"longitude"`
 }
 
 type Order struct {
-	ID             int32            `json:"id"`
+	ID             uuid.UUID        `json:"id"`
 	UserID         uuid.UUID        `json:"user_id"`
 	CreatedAt      pgtype.Timestamp `json:"created_at"`
 	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
@@ -69,81 +70,82 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID             int32  `json:"id"`
-	OrderID        int32  `json:"order_id"`
-	ProductID      int32  `json:"product_id"`
-	SellerID       int32  `json:"seller_id"`
-	Quantity       int32  `json:"quantity"`
-	AmountUnits    int64  `json:"amount_units"`
-	AmountNanos    int32  `json:"amount_nanos"`
-	AmountCurrency string `json:"amount_currency"`
-	Status         string `json:"status"`
-	PaymentStatus  string `json:"payment_status"`
+	ID             uuid.UUID `json:"id"`
+	OrderID        uuid.UUID `json:"order_id"`
+	ProductID      uuid.UUID `json:"product_id"`
+	SellerID       uuid.UUID `json:"seller_id"`
+	Quantity       int32     `json:"quantity"`
+	AmountUnits    int64     `json:"amount_units"`
+	AmountNanos    int32     `json:"amount_nanos"`
+	AmountCurrency string    `json:"amount_currency"`
+	Status         string    `json:"status"`
+	PaymentStatus  string    `json:"payment_status"`
 }
 
 type Product struct {
-	ID          int32       `json:"id"`
+	ID          uuid.UUID   `json:"id"`
 	ProductName pgtype.Text `json:"product_name"`
-	CategoryID  int32       `json:"category_id"`
+	CategoryID  uuid.UUID   `json:"category_id"`
 }
 
 type ProductAttribute struct {
-	ID          int32       `json:"id"`
-	ProductID   int32       `json:"product_id"`
-	VariantID   pgtype.Int4 `json:"variant_id"`
-	AttributeID int32       `json:"attribute_id"`
+	ID          uuid.UUID   `json:"id"`
+	ProductID   uuid.UUID   `json:"product_id"`
+	VariantID   pgtype.UUID `json:"variant_id"`
+	AttributeID uuid.UUID   `json:"attribute_id"`
 }
 
 type ProductCategory struct {
-	ID       int32       `json:"id"`
+	ID       uuid.UUID   `json:"id"`
 	Name     string      `json:"name"`
-	ParentID pgtype.Int4 `json:"parent_id"`
+	ParentID pgtype.UUID `json:"parent_id"`
 }
 
 type ProductComment struct {
-	ID        int32            `json:"id"`
-	Comment   pgtype.Text      `json:"comment"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	ID      uuid.UUID   `json:"id"`
+	Comment pgtype.Text `json:"comment"`
 }
 
 type ProductDescription struct {
-	ID               int32       `json:"id"`
-	ProductID        int32       `json:"product_id"`
-	ProductVariantID pgtype.Int4 `json:"product_variant_id"`
-	Description      pgtype.Text `json:"description"`
-	Images           []string    `json:"images"`
-	Videos           []string    `json:"videos"`
+	ID          uuid.UUID   `json:"id"`
+	ProductID   uuid.UUID   `json:"product_id"`
+	VariantID   pgtype.UUID `json:"variant_id"`
+	Description pgtype.Text `json:"description"`
+	Images      []string    `json:"images"`
+	Videos      []string    `json:"videos"`
 }
 
 type ProductPromotion struct {
-	ID            int32       `json:"id"`
+	ID            uuid.UUID   `json:"id"`
+	VariantID     uuid.UUID   `json:"variant_id"`
 	PromotionName string      `json:"promotion_name"`
 	Discount      int32       `json:"discount"`
-	ProductID     int32       `json:"product_id"`
 	StartDate     pgtype.Date `json:"start_date"`
 	EndDate       pgtype.Date `json:"end_date"`
 }
 
 type ProductReview struct {
-	ID        int32       `json:"id"`
-	UserID    uuid.UUID   `json:"user_id"`
-	ProductID int32       `json:"product_id"`
-	SellerID  int32       `json:"seller_id"`
-	Rating    int32       `json:"rating"`
-	Comment   pgtype.Int4 `json:"comment"`
+	ID        uuid.UUID        `json:"id"`
+	UserID    uuid.UUID        `json:"user_id"`
+	ProductID uuid.UUID        `json:"product_id"`
+	SellerID  uuid.UUID        `json:"seller_id"`
+	Rating    int32            `json:"rating"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 type ProductVariant struct {
-	ID          int32  `json:"id"`
-	ProductID   int32  `json:"product_id"`
-	VariantName string `json:"variant_name"`
+	ID          uuid.UUID `json:"id"`
+	ProductID   uuid.UUID `json:"product_id"`
+	VariantName string    `json:"variant_name"`
 }
 
 type Seller struct {
-	ID       int32       `json:"id"`
-	Name     string      `json:"name"`
-	Location pgtype.Int4 `json:"location"`
+	ID        uuid.UUID        `json:"id"`
+	Name      string           `json:"name"`
+	Location  pgtype.UUID      `json:"location"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 type User struct {
@@ -155,7 +157,7 @@ type User struct {
 	Gender       pgtype.Text      `json:"gender"`
 	IsAdmin      bool             `json:"is_admin"`
 	DateOfBirth  pgtype.Date      `json:"date_of_birth"`
+	Location     pgtype.UUID      `json:"location"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
 	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
-	Location     pgtype.Int4      `json:"location"`
 }

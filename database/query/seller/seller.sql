@@ -1,11 +1,15 @@
--- name: CreateSeller :exec
-INSERT INTO seller (name, location) VALUES ($1, $2) RETURNING id;
+-- name: CreateSeller :one
+INSERT INTO
+    seller (id, name, location)
+VALUES ($1, $2, $3) RETURNING id,
+    created_at,
+    updated_at;
 
 -- name: GetSellerByID :one
 SELECT id, name, location FROM seller WHERE id = $1;
 
 -- name: UpdateSeller :exec
-UPDATE seller SET name = $1, location = $2 WHERE id = $3;
+UPDATE seller SET name = $2, location = $3 WHERE id = $1;
 
 -- name: DeleteSeller :exec
 DELETE FROM seller WHERE id = $1;

@@ -2,7 +2,7 @@
 
 -- Create the attributes table with a variant_id
 CREATE TABLE IF NOT EXISTS "attributes" (
-    "id" SERIAL PRIMARY KEY,
+    "id" UUID PRIMARY KEY,
     "attribute_name" VARCHAR(255) NOT NULL,
     "attribute_value" VARCHAR(255) NOT NULL
 );

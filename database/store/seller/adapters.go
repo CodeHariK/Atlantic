@@ -3,18 +3,45 @@
 package seller
 
 import (
+	"encoding/json"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	pb "github.com/codeharik/Atlantic/database/api/seller/v1"
 )
 
-func toSeller(in Seller) *pb.Seller {
+func toCreateSellerRow(in CreateSellerRow) *pb.CreateSellerRow {
 
-	out := new(pb.Seller)
-	out.Id = in.ID
+	out := new(pb.CreateSellerRow)
+	out.Id = in.ID.String()
+	if in.CreatedAt.Valid {
+		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
+	}
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
+	}
+	return out
+}
+
+func toGetSellerByIDRow(in GetSellerByIDRow) *pb.GetSellerByIDRow {
+
+	out := new(pb.GetSellerByIDRow)
+	out.Id = in.ID.String()
 	out.Name = in.Name
-	if in.Location.Valid {
-		out.Location = wrapperspb.Int32(in.Location.Int32)
+	if v, err := json.Marshal(in.Location); err == nil {
+		out.Location = wrapperspb.String(string(v))
+	}
+	return out
+}
+
+func toListSellersRow(in ListSellersRow) *pb.ListSellersRow {
+
+	out := new(pb.ListSellersRow)
+	out.Id = in.ID.String()
+	out.Name = in.Name
+	if v, err := json.Marshal(in.Location); err == nil {
+		out.Location = wrapperspb.String(string(v))
 	}
 	return out
 }

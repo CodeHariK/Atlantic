@@ -1,11 +1,7 @@
 -- name: CreateProduct :one
 INSERT INTO
-    products (product_name, category_id)
-VALUES ($1, $2)
-RETURNING
-    id,
-    product_name,
-    category_id;
+    products (id, product_name, category_id)
+VALUES ($1, $2, $3) RETURNING id;
 
 -- name: GetProductByID :one
 SELECT id, product_name, category_id FROM products WHERE id = $1;
@@ -16,9 +12,7 @@ SET
     product_name = $1,
     category_id = $2
 WHERE
-    id = $3
-RETURNING
-    id,
+    id = $3 RETURNING id,
     product_name,
     category_id;
 

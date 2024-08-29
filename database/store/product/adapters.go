@@ -3,6 +3,9 @@
 package product
 
 import (
+	"encoding/json"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	pb "github.com/codeharik/Atlantic/database/api/product/v1"
@@ -11,22 +14,80 @@ import (
 func toGetProductWithCategoryPathRow(in GetProductWithCategoryPathRow) *pb.GetProductWithCategoryPathRow {
 
 	out := new(pb.GetProductWithCategoryPathRow)
-	out.ProductId = in.ProductID
+	out.ProductId = in.ProductID.String()
 	if in.ProductName.Valid {
 		out.ProductName = wrapperspb.String(in.ProductName.String)
 	}
-	out.CategoryId = in.CategoryID
+	out.CategoryId = in.CategoryID.String()
 	out.CategoryPath = in.CategoryPath
+	return out
+}
+
+func toListReviewsWithCommentsRow(in ListReviewsWithCommentsRow) *pb.ListReviewsWithCommentsRow {
+
+	out := new(pb.ListReviewsWithCommentsRow)
+	out.Id = in.ID.String()
+	out.UserId = in.UserID.String()
+	out.ProductId = in.ProductID.String()
+	out.SellerId = in.SellerID.String()
+	out.Rating = in.Rating
+	if in.CreatedAt.Valid {
+		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
+	}
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
+	}
+	if in.Comment.Valid {
+		out.Comment = wrapperspb.String(in.Comment.String)
+	}
 	return out
 }
 
 func toProduct(in Product) *pb.Product {
 
 	out := new(pb.Product)
-	out.Id = in.ID
+	out.Id = in.ID.String()
 	if in.ProductName.Valid {
 		out.ProductName = wrapperspb.String(in.ProductName.String)
 	}
-	out.CategoryId = in.CategoryID
+	out.CategoryId = in.CategoryID.String()
+	return out
+}
+
+func toProductCategory(in ProductCategory) *pb.ProductCategory {
+
+	out := new(pb.ProductCategory)
+	out.Id = in.ID.String()
+	out.Name = in.Name
+	if v, err := json.Marshal(in.ParentID); err == nil {
+		out.ParentId = wrapperspb.String(string(v))
+	}
+	return out
+}
+
+func toProductComment(in ProductComment) *pb.ProductComment {
+
+	out := new(pb.ProductComment)
+	out.Id = in.ID.String()
+	if in.Comment.Valid {
+		out.Comment = wrapperspb.String(in.Comment.String)
+	}
+	return out
+}
+
+func toProductReview(in ProductReview) *pb.ProductReview {
+
+	out := new(pb.ProductReview)
+	out.Id = in.ID.String()
+	out.UserId = in.UserID.String()
+	out.ProductId = in.ProductID.String()
+	out.SellerId = in.SellerID.String()
+	out.Rating = in.Rating
+	if in.CreatedAt.Valid {
+		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
+	}
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
+	}
 	return out
 }

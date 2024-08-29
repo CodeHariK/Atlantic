@@ -10,55 +10,138 @@ option go_package = "github.com/codeharik/Atlantic/database/api/product/v1";
 service ProductService {
   rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
 
+  rpc CreateProductCategory(CreateProductCategoryRequest) returns (CreateProductCategoryResponse) {}
+
+  rpc CreateProductComment(CreateProductCommentRequest) returns (CreateProductCommentResponse) {}
+
+  rpc CreateProductReview(CreateProductReviewRequest) returns (CreateProductReviewResponse) {}
+
   rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse) {}
+
+  rpc DeleteProductCategory(DeleteProductCategoryRequest) returns (DeleteProductCategoryResponse) {}
+
+  rpc DeleteProductComment(DeleteProductCommentRequest) returns (DeleteProductCommentResponse) {}
+
+  rpc DeleteProductReview(DeleteProductReviewRequest) returns (DeleteProductReviewResponse) {}
 
   rpc GetCategoryPath(GetCategoryPathRequest) returns (GetCategoryPathResponse) {}
 
   rpc GetProductByID(GetProductByIDRequest) returns (GetProductByIDResponse) {}
 
+  rpc GetProductCategoryByID(GetProductCategoryByIDRequest) returns (GetProductCategoryByIDResponse) {}
+
+  rpc GetProductCommentByID(GetProductCommentByIDRequest) returns (GetProductCommentByIDResponse) {}
+
+  rpc GetProductReviewByID(GetProductReviewByIDRequest) returns (GetProductReviewByIDResponse) {}
+
   rpc GetProductWithCategoryPath(GetProductWithCategoryPathRequest) returns (GetProductWithCategoryPathResponse) {}
+
+  rpc ListCategoriesByParentID(ListCategoriesByParentIDRequest) returns (ListCategoriesByParentIDResponse) {}
+
+  rpc ListProductReviews(ListProductReviewsRequest) returns (ListProductReviewsResponse) {}
 
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {}
 
+  rpc ListReviewsWithComments(ListReviewsWithCommentsRequest) returns (ListReviewsWithCommentsResponse) {}
+
+  rpc ListRootCategories(ListRootCategoriesRequest) returns (ListRootCategoriesResponse) {}
+
   rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse) {}
+
+  rpc UpdateProductCategory(UpdateProductCategoryRequest) returns (UpdateProductCategoryResponse) {}
+
+  rpc UpdateProductComment(UpdateProductCommentRequest) returns (UpdateProductCommentResponse) {}
+
+  rpc UpdateProductReview(UpdateProductReviewRequest) returns (UpdateProductReviewResponse) {}
 }
 
 message Attribute {
-  int32 id = 1;
+  string id = 1;
   string attribute_name = 2;
   string attribute_value = 3;
 }
 
 message Cart {
-  int32 id = 1;
-  google.protobuf.StringValue user_id = 2;
-  google.protobuf.Timestamp updated_at = 3;
+  string id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
 }
 
 message CartItem {
-  int32 id = 1;
-  int32 cart_id = 2;
-  int32 product_id = 3;
+  string id = 1;
+  string cart_id = 2;
+  string product_id = 3;
   int32 quantity = 4;
 }
 
+message CreateProductCategoryRequest {
+  string id = 1;
+  string name = 2;
+  google.protobuf.StringValue parent_id = 3;
+}
+
+message CreateProductCategoryResponse {
+  ProductCategory product_category = 1;
+}
+
+message CreateProductCommentRequest {
+  string id = 1;
+  google.protobuf.StringValue comment = 2;
+}
+
+message CreateProductCommentResponse {
+  string value = 1;
+}
+
 message CreateProductRequest {
-  google.protobuf.StringValue product_name = 1;
-  int32 category_id = 2;
+  string id = 1;
+  google.protobuf.StringValue product_name = 2;
+  string category_id = 3;
 }
 
 message CreateProductResponse {
-  Product product = 1;
+  string value = 1;
 }
 
+message CreateProductReviewRequest {
+  string id = 1;
+  string user_id = 2;
+  string product_id = 3;
+  string seller_id = 4;
+  int32 rating = 5;
+}
+
+message CreateProductReviewResponse {
+  string value = 1;
+}
+
+message DeleteProductCategoryRequest {
+  string id = 1;
+}
+
+message DeleteProductCategoryResponse {}
+
+message DeleteProductCommentRequest {
+  string id = 1;
+}
+
+message DeleteProductCommentResponse {}
+
 message DeleteProductRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message DeleteProductResponse {}
 
+message DeleteProductReviewRequest {
+  string id = 1;
+}
+
+message DeleteProductReviewResponse {}
+
 message GetCategoryPathRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message GetCategoryPathResponse {
@@ -66,15 +149,39 @@ message GetCategoryPathResponse {
 }
 
 message GetProductByIDRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message GetProductByIDResponse {
   Product product = 1;
 }
 
+message GetProductCategoryByIDRequest {
+  string id = 1;
+}
+
+message GetProductCategoryByIDResponse {
+  ProductCategory product_category = 1;
+}
+
+message GetProductCommentByIDRequest {
+  string id = 1;
+}
+
+message GetProductCommentByIDResponse {
+  ProductComment product_comment = 1;
+}
+
+message GetProductReviewByIDRequest {
+  string id = 1;
+}
+
+message GetProductReviewByIDResponse {
+  ProductReview product_review = 1;
+}
+
 message GetProductWithCategoryPathRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message GetProductWithCategoryPathResponse {
@@ -82,9 +189,9 @@ message GetProductWithCategoryPathResponse {
 }
 
 message GetProductWithCategoryPathRow {
-  int32 product_id = 1;
+  string product_id = 1;
   google.protobuf.StringValue product_name = 2;
-  int32 category_id = 3;
+  string category_id = 3;
   string category_path = 4;
 }
 
@@ -96,13 +203,30 @@ message GooseDbVersion {
 }
 
 message Inventory {
-  int32 id = 1;
-  int32 product_id = 2;
-  int32 seller_id = 3;
+  string id = 1;
+  string variant_id = 2;
+  string seller_id = 3;
   int32 quantity = 4;
   int64 amount_units = 5;
   int32 amount_nanos = 6;
   string amount_currency = 7;
+}
+
+message ListCategoriesByParentIDRequest {
+  google.protobuf.StringValue parent_id = 1;
+}
+
+message ListCategoriesByParentIDResponse {
+  repeated ProductCategory list = 1;
+}
+
+message ListProductReviewsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListProductReviewsResponse {
+  repeated ProductReview list = 1;
 }
 
 message ListProductsRequest {
@@ -114,8 +238,34 @@ message ListProductsResponse {
   repeated Product list = 1;
 }
 
+message ListReviewsWithCommentsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListReviewsWithCommentsResponse {
+  repeated ListReviewsWithCommentsRow list = 1;
+}
+
+message ListReviewsWithCommentsRow {
+  string id = 1;
+  string user_id = 2;
+  string product_id = 3;
+  string seller_id = 4;
+  int32 rating = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.StringValue comment = 8;
+}
+
+message ListRootCategoriesRequest {}
+
+message ListRootCategoriesResponse {
+  repeated ProductCategory list = 1;
+}
+
 message Location {
-  int32 id = 1;
+  string id = 1;
   string address = 2;
   string city = 3;
   string state = 4;
@@ -126,8 +276,8 @@ message Location {
 }
 
 message Order {
-  int32 id = 1;
-  google.protobuf.StringValue user_id = 2;
+  string id = 1;
+  string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
   int64 amount_units = 5;
@@ -138,10 +288,10 @@ message Order {
 }
 
 message OrderItem {
-  int32 id = 1;
-  int32 order_id = 2;
-  int32 product_id = 3;
-  int32 seller_id = 4;
+  string id = 1;
+  string order_id = 2;
+  string product_id = 3;
+  string seller_id = 4;
   int32 quantity = 5;
   int64 amount_units = 6;
   int32 amount_nanos = 7;
@@ -151,82 +301,108 @@ message OrderItem {
 }
 
 message Product {
-  int32 id = 1;
+  string id = 1;
   google.protobuf.StringValue product_name = 2;
-  int32 category_id = 3;
+  string category_id = 3;
 }
 
 message ProductAttribute {
-  int32 id = 1;
-  int32 product_id = 2;
-  google.protobuf.Int32Value variant_id = 3;
-  int32 attribute_id = 4;
+  string id = 1;
+  string product_id = 2;
+  google.protobuf.StringValue variant_id = 3;
+  string attribute_id = 4;
 }
 
 message ProductCategory {
-  int32 id = 1;
+  string id = 1;
   string name = 2;
-  google.protobuf.Int32Value parent_id = 3;
+  google.protobuf.StringValue parent_id = 3;
 }
 
 message ProductComment {
-  int32 id = 1;
+  string id = 1;
   google.protobuf.StringValue comment = 2;
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp updated_at = 4;
 }
 
 message ProductDescription {
-  int32 id = 1;
-  int32 product_id = 2;
-  google.protobuf.Int32Value product_variant_id = 3;
+  string id = 1;
+  string product_id = 2;
+  google.protobuf.StringValue variant_id = 3;
   google.protobuf.StringValue description = 4;
   repeated string images = 5;
   repeated string videos = 6;
 }
 
 message ProductPromotion {
-  int32 id = 1;
-  string promotion_name = 2;
-  int32 discount = 3;
-  int32 product_id = 4;
+  string id = 1;
+  string variant_id = 2;
+  string promotion_name = 3;
+  int32 discount = 4;
   google.protobuf.Timestamp start_date = 5;
   google.protobuf.Timestamp end_date = 6;
 }
 
 message ProductReview {
-  int32 id = 1;
-  google.protobuf.StringValue user_id = 2;
-  int32 product_id = 3;
-  int32 seller_id = 4;
+  string id = 1;
+  string user_id = 2;
+  string product_id = 3;
+  string seller_id = 4;
   int32 rating = 5;
-  google.protobuf.Int32Value comment = 6;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message ProductVariant {
-  int32 id = 1;
-  int32 product_id = 2;
+  string id = 1;
+  string product_id = 2;
   string variant_name = 3;
 }
 
 message Seller {
-  int32 id = 1;
+  string id = 1;
   string name = 2;
-  google.protobuf.Int32Value location = 3;
+  google.protobuf.StringValue location = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
 }
+
+message UpdateProductCategoryRequest {
+  string id = 1;
+  string name = 2;
+  google.protobuf.StringValue parent_id = 3;
+}
+
+message UpdateProductCategoryResponse {}
+
+message UpdateProductCommentRequest {
+  string id = 1;
+  google.protobuf.StringValue comment = 2;
+}
+
+message UpdateProductCommentResponse {}
 
 message UpdateProductRequest {
   google.protobuf.StringValue product_name = 1;
-  int32 category_id = 2;
-  int32 id = 3;
+  string category_id = 2;
+  string id = 3;
 }
 
 message UpdateProductResponse {
   Product product = 1;
 }
 
+message UpdateProductReviewRequest {
+  string id = 1;
+  string user_id = 2;
+  string product_id = 3;
+  string seller_id = 4;
+  int32 rating = 5;
+}
+
+message UpdateProductReviewResponse {}
+
 message User {
-  google.protobuf.StringValue id = 1;
+  string id = 1;
   string username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;
@@ -234,7 +410,7 @@ message User {
   google.protobuf.StringValue gender = 6;
   bool is_admin = 7;
   google.protobuf.Timestamp date_of_birth = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
-  google.protobuf.Int32Value location = 11;
+  google.protobuf.StringValue location = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
 }

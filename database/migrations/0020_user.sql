@@ -12,9 +12,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     "gender" CHAR(1) CHECK ("gender" IN ('M', 'F')),
     "is_admin" BOOLEAN DEFAULT FALSE NOT NULL,
     "date_of_birth" DATE,
-    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "location" INTEGER REFERENCES "locations" ("id") ON UPDATE NO ACTION ON DELETE SET NULL,
+    "location" UUID REFERENCES "locations" ("id") ON UPDATE NO ACTION ON DELETE SET NULL,
     CHECK (
         (
             "email" IS NOT NULL
@@ -24,7 +22,9 @@ CREATE TABLE IF NOT EXISTS "users" (
             "phone_number" IS NOT NULL
             AND CHAR_LENGTH("phone_number") > 0
         )
-    ) -- Ensure either email or phone number is provided
+    ), -- Ensure either email or phone number is provided
+    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX IF NOT EXISTS "idx_users_email" ON "users" ("email");

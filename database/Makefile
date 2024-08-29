@@ -23,9 +23,9 @@ aweb:
 		--web
 all: ainspect aapply apush ahash aweb
 
-gup:
+up:
 	goose -dir migrations postgres $(POSTGRES_URL) up
-gdo:
+down:
 	goose -dir migrations postgres $(POSTGRES_URL) down
 greset:
 	goose -dir migrations postgres $(POSTGRES_URL) reset
@@ -65,4 +65,4 @@ bufMigrate:
 	buf config migrate -diff
 	buf config migrate
 
-gen: gup ainspect ahash sql connect
+gen: up ainspect ahash sql connect

@@ -4,16 +4,16 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Int32Value, Message, proto3, protoInt64, StringValue, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, protoInt64, StringValue, Timestamp } from "@bufbuild/protobuf";
 
 /**
  * @generated from message seller.v1.Attribute
  */
 export class Attribute extends Message<Attribute> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string attribute_name = 2;
@@ -33,7 +33,7 @@ export class Attribute extends Message<Attribute> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Attribute";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "attribute_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "attribute_value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
@@ -60,17 +60,22 @@ export class Attribute extends Message<Attribute> {
  */
 export class Cart extends Message<Cart> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: google.protobuf.StringValue user_id = 2;
+   * @generated from field: string user_id = 2;
    */
-  userId?: string;
+  userId = "";
 
   /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 3;
+   * @generated from field: google.protobuf.Timestamp created_at = 3;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 4;
    */
   updatedAt?: Timestamp;
 
@@ -82,9 +87,10 @@ export class Cart extends Message<Cart> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Cart";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "message", T: StringValue },
-    { no: 3, name: "updated_at", kind: "message", T: Timestamp },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "created_at", kind: "message", T: Timestamp },
+    { no: 4, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Cart {
@@ -109,19 +115,19 @@ export class Cart extends Message<Cart> {
  */
 export class CartItem extends Message<CartItem> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: int32 cart_id = 2;
+   * @generated from field: string cart_id = 2;
    */
-  cartId = 0;
+  cartId = "";
 
   /**
-   * @generated from field: int32 product_id = 3;
+   * @generated from field: string product_id = 3;
    */
-  productId = 0;
+  productId = "";
 
   /**
    * @generated from field: int32 quantity = 4;
@@ -136,9 +142,9 @@ export class CartItem extends Message<CartItem> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.CartItem";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "cart_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "cart_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
@@ -164,14 +170,19 @@ export class CartItem extends Message<CartItem> {
  */
 export class CreateSellerRequest extends Message<CreateSellerRequest> {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string name = 2;
    */
   name = "";
 
   /**
-   * @generated from field: google.protobuf.Int32Value location = 2;
+   * @generated from field: google.protobuf.StringValue location = 3;
    */
-  location?: number;
+  location?: string;
 
   constructor(data?: PartialMessage<CreateSellerRequest>) {
     super();
@@ -181,8 +192,9 @@ export class CreateSellerRequest extends Message<CreateSellerRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.CreateSellerRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "location", kind: "message", T: Int32Value },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "location", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSellerRequest {
@@ -206,6 +218,11 @@ export class CreateSellerRequest extends Message<CreateSellerRequest> {
  * @generated from message seller.v1.CreateSellerResponse
  */
 export class CreateSellerResponse extends Message<CreateSellerResponse> {
+  /**
+   * @generated from field: seller.v1.CreateSellerRow create_seller_row = 1;
+   */
+  createSellerRow?: CreateSellerRow;
+
   constructor(data?: PartialMessage<CreateSellerResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -214,6 +231,7 @@ export class CreateSellerResponse extends Message<CreateSellerResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.CreateSellerResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "create_seller_row", kind: "message", T: CreateSellerRow },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSellerResponse {
@@ -234,13 +252,62 @@ export class CreateSellerResponse extends Message<CreateSellerResponse> {
 }
 
 /**
+ * @generated from message seller.v1.CreateSellerRow
+ */
+export class CreateSellerRow extends Message<CreateSellerRow> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 2;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 3;
+   */
+  updatedAt?: Timestamp;
+
+  constructor(data?: PartialMessage<CreateSellerRow>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "seller.v1.CreateSellerRow";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "created_at", kind: "message", T: Timestamp },
+    { no: 3, name: "updated_at", kind: "message", T: Timestamp },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSellerRow {
+    return new CreateSellerRow().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateSellerRow {
+    return new CreateSellerRow().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateSellerRow {
+    return new CreateSellerRow().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CreateSellerRow | PlainMessage<CreateSellerRow> | undefined, b: CreateSellerRow | PlainMessage<CreateSellerRow> | undefined): boolean {
+    return proto3.util.equals(CreateSellerRow, a, b);
+  }
+}
+
+/**
  * @generated from message seller.v1.DeleteSellerRequest
  */
 export class DeleteSellerRequest extends Message<DeleteSellerRequest> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   constructor(data?: PartialMessage<DeleteSellerRequest>) {
     super();
@@ -250,7 +317,7 @@ export class DeleteSellerRequest extends Message<DeleteSellerRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.DeleteSellerRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteSellerRequest {
@@ -306,9 +373,9 @@ export class DeleteSellerResponse extends Message<DeleteSellerResponse> {
  */
 export class GetSellerByIDRequest extends Message<GetSellerByIDRequest> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   constructor(data?: PartialMessage<GetSellerByIDRequest>) {
     super();
@@ -318,7 +385,7 @@ export class GetSellerByIDRequest extends Message<GetSellerByIDRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.GetSellerByIDRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetSellerByIDRequest {
@@ -343,9 +410,9 @@ export class GetSellerByIDRequest extends Message<GetSellerByIDRequest> {
  */
 export class GetSellerByIDResponse extends Message<GetSellerByIDResponse> {
   /**
-   * @generated from field: seller.v1.Seller seller = 1;
+   * @generated from field: seller.v1.GetSellerByIDRow get_seller_by_id_row = 1;
    */
-  seller?: Seller;
+  getSellerByIdRow?: GetSellerByIDRow;
 
   constructor(data?: PartialMessage<GetSellerByIDResponse>) {
     super();
@@ -355,7 +422,7 @@ export class GetSellerByIDResponse extends Message<GetSellerByIDResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.GetSellerByIDResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "seller", kind: "message", T: Seller },
+    { no: 1, name: "get_seller_by_id_row", kind: "message", T: GetSellerByIDRow },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetSellerByIDResponse {
@@ -372,6 +439,55 @@ export class GetSellerByIDResponse extends Message<GetSellerByIDResponse> {
 
   static equals(a: GetSellerByIDResponse | PlainMessage<GetSellerByIDResponse> | undefined, b: GetSellerByIDResponse | PlainMessage<GetSellerByIDResponse> | undefined): boolean {
     return proto3.util.equals(GetSellerByIDResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message seller.v1.GetSellerByIDRow
+ */
+export class GetSellerByIDRow extends Message<GetSellerByIDRow> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * @generated from field: google.protobuf.StringValue location = 3;
+   */
+  location?: string;
+
+  constructor(data?: PartialMessage<GetSellerByIDRow>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "seller.v1.GetSellerByIDRow";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "location", kind: "message", T: StringValue },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetSellerByIDRow {
+    return new GetSellerByIDRow().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetSellerByIDRow {
+    return new GetSellerByIDRow().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetSellerByIDRow {
+    return new GetSellerByIDRow().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetSellerByIDRow | PlainMessage<GetSellerByIDRow> | undefined, b: GetSellerByIDRow | PlainMessage<GetSellerByIDRow> | undefined): boolean {
+    return proto3.util.equals(GetSellerByIDRow, a, b);
   }
 }
 
@@ -435,19 +551,19 @@ export class GooseDbVersion extends Message<GooseDbVersion> {
  */
 export class Inventory extends Message<Inventory> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: int32 product_id = 2;
+   * @generated from field: string variant_id = 2;
    */
-  productId = 0;
+  variantId = "";
 
   /**
-   * @generated from field: int32 seller_id = 3;
+   * @generated from field: string seller_id = 3;
    */
-  sellerId = 0;
+  sellerId = "";
 
   /**
    * @generated from field: int32 quantity = 4;
@@ -477,9 +593,9 @@ export class Inventory extends Message<Inventory> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Inventory";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "variant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "seller_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 6, name: "amount_nanos", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
@@ -539,9 +655,9 @@ export class ListSellersRequest extends Message<ListSellersRequest> {
  */
 export class ListSellersResponse extends Message<ListSellersResponse> {
   /**
-   * @generated from field: repeated seller.v1.Seller list = 1;
+   * @generated from field: repeated seller.v1.ListSellersRow list = 1;
    */
-  list: Seller[] = [];
+  list: ListSellersRow[] = [];
 
   constructor(data?: PartialMessage<ListSellersResponse>) {
     super();
@@ -551,7 +667,7 @@ export class ListSellersResponse extends Message<ListSellersResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ListSellersResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "list", kind: "message", T: Seller, repeated: true },
+    { no: 1, name: "list", kind: "message", T: ListSellersRow, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListSellersResponse {
@@ -572,13 +688,62 @@ export class ListSellersResponse extends Message<ListSellersResponse> {
 }
 
 /**
+ * @generated from message seller.v1.ListSellersRow
+ */
+export class ListSellersRow extends Message<ListSellersRow> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * @generated from field: google.protobuf.StringValue location = 3;
+   */
+  location?: string;
+
+  constructor(data?: PartialMessage<ListSellersRow>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "seller.v1.ListSellersRow";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "location", kind: "message", T: StringValue },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListSellersRow {
+    return new ListSellersRow().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListSellersRow {
+    return new ListSellersRow().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListSellersRow {
+    return new ListSellersRow().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListSellersRow | PlainMessage<ListSellersRow> | undefined, b: ListSellersRow | PlainMessage<ListSellersRow> | undefined): boolean {
+    return proto3.util.equals(ListSellersRow, a, b);
+  }
+}
+
+/**
  * @generated from message seller.v1.Location
  */
 export class Location extends Message<Location> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string address = 2;
@@ -623,7 +788,7 @@ export class Location extends Message<Location> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Location";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "city", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "state", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -655,14 +820,14 @@ export class Location extends Message<Location> {
  */
 export class Order extends Message<Order> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: google.protobuf.StringValue user_id = 2;
+   * @generated from field: string user_id = 2;
    */
-  userId?: string;
+  userId = "";
 
   /**
    * @generated from field: google.protobuf.Timestamp created_at = 3;
@@ -707,8 +872,8 @@ export class Order extends Message<Order> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Order";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "message", T: StringValue },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "created_at", kind: "message", T: Timestamp },
     { no: 4, name: "updated_at", kind: "message", T: Timestamp },
     { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
@@ -740,24 +905,24 @@ export class Order extends Message<Order> {
  */
 export class OrderItem extends Message<OrderItem> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: int32 order_id = 2;
+   * @generated from field: string order_id = 2;
    */
-  orderId = 0;
+  orderId = "";
 
   /**
-   * @generated from field: int32 product_id = 3;
+   * @generated from field: string product_id = 3;
    */
-  productId = 0;
+  productId = "";
 
   /**
-   * @generated from field: int32 seller_id = 4;
+   * @generated from field: string seller_id = 4;
    */
-  sellerId = 0;
+  sellerId = "";
 
   /**
    * @generated from field: int32 quantity = 5;
@@ -797,10 +962,10 @@ export class OrderItem extends Message<OrderItem> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.OrderItem";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "order_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 4, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "order_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "seller_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 5, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 6, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 7, name: "amount_nanos", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
@@ -831,9 +996,9 @@ export class OrderItem extends Message<OrderItem> {
  */
 export class Product extends Message<Product> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: google.protobuf.StringValue product_name = 2;
@@ -841,9 +1006,9 @@ export class Product extends Message<Product> {
   productName?: string;
 
   /**
-   * @generated from field: int32 category_id = 3;
+   * @generated from field: string category_id = 3;
    */
-  categoryId = 0;
+  categoryId = "";
 
   constructor(data?: PartialMessage<Product>) {
     super();
@@ -853,9 +1018,9 @@ export class Product extends Message<Product> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Product";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "product_name", kind: "message", T: StringValue },
-    { no: 3, name: "category_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 3, name: "category_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {
@@ -880,24 +1045,24 @@ export class Product extends Message<Product> {
  */
 export class ProductAttribute extends Message<ProductAttribute> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: int32 product_id = 2;
+   * @generated from field: string product_id = 2;
    */
-  productId = 0;
+  productId = "";
 
   /**
-   * @generated from field: google.protobuf.Int32Value variant_id = 3;
+   * @generated from field: google.protobuf.StringValue variant_id = 3;
    */
-  variantId?: number;
+  variantId?: string;
 
   /**
-   * @generated from field: int32 attribute_id = 4;
+   * @generated from field: string attribute_id = 4;
    */
-  attributeId = 0;
+  attributeId = "";
 
   constructor(data?: PartialMessage<ProductAttribute>) {
     super();
@@ -907,10 +1072,10 @@ export class ProductAttribute extends Message<ProductAttribute> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductAttribute";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "variant_id", kind: "message", T: Int32Value },
-    { no: 4, name: "attribute_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "variant_id", kind: "message", T: StringValue },
+    { no: 4, name: "attribute_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductAttribute {
@@ -935,9 +1100,9 @@ export class ProductAttribute extends Message<ProductAttribute> {
  */
 export class ProductCategory extends Message<ProductCategory> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string name = 2;
@@ -945,9 +1110,9 @@ export class ProductCategory extends Message<ProductCategory> {
   name = "";
 
   /**
-   * @generated from field: google.protobuf.Int32Value parent_id = 3;
+   * @generated from field: google.protobuf.StringValue parent_id = 3;
    */
-  parentId?: number;
+  parentId?: string;
 
   constructor(data?: PartialMessage<ProductCategory>) {
     super();
@@ -957,9 +1122,9 @@ export class ProductCategory extends Message<ProductCategory> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductCategory";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "parent_id", kind: "message", T: Int32Value },
+    { no: 3, name: "parent_id", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductCategory {
@@ -984,24 +1149,14 @@ export class ProductCategory extends Message<ProductCategory> {
  */
 export class ProductComment extends Message<ProductComment> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: google.protobuf.StringValue comment = 2;
    */
   comment?: string;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 3;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 4;
-   */
-  updatedAt?: Timestamp;
 
   constructor(data?: PartialMessage<ProductComment>) {
     super();
@@ -1011,10 +1166,8 @@ export class ProductComment extends Message<ProductComment> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductComment";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "comment", kind: "message", T: StringValue },
-    { no: 3, name: "created_at", kind: "message", T: Timestamp },
-    { no: 4, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductComment {
@@ -1039,19 +1192,19 @@ export class ProductComment extends Message<ProductComment> {
  */
 export class ProductDescription extends Message<ProductDescription> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: int32 product_id = 2;
+   * @generated from field: string product_id = 2;
    */
-  productId = 0;
+  productId = "";
 
   /**
-   * @generated from field: google.protobuf.Int32Value product_variant_id = 3;
+   * @generated from field: google.protobuf.StringValue variant_id = 3;
    */
-  productVariantId?: number;
+  variantId?: string;
 
   /**
    * @generated from field: google.protobuf.StringValue description = 4;
@@ -1076,9 +1229,9 @@ export class ProductDescription extends Message<ProductDescription> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductDescription";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "product_variant_id", kind: "message", T: Int32Value },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "variant_id", kind: "message", T: StringValue },
     { no: 4, name: "description", kind: "message", T: StringValue },
     { no: 5, name: "images", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
     { no: 6, name: "videos", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
@@ -1106,24 +1259,24 @@ export class ProductDescription extends Message<ProductDescription> {
  */
 export class ProductPromotion extends Message<ProductPromotion> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: string promotion_name = 2;
+   * @generated from field: string variant_id = 2;
+   */
+  variantId = "";
+
+  /**
+   * @generated from field: string promotion_name = 3;
    */
   promotionName = "";
 
   /**
-   * @generated from field: int32 discount = 3;
+   * @generated from field: int32 discount = 4;
    */
   discount = 0;
-
-  /**
-   * @generated from field: int32 product_id = 4;
-   */
-  productId = 0;
 
   /**
    * @generated from field: google.protobuf.Timestamp start_date = 5;
@@ -1143,10 +1296,10 @@ export class ProductPromotion extends Message<ProductPromotion> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductPromotion";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "promotion_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "discount", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 4, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "variant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "promotion_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "discount", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 5, name: "start_date", kind: "message", T: Timestamp },
     { no: 6, name: "end_date", kind: "message", T: Timestamp },
   ]);
@@ -1173,24 +1326,24 @@ export class ProductPromotion extends Message<ProductPromotion> {
  */
 export class ProductReview extends Message<ProductReview> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: google.protobuf.StringValue user_id = 2;
+   * @generated from field: string user_id = 2;
    */
-  userId?: string;
+  userId = "";
 
   /**
-   * @generated from field: int32 product_id = 3;
+   * @generated from field: string product_id = 3;
    */
-  productId = 0;
+  productId = "";
 
   /**
-   * @generated from field: int32 seller_id = 4;
+   * @generated from field: string seller_id = 4;
    */
-  sellerId = 0;
+  sellerId = "";
 
   /**
    * @generated from field: int32 rating = 5;
@@ -1198,9 +1351,14 @@ export class ProductReview extends Message<ProductReview> {
   rating = 0;
 
   /**
-   * @generated from field: google.protobuf.Int32Value comment = 6;
+   * @generated from field: google.protobuf.Timestamp created_at = 6;
    */
-  comment?: number;
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 7;
+   */
+  updatedAt?: Timestamp;
 
   constructor(data?: PartialMessage<ProductReview>) {
     super();
@@ -1210,12 +1368,13 @@ export class ProductReview extends Message<ProductReview> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductReview";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "user_id", kind: "message", T: StringValue },
-    { no: 3, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 4, name: "seller_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "seller_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 5, name: "rating", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 6, name: "comment", kind: "message", T: Int32Value },
+    { no: 6, name: "created_at", kind: "message", T: Timestamp },
+    { no: 7, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductReview {
@@ -1240,14 +1399,14 @@ export class ProductReview extends Message<ProductReview> {
  */
 export class ProductVariant extends Message<ProductVariant> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
-   * @generated from field: int32 product_id = 2;
+   * @generated from field: string product_id = 2;
    */
-  productId = 0;
+  productId = "";
 
   /**
    * @generated from field: string variant_name = 3;
@@ -1262,8 +1421,8 @@ export class ProductVariant extends Message<ProductVariant> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductVariant";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "product_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "variant_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
@@ -1289,9 +1448,9 @@ export class ProductVariant extends Message<ProductVariant> {
  */
 export class Seller extends Message<Seller> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: string id = 1;
    */
-  id = 0;
+  id = "";
 
   /**
    * @generated from field: string name = 2;
@@ -1299,9 +1458,19 @@ export class Seller extends Message<Seller> {
   name = "";
 
   /**
-   * @generated from field: google.protobuf.Int32Value location = 3;
+   * @generated from field: google.protobuf.StringValue location = 3;
    */
-  location?: number;
+  location?: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 4;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 5;
+   */
+  updatedAt?: Timestamp;
 
   constructor(data?: PartialMessage<Seller>) {
     super();
@@ -1311,9 +1480,11 @@ export class Seller extends Message<Seller> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Seller";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "location", kind: "message", T: Int32Value },
+    { no: 3, name: "location", kind: "message", T: StringValue },
+    { no: 4, name: "created_at", kind: "message", T: Timestamp },
+    { no: 5, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Seller {
@@ -1338,19 +1509,19 @@ export class Seller extends Message<Seller> {
  */
 export class UpdateSellerRequest extends Message<UpdateSellerRequest> {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string name = 2;
    */
   name = "";
 
   /**
-   * @generated from field: google.protobuf.Int32Value location = 2;
+   * @generated from field: google.protobuf.StringValue location = 3;
    */
-  location?: number;
-
-  /**
-   * @generated from field: int32 id = 3;
-   */
-  id = 0;
+  location?: string;
 
   constructor(data?: PartialMessage<UpdateSellerRequest>) {
     super();
@@ -1360,9 +1531,9 @@ export class UpdateSellerRequest extends Message<UpdateSellerRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.UpdateSellerRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "location", kind: "message", T: Int32Value },
-    { no: 3, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "location", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateSellerRequest {
@@ -1418,9 +1589,9 @@ export class UpdateSellerResponse extends Message<UpdateSellerResponse> {
  */
 export class User extends Message<User> {
   /**
-   * @generated from field: google.protobuf.StringValue id = 1;
+   * @generated from field: string id = 1;
    */
-  id?: string;
+  id = "";
 
   /**
    * @generated from field: string username = 2;
@@ -1458,19 +1629,19 @@ export class User extends Message<User> {
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp created_at = 9;
+   * @generated from field: google.protobuf.StringValue location = 9;
+   */
+  location?: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 10;
    */
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 10;
+   * @generated from field: google.protobuf.Timestamp updated_at = 11;
    */
   updatedAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Int32Value location = 11;
-   */
-  location?: number;
 
   constructor(data?: PartialMessage<User>) {
     super();
@@ -1480,7 +1651,7 @@ export class User extends Message<User> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.User";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "message", T: StringValue },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "password_hash", kind: "message", T: StringValue },
     { no: 4, name: "email", kind: "message", T: StringValue },
@@ -1488,9 +1659,9 @@ export class User extends Message<User> {
     { no: 6, name: "gender", kind: "message", T: StringValue },
     { no: 7, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 9, name: "created_at", kind: "message", T: Timestamp },
-    { no: 10, name: "updated_at", kind: "message", T: Timestamp },
-    { no: 11, name: "location", kind: "message", T: Int32Value },
+    { no: 9, name: "location", kind: "message", T: StringValue },
+    { no: 10, name: "created_at", kind: "message", T: Timestamp },
+    { no: 11, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): User {
