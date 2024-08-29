@@ -15,9 +15,7 @@ from product import models
 CREATE_PRODUCT_CATEGORY = """-- name: create_product_category \\:one
 INSERT INTO
     product_category (id, name, parent_id)
-VALUES (:p1, :p2, :p3) RETURNING id,
-    name,
-    parent_id
+VALUES (:p1, :p2, :p3) RETURNING id
 """
 
 
@@ -121,15 +119,11 @@ class Querier:
     def __init__(self, conn: sqlalchemy.engine.Connection):
         self._conn = conn
 
-    def create_product_category(self, *, id: uuid.UUID, name: str, parent_id: Optional[uuid.UUID]) -> Optional[models.ProductCategory]:
+    def create_product_category(self, *, id: uuid.UUID, name: str, parent_id: Optional[uuid.UUID]) -> Optional[uuid.UUID]:
         row = self._conn.execute(sqlalchemy.text(CREATE_PRODUCT_CATEGORY), {"p1": id, "p2": name, "p3": parent_id}).first()
         if row is None:
             return None
-        return models.ProductCategory(
-            id=row[0],
-            name=row[1],
-            parent_id=row[2],
-        )
+        return row[0]
 
     def delete_product_category(self, *, id: uuid.UUID) -> None:
         self._conn.execute(sqlalchemy.text(DELETE_PRODUCT_CATEGORY), {"p1": id})
@@ -187,15 +181,11 @@ class AsyncQuerier:
     def __init__(self, conn: sqlalchemy.ext.asyncio.AsyncConnection):
         self._conn = conn
 
-    async def create_product_category(self, *, id: uuid.UUID, name: str, parent_id: Optional[uuid.UUID]) -> Optional[models.ProductCategory]:
+    async def create_product_category(self, *, id: uuid.UUID, name: str, parent_id: Optional[uuid.UUID]) -> Optional[uuid.UUID]:
         row = (await self._conn.execute(sqlalchemy.text(CREATE_PRODUCT_CATEGORY), {"p1": id, "p2": name, "p3": parent_id})).first()
         if row is None:
             return None
-        return models.ProductCategory(
-            id=row[0],
-            name=row[1],
-            parent_id=row[2],
-        )
+        return row[0]
 
     async def delete_product_category(self, *, id: uuid.UUID) -> None:
         await self._conn.execute(sqlalchemy.text(DELETE_PRODUCT_CATEGORY), {"p1": id})

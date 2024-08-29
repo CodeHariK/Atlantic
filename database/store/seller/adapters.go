@@ -5,24 +5,10 @@ package seller
 import (
 	"encoding/json"
 
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	pb "github.com/codeharik/Atlantic/database/api/seller/v1"
 )
-
-func toCreateSellerRow(in CreateSellerRow) *pb.CreateSellerRow {
-
-	out := new(pb.CreateSellerRow)
-	out.Id = in.ID.String()
-	if in.CreatedAt.Valid {
-		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
-	}
-	if in.UpdatedAt.Valid {
-		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
-	}
-	return out
-}
 
 func toGetSellerByIDRow(in GetSellerByIDRow) *pb.GetSellerByIDRow {
 

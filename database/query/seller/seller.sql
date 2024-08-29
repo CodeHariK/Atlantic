@@ -1,9 +1,7 @@
 -- name: CreateSeller :one
 INSERT INTO
     seller (id, name, location)
-VALUES ($1, $2, $3) RETURNING id,
-    created_at,
-    updated_at;
+VALUES ($1, $2, $3) RETURNING id;
 
 -- name: GetSellerByID :one
 SELECT id, name, location FROM seller WHERE id = $1;

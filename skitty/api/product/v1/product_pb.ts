@@ -219,9 +219,9 @@ export class CreateProductCategoryRequest extends Message<CreateProductCategoryR
  */
 export class CreateProductCategoryResponse extends Message<CreateProductCategoryResponse> {
   /**
-   * @generated from field: product.v1.ProductCategory product_category = 1;
+   * @generated from field: string value = 1;
    */
-  productCategory?: ProductCategory;
+  value = "";
 
   constructor(data?: PartialMessage<CreateProductCategoryResponse>) {
     super();
@@ -231,7 +231,7 @@ export class CreateProductCategoryResponse extends Message<CreateProductCategory
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "product.v1.CreateProductCategoryResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "product_category", kind: "message", T: ProductCategory },
+    { no: 1, name: "value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateProductCategoryResponse {

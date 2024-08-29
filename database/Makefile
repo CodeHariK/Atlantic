@@ -59,6 +59,7 @@ connect:
 
 	cp -r ./proto/ ../docs/proto
 
+	rm api/apidocs.swagger.json
 	cd .. && find . -type f -name ".DS_Store" -exec rm {} +
 
 bufMigrate:

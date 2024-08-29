@@ -46,13 +46,7 @@ message CreateSellerRequest {
 }
 
 message CreateSellerResponse {
-  CreateSellerRow create_seller_row = 1;
-}
-
-message CreateSellerRow {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Timestamp updated_at = 3;
+  string value = 1;
 }
 
 message DeleteSellerRequest {

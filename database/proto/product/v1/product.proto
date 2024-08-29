@@ -82,7 +82,7 @@ message CreateProductCategoryRequest {
 }
 
 message CreateProductCategoryResponse {
-  ProductCategory product_category = 1;
+  string value = 1;
 }
 
 message CreateProductCommentRequest {

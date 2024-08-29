@@ -818,8 +818,8 @@
     "v1CreateProductCommentResponse": {
       "type": "object",
       "properties": {
-        "value": {
-          "type": "string"
+        "productComment": {
+          "$ref": "#/definitions/v1ProductComment"
         }
       }
     },
@@ -840,8 +840,8 @@
     "v1CreateProductResponse": {
       "type": "object",
       "properties": {
-        "value": {
-          "type": "string"
+        "product": {
+          "$ref": "#/definitions/v1Product"
         }
       }
     },
@@ -869,7 +869,18 @@
     "v1CreateProductReviewResponse": {
       "type": "object",
       "properties": {
-        "value": {
+        "createProductReviewRow": {
+          "$ref": "#/definitions/v1CreateProductReviewRow"
+        }
+      }
+    },
+    "v1CreateProductReviewRow": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
           "type": "string"
         }
       }

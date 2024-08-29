@@ -219,9 +219,9 @@ export class CreateSellerRequest extends Message<CreateSellerRequest> {
  */
 export class CreateSellerResponse extends Message<CreateSellerResponse> {
   /**
-   * @generated from field: seller.v1.CreateSellerRow create_seller_row = 1;
+   * @generated from field: string value = 1;
    */
-  createSellerRow?: CreateSellerRow;
+  value = "";
 
   constructor(data?: PartialMessage<CreateSellerResponse>) {
     super();
@@ -231,7 +231,7 @@ export class CreateSellerResponse extends Message<CreateSellerResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.CreateSellerResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "create_seller_row", kind: "message", T: CreateSellerRow },
+    { no: 1, name: "value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSellerResponse {
@@ -248,55 +248,6 @@ export class CreateSellerResponse extends Message<CreateSellerResponse> {
 
   static equals(a: CreateSellerResponse | PlainMessage<CreateSellerResponse> | undefined, b: CreateSellerResponse | PlainMessage<CreateSellerResponse> | undefined): boolean {
     return proto3.util.equals(CreateSellerResponse, a, b);
-  }
-}
-
-/**
- * @generated from message seller.v1.CreateSellerRow
- */
-export class CreateSellerRow extends Message<CreateSellerRow> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 2;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 3;
-   */
-  updatedAt?: Timestamp;
-
-  constructor(data?: PartialMessage<CreateSellerRow>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "seller.v1.CreateSellerRow";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "created_at", kind: "message", T: Timestamp },
-    { no: 3, name: "updated_at", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSellerRow {
-    return new CreateSellerRow().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateSellerRow {
-    return new CreateSellerRow().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateSellerRow {
-    return new CreateSellerRow().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: CreateSellerRow | PlainMessage<CreateSellerRow> | undefined, b: CreateSellerRow | PlainMessage<CreateSellerRow> | undefined): boolean {
-    return proto3.util.equals(CreateSellerRow, a, b);
   }
 }
 

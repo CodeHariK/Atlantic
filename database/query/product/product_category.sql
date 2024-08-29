@@ -1,9 +1,7 @@
 -- name: CreateProductCategory :one
 INSERT INTO
     product_category (id, name, parent_id)
-VALUES ($1, $2, $3) RETURNING id,
-    name,
-    parent_id;
+VALUES ($1, $2, $3) RETURNING id;
 
 -- name: GetProductCategoryByID :one
 SELECT id, name, parent_id FROM product_category WHERE id = $1;

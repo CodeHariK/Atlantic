@@ -3,6 +3,7 @@ CONTAINER_NAME = auth
 
 gen:
 	buf dep update
+	buf format -w
 	buf generate
 	cp -r ./proto/ ../docs/proto
 

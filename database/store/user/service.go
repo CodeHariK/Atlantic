@@ -52,7 +52,7 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 		}
 	}
 	if v := req.Msg.GetLocation(); v != nil {
-		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
 			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
 			return nil, err
 		}
@@ -63,7 +63,7 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 		slog.Error("sql call failed", "error", err, "method", "CreateUser")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateUserResponse{CreateUserRow: toCreateUserRow(result)}), nil
+	return connect.NewResponse(&pb.CreateUserResponse{Value: result.String()}), nil
 }
 
 func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[pb.DeleteUserResponse], error) {
@@ -166,7 +166,7 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 		}
 	}
 	if v := req.Msg.GetLocation(); v != nil {
-		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
 			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
 			return nil, err
 		}

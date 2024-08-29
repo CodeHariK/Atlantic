@@ -15,9 +15,7 @@ import (
 const createProductCategory = `-- name: CreateProductCategory :one
 INSERT INTO
     product_category (id, name, parent_id)
-VALUES ($1, $2, $3) RETURNING id,
-    name,
-    parent_id
+VALUES ($1, $2, $3) RETURNING id
 `
 
 type CreateProductCategoryParams struct {
@@ -26,11 +24,11 @@ type CreateProductCategoryParams struct {
 	ParentID pgtype.UUID `json:"parent_id"`
 }
 
-func (q *Queries) CreateProductCategory(ctx context.Context, arg CreateProductCategoryParams) (ProductCategory, error) {
+func (q *Queries) CreateProductCategory(ctx context.Context, arg CreateProductCategoryParams) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, createProductCategory, arg.ID, arg.Name, arg.ParentID)
-	var i ProductCategory
-	err := row.Scan(&i.ID, &i.Name, &i.ParentID)
-	return i, err
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const deleteProductCategory = `-- name: DeleteProductCategory :exec

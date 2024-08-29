@@ -11,19 +11,6 @@ import (
 	pb "github.com/codeharik/Atlantic/database/api/user/v1"
 )
 
-func toCreateUserRow(in CreateUserRow) *pb.CreateUserRow {
-
-	out := new(pb.CreateUserRow)
-	out.Id = in.ID.String()
-	if in.CreatedAt.Valid {
-		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
-	}
-	if in.UpdatedAt.Valid {
-		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
-	}
-	return out
-}
-
 func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow {
 
 	out := new(pb.FindUserByUsernameRow)

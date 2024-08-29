@@ -69,7 +69,7 @@ func (s *Service) CreateProductCategory(ctx context.Context, req *connect.Reques
 		slog.Error("sql call failed", "error", err, "method", "CreateProductCategory")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateProductCategoryResponse{ProductCategory: toProductCategory(result)}), nil
+	return connect.NewResponse(&pb.CreateProductCategoryResponse{Value: result.String()}), nil
 }
 
 func (s *Service) CreateProductComment(ctx context.Context, req *connect.Request[pb.CreateProductCommentRequest]) (*connect.Response[pb.CreateProductCommentResponse], error) {

@@ -33,9 +33,7 @@ VALUES (
         $6,
         $7,
         $8
-    ) RETURNING id,
-    created_at,
-    updated_at
+    ) RETURNING id
 `
 
 type CreateUserParams struct {
@@ -49,13 +47,7 @@ type CreateUserParams struct {
 	Location    pgtype.UUID `json:"location"`
 }
 
-type CreateUserRow struct {
-	ID        uuid.UUID        `json:"id"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, createUser,
 		arg.ID,
 		arg.Username,
@@ -66,9 +58,9 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 		arg.DateOfBirth,
 		arg.Location,
 	)
-	var i CreateUserRow
-	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
-	return i, err
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const deleteUser = `-- name: DeleteUser :exec

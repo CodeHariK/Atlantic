@@ -19,9 +19,7 @@ VALUES (
         $6,
         $7,
         $8
-    ) RETURNING id,
-    created_at,
-    updated_at;
+    ) RETURNING id;
 
 -- name: GetUserByID :one
 SELECT

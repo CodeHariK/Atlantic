@@ -15,9 +15,7 @@ import (
 const createSeller = `-- name: CreateSeller :one
 INSERT INTO
     seller (id, name, location)
-VALUES ($1, $2, $3) RETURNING id,
-    created_at,
-    updated_at
+VALUES ($1, $2, $3) RETURNING id
 `
 
 type CreateSellerParams struct {
@@ -26,17 +24,11 @@ type CreateSellerParams struct {
 	Location pgtype.UUID `json:"location"`
 }
 
-type CreateSellerRow struct {
-	ID        uuid.UUID        `json:"id"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-}
-
-func (q *Queries) CreateSeller(ctx context.Context, arg CreateSellerParams) (CreateSellerRow, error) {
+func (q *Queries) CreateSeller(ctx context.Context, arg CreateSellerParams) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, createSeller, arg.ID, arg.Name, arg.Location)
-	var i CreateSellerRow
-	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
-	return i, err
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const deleteSeller = `-- name: DeleteSeller :exec

@@ -28,7 +28,7 @@ service AuthService {
 message AuthUser {
   string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
   string username = 2 [(buf.validate.field).string = {
-    min_len: 8,
+    min_len: 8
     max_len: 24
   }]; // Username must be 8-24 characters
 
@@ -36,11 +36,11 @@ message AuthUser {
     string: {
       // `pattern` specifies a regex pattern and validates that the string field
       // must match it.
-      pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$",
-    },
-    ignore_empty: true,
+      pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"
+    }
+    ignore_empty: true
   }];
-  
+
   string avatar = 4 [
     (buf.validate.field).ignore = IGNORE_IF_DEFAULT_VALUE,
     (buf.validate.field).string.uri = true

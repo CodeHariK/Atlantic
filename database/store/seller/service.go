@@ -31,7 +31,7 @@ func (s *Service) CreateSeller(ctx context.Context, req *connect.Request[pb.Crea
 	}
 	arg.Name = req.Msg.GetName()
 	if v := req.Msg.GetLocation(); v != nil {
-		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
 			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
 			return nil, err
 		}
@@ -42,7 +42,7 @@ func (s *Service) CreateSeller(ctx context.Context, req *connect.Request[pb.Crea
 		slog.Error("sql call failed", "error", err, "method", "CreateSeller")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateSellerResponse{CreateSellerRow: toCreateSellerRow(result)}), nil
+	return connect.NewResponse(&pb.CreateSellerResponse{Value: result.String()}), nil
 }
 
 func (s *Service) DeleteSeller(ctx context.Context, req *connect.Request[pb.DeleteSellerRequest]) (*connect.Response[pb.DeleteSellerResponse], error) {
@@ -103,7 +103,7 @@ func (s *Service) UpdateSeller(ctx context.Context, req *connect.Request[pb.Upda
 	}
 	arg.Name = req.Msg.GetName()
 	if v := req.Msg.GetLocation(); v != nil {
-		if err := json.Unmarshal([]byte(v.String()), &arg.Location); err != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
 			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
 			return nil, err
 		}

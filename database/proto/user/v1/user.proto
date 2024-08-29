@@ -55,13 +55,7 @@ message CreateUserRequest {
 }
 
 message CreateUserResponse {
-  CreateUserRow create_user_row = 1;
-}
-
-message CreateUserRow {
-  string id = 1;
-  google.protobuf.Timestamp created_at = 2;
-  google.protobuf.Timestamp updated_at = 3;
+  string value = 1;
 }
 
 message DeleteUserRequest {
