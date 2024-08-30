@@ -18,6 +18,7 @@ import SearchDrawer from './components/searchdrawer';
 import Payment from './pages/payment';
 import { Checkout } from './pages/checkout';
 import { ProductModal, Products } from './pages/products';
+import Register from './pages/register';
 
 export const routes: RouteDefinition[] = [
     {
@@ -31,6 +32,10 @@ export const routes: RouteDefinition[] = [
     {
         path: '/login',
         component: Login,
+    },
+    {
+        path: '/register',
+        component: Register,
     },
     {
         path: '/profile',
@@ -104,7 +109,7 @@ export const routes: RouteDefinition[] = [
 
 
 function RouteList() {
-    const [iframeSrc, setIframeSrc] = createSignal('/login');
+    const [iframeSrc, setIframeSrc] = createSignal('/register');
 
     return (
         <div class="w-full flex flex-row h-screen">

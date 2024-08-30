@@ -21,7 +21,7 @@ export function H4(props: HeadingProps) {
     return <h4 class={`text-xl font-semibold AppText ${props.class}`}>{props.children}</h4>;
 }
 export function H5(props: HeadingProps) {
-    return <h5 class={`text-lg font-semibold AppText ${props.class}`}>{props.children}</h5>;
+    return <h5 class={`text-lg font-medium AppText ${props.class}`}>{props.children}</h5>;
 }
 export function H6(props: HeadingProps) {
     return <h6 class={`text-base font-normal ${props.class}`}>{props.children}</h6>;
