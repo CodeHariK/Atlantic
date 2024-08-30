@@ -24,42 +24,70 @@
     }
 }
 
-.InputLabel {
-    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white;
+.AppText {
+    @apply text-gray-700 dark:text-white
 }
 
-.TextInput {
-    @apply bg-gray-50 border border-gray-300 outline-none text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+.AppText1 {
+    @apply text-gray-600 dark:text-gray-300
 }
 
-.ErrorTextInput {
-    @apply bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block w-full p-2.5 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500;
+.DarkAppText {
+    @apply dark:text-gray-700 text-white
 }
 
-.CheckboxInput {
+.DarkAppText1 {
+    @apply dark:text-gray-600 text-gray-300
+}
+
+.AppIcon {
+    @apply shrink-0 size-4 text-xs text-slate-400
+}
+
+.AppButtonBase {
+    @apply flex select-none items-center gap-2 rounded py-2.5 px-4 text-xs font-semibold transition-all hover:opacity-75;
+}
+
+.AppButton {
+    @apply AppButtonBase text-gray-200 dark:text-gray-700 bg-gray-800 dark:bg-gray-100;
+}
+
+.AppOutlinedButton {
+    @apply AppButtonBase text-slate-600 dark:text-gray-200 border border-slate-300 dark:border-gray-200 bg-transparent dark:bg-transparent;
+}
+
+.AppTextInput {
+    @apply my-1 bg-white border border-gray-300 outline-none text-gray-900 text-sm rounded-lg focus:border-blue-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+}
+
+.AppErrorTextInput {
+    @apply border-red-500 text-red-600 placeholder-red-700 dark:bg-gray-700 focus:border-red-400 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500;
+}
+
+.AppCheckboxInput {
     @apply w-4 h-4 select-none text-blue-600 bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600;
 }
 
-.Label {
+.AppLabel {
     @apply ms-2 text-sm select-none font-medium text-gray-900 dark:text-gray-300;
 }
 
-.LabelDisabled {
+.AppLabelDisabled {
     @apply ms-2 text-sm select-none font-medium text-gray-400 dark:text-gray-500;
 }
 
-.HelperLabel {
+.AppHelperLabel {
     @apply text-xs font-normal text-gray-500 dark:text-gray-400;
 }
 
-.Select {
+.AppSelect {
     @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg outline-none block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white;
 }
 
-.ErrorText {
-    @apply mt-2 text-sm text-red-600 dark:text-red-500;
+.AppErrorText {
+    @apply mt-2 text-sm text-red-400 dark:text-red-500;
 }
 
-.DropdownOption {
+.AppDropdownOption {
     @apply flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700;
 }

@@ -14,18 +14,35 @@ import (
 
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO
-    products (id, product_name, category_id)
-VALUES ($1, $2, $3) RETURNING id
+    products (
+        id,
+        product_name,
+        category_id1,
+        category_id2,
+        category_id3,
+        category_id4
+    )
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
 `
 
 type CreateProductParams struct {
 	ID          uuid.UUID   `json:"id"`
 	ProductName pgtype.Text `json:"product_name"`
-	CategoryID  uuid.UUID   `json:"category_id"`
+	CategoryId1 int32       `json:"category_id1"`
+	CategoryId2 int32       `json:"category_id2"`
+	CategoryId3 pgtype.Int4 `json:"category_id3"`
+	CategoryId4 pgtype.Int4 `json:"category_id4"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, createProduct, arg.ID, arg.ProductName, arg.CategoryID)
+	row := q.db.QueryRow(ctx, createProduct,
+		arg.ID,
+		arg.ProductName,
+		arg.CategoryId1,
+		arg.CategoryId2,
+		arg.CategoryId3,
+		arg.CategoryId4,
+	)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err
@@ -41,23 +58,25 @@ func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
 }
 
 const getProductByID = `-- name: GetProductByID :one
-SELECT id, product_name, category_id FROM products WHERE id = $1
+SELECT id, product_name, category_id1, category_id2, category_id3, category_id4 FROM products WHERE id = $1
 `
 
 func (q *Queries) GetProductByID(ctx context.Context, id uuid.UUID) (Product, error) {
 	row := q.db.QueryRow(ctx, getProductByID, id)
 	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.CategoryID)
+	err := row.Scan(
+		&i.ID,
+		&i.ProductName,
+		&i.CategoryId1,
+		&i.CategoryId2,
+		&i.CategoryId3,
+		&i.CategoryId4,
+	)
 	return i, err
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, product_name, category_id
-FROM products
-ORDER BY id
-LIMIT $1
-OFFSET
-    $2
+SELECT id, product_name, category_id1, category_id2, category_id3, category_id4 FROM products ORDER BY id LIMIT $1 OFFSET $2
 `
 
 type ListProductsParams struct {
@@ -74,7 +93,14 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 	items := []Product{}
 	for rows.Next() {
 		var i Product
-		if err := rows.Scan(&i.ID, &i.ProductName, &i.CategoryID); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.ProductName,
+			&i.CategoryId1,
+			&i.CategoryId2,
+			&i.CategoryId3,
+			&i.CategoryId4,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -85,26 +111,35 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 	return items, nil
 }
 
-const updateProduct = `-- name: UpdateProduct :one
+const updateProduct = `-- name: UpdateProduct :exec
 UPDATE products
 SET
-    product_name = $1,
-    category_id = $2
+    product_name = $2,
+    category_id1 = $3,
+    category_id2 = $4,
+    category_id3 = $5,
+    category_id4 = $6
 WHERE
-    id = $3 RETURNING id,
-    product_name,
-    category_id
+    id = $1
 `
 
 type UpdateProductParams struct {
-	ProductName pgtype.Text `json:"product_name"`
-	CategoryID  uuid.UUID   `json:"category_id"`
 	ID          uuid.UUID   `json:"id"`
+	ProductName pgtype.Text `json:"product_name"`
+	CategoryId1 int32       `json:"category_id1"`
+	CategoryId2 int32       `json:"category_id2"`
+	CategoryId3 pgtype.Int4 `json:"category_id3"`
+	CategoryId4 pgtype.Int4 `json:"category_id4"`
 }
 
-func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
-	row := q.db.QueryRow(ctx, updateProduct, arg.ProductName, arg.CategoryID, arg.ID)
-	var i Product
-	err := row.Scan(&i.ID, &i.ProductName, &i.CategoryID)
-	return i, err
+func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) error {
+	_, err := q.db.Exec(ctx, updateProduct,
+		arg.ID,
+		arg.ProductName,
+		arg.CategoryId1,
+		arg.CategoryId2,
+		arg.CategoryId3,
+		arg.CategoryId4,
+	)
+	return err
 }

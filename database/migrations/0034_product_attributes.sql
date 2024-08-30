@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "product_attributes" (
     "id" UUID PRIMARY KEY,
     "product_id" UUID NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
     "variant_id" UUID REFERENCES "product_variants" ("id") ON DELETE CASCADE,
-    "attribute_id" UUID NOT NULL REFERENCES "attributes" ("id")
+    "attribute_id" INT NOT NULL REFERENCES "attributes" ("id")
 );
 
 -- Create indexes for the product_attributes table

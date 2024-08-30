@@ -1,6 +1,6 @@
 import { render } from 'solid-js/web'
 import { Router, type RouteDefinition } from "@solidjs/router";
-import { lazy } from 'solid-js';
+import { lazy, createSignal } from 'solid-js';
 
 import { ConnectProvider } from './components/connect';
 
@@ -96,8 +96,37 @@ export const routes: RouteDefinition[] = [
         path: '**',
         component: lazy(() => import('./pages/404')),
     },
+    {
+        path: '/routes',
+        component: RouteList,
+    }
 ];
 
+
+function RouteList() {
+    const [iframeSrc, setIframeSrc] = createSignal('/login');
+
+    return (
+        <div class="w-full flex flex-row h-screen">
+            <span class="p-4">
+                {
+                    routes.map((e) => (
+                        <>
+                            <p
+                                class="underline"
+                                onclick={() => setIframeSrc(e.path)}
+                            >
+                                {e.path}
+                            </p>
+                        </>
+                    ))
+                }
+                <p class='text-red-400'>{iframeSrc()}</p>
+            </span>
+            <iframe src={iframeSrc()} class="w-full" />
+        </div>
+    );
+}
 render(
     () =>
         <ConnectProvider>

@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS "users" (
         CHAR_LENGTH("phone_number") > 0
     ),
     "gender" CHAR(1) CHECK ("gender" IN ('M', 'F')),
-    "is_admin" BOOLEAN DEFAULT FALSE NOT NULL,
+    "role" INT NOT NULL DEFAULT 1,
+
+
     "date_of_birth" DATE,
     "location" UUID REFERENCES "locations" ("id") ON UPDATE NO ACTION ON DELETE SET NULL,
     CHECK (

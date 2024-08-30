@@ -66,10 +66,10 @@ export function ToggleOptions() {
                 >
                     {((c) => {
                         return <div>
-                            <a class="DropdownOption" onClick={() => { c("Newsletter") }}>
+                            <a class="AppDropdownOption" onClick={() => { c("Newsletter") }}>
                                 Newsletter
                             </a>
-                            <a class="DropdownOption" onClick={() => { c("Purchases") }}>
+                            <a class="AppDropdownOption" onClick={() => { c("Purchases") }}>
                                 Purchases
                             </a>
                         </div>

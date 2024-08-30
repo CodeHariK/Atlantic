@@ -24,7 +24,7 @@ service UserService {
 }
 
 message Attribute {
-  string id = 1;
+  int32 id = 1;
   string attribute_name = 2;
   string attribute_value = 3;
 }
@@ -49,7 +49,7 @@ message CreateUserRequest {
   google.protobuf.StringValue email = 3;
   google.protobuf.StringValue phone_number = 4;
   google.protobuf.StringValue gender = 5;
-  bool is_admin = 6;
+  int32 role = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.StringValue location = 8;
 }
@@ -78,7 +78,7 @@ message FindUserByUsernameRow {
   google.protobuf.StringValue email = 3;
   google.protobuf.StringValue phone_number = 4;
   google.protobuf.StringValue gender = 5;
-  bool is_admin = 6;
+  int32 role = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
@@ -114,7 +114,7 @@ message GetUserByIDRow {
   google.protobuf.StringValue email = 3;
   google.protobuf.StringValue phone_number = 4;
   google.protobuf.StringValue gender = 5;
-  bool is_admin = 6;
+  int32 role = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
@@ -153,7 +153,7 @@ message ListUsersRow {
   google.protobuf.StringValue email = 3;
   google.protobuf.StringValue phone_number = 4;
   google.protobuf.StringValue gender = 5;
-  bool is_admin = 6;
+  int32 role = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
@@ -199,20 +199,23 @@ message OrderItem {
 message Product {
   string id = 1;
   google.protobuf.StringValue product_name = 2;
-  string category_id = 3;
+  int32 category_id1 = 3;
+  int32 category_id2 = 4;
+  google.protobuf.Int32Value category_id3 = 5;
+  google.protobuf.Int32Value category_id4 = 6;
 }
 
 message ProductAttribute {
   string id = 1;
   string product_id = 2;
   google.protobuf.StringValue variant_id = 3;
-  string attribute_id = 4;
+  int32 attribute_id = 4;
 }
 
 message ProductCategory {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
-  google.protobuf.StringValue parent_id = 3;
+  google.protobuf.Int32Value parent_id = 3;
 }
 
 message ProductComment {
@@ -267,20 +270,13 @@ message UpdateUserRequest {
   google.protobuf.StringValue email = 2;
   google.protobuf.StringValue phone_number = 3;
   google.protobuf.StringValue gender = 4;
-  bool is_admin = 5;
+  int32 role = 5;
   google.protobuf.Timestamp date_of_birth = 6;
   google.protobuf.StringValue location = 7;
   string id = 8;
 }
 
-message UpdateUserResponse {
-  UpdateUserRow update_user_row = 1;
-}
-
-message UpdateUserRow {
-  string id = 1;
-  google.protobuf.Timestamp updated_at = 2;
-}
+message UpdateUserResponse {}
 
 message User {
   string id = 1;
@@ -289,7 +285,7 @@ message User {
   google.protobuf.StringValue email = 4;
   google.protobuf.StringValue phone_number = 5;
   google.protobuf.StringValue gender = 6;
-  bool is_admin = 7;
+  int32 role = 7;
   google.protobuf.Timestamp date_of_birth = 8;
   google.protobuf.StringValue location = 9;
   google.protobuf.Timestamp created_at = 10;

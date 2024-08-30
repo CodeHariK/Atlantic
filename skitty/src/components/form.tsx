@@ -2,11 +2,9 @@ import { CheckboxGroup } from "./checkbox";
 import { RadioGroup } from "./radio";
 import { SearchInput } from "./search";
 import { Select } from "./select";
-import { Password } from "./password";
-import { SpaceForm, SpaceDebugInfo, SpaceFormError } from "./spaceform";
 import { TextInput } from "./textinput";
+import { SpaceForm, SpaceDebugInfo, SpaceFormError } from "./spaceform";
 import * as yup from 'yup';
-import { Pattern } from "../data/regex";
 
 export const validationSchema = yup.object().shape({
     first_name: yup.string().required('First name is required'),
@@ -71,10 +69,6 @@ export function ClassicForm() {
         >
             <SpaceDebugInfo />
 
-            <TextInput name="first_name" type="password" placeholder="placeholder"></TextInput>
-
-            <TextInput name="phone" pattern={Pattern.Tel} type="text" placeholder="phone"></TextInput>
-
             <SearchInput name="search" placeholder="placeholder" />
 
             <CheckboxGroup id={"hello"} checkboxes={checkboxes} />
@@ -92,7 +86,7 @@ export function ClassicForm() {
                 ]}
             />
 
-            <Password name="password" type="password" placeholder="placeholder" />
+            <TextInput name="password" type="password" placeholder="placeholder" />
 
             <SpaceFormError />
 

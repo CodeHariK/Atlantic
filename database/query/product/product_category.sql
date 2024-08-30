@@ -70,7 +70,10 @@ CategoryPath AS (
 SELECT
     p.id AS product_id,
     p.product_name,
-    p.category_id,
+    p.category_id1,
+    p.category_id2,
+    p.category_id3,
+    p.category_id4,
     cp.path AS category_path
 FROM products p
     CROSS JOIN CategoryPath cp

@@ -19,14 +19,14 @@ VALUES ($1, $2, $3) RETURNING id
 `
 
 type CreateProductCategoryParams struct {
-	ID       uuid.UUID   `json:"id"`
+	ID       int32       `json:"id"`
 	Name     string      `json:"name"`
-	ParentID pgtype.UUID `json:"parent_id"`
+	ParentID pgtype.Int4 `json:"parent_id"`
 }
 
-func (q *Queries) CreateProductCategory(ctx context.Context, arg CreateProductCategoryParams) (uuid.UUID, error) {
+func (q *Queries) CreateProductCategory(ctx context.Context, arg CreateProductCategoryParams) (int32, error) {
 	row := q.db.QueryRow(ctx, createProductCategory, arg.ID, arg.Name, arg.ParentID)
-	var id uuid.UUID
+	var id int32
 	err := row.Scan(&id)
 	return id, err
 }
@@ -35,7 +35,7 @@ const deleteProductCategory = `-- name: DeleteProductCategory :exec
 DELETE FROM product_category WHERE id = $1
 `
 
-func (q *Queries) DeleteProductCategory(ctx context.Context, id uuid.UUID) error {
+func (q *Queries) DeleteProductCategory(ctx context.Context, id int32) error {
 	_, err := q.db.Exec(ctx, deleteProductCategory, id)
 	return err
 }
@@ -58,7 +58,7 @@ ORDER BY array_length(string_to_array(path, '.'), 1) DESC
 LIMIT 1
 `
 
-func (q *Queries) GetCategoryPath(ctx context.Context, id uuid.UUID) (string, error) {
+func (q *Queries) GetCategoryPath(ctx context.Context, id int32) (string, error) {
 	row := q.db.QueryRow(ctx, getCategoryPath, id)
 	var path string
 	err := row.Scan(&path)
@@ -69,7 +69,7 @@ const getProductCategoryByID = `-- name: GetProductCategoryByID :one
 SELECT id, name, parent_id FROM product_category WHERE id = $1
 `
 
-func (q *Queries) GetProductCategoryByID(ctx context.Context, id uuid.UUID) (ProductCategory, error) {
+func (q *Queries) GetProductCategoryByID(ctx context.Context, id int32) (ProductCategory, error) {
 	row := q.db.QueryRow(ctx, getProductCategoryByID, id)
 	var i ProductCategory
 	err := row.Scan(&i.ID, &i.Name, &i.ParentID)
@@ -103,7 +103,10 @@ CategoryPath AS (
 SELECT
     p.id AS product_id,
     p.product_name,
-    p.category_id,
+    p.category_id1,
+    p.category_id2,
+    p.category_id3,
+    p.category_id4,
     cp.path AS category_path
 FROM products p
     CROSS JOIN CategoryPath cp
@@ -114,7 +117,10 @@ WHERE
 type GetProductWithCategoryPathRow struct {
 	ProductID    uuid.UUID   `json:"product_id"`
 	ProductName  pgtype.Text `json:"product_name"`
-	CategoryID   uuid.UUID   `json:"category_id"`
+	CategoryId1  int32       `json:"category_id1"`
+	CategoryId2  int32       `json:"category_id2"`
+	CategoryId3  pgtype.Int4 `json:"category_id3"`
+	CategoryId4  pgtype.Int4 `json:"category_id4"`
 	CategoryPath string      `json:"category_path"`
 }
 
@@ -124,7 +130,10 @@ func (q *Queries) GetProductWithCategoryPath(ctx context.Context, id uuid.UUID) 
 	err := row.Scan(
 		&i.ProductID,
 		&i.ProductName,
-		&i.CategoryID,
+		&i.CategoryId1,
+		&i.CategoryId2,
+		&i.CategoryId3,
+		&i.CategoryId4,
 		&i.CategoryPath,
 	)
 	return i, err
@@ -138,7 +147,7 @@ WHERE
 ORDER BY name
 `
 
-func (q *Queries) ListCategoriesByParentID(ctx context.Context, parentID pgtype.UUID) ([]ProductCategory, error) {
+func (q *Queries) ListCategoriesByParentID(ctx context.Context, parentID pgtype.Int4) ([]ProductCategory, error) {
 	rows, err := q.db.Query(ctx, listCategoriesByParentID, parentID)
 	if err != nil {
 		return nil, err
@@ -191,9 +200,9 @@ UPDATE product_category SET name = $2, parent_id = $3 WHERE id = $1
 `
 
 type UpdateProductCategoryParams struct {
-	ID       uuid.UUID   `json:"id"`
+	ID       int32       `json:"id"`
 	Name     string      `json:"name"`
-	ParentID pgtype.UUID `json:"parent_id"`
+	ParentID pgtype.Int4 `json:"parent_id"`
 }
 
 func (q *Queries) UpdateProductCategory(ctx context.Context, arg UpdateProductCategoryParams) error {

@@ -29,14 +29,20 @@ export const useSpaceContext = () => {
 
 type SpaceFormProps = {
     id: string;
-    initialFormState: SpaceState;
-    schema: ObjectSchema<any>;
-    onSubmit: (state: SpaceState) => void;
+    initialFormState?: SpaceState;
+    schema?: ObjectSchema<any>;
+    onSubmit?: (state: Record<string, any>) => void;
     children: JSX.Element;
 };
 
 export function SpaceForm(props: SpaceFormProps) {
-    const [state, setState] = createSignal<SpaceState>(props.initialFormState);
+    const [state, setState] = createSignal<SpaceState>(props.initialFormState ?? {
+        values: {},
+        status: {},
+        errors: {},
+        formerror: ""
+    });
+
     const [startValidation, setStartValidation] = createSignal<boolean>(false);
 
     const handleChange = async (name: string, value: any) => {
@@ -54,7 +60,7 @@ export function SpaceForm(props: SpaceFormProps) {
 
     const validateForm = async () => {
         try {
-            await props.schema.validate(state().values, { abortEarly: false });
+            await props.schema?.validate(state().values, { abortEarly: false });
             setState(prev => ({ ...prev, errors: {}, formerror: "" }));
             return true;
         } catch (err: any) {
@@ -72,20 +78,27 @@ export function SpaceForm(props: SpaceFormProps) {
         const isValid = await validateForm();
         setStartValidation(true)
         if (isValid) {
-            // Handle form submission
-            console.log('Form submitted:', state().values);
+            props.onSubmit?.(state().values);
         } else {
             // Handle a general form error
-            setState(prev => ({ ...prev, formerror: "Please correct the errors above." }));
+            setState(prev => ({ ...prev, formerror: "Please correct the errors below." }));
         }
     };
 
+    const handleReset = async () => {
+        setState({
+            values: {},
+            errors: {},
+            status: {},
+            formerror: ""
+        });
+    };
 
     return (
         <SpaceContext.Provider value={{ id: props.id, state: state, handleChange }}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} onReset={handleReset}>
                 <Show when={state().formerror}>
-                    <p class="text-red-600">{state().formerror}</p>
+                    <p class="AppErrorText">{state().formerror}</p>
                 </Show>
                 {props.children}
             </form>

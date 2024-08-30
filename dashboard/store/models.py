@@ -9,7 +9,7 @@ import uuid
 
 @dataclasses.dataclass()
 class Attribute:
-    id: uuid.UUID
+    id: int
     attribute_name: str
     attribute_value: str
 
@@ -92,7 +92,10 @@ class OrderItem:
 class Product:
     id: uuid.UUID
     product_name: Optional[str]
-    category_id: uuid.UUID
+    category_id1: int
+    category_id2: int
+    category_id3: Optional[int]
+    category_id4: Optional[int]
 
 
 @dataclasses.dataclass()
@@ -100,14 +103,14 @@ class ProductAttribute:
     id: uuid.UUID
     product_id: uuid.UUID
     variant_id: Optional[uuid.UUID]
-    attribute_id: uuid.UUID
+    attribute_id: int
 
 
 @dataclasses.dataclass()
 class ProductCategory:
-    id: uuid.UUID
+    id: int
     name: str
-    parent_id: Optional[uuid.UUID]
+    parent_id: Optional[int]
 
 
 @dataclasses.dataclass()
@@ -171,7 +174,7 @@ class User:
     email: Optional[str]
     phone_number: Optional[str]
     gender: Optional[str]
-    is_admin: bool
+    role: int
     date_of_birth: Optional[datetime.date]
     location: Optional[uuid.UUID]
     created_at: datetime.datetime

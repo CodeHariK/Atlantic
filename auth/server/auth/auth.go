@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"time"
 
 	"connectrpc.com/connect"
 	"github.com/codeharik/Atlantic/auth/server/authn"
@@ -11,9 +10,8 @@ import (
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
+	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/jackc/pgx/v5/pgtype"
-
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/codeharik/Atlantic/auth/server/authbox"
 
@@ -44,10 +42,20 @@ func CreateAuthServiceServer(
 	}
 }
 
+var internalServerError = connect.NewError(
+	connect.CodeInternal,
+	errors.New("Internal server error"),
+)
+
+var invalidEmailPassword = connect.NewError(
+	connect.CodePermissionDenied,
+	errors.New("Invalid Email or password"),
+)
+
 func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (any, error) {
 	r, w := req.Request, req.Writer
 
-	user, sessionNumber, err := s.dragon.DragonSessionCheck(r, w, s.Config)
+	user, sessionNumber, err := s.dragon.DragonSessionCheck(r, s.Config)
 	if err := connectbox.AuthRedirect(r, w, err); err != nil {
 		return nil, err
 	}
@@ -61,17 +69,9 @@ func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (a
 }
 
 func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error) {
-	errorResponse, responserError := connect.NewResponse(
-		&v1.EmailLoginResponse{},
-	),
-		connect.NewError(
-			connect.CodePermissionDenied,
-			errors.New("Invalid Email or password"),
-		)
-
 	cb, ok := connectbox.GetConnectBox(ctx)
 	if !ok {
-		return errorResponse, responserError
+		return nil, invalidEmailPassword
 	}
 
 	email := req.Msg.Email
@@ -82,12 +82,12 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		context.Background(),
 		pgtype.Text{String: email, Valid: true})
 	if err != nil || !user.Email.Valid || !user.PasswordHash.Valid {
-		return errorResponse, responserError
+		return nil, invalidEmailPassword
 	}
 
 	// Verify password
 	if err := sessionstore.CheckPassword(user.PasswordHash.String, password); err != nil {
-		return errorResponse, responserError
+		return nil, invalidEmailPassword
 	}
 
 	use := &v1.AuthUser{
@@ -96,28 +96,22 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		Email:    user.Email.String,
 	}
 
-	uu, err := s.dragon.GetDragonUser(cb.R, cb.W, user.ID.String())
+	uu, err := s.dragon.GetDragonUser(user.ID.String())
 	if err == nil {
 		use.Sessions = uu.Sessions
 	}
 
-	session := &v1.Session{
-		ID:    user.ID.String(),
-		Agent: cb.R.UserAgent(),
-		Iat:   timestamppb.New(time.Now()),
-		Exp:   timestamppb.New(time.Now().Add(time.Hour * 24 * 7)),
-	}
-
+	session := &v1.Session{ID: user.ID.String()}
 	sessionId, err := authbox.SaveSession(cb.R, cb.W, s.Config, session)
 	if err != nil {
-		return errorResponse, responserError
+		return nil, invalidEmailPassword
 	}
 
 	use.Sessions = append(use.Sessions, session)
 
-	err = s.dragon.SaveUser(cb.R, cb.W, use)
+	err = s.dragon.SaveUser(use)
 	if err != nil {
-		return errorResponse, responserError
+		return nil, invalidEmailPassword
 	}
 
 	connectbox.AddRedirect(cb.W, "http://localhost:8080/profile")
@@ -131,31 +125,21 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 
 func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
 	cb, ok := connectbox.GetConnectBox(ctx)
-
-	errorResponse, responserError := connect.NewResponse(&v1.RefreshResponse{}), connect.NewError(
-		connect.CodeInternal,
-		errors.New("Internal server error"),
-	)
-
 	if !ok {
-		return errorResponse, responserError
+		return nil, internalServerError
 	}
 
 	session := cb.User.Sessions[cb.SessionNumber]
-	session.Agent = cb.R.UserAgent() + time.Now().String()
-	session.Iat = timestamppb.New(time.Now())
-	session.Exp = timestamppb.New(time.Now().Add(time.Hour * 24 * 7))
-
 	sessionId, err := authbox.SaveSession(cb.R, cb.W, s.Config, session)
 	if err != nil {
-		return errorResponse, responserError
+		return nil, internalServerError
 	}
 
 	cb.User.Sessions[cb.SessionNumber] = session
 
-	err = s.dragon.SaveUser(cb.R, cb.W, cb.User)
+	err = s.dragon.SaveUser(cb.User)
 	if err != nil {
-		return errorResponse, responserError
+		return nil, internalServerError
 	}
 
 	return connect.NewResponse(
@@ -166,13 +150,67 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 }
 
 func (s AuthServiceServer) Logout(ctx context.Context, req *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.JwtAuthService.Logout is not implemented"))
+	cb, ok := connectbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, internalServerError
+	}
+
+	colorlogger.Log(cb.User)
+	cb.User.Sessions[cb.SessionNumber] = nil
+	colorlogger.Log(cb.User)
+
+	if err := s.dragon.SaveUser(cb.User); err != nil {
+		return nil, internalServerError
+	}
+
+	authbox.RevokeSession(cb.W)
+
+	return connect.NewResponse(
+		&v1.LogoutResponse{
+			Success: true,
+		}), nil
 }
 
-func (s AuthServiceServer) GetAllSessions(ctx context.Context, req *connect.Request[v1.GetAllSessionsRequest]) (*connect.Response[v1.GetAllSessionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.JwtAuthService.GetAllSessions is not implemented"))
+func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {
+	cb, ok := connectbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, internalServerError
+	}
+
+	colorlogger.Log(cb.User)
+	cb.User.Sessions[req.Msg.SessionNumber] = nil
+	colorlogger.Log(cb.User)
+
+	if err := s.dragon.SaveUser(cb.User); err != nil {
+		return nil, internalServerError
+	}
+
+	authbox.RevokeSession(cb.W)
+
+	return connect.NewResponse(
+		&v1.RevokeResponse{
+			Success: true,
+		}), nil
 }
 
 func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.JwtAuthService.InvalidateAllSessions is not implemented"))
+	cb, ok := connectbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, internalServerError
+	}
+
+	colorlogger.Log(cb.User)
+	cb.User.Sessions = nil
+	colorlogger.Log(cb.User)
+
+	if err := s.dragon.SaveUser(cb.User); err != nil {
+		return nil, internalServerError
+	}
+
+	authbox.RevokeSession(cb.W)
+
+	return connect.NewResponse(
+		&v1.InvalidateAllSessionsResponse{
+			Success: true,
+		}), nil
 }

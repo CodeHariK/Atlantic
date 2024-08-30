@@ -25,7 +25,7 @@ func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow
 	if in.Gender.Valid {
 		out.Gender = wrapperspb.String(in.Gender.String)
 	}
-	out.IsAdmin = in.IsAdmin
+	out.Role = in.Role
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
 	}
@@ -69,7 +69,7 @@ func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
 	if in.Gender.Valid {
 		out.Gender = wrapperspb.String(in.Gender.String)
 	}
-	out.IsAdmin = in.IsAdmin
+	out.Role = in.Role
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
 	}
@@ -99,7 +99,7 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 	if in.Gender.Valid {
 		out.Gender = wrapperspb.String(in.Gender.String)
 	}
-	out.IsAdmin = in.IsAdmin
+	out.Role = in.Role
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
 	}
@@ -111,16 +111,6 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 	}
 	if v, err := json.Marshal(in.Location); err == nil {
 		out.Location = wrapperspb.String(string(v))
-	}
-	return out
-}
-
-func toUpdateUserRow(in UpdateUserRow) *pb.UpdateUserRow {
-
-	out := new(pb.UpdateUserRow)
-	out.Id = in.ID.String()
-	if in.UpdatedAt.Valid {
-		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
 	return out
 }

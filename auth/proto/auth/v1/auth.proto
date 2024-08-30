@@ -17,11 +17,20 @@ service AuthService {
   // Defines the Logout RPC method
   rpc Logout(LogoutRequest) returns (LogoutResponse);
 
-  // Defines the GetAllSessions RPC method
-  rpc GetAllSessions(GetAllSessionsRequest) returns (GetAllSessionsResponse);
+  // Defines the RevokeSessions RPC method
+  rpc RevokeSession(RevokeRequest) returns (RevokeResponse);
 
   // Defines the InvalidateAllSessions RPC method
   rpc InvalidateAllSessions(InvalidateAllSessionsRequest) returns (InvalidateAllSessionsResponse);
+}
+
+enum Role {
+  ROLE_UNSPECIFIED = 0; // Default value
+  ADMIN = 1; // Admin role
+  DEVELOPER = 2; // Developer role
+  READONLY = 3; // Read-only role
+  EDITOR = 4; // Editor role
+  MODERATOR = 5; // Moderator role
 }
 
 // The user profile message
@@ -51,46 +60,9 @@ message AuthUser {
 
   bool verified = 6;
 
-  repeated Session sessions = 7;
-}
+  int32 role = 7;
 
-// The request message for the EmailLogin method
-message EmailLoginRequest {
-  string email = 1;
-  string password = 2;
-}
-
-// The response message for the EmailLogin method
-message EmailLoginResponse {
-  string sessionId = 1;
-  string accessToken = 2;
-}
-
-message RefreshRequest {
-  string sessionId = 1;
-}
-
-message RefreshResponse {
-  string sessionId = 1;
-  string accessToken = 2;
-}
-
-// Logout Messages
-message LogoutRequest {
-  string token = 1;
-}
-
-message LogoutResponse {
-  bool success = 1;
-}
-
-// GetAllSessions Messages
-message GetAllSessionsRequest {
-  string userId = 1;
-}
-
-message GetAllSessionsResponse {
-  repeated Session sessions = 1;
+  repeated Session sessions = 8;
 }
 
 // Define Session message
@@ -101,11 +73,35 @@ message Session {
   google.protobuf.Timestamp exp = 4; // ExpireAt time
 }
 
-// InvalidateAllSessions Messages
-message InvalidateAllSessionsRequest {
-  string userId = 1;
+// The request message for the EmailLogin method
+message EmailLoginRequest {
+  string email = 1;
+  string password = 2;
+}
+message EmailLoginResponse {
+  string sessionId = 1;
+  string accessToken = 2;
 }
 
+message RefreshRequest {}
+message RefreshResponse {
+  string sessionId = 1;
+  string accessToken = 2;
+}
+
+message LogoutRequest {}
+message LogoutResponse {
+  bool success = 1;
+}
+
+message RevokeRequest {
+  int32 sessionNumber = 1;
+}
+message RevokeResponse {
+  bool success = 1;
+}
+
+message InvalidateAllSessionsRequest {}
 message InvalidateAllSessionsResponse {
   bool success = 1;
 }

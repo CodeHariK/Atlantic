@@ -28,7 +28,7 @@ export function CheckboxGroup(props: CheckboxGroupProps) {
                             type="checkbox"
                             checked={new Set(state().values[props.id]).has(option().name) || false}
                             disabled={option().disabled}
-                            class="CheckboxInput"
+                            class="AppCheckboxInput"
                             onInput={(e) => {
                                 let s = new Set(state().values[props.id])
                                 if (s.has(option().name)) {
@@ -39,10 +39,10 @@ export function CheckboxGroup(props: CheckboxGroupProps) {
                                 handleChange(props.id, props.checkboxes.filter((c) => s.has(c.name)).map((c) => c.name))
                             }}
                         />
-                        <label for={option().name} class={option().disabled ? "LabelDisabled" : "Label"} >
+                        <label for={option().name} class={option().disabled ? "AppLabelDisabled" : "AppLabel"} >
                             {option().label}
                             {option().helperText && (
-                                <p id={`${option().name}-text`} class="CheckboxHelperLabel">
+                                <p id={`${option().name}-text`} class="AppHelperLabel">
                                     {option().helperText}
                                 </p>
                             )}

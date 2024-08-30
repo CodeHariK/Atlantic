@@ -6,7 +6,7 @@ INSERT INTO
         email,
         phone_number,
         gender,
-        is_admin,
+        role,
         date_of_birth,
         location
     )
@@ -28,7 +28,7 @@ SELECT
     email,
     phone_number,
     gender,
-    is_admin,
+    role,
     date_of_birth,
     created_at,
     updated_at,
@@ -47,20 +47,19 @@ FROM users
 WHERE
     email = $1;
 
--- name: UpdateUser :one
+-- name: UpdateUser :exec
 UPDATE users
 SET
     username = $1,
     email = $2,
     phone_number = $3,
     gender = $4,
-    is_admin = $5,
+    role = $5,
     date_of_birth = $6,
     location = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $8 RETURNING id,
-    updated_at;
+    id = $8;
 
 -- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1;
@@ -72,7 +71,7 @@ SELECT
     email,
     phone_number,
     gender,
-    is_admin,
+    role,
     date_of_birth,
     created_at,
     updated_at,
@@ -89,7 +88,7 @@ SELECT
     email,
     phone_number,
     gender,
-    is_admin,
+    role,
     date_of_birth,
     created_at,
     updated_at,

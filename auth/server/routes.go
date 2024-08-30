@@ -11,7 +11,6 @@ import (
 	"github.com/codeharik/Atlantic/auth/server/auth"
 	"github.com/codeharik/Atlantic/auth/server/authn"
 	"github.com/codeharik/Atlantic/auth/server/profile"
-	"github.com/codeharik/Atlantic/auth/server/user"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
@@ -29,8 +28,6 @@ func CreateRoutes(
 	storeInstance store.Store,
 	config *config.Config,
 ) {
-	user.CreateUserRoutes(router, storeInstance.UserStore)
-
 	sessionstore.CreateJwtAuthRoutes(router, config, storeInstance.UserStore)
 
 	//------------------

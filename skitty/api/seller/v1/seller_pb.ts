@@ -4,16 +4,16 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, protoInt64, StringValue, Timestamp } from "@bufbuild/protobuf";
+import { Int32Value, Message, proto3, protoInt64, StringValue, Timestamp } from "@bufbuild/protobuf";
 
 /**
  * @generated from message seller.v1.Attribute
  */
 export class Attribute extends Message<Attribute> {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: int32 id = 1;
    */
-  id = "";
+  id = 0;
 
   /**
    * @generated from field: string attribute_name = 2;
@@ -33,7 +33,7 @@ export class Attribute extends Message<Attribute> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Attribute";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 2, name: "attribute_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "attribute_value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
@@ -957,9 +957,24 @@ export class Product extends Message<Product> {
   productName?: string;
 
   /**
-   * @generated from field: string category_id = 3;
+   * @generated from field: int32 category_id1 = 3;
    */
-  categoryId = "";
+  categoryId1 = 0;
+
+  /**
+   * @generated from field: int32 category_id2 = 4;
+   */
+  categoryId2 = 0;
+
+  /**
+   * @generated from field: google.protobuf.Int32Value category_id3 = 5;
+   */
+  categoryId3?: number;
+
+  /**
+   * @generated from field: google.protobuf.Int32Value category_id4 = 6;
+   */
+  categoryId4?: number;
 
   constructor(data?: PartialMessage<Product>) {
     super();
@@ -971,7 +986,10 @@ export class Product extends Message<Product> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "product_name", kind: "message", T: StringValue },
-    { no: 3, name: "category_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "category_id1", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 4, name: "category_id2", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 5, name: "category_id3", kind: "message", T: Int32Value },
+    { no: 6, name: "category_id4", kind: "message", T: Int32Value },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {
@@ -1011,9 +1029,9 @@ export class ProductAttribute extends Message<ProductAttribute> {
   variantId?: string;
 
   /**
-   * @generated from field: string attribute_id = 4;
+   * @generated from field: int32 attribute_id = 4;
    */
-  attributeId = "";
+  attributeId = 0;
 
   constructor(data?: PartialMessage<ProductAttribute>) {
     super();
@@ -1026,7 +1044,7 @@ export class ProductAttribute extends Message<ProductAttribute> {
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "variant_id", kind: "message", T: StringValue },
-    { no: 4, name: "attribute_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "attribute_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductAttribute {
@@ -1051,9 +1069,9 @@ export class ProductAttribute extends Message<ProductAttribute> {
  */
 export class ProductCategory extends Message<ProductCategory> {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: int32 id = 1;
    */
-  id = "";
+  id = 0;
 
   /**
    * @generated from field: string name = 2;
@@ -1061,9 +1079,9 @@ export class ProductCategory extends Message<ProductCategory> {
   name = "";
 
   /**
-   * @generated from field: google.protobuf.StringValue parent_id = 3;
+   * @generated from field: google.protobuf.Int32Value parent_id = 3;
    */
-  parentId?: string;
+  parentId?: number;
 
   constructor(data?: PartialMessage<ProductCategory>) {
     super();
@@ -1073,9 +1091,9 @@ export class ProductCategory extends Message<ProductCategory> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.ProductCategory";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "parent_id", kind: "message", T: StringValue },
+    { no: 3, name: "parent_id", kind: "message", T: Int32Value },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductCategory {
@@ -1570,9 +1588,9 @@ export class User extends Message<User> {
   gender?: string;
 
   /**
-   * @generated from field: bool is_admin = 7;
+   * @generated from field: int32 role = 7;
    */
-  isAdmin = false;
+  role = 0;
 
   /**
    * @generated from field: google.protobuf.Timestamp date_of_birth = 8;
@@ -1608,7 +1626,7 @@ export class User extends Message<User> {
     { no: 4, name: "email", kind: "message", T: StringValue },
     { no: 5, name: "phone_number", kind: "message", T: StringValue },
     { no: 6, name: "gender", kind: "message", T: StringValue },
-    { no: 7, name: "is_admin", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 7, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 9, name: "location", kind: "message", T: StringValue },
     { no: 10, name: "created_at", kind: "message", T: Timestamp },

@@ -25,7 +25,7 @@ export function Select(props: SelectProps) {
                 name={props.id} // Use `props.id` as the name to match context handling
                 value={state().values[props.id] || ""}
                 disabled={props.disabled}
-                class="Select"
+                class="AppSelect"
                 onChange={(e) => handleChange(props.id, e.target.value)}
             >
                 <Key each={props.options} by="value">

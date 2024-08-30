@@ -12,7 +12,6 @@ import (
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/service/colorlogger"
-	"github.com/google/uuid"
 
 	dragon "github.com/redis/go-redis/v9"
 )
@@ -38,7 +37,7 @@ func CreateDragon(
 	}
 }
 
-func (d *Dragon) GetDragonUser(r *http.Request, w http.ResponseWriter, userID string) (*v1.AuthUser, error) {
+func (d *Dragon) GetDragonUser(userID string) (*v1.AuthUser, error) {
 	sessionKey := fmt.Sprintf("user:%s", userID)
 
 	// Retrieve JSON string from Redis
@@ -57,7 +56,7 @@ func (d *Dragon) GetDragonUser(r *http.Request, w http.ResponseWriter, userID st
 	return &user, nil
 }
 
-func (d *Dragon) SaveUser(r *http.Request, w http.ResponseWriter, u *v1.AuthUser) error {
+func (d *Dragon) SaveUser(u *v1.AuthUser) error {
 	// Serialize the struct to JSON
 	sessionByte, err := json.Marshal(u)
 	if err != nil {
@@ -75,7 +74,7 @@ func (d *Dragon) SaveUser(r *http.Request, w http.ResponseWriter, u *v1.AuthUser
 	return nil
 }
 
-func (d *Dragon) DragonSessionCheck(r *http.Request, w http.ResponseWriter, cfg *config.Config) (*v1.AuthUser, int, error) {
+func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *config.Config) (*v1.AuthUser, int, error) {
 	for _, c := range r.Cookies() {
 		if c.Name == "session-id" {
 			v, err := sessionstore.ChaDecrypt(cfg, c.Value)
@@ -87,7 +86,7 @@ func (d *Dragon) DragonSessionCheck(r *http.Request, w http.ResponseWriter, cfg 
 			json.Unmarshal([]byte(v), &s)
 			colorlogger.Log(&s)
 
-			user, err := d.GetDragonUser(r, w, s.ID)
+			user, err := d.GetDragonUser(s.ID)
 			if err != nil {
 				return nil, -1, errors.New("User Not Found")
 			}
@@ -104,31 +103,4 @@ func (d *Dragon) DragonSessionCheck(r *http.Request, w http.ResponseWriter, cfg 
 		}
 	}
 	return nil, -1, errors.New("User Not Found")
-}
-
-// GetAllSessionsForUser retrieves all session IDs for a given user
-func (d *Dragon) GetAllSessionsForUser(userID uuid.UUID) ([]string, error) {
-	// Define the key for storing user sessions
-	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
-
-	sessions, err := d.SMembers(context.Background(), sessionKeySet).Result()
-	if err != nil {
-		return nil, fmt.Errorf("could not get sessions from Dragonstore: %v", err)
-	}
-
-	return sessions, nil
-}
-
-// InvalidateAllSessionsForUser removes all session IDs for a given user
-func (d *Dragon) InvalidateAllSessionsForUser(userID uuid.UUID) error {
-	// Define the key for storing user sessions
-	sessionKeySet := fmt.Sprintf("user:%s:sessions", userID)
-
-	// Remove the Redis set
-	_, err := d.Del(context.Background(), sessionKeySet).Result()
-	if err != nil {
-		return fmt.Errorf("could not delete sessions from Redis: %v", err)
-	}
-
-	return nil
 }

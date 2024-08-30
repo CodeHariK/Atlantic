@@ -10,9 +10,9 @@ import (
 )
 
 type Attribute struct {
-	ID             uuid.UUID `json:"id"`
-	AttributeName  string    `json:"attribute_name"`
-	AttributeValue string    `json:"attribute_value"`
+	ID             int32  `json:"id"`
+	AttributeName  string `json:"attribute_name"`
+	AttributeValue string `json:"attribute_value"`
 }
 
 type Cart struct {
@@ -85,20 +85,23 @@ type OrderItem struct {
 type Product struct {
 	ID          uuid.UUID   `json:"id"`
 	ProductName pgtype.Text `json:"product_name"`
-	CategoryID  uuid.UUID   `json:"category_id"`
+	CategoryId1 int32       `json:"category_id1"`
+	CategoryId2 int32       `json:"category_id2"`
+	CategoryId3 pgtype.Int4 `json:"category_id3"`
+	CategoryId4 pgtype.Int4 `json:"category_id4"`
 }
 
 type ProductAttribute struct {
 	ID          uuid.UUID   `json:"id"`
 	ProductID   uuid.UUID   `json:"product_id"`
 	VariantID   pgtype.UUID `json:"variant_id"`
-	AttributeID uuid.UUID   `json:"attribute_id"`
+	AttributeID int32       `json:"attribute_id"`
 }
 
 type ProductCategory struct {
-	ID       uuid.UUID   `json:"id"`
+	ID       int32       `json:"id"`
 	Name     string      `json:"name"`
-	ParentID pgtype.UUID `json:"parent_id"`
+	ParentID pgtype.Int4 `json:"parent_id"`
 }
 
 type ProductComment struct {
@@ -155,7 +158,7 @@ type User struct {
 	Email        pgtype.Text      `json:"email"`
 	PhoneNumber  pgtype.Text      `json:"phone_number"`
 	Gender       pgtype.Text      `json:"gender"`
-	IsAdmin      bool             `json:"is_admin"`
+	Role         int32            `json:"role"`
 	DateOfBirth  pgtype.Date      `json:"date_of_birth"`
 	Location     pgtype.UUID      `json:"location"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`

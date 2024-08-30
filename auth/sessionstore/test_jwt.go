@@ -42,35 +42,35 @@ func BenchGenerateKid(b *testing.B) {
 	fmt.Println()
 }
 
-func BenchGenerateKid2(b *testing.B) {
-	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
+// func BenchGenerateKid2(b *testing.B) {
+// 	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
 
-	j := JwtConfig{Config: &cfg}
+// 	j := JwtConfig{Config: &cfg}
 
-	ss := []string{}
-	counter := map[int]int{}
+// 	ss := []string{}
+// 	counter := map[int]int{}
 
-	for i := 0; i < 100000; i++ {
-		u, _ := uuid.NewV7()
-		token, c, _ := j.CreateJwtToken(
-			&JwtObj{
-				User:  u,
-				Roles: []string{"dev", "admin"},
-			},
-			time.Minute*15)
+// 	for i := 0; i < 100000; i++ {
+// 		u, _ := uuid.NewV7()
+// 		token, c, _ := j.CreateJwtToken(
+// 			&JwtObj{
+// 				User:  u,
+// 				Roles: []string{"dev", "admin"},
+// 			},
+// 			time.Minute*15)
 
-		kid := j.GenerateKid2(c)
-		ss = append(ss, token)
-		counter[kid] += 1
-	}
+// 		kid := j.GenerateKid2(c)
+// 		ss = append(ss, token)
+// 		counter[kid] += 1
+// 	}
 
-	fmt.Println(counter)
-	t1 := b.Elapsed()
-	fmt.Println(t1)
-	extractTest(j, ss)
-	fmt.Println(b.Elapsed() - t1)
-	fmt.Println()
-}
+// 	fmt.Println(counter)
+// 	t1 := b.Elapsed()
+// 	fmt.Println(t1)
+// 	extractTest(j, ss)
+// 	fmt.Println(b.Elapsed() - t1)
+// 	fmt.Println()
+// }
 
 func extractTest(j JwtConfig, ss []string) {
 	// for _, s := range ss {

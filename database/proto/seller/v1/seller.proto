@@ -20,7 +20,7 @@ service SellerService {
 }
 
 message Attribute {
-  string id = 1;
+  int32 id = 1;
   string attribute_name = 2;
   string attribute_value = 3;
 }
@@ -137,20 +137,23 @@ message OrderItem {
 message Product {
   string id = 1;
   google.protobuf.StringValue product_name = 2;
-  string category_id = 3;
+  int32 category_id1 = 3;
+  int32 category_id2 = 4;
+  google.protobuf.Int32Value category_id3 = 5;
+  google.protobuf.Int32Value category_id4 = 6;
 }
 
 message ProductAttribute {
   string id = 1;
   string product_id = 2;
   google.protobuf.StringValue variant_id = 3;
-  string attribute_id = 4;
+  int32 attribute_id = 4;
 }
 
 message ProductCategory {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
-  google.protobuf.StringValue parent_id = 3;
+  google.protobuf.Int32Value parent_id = 3;
 }
 
 message ProductComment {
@@ -215,7 +218,7 @@ message User {
   google.protobuf.StringValue email = 4;
   google.protobuf.StringValue phone_number = 5;
   google.protobuf.StringValue gender = 6;
-  bool is_admin = 7;
+  int32 role = 7;
   google.protobuf.Timestamp date_of_birth = 8;
   google.protobuf.StringValue location = 9;
   google.protobuf.Timestamp created_at = 10;

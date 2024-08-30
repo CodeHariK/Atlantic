@@ -18,18 +18,14 @@ service ProfileService {
 }
 
 // The message for fetching a profile
-message GetProfileRequest {
-  string id = 1 [(buf.validate.field).string = {min_len: 1}]; // ID is required and must not be empty
-}
+message GetProfileRequest {}
 
 message GetProfileResponse {
   auth.v1.AuthUser user = 1;
 }
 
 // The message for updating a profile
-message UpdateProfileRequest {
-  auth.v1.AuthUser user = 1 [(buf.validate.field).required = true]; // AuthUser is required
-}
+message UpdateProfileRequest {}
 
 message UpdateProfileResponse {
   bool success = 1;

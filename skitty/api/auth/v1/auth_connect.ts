@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { EmailLoginRequest, EmailLoginResponse, GetAllSessionsRequest, GetAllSessionsResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, LogoutRequest, LogoutResponse, RefreshRequest, RefreshResponse } from "./auth_pb.js";
+import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, LogoutRequest, LogoutResponse, RefreshRequest, RefreshResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -46,14 +46,14 @@ export const AuthService = {
       kind: MethodKind.Unary,
     },
     /**
-     * Defines the GetAllSessions RPC method
+     * Defines the RevokeSessions RPC method
      *
-     * @generated from rpc auth.v1.AuthService.GetAllSessions
+     * @generated from rpc auth.v1.AuthService.RevokeSession
      */
-    getAllSessions: {
-      name: "GetAllSessions",
-      I: GetAllSessionsRequest,
-      O: GetAllSessionsResponse,
+    revokeSession: {
+      name: "RevokeSession",
+      I: RevokeRequest,
+      O: RevokeResponse,
       kind: MethodKind.Unary,
     },
     /**

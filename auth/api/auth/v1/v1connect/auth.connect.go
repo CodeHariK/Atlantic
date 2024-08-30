@@ -39,9 +39,9 @@ const (
 	AuthServiceAuthRefreshProcedure = "/auth.v1.AuthService/AuthRefresh"
 	// AuthServiceLogoutProcedure is the fully-qualified name of the AuthService's Logout RPC.
 	AuthServiceLogoutProcedure = "/auth.v1.AuthService/Logout"
-	// AuthServiceGetAllSessionsProcedure is the fully-qualified name of the AuthService's
-	// GetAllSessions RPC.
-	AuthServiceGetAllSessionsProcedure = "/auth.v1.AuthService/GetAllSessions"
+	// AuthServiceRevokeSessionProcedure is the fully-qualified name of the AuthService's RevokeSession
+	// RPC.
+	AuthServiceRevokeSessionProcedure = "/auth.v1.AuthService/RevokeSession"
 	// AuthServiceInvalidateAllSessionsProcedure is the fully-qualified name of the AuthService's
 	// InvalidateAllSessions RPC.
 	AuthServiceInvalidateAllSessionsProcedure = "/auth.v1.AuthService/InvalidateAllSessions"
@@ -53,7 +53,7 @@ var (
 	authServiceEmailLoginMethodDescriptor            = authServiceServiceDescriptor.Methods().ByName("EmailLogin")
 	authServiceAuthRefreshMethodDescriptor           = authServiceServiceDescriptor.Methods().ByName("AuthRefresh")
 	authServiceLogoutMethodDescriptor                = authServiceServiceDescriptor.Methods().ByName("Logout")
-	authServiceGetAllSessionsMethodDescriptor        = authServiceServiceDescriptor.Methods().ByName("GetAllSessions")
+	authServiceRevokeSessionMethodDescriptor         = authServiceServiceDescriptor.Methods().ByName("RevokeSession")
 	authServiceInvalidateAllSessionsMethodDescriptor = authServiceServiceDescriptor.Methods().ByName("InvalidateAllSessions")
 )
 
@@ -65,8 +65,8 @@ type AuthServiceClient interface {
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	// Defines the Logout RPC method
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
-	// Defines the GetAllSessions RPC method
-	GetAllSessions(context.Context, *connect.Request[v1.GetAllSessionsRequest]) (*connect.Response[v1.GetAllSessionsResponse], error)
+	// Defines the RevokeSessions RPC method
+	RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error)
 	// Defines the InvalidateAllSessions RPC method
 	InvalidateAllSessions(context.Context, *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error)
 }
@@ -99,10 +99,10 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceLogoutMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getAllSessions: connect.NewClient[v1.GetAllSessionsRequest, v1.GetAllSessionsResponse](
+		revokeSession: connect.NewClient[v1.RevokeRequest, v1.RevokeResponse](
 			httpClient,
-			baseURL+AuthServiceGetAllSessionsProcedure,
-			connect.WithSchema(authServiceGetAllSessionsMethodDescriptor),
+			baseURL+AuthServiceRevokeSessionProcedure,
+			connect.WithSchema(authServiceRevokeSessionMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		invalidateAllSessions: connect.NewClient[v1.InvalidateAllSessionsRequest, v1.InvalidateAllSessionsResponse](
@@ -119,7 +119,7 @@ type authServiceClient struct {
 	emailLogin            *connect.Client[v1.EmailLoginRequest, v1.EmailLoginResponse]
 	authRefresh           *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
 	logout                *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
-	getAllSessions        *connect.Client[v1.GetAllSessionsRequest, v1.GetAllSessionsResponse]
+	revokeSession         *connect.Client[v1.RevokeRequest, v1.RevokeResponse]
 	invalidateAllSessions *connect.Client[v1.InvalidateAllSessionsRequest, v1.InvalidateAllSessionsResponse]
 }
 
@@ -138,9 +138,9 @@ func (c *authServiceClient) Logout(ctx context.Context, req *connect.Request[v1.
 	return c.logout.CallUnary(ctx, req)
 }
 
-// GetAllSessions calls auth.v1.AuthService.GetAllSessions.
-func (c *authServiceClient) GetAllSessions(ctx context.Context, req *connect.Request[v1.GetAllSessionsRequest]) (*connect.Response[v1.GetAllSessionsResponse], error) {
-	return c.getAllSessions.CallUnary(ctx, req)
+// RevokeSession calls auth.v1.AuthService.RevokeSession.
+func (c *authServiceClient) RevokeSession(ctx context.Context, req *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {
+	return c.revokeSession.CallUnary(ctx, req)
 }
 
 // InvalidateAllSessions calls auth.v1.AuthService.InvalidateAllSessions.
@@ -156,8 +156,8 @@ type AuthServiceHandler interface {
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	// Defines the Logout RPC method
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
-	// Defines the GetAllSessions RPC method
-	GetAllSessions(context.Context, *connect.Request[v1.GetAllSessionsRequest]) (*connect.Response[v1.GetAllSessionsResponse], error)
+	// Defines the RevokeSessions RPC method
+	RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error)
 	// Defines the InvalidateAllSessions RPC method
 	InvalidateAllSessions(context.Context, *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error)
 }
@@ -186,10 +186,10 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceLogoutMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	authServiceGetAllSessionsHandler := connect.NewUnaryHandler(
-		AuthServiceGetAllSessionsProcedure,
-		svc.GetAllSessions,
-		connect.WithSchema(authServiceGetAllSessionsMethodDescriptor),
+	authServiceRevokeSessionHandler := connect.NewUnaryHandler(
+		AuthServiceRevokeSessionProcedure,
+		svc.RevokeSession,
+		connect.WithSchema(authServiceRevokeSessionMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	authServiceInvalidateAllSessionsHandler := connect.NewUnaryHandler(
@@ -206,8 +206,8 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 			authServiceAuthRefreshHandler.ServeHTTP(w, r)
 		case AuthServiceLogoutProcedure:
 			authServiceLogoutHandler.ServeHTTP(w, r)
-		case AuthServiceGetAllSessionsProcedure:
-			authServiceGetAllSessionsHandler.ServeHTTP(w, r)
+		case AuthServiceRevokeSessionProcedure:
+			authServiceRevokeSessionHandler.ServeHTTP(w, r)
 		case AuthServiceInvalidateAllSessionsProcedure:
 			authServiceInvalidateAllSessionsHandler.ServeHTTP(w, r)
 		default:
@@ -231,8 +231,8 @@ func (UnimplementedAuthServiceHandler) Logout(context.Context, *connect.Request[
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.Logout is not implemented"))
 }
 
-func (UnimplementedAuthServiceHandler) GetAllSessions(context.Context, *connect.Request[v1.GetAllSessionsRequest]) (*connect.Response[v1.GetAllSessionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.GetAllSessions is not implemented"))
+func (UnimplementedAuthServiceHandler) RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.RevokeSession is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) InvalidateAllSessions(context.Context, *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error) {

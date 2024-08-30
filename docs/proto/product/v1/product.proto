@@ -56,7 +56,7 @@ service ProductService {
 }
 
 message Attribute {
-  string id = 1;
+  int32 id = 1;
   string attribute_name = 2;
   string attribute_value = 3;
 }
@@ -76,13 +76,13 @@ message CartItem {
 }
 
 message CreateProductCategoryRequest {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
-  google.protobuf.StringValue parent_id = 3;
+  google.protobuf.Int32Value parent_id = 3;
 }
 
 message CreateProductCategoryResponse {
-  string value = 1;
+  int32 value = 1;
 }
 
 message CreateProductCommentRequest {
@@ -97,7 +97,10 @@ message CreateProductCommentResponse {
 message CreateProductRequest {
   string id = 1;
   google.protobuf.StringValue product_name = 2;
-  string category_id = 3;
+  int32 category_id1 = 3;
+  int32 category_id2 = 4;
+  google.protobuf.Int32Value category_id3 = 5;
+  google.protobuf.Int32Value category_id4 = 6;
 }
 
 message CreateProductResponse {
@@ -117,7 +120,7 @@ message CreateProductReviewResponse {
 }
 
 message DeleteProductCategoryRequest {
-  string id = 1;
+  int32 id = 1;
 }
 
 message DeleteProductCategoryResponse {}
@@ -141,7 +144,7 @@ message DeleteProductReviewRequest {
 message DeleteProductReviewResponse {}
 
 message GetCategoryPathRequest {
-  string id = 1;
+  int32 id = 1;
 }
 
 message GetCategoryPathResponse {
@@ -157,7 +160,7 @@ message GetProductByIDResponse {
 }
 
 message GetProductCategoryByIDRequest {
-  string id = 1;
+  int32 id = 1;
 }
 
 message GetProductCategoryByIDResponse {
@@ -191,8 +194,11 @@ message GetProductWithCategoryPathResponse {
 message GetProductWithCategoryPathRow {
   string product_id = 1;
   google.protobuf.StringValue product_name = 2;
-  string category_id = 3;
-  string category_path = 4;
+  int32 category_id1 = 3;
+  int32 category_id2 = 4;
+  google.protobuf.Int32Value category_id3 = 5;
+  google.protobuf.Int32Value category_id4 = 6;
+  string category_path = 7;
 }
 
 message GooseDbVersion {
@@ -213,7 +219,7 @@ message Inventory {
 }
 
 message ListCategoriesByParentIDRequest {
-  google.protobuf.StringValue parent_id = 1;
+  google.protobuf.Int32Value parent_id = 1;
 }
 
 message ListCategoriesByParentIDResponse {
@@ -303,20 +309,23 @@ message OrderItem {
 message Product {
   string id = 1;
   google.protobuf.StringValue product_name = 2;
-  string category_id = 3;
+  int32 category_id1 = 3;
+  int32 category_id2 = 4;
+  google.protobuf.Int32Value category_id3 = 5;
+  google.protobuf.Int32Value category_id4 = 6;
 }
 
 message ProductAttribute {
   string id = 1;
   string product_id = 2;
   google.protobuf.StringValue variant_id = 3;
-  string attribute_id = 4;
+  int32 attribute_id = 4;
 }
 
 message ProductCategory {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
-  google.protobuf.StringValue parent_id = 3;
+  google.protobuf.Int32Value parent_id = 3;
 }
 
 message ProductComment {
@@ -367,9 +376,9 @@ message Seller {
 }
 
 message UpdateProductCategoryRequest {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
-  google.protobuf.StringValue parent_id = 3;
+  google.protobuf.Int32Value parent_id = 3;
 }
 
 message UpdateProductCategoryResponse {}
@@ -382,14 +391,15 @@ message UpdateProductCommentRequest {
 message UpdateProductCommentResponse {}
 
 message UpdateProductRequest {
-  google.protobuf.StringValue product_name = 1;
-  string category_id = 2;
-  string id = 3;
+  string id = 1;
+  google.protobuf.StringValue product_name = 2;
+  int32 category_id1 = 3;
+  int32 category_id2 = 4;
+  google.protobuf.Int32Value category_id3 = 5;
+  google.protobuf.Int32Value category_id4 = 6;
 }
 
-message UpdateProductResponse {
-  Product product = 1;
-}
+message UpdateProductResponse {}
 
 message UpdateProductReviewRequest {
   string id = 1;
@@ -408,7 +418,7 @@ message User {
   google.protobuf.StringValue email = 4;
   google.protobuf.StringValue phone_number = 5;
   google.protobuf.StringValue gender = 6;
-  bool is_admin = 7;
+  int32 role = 7;
   google.protobuf.Timestamp date_of_birth = 8;
   google.protobuf.StringValue location = 9;
   google.protobuf.Timestamp created_at = 10;

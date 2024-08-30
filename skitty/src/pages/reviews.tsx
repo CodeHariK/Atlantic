@@ -2,7 +2,7 @@ import SpaceLayout from '../layouts/SpaceLayout';
 
 export function ReviewsModal() {
    return (
-      <div id="review-modal" tabindex="-1" aria-hidden="true" class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0 antialiased">
+      <div id="review-modal" tabindex="-1" aria-hidden="true" class="fixed left-0 right-0 top-0 z-50 h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0 antialiased">
          <div class="relative max-h-full w-full max-w-2xl p-4">
             <div class="relative rounded-lg bg-white shadow dark:bg-gray-800">
                <div class="flex items-center justify-between rounded-t border-b border-gray-200 p-4 dark:border-gray-700 md:p-5">

@@ -32,7 +32,7 @@ export function RadioGroup(props: RadioGroupProps) {
                             class="w-4 h-4 border-gray-300 dark:bg-gray-700 dark:border-gray-600"
                             onChange={(e) => handleChange(props.name, e.target.value)}
                         />
-                        <label for={`radio-${option().value}`} class={option().disabled ? "LabelDisabled" : "Label"}>
+                        <label for={`radio-${option().value}`} class={option().disabled ? "AppLabelDisabled" : "AppLabel"}>
                             {option().label}
                         </label>
                     </div>

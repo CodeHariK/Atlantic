@@ -4,7 +4,6 @@ package product
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log/slog"
 
@@ -33,11 +32,13 @@ func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.Cre
 	if v := req.Msg.GetProductName(); v != nil {
 		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
 	}
-	if v, err := uuid.Parse(req.Msg.GetCategoryId()); err != nil {
-		err = fmt.Errorf("invalid CategoryID: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		arg.CategoryID = v
+	arg.CategoryId1 = req.Msg.GetCategoryId1()
+	arg.CategoryId2 = req.Msg.GetCategoryId2()
+	if v := req.Msg.GetCategoryId3(); v != nil {
+		arg.CategoryId3 = pgtype.Int4{Valid: true, Int32: v.Value}
+	}
+	if v := req.Msg.GetCategoryId4(); v != nil {
+		arg.CategoryId4 = pgtype.Int4{Valid: true, Int32: v.Value}
 	}
 
 	result, err := s.querier.CreateProduct(ctx, arg)
@@ -50,18 +51,10 @@ func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.Cre
 
 func (s *Service) CreateProductCategory(ctx context.Context, req *connect.Request[pb.CreateProductCategoryRequest]) (*connect.Response[pb.CreateProductCategoryResponse], error) {
 	var arg CreateProductCategoryParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		arg.ID = v
-	}
+	arg.ID = req.Msg.GetId()
 	arg.Name = req.Msg.GetName()
 	if v := req.Msg.GetParentId(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &arg.ParentID); err != nil {
-			err = fmt.Errorf("invalid ParentID: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
+		arg.ParentID = pgtype.Int4{Valid: true, Int32: v.Value}
 	}
 
 	result, err := s.querier.CreateProductCategory(ctx, arg)
@@ -69,7 +62,7 @@ func (s *Service) CreateProductCategory(ctx context.Context, req *connect.Reques
 		slog.Error("sql call failed", "error", err, "method", "CreateProductCategory")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateProductCategoryResponse{Value: result.String()}), nil
+	return connect.NewResponse(&pb.CreateProductCategoryResponse{Value: result}), nil
 }
 
 func (s *Service) CreateProductComment(ctx context.Context, req *connect.Request[pb.CreateProductCommentRequest]) (*connect.Response[pb.CreateProductCommentResponse], error) {
@@ -146,13 +139,7 @@ func (s *Service) DeleteProduct(ctx context.Context, req *connect.Request[pb.Del
 }
 
 func (s *Service) DeleteProductCategory(ctx context.Context, req *connect.Request[pb.DeleteProductCategoryRequest]) (*connect.Response[pb.DeleteProductCategoryResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		id = v
-	}
+	id := req.Msg.GetId()
 
 	err := s.querier.DeleteProductCategory(ctx, id)
 	if err != nil {
@@ -197,13 +184,7 @@ func (s *Service) DeleteProductReview(ctx context.Context, req *connect.Request[
 }
 
 func (s *Service) GetCategoryPath(ctx context.Context, req *connect.Request[pb.GetCategoryPathRequest]) (*connect.Response[pb.GetCategoryPathResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		id = v
-	}
+	id := req.Msg.GetId()
 
 	result, err := s.querier.GetCategoryPath(ctx, id)
 	if err != nil {
@@ -231,13 +212,7 @@ func (s *Service) GetProductByID(ctx context.Context, req *connect.Request[pb.Ge
 }
 
 func (s *Service) GetProductCategoryByID(ctx context.Context, req *connect.Request[pb.GetProductCategoryByIDRequest]) (*connect.Response[pb.GetProductCategoryByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		id = v
-	}
+	id := req.Msg.GetId()
 
 	result, err := s.querier.GetProductCategoryByID(ctx, id)
 	if err != nil {
@@ -299,12 +274,9 @@ func (s *Service) GetProductWithCategoryPath(ctx context.Context, req *connect.R
 }
 
 func (s *Service) ListCategoriesByParentID(ctx context.Context, req *connect.Request[pb.ListCategoriesByParentIDRequest]) (*connect.Response[pb.ListCategoriesByParentIDResponse], error) {
-	var parentID pgtype.UUID
+	var parentID pgtype.Int4
 	if v := req.Msg.GetParentId(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &parentID); err != nil {
-			err = fmt.Errorf("invalid ParentID: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
+		parentID = pgtype.Int4{Valid: true, Int32: v.Value}
 	}
 
 	result, err := s.querier.ListCategoriesByParentID(ctx, parentID)
@@ -386,44 +358,38 @@ func (s *Service) ListRootCategories(ctx context.Context, req *connect.Request[p
 
 func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.UpdateProductRequest]) (*connect.Response[pb.UpdateProductResponse], error) {
 	var arg UpdateProductParams
-	if v := req.Msg.GetProductName(); v != nil {
-		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
-	}
-	if v, err := uuid.Parse(req.Msg.GetCategoryId()); err != nil {
-		err = fmt.Errorf("invalid CategoryID: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		arg.CategoryID = v
-	}
 	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
 		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
 		arg.ID = v
 	}
+	if v := req.Msg.GetProductName(); v != nil {
+		arg.ProductName = pgtype.Text{Valid: true, String: v.Value}
+	}
+	arg.CategoryId1 = req.Msg.GetCategoryId1()
+	arg.CategoryId2 = req.Msg.GetCategoryId2()
+	if v := req.Msg.GetCategoryId3(); v != nil {
+		arg.CategoryId3 = pgtype.Int4{Valid: true, Int32: v.Value}
+	}
+	if v := req.Msg.GetCategoryId4(); v != nil {
+		arg.CategoryId4 = pgtype.Int4{Valid: true, Int32: v.Value}
+	}
 
-	result, err := s.querier.UpdateProduct(ctx, arg)
+	err := s.querier.UpdateProduct(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "UpdateProduct")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.UpdateProductResponse{Product: toProduct(result)}), nil
+	return connect.NewResponse(&pb.UpdateProductResponse{}), nil
 }
 
 func (s *Service) UpdateProductCategory(ctx context.Context, req *connect.Request[pb.UpdateProductCategoryRequest]) (*connect.Response[pb.UpdateProductCategoryResponse], error) {
 	var arg UpdateProductCategoryParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		arg.ID = v
-	}
+	arg.ID = req.Msg.GetId()
 	arg.Name = req.Msg.GetName()
 	if v := req.Msg.GetParentId(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &arg.ParentID); err != nil {
-			err = fmt.Errorf("invalid ParentID: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
+		arg.ParentID = pgtype.Int4{Valid: true, Int32: v.Value}
 	}
 
 	err := s.querier.UpdateProductCategory(ctx, arg)

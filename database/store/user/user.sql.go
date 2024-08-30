@@ -20,7 +20,7 @@ INSERT INTO
         email,
         phone_number,
         gender,
-        is_admin,
+        role,
         date_of_birth,
         location
     )
@@ -42,7 +42,7 @@ type CreateUserParams struct {
 	Email       pgtype.Text `json:"email"`
 	PhoneNumber pgtype.Text `json:"phone_number"`
 	Gender      pgtype.Text `json:"gender"`
-	IsAdmin     bool        `json:"is_admin"`
+	Role        int32       `json:"role"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.UUID `json:"location"`
 }
@@ -54,7 +54,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UU
 		arg.Email,
 		arg.PhoneNumber,
 		arg.Gender,
-		arg.IsAdmin,
+		arg.Role,
 		arg.DateOfBirth,
 		arg.Location,
 	)
@@ -79,7 +79,7 @@ SELECT
     email,
     phone_number,
     gender,
-    is_admin,
+    role,
     date_of_birth,
     created_at,
     updated_at,
@@ -95,7 +95,7 @@ type FindUserByUsernameRow struct {
 	Email       pgtype.Text      `json:"email"`
 	PhoneNumber pgtype.Text      `json:"phone_number"`
 	Gender      pgtype.Text      `json:"gender"`
-	IsAdmin     bool             `json:"is_admin"`
+	Role        int32            `json:"role"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
@@ -111,7 +111,7 @@ func (q *Queries) FindUserByUsername(ctx context.Context, username string) (Find
 		&i.Email,
 		&i.PhoneNumber,
 		&i.Gender,
-		&i.IsAdmin,
+		&i.Role,
 		&i.DateOfBirth,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -157,7 +157,7 @@ SELECT
     email,
     phone_number,
     gender,
-    is_admin,
+    role,
     date_of_birth,
     created_at,
     updated_at,
@@ -173,7 +173,7 @@ type GetUserByIDRow struct {
 	Email       pgtype.Text      `json:"email"`
 	PhoneNumber pgtype.Text      `json:"phone_number"`
 	Gender      pgtype.Text      `json:"gender"`
-	IsAdmin     bool             `json:"is_admin"`
+	Role        int32            `json:"role"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
@@ -189,7 +189,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (GetUserByIDRow
 		&i.Email,
 		&i.PhoneNumber,
 		&i.Gender,
-		&i.IsAdmin,
+		&i.Role,
 		&i.DateOfBirth,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -205,7 +205,7 @@ SELECT
     email,
     phone_number,
     gender,
-    is_admin,
+    role,
     date_of_birth,
     created_at,
     updated_at,
@@ -227,7 +227,7 @@ type ListUsersRow struct {
 	Email       pgtype.Text      `json:"email"`
 	PhoneNumber pgtype.Text      `json:"phone_number"`
 	Gender      pgtype.Text      `json:"gender"`
-	IsAdmin     bool             `json:"is_admin"`
+	Role        int32            `json:"role"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
@@ -249,7 +249,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUse
 			&i.Email,
 			&i.PhoneNumber,
 			&i.Gender,
-			&i.IsAdmin,
+			&i.Role,
 			&i.DateOfBirth,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -265,20 +265,19 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUse
 	return items, nil
 }
 
-const updateUser = `-- name: UpdateUser :one
+const updateUser = `-- name: UpdateUser :exec
 UPDATE users
 SET
     username = $1,
     email = $2,
     phone_number = $3,
     gender = $4,
-    is_admin = $5,
+    role = $5,
     date_of_birth = $6,
     location = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $8 RETURNING id,
-    updated_at
+    id = $8
 `
 
 type UpdateUserParams struct {
@@ -286,29 +285,22 @@ type UpdateUserParams struct {
 	Email       pgtype.Text `json:"email"`
 	PhoneNumber pgtype.Text `json:"phone_number"`
 	Gender      pgtype.Text `json:"gender"`
-	IsAdmin     bool        `json:"is_admin"`
+	Role        int32       `json:"role"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.UUID `json:"location"`
 	ID          uuid.UUID   `json:"id"`
 }
 
-type UpdateUserRow struct {
-	ID        uuid.UUID        `json:"id"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-}
-
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (UpdateUserRow, error) {
-	row := q.db.QueryRow(ctx, updateUser,
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.Exec(ctx, updateUser,
 		arg.Username,
 		arg.Email,
 		arg.PhoneNumber,
 		arg.Gender,
-		arg.IsAdmin,
+		arg.Role,
 		arg.DateOfBirth,
 		arg.Location,
 		arg.ID,
 	)
-	var i UpdateUserRow
-	err := row.Scan(&i.ID, &i.UpdatedAt)
-	return i, err
+	return err
 }

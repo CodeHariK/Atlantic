@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"io"
 	"time"
@@ -45,15 +44,15 @@ func (cfg *JwtConfig) GenerateKid(sub uuid.UUID) int {
 	return sum % cfg.AuthService.KeyMod
 }
 
-func (cfg *JwtConfig) GenerateKid2(obj *jwt.MapClaims) int {
-	b, _ := json.Marshal(obj)
+// func (cfg *JwtConfig) GenerateKid2(obj *jwt.MapClaims) int {
+// 	b, _ := json.Marshal(obj)
 
-	var sum int
-	for _, b := range b {
-		sum += int(b)
-	}
-	return sum % cfg.AuthService.KeyMod
-}
+// 	var sum int
+// 	for _, b := range b {
+// 		sum += int(b)
+// 	}
+// 	return sum % cfg.AuthService.KeyMod
+// }
 
 type JwtConfig struct {
 	*config.Config
@@ -74,8 +73,8 @@ func (cfg *JwtConfig) CreateJwtToken(jwtobj *JwtObj, duration time.Duration) (st
 		"exp":   time.Now().Add(duration).Unix(),
 	}
 
-	// kid := cfg.GenerateKid(jwtobj.User)
-	kid := cfg.GenerateKid2(&claims)
+	kid := cfg.GenerateKid(jwtobj.User)
+	// kid := cfg.GenerateKid2(&claims)
 
 	// Create a new token object using EdDSA (Ed25519)
 	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, claims)
@@ -120,8 +119,8 @@ func (cfg *JwtConfig) GetJwtObj(tokenString string) (*JwtObj, error) {
 			}
 		}
 
-		// kid := cfg.GenerateKid(j.User)
-		kid := cfg.GenerateKid2(&claims)
+		kid := cfg.GenerateKid(j.User)
+		// kid := cfg.GenerateKid2(&claims)
 
 		// Get the public key based on the `kid`
 		publicKey := cfg.AuthService.PublicKeys[kid]

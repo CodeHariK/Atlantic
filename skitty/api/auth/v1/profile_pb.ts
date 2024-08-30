@@ -13,13 +13,6 @@ import { AuthUser } from "./auth_pb.js";
  * @generated from message profile.v1.GetProfileRequest
  */
 export class GetProfileRequest extends Message<GetProfileRequest> {
-  /**
-   * ID is required and must not be empty
-   *
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
   constructor(data?: PartialMessage<GetProfileRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -28,7 +21,6 @@ export class GetProfileRequest extends Message<GetProfileRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "profile.v1.GetProfileRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProfileRequest {
@@ -91,13 +83,6 @@ export class GetProfileResponse extends Message<GetProfileResponse> {
  * @generated from message profile.v1.UpdateProfileRequest
  */
 export class UpdateProfileRequest extends Message<UpdateProfileRequest> {
-  /**
-   * AuthUser is required
-   *
-   * @generated from field: auth.v1.AuthUser user = 1;
-   */
-  user?: AuthUser;
-
   constructor(data?: PartialMessage<UpdateProfileRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -106,7 +91,6 @@ export class UpdateProfileRequest extends Message<UpdateProfileRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "profile.v1.UpdateProfileRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "user", kind: "message", T: AuthUser },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateProfileRequest {

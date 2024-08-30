@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import { RefreshRequest } from "../../api/auth/v1/auth_pb.ts";
 
 import { useConnect } from '../components/connect';
+import { MaterialButton } from "./button.tsx";
 
 export default function RefreshButton() {
     const [loading, setLoading] = createSignal(false);
@@ -27,11 +28,11 @@ export default function RefreshButton() {
     };
 
     return (
-        <div>
-            <button onClick={handleRefresh} disabled={loading()}>
-                {loading() ? "Refreshing..." : "Refresh Auth"}
-            </button>
+        <>
+            <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+                <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
+            </MaterialButton>
             {error() && <p style={{ color: "red" }}>{error()}</p>}
-        </div>
+        </>
     );
 }

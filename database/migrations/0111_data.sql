@@ -32,7 +32,7 @@ INSERT INTO
         "email",
         "phone_number",
         "gender",
-        "is_admin",
+        "role",
         "date_of_birth",
         "location"
     )
@@ -43,7 +43,7 @@ VALUES (
         '123@123.com',
         '5551234567',
         'F',
-        FALSE,
+        1,
         '1988-03-22',
         '25173097-653b-400b-9e98-78830fdd630e'
     );
@@ -62,58 +62,15 @@ VALUES (
 -- Insert top-level categories
 INSERT INTO
     product_category (id, name, parent_id)
-VALUES (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-        'Electronics',
-        NULL
-    ),
-    (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d480',
-        'Books',
-        NULL
-    ),
-    (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d481',
-        'Clothing',
-        NULL
-    );
+VALUES (1, 'Electronics', NULL),
+    (2, 'Clothing', NULL);
 
 -- Insert subcategories under 'Electronics'
 INSERT INTO
     product_category (id, name, parent_id)
-VALUES (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d482',
-        'Mobile Phones',
-        'f47ac10b-58cc-4372-a567-0e02b2c3d479'
-    ),
-    (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d483',
-        'Laptops',
-        'f47ac10b-58cc-4372-a567-0e02b2c3d479'
-    );
-
--- Insert subcategories under 'Books'
-INSERT INTO
-    product_category (id, name, parent_id)
-VALUES (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d484',
-        'Fiction',
-        'f47ac10b-58cc-4372-a567-0e02b2c3d480'
-    ),
-    (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d485',
-        'Non-Fiction',
-        'f47ac10b-58cc-4372-a567-0e02b2c3d480'
-    );
-
--- Insert a subcategory under 'Clothing'
-INSERT INTO
-    product_category (id, name, parent_id)
-VALUES (
-        'f47ac10b-58cc-4372-a567-0e02b2c3d486',
-        'Mens Clothing',
-        'f47ac10b-58cc-4372-a567-0e02b2c3d481'
-    );
+VALUES (4, 'Mobile Phones', 1),
+    (5, 'Laptops', 1),
+    (6, 'Mens Clothing', 2);
 
 -- +goose Down
 

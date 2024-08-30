@@ -66,4 +66,4 @@ bufMigrate:
 	buf config migrate -diff
 	buf config migrate
 
-gen: up ainspect ahash sql connect
+gen: $(eval $(shell go run function/status/status.go)) up ainspect ahash sql connect

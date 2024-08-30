@@ -40,7 +40,7 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 	if v := req.Msg.GetGender(); v != nil {
 		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
 	}
-	arg.IsAdmin = req.Msg.GetIsAdmin()
+	arg.Role = req.Msg.GetRole()
 	if v := req.Msg.GetDateOfBirth(); v != nil {
 		if err := v.CheckValid(); err != nil {
 			err = fmt.Errorf("invalid DateOfBirth: %s%w", err.Error(), validation.ErrUserInput)
@@ -154,7 +154,7 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 	if v := req.Msg.GetGender(); v != nil {
 		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
 	}
-	arg.IsAdmin = req.Msg.GetIsAdmin()
+	arg.Role = req.Msg.GetRole()
 	if v := req.Msg.GetDateOfBirth(); v != nil {
 		if err := v.CheckValid(); err != nil {
 			err = fmt.Errorf("invalid DateOfBirth: %s%w", err.Error(), validation.ErrUserInput)
@@ -178,10 +178,10 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 		arg.ID = v
 	}
 
-	result, err := s.querier.UpdateUser(ctx, arg)
+	err := s.querier.UpdateUser(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "UpdateUser")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.UpdateUserResponse{UpdateUserRow: toUpdateUserRow(result)}), nil
+	return connect.NewResponse(&pb.UpdateUserResponse{}), nil
 }
