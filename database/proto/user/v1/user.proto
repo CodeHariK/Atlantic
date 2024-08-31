@@ -52,7 +52,7 @@ message CreateUserRequest {
   bool verified = 6;
   google.protobuf.StringValue avatar = 7;
   google.protobuf.StringValue gender = 8;
-  int32 role = 9;
+  int64 role = 9;
   google.protobuf.Timestamp date_of_birth = 10;
   google.protobuf.StringValue location = 11;
 }
@@ -123,7 +123,7 @@ message ListUsersRow {
   google.protobuf.StringValue email = 3;
   google.protobuf.StringValue phone_number = 4;
   google.protobuf.StringValue gender = 5;
-  int32 role = 6;
+  int64 role = 6;
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
@@ -242,7 +242,7 @@ message UpdateUserRequest {
   bool verified = 4;
   google.protobuf.StringValue avatar = 5;
   google.protobuf.StringValue gender = 6;
-  int32 role = 7;
+  int64 role = 7;
   google.protobuf.Timestamp date_of_birth = 8;
   google.protobuf.StringValue location = 9;
 }
@@ -258,7 +258,7 @@ message User {
   google.protobuf.StringValue phone_number = 6;
   google.protobuf.StringValue avatar = 7;
   google.protobuf.StringValue gender = 8;
-  int32 role = 9;
+  int64 role = 9;
   google.protobuf.Timestamp date_of_birth = 10;
   google.protobuf.StringValue location = 11;
   google.protobuf.Timestamp created_at = 12;

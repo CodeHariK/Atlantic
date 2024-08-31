@@ -1,8 +1,6 @@
 import { createSignal, createEffect } from "solid-js";
-import { AuthUser, LogoutRequest, Role } from "../../api/auth/v1/auth_pb.ts";
+import { AuthUser, RevokeRequest, InvalidateAllSessionsRequest, RefreshRequest } from "../../api/auth/v1/auth_pb.ts";
 import { GetProfileRequest } from "../../api/auth/v1/profile_pb.ts";
-
-import { JSX } from "solid-js";
 
 import { useConnect } from '../components/connect';
 
@@ -11,8 +9,8 @@ import { proto3 } from "@bufbuild/protobuf";
 import SpaceLayout from '../layouts/SpaceLayout';
 
 import { SuperTable } from "../components/table.tsx";
-import { AddUserIcon, CrossIcon, PenIcon, TableHeadingIcon } from "../components/svg.tsx";
-import { Avatar, H3, ListTile, P, SmallBadgeText, TitleSubtitle } from "../components/heading.tsx";
+import { CrossIcon, TableHeadingIcon } from "../components/svg.tsx";
+import { H3, P, SmallBadgeText } from "../components/heading.tsx";
 import { IconButton, MaterialButton, OutlinedButton } from "../components/button.tsx";
 
 export default function Profile() {
@@ -21,7 +19,6 @@ export default function Profile() {
    const [error, setError] = createSignal("");
 
    const { authclient, profileclient } = useConnect();
-
 
    // Fetch the user data (you might be fetching this from an API)
    createEffect(async () => {
@@ -44,14 +41,50 @@ export default function Profile() {
       }
    });
 
-   const logout = async () => {
+   // const handleRefresh = async () => {
+   //    setLoading(true);
+   //    setError("");
+
+   //    try {
+   //       const request = new RefreshRequest();
+   //       // Set any necessary fields in the request
+   //       const response = await authclient.authRefresh(request);
+   //       console.log("Refresh successful:", response);
+   //    } catch (err) {
+   //       console.error("Error refreshing auth:", err);
+   //       setError("Failed to refresh authentication.");
+   //    } finally {
+   //       setLoading(false);
+   //    }
+   // };
+
+   const Revoke = async (sessionNumber: number) => {
       setLoading(true);
       setError("");
       try {
-         const request = new LogoutRequest();
+         const request = new RevokeRequest({ sessionNumber: sessionNumber });
          // Set any necessary fields in the request
-         const response = await authclient.logout(request);
+         const response = await authclient.revokeSession(request);
          console.log("Logout successful:", response);
+         if (!sessionNumber) {
+            window.location.href = "/login";
+         }
+      } catch (err) {
+         console.error("Error logout:", err);
+         setError("Failed to logout.");
+      } finally {
+         setLoading(false);
+      }
+   };
+
+   const RevokeAll = async () => {
+      setLoading(true);
+      setError("");
+      try {
+         const request = new InvalidateAllSessionsRequest({});
+         // Set any necessary fields in the request
+         const response = await authclient.invalidateAllSessions(request);
+         console.log("Revoke successful:", response);
          window.location.href = "/login";
       } catch (err) {
          console.error("Error logout:", err);
@@ -71,7 +104,7 @@ export default function Profile() {
                      {/* <img src={user()!.avatar} alt="Avatar" class="avatar" /> */}
                      <h2>{user()!.username}</h2>
                      <p>Email: {user()!.email}</p>
-                     <p>Role: {proto3.getEnumType(Role).findNumber(user()!.role.valueOf())?.name}</p>
+                     {/* <p>Role: {proto3.getEnumType(Role).findNumber(user()!.role.valueOf() & 1)?.name}</p> */}
                      <p>Status: {user()!.verified ? "Verified" : "Not Verified"}</p>
                      <p>Phone: {user()!.phoneNumber}</p>
                      <p>Location: {user()!.location}</p>
@@ -87,13 +120,11 @@ export default function Profile() {
                         <>Started {TableHeadingIcon()}</>,
                         <>Active {TableHeadingIcon()}</>,
                         <>Valid {TableHeadingIcon()}</>,
-                        <>Delete</>,
+                        <>Revoke</>,
                      ],
-
                      class: [
                         "max-w-64",
                      ],
-
                      rows: [
                         ...user()?.sessions.map((s, i) =>
                            [
@@ -101,23 +132,26 @@ export default function Profile() {
                               <P>{s.iat.toString()}</P>,
                               <SmallBadgeText>Active {i == user()?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
                               <P>{s.exp.toString()}</P>,
-                              <IconButton onClick={() => { console.log(i) }}><CrossIcon /></IconButton>
+                              <IconButton onClick={() => { () => Revoke(i) }}><CrossIcon /></IconButton>
                            ]
                         ) ?? []
                      ],
-
                   }}
                   headerstart={<div>
                      <H3>Login sessions</H3>
                   </div>}
                   headerend={
                      <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-                        <OutlinedButton>
-                           View All
+                        {/* <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+                           <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
+                        </MaterialButton> */}
+                        <OutlinedButton onClick={RevokeAll}>
+                           Revoke All
                         </OutlinedButton>
-                        <MaterialButton onClick={logout}>
+                        <MaterialButton onClick={() => Revoke(-1)}>
                            Logout
                         </MaterialButton>
+                        {error() && <p style={{ color: "red" }}>{error()}</p>}
                      </div>
                   }
                   footerstart={

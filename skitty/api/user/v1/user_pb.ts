@@ -210,9 +210,9 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 9;
+   * @generated from field: int64 role = 9;
    */
-  role = 0;
+  role = protoInt64.zero;
 
   /**
    * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
@@ -240,7 +240,7 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
     { no: 6, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 7, name: "avatar", kind: "message", T: StringValue },
     { no: 8, name: "gender", kind: "message", T: StringValue },
-    { no: 9, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 9, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 11, name: "location", kind: "message", T: StringValue },
   ]);
@@ -827,9 +827,9 @@ export class ListUsersRow extends Message<ListUsersRow> {
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 6;
+   * @generated from field: int64 role = 6;
    */
-  role = 0;
+  role = protoInt64.zero;
 
   /**
    * @generated from field: google.protobuf.Timestamp date_of_birth = 7;
@@ -864,7 +864,7 @@ export class ListUsersRow extends Message<ListUsersRow> {
     { no: 3, name: "email", kind: "message", T: StringValue },
     { no: 4, name: "phone_number", kind: "message", T: StringValue },
     { no: 5, name: "gender", kind: "message", T: StringValue },
-    { no: 6, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 6, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 8, name: "created_at", kind: "message", T: Timestamp },
     { no: 9, name: "updated_at", kind: "message", T: Timestamp },
@@ -1709,9 +1709,9 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 7;
+   * @generated from field: int64 role = 7;
    */
-  role = 0;
+  role = protoInt64.zero;
 
   /**
    * @generated from field: google.protobuf.Timestamp date_of_birth = 8;
@@ -1737,7 +1737,7 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
     { no: 4, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 5, name: "avatar", kind: "message", T: StringValue },
     { no: 6, name: "gender", kind: "message", T: StringValue },
-    { no: 7, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 7, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 9, name: "location", kind: "message", T: StringValue },
   ]);
@@ -1835,9 +1835,9 @@ export class User extends Message<User> {
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 9;
+   * @generated from field: int64 role = 9;
    */
-  role = 0;
+  role = protoInt64.zero;
 
   /**
    * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
@@ -1875,7 +1875,7 @@ export class User extends Message<User> {
     { no: 6, name: "phone_number", kind: "message", T: StringValue },
     { no: 7, name: "avatar", kind: "message", T: StringValue },
     { no: 8, name: "gender", kind: "message", T: StringValue },
-    { no: 9, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 9, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 11, name: "location", kind: "message", T: StringValue },
     { no: 12, name: "created_at", kind: "message", T: Timestamp },

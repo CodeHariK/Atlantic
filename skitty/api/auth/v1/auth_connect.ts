@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, LogoutRequest, LogoutResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
+import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -43,17 +43,6 @@ export const AuthService = {
       name: "AuthRefresh",
       I: RefreshRequest,
       O: RefreshResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * Defines the Logout RPC method
-     *
-     * @generated from rpc auth.v1.AuthService.Logout
-     */
-    logout: {
-      name: "Logout",
-      I: LogoutRequest,
-      O: LogoutResponse,
       kind: MethodKind.Unary,
     },
     /**

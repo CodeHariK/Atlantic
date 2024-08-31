@@ -11,7 +11,6 @@ import (
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/config"
-	"github.com/codeharik/Atlantic/service/colorlogger"
 
 	dragon "github.com/redis/go-redis/v9"
 )
@@ -74,23 +73,21 @@ func (d *Dragon) SaveUser(u *v1.AuthUser) error {
 	return nil
 }
 
-func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *config.Config) (*v1.AuthUser, int, error) {
+func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *sessionstore.JwtConfig) (*v1.AuthUser, int, error) {
 	for _, c := range r.Cookies() {
 		if c.Name == "session-id" {
-			v, err := sessionstore.ChaDecrypt(cfg, c.Value)
+			v, err := sessionstore.ChaDecrypt(cfg.Config, c.Value)
 			if err != nil {
 				return nil, -1, err
 			}
 
 			s := v1.CookieSession{}
 			json.Unmarshal([]byte(v), &s)
-			colorlogger.Log(&s)
 
 			user, err := d.GetDragonUser(s.ID)
 			if err != nil {
 				return nil, -1, errors.New("User Not Found")
 			}
-			colorlogger.Log(user)
 
 			for i, session := range user.Sessions {
 				b, _ := json.Marshal(v1.CookieSession{

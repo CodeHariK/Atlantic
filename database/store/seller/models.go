@@ -160,7 +160,7 @@ type User struct {
 	PhoneNumber  pgtype.Text      `json:"phone_number"`
 	Avatar       pgtype.UUID      `json:"avatar"`
 	Gender       pgtype.Text      `json:"gender"`
-	Role         int32            `json:"role"`
+	Role         int64            `json:"role"`
 	DateOfBirth  pgtype.Date      `json:"date_of_birth"`
 	Location     pgtype.UUID      `json:"location"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`

@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"runtime/debug"
+	"strings"
 
 	"github.com/codeharik/Atlantic/config"
 )
@@ -28,6 +29,8 @@ const (
 
 var colors = []string{magenta, blue, green}
 
+var ProjectName = ""
+
 func SetLogger(config config.Config) {
 	var handler slog.Handler
 	opts := slog.HandlerOptions{
@@ -42,6 +45,8 @@ func SetLogger(config config.Config) {
 
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
+
+	ProjectName = config.Service.Name
 }
 
 func Log(msgs ...any) {
@@ -49,7 +54,18 @@ func Log(msgs ...any) {
 
 		if err, ok := msg.(error); ok {
 			fmt.Fprintf(os.Stderr, red+err.Error()+colorNone+"\n")
-			fmt.Fprintf(os.Stderr, red+string(debug.Stack())+colorNone+"\n")
+
+			lines := strings.Split(string(debug.Stack()), "\n")
+
+			// Filter and print lines containing the search string
+			for _, line := range lines {
+				if strings.Contains(line, ProjectName) {
+					fmt.Fprintf(os.Stderr, red+line+colorNone+"\n")
+				} else {
+					fmt.Fprintf(os.Stderr, line+"\n")
+				}
+			}
+
 			continue
 		}
 

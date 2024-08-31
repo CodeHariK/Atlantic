@@ -420,7 +420,7 @@ message User {
   google.protobuf.StringValue phone_number = 6;
   google.protobuf.StringValue avatar = 7;
   google.protobuf.StringValue gender = 8;
-  int32 role = 9;
+  int64 role = 9;
   google.protobuf.Timestamp date_of_birth = 10;
   google.protobuf.StringValue location = 11;
   google.protobuf.Timestamp created_at = 12;

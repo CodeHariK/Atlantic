@@ -17,9 +17,6 @@ service AuthService {
   // Defines the EmailLogin RPC method
   rpc AuthRefresh(RefreshRequest) returns (RefreshResponse);
 
-  // Defines the Logout RPC method
-  rpc Logout(LogoutRequest) returns (LogoutResponse);
-
   // Defines the RevokeSessions RPC method
   rpc RevokeSession(RevokeRequest) returns (RevokeResponse);
 
@@ -64,7 +61,7 @@ message AuthUser {
 
   bool verified = 7;
 
-  int32 role = 8 [(buf.validate.field).int32.gt = 0];
+  int64 role = 8 [(buf.validate.field).int32.gt = 0];
 
   repeated UserSession sessions = 9;
   int32 sessionNumber = 10;
@@ -80,6 +77,12 @@ message UserSession {
   string agent = 1; // UserAgent
   int64 iat = 2; // IssuedAt time
   int64 exp = 3; // ExpireAt time
+}
+message AccessToken {
+  string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
+  string roles = 2;
+  int64 iat = 3; // IssuedAt time
+  int64 exp = 4; // ExpireAt time
 }
 
 message EmailLoginRequest {
@@ -99,10 +102,6 @@ message RefreshRequest {}
 message RefreshResponse {
   string sessionId = 1;
   string accessToken = 2;
-}
-message LogoutRequest {}
-message LogoutResponse {
-  bool success = 1;
 }
 message RevokeRequest {
   int32 sessionNumber = 1;

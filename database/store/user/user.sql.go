@@ -51,7 +51,7 @@ type CreateUserParams struct {
 	Verified     bool        `json:"verified"`
 	Avatar       pgtype.UUID `json:"avatar"`
 	Gender       pgtype.Text `json:"gender"`
-	Role         int32       `json:"role"`
+	Role         int64       `json:"role"`
 	DateOfBirth  pgtype.Date `json:"date_of_birth"`
 	Location     pgtype.UUID `json:"location"`
 }
@@ -188,7 +188,7 @@ type ListUsersRow struct {
 	Email       pgtype.Text      `json:"email"`
 	PhoneNumber pgtype.Text      `json:"phone_number"`
 	Gender      pgtype.Text      `json:"gender"`
-	Role        int32            `json:"role"`
+	Role        int64            `json:"role"`
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
@@ -250,7 +250,7 @@ type UpdateUserParams struct {
 	Verified    bool        `json:"verified"`
 	Avatar      pgtype.UUID `json:"avatar"`
 	Gender      pgtype.Text `json:"gender"`
-	Role        int32       `json:"role"`
+	Role        int64       `json:"role"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
 	Location    pgtype.UUID `json:"location"`
 }

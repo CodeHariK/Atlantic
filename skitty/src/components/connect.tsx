@@ -22,6 +22,13 @@ const logger: Interceptor = (next) => async (req) => {
     // Make the request
     const response = await next(req);
 
+    console.log("-----")
+    console.log(response)
+    //       const request = new RefreshRequest();
+    //       // Set any necessary fields in the request
+    //       const response = await authclient.authRefresh(request);
+    console.log("-----")
+
     let redirect = response.header.get('redirect-to')
     if (redirect) {
         window.location.href = redirect;

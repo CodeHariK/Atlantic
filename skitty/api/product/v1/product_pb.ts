@@ -3086,9 +3086,9 @@ export class User extends Message<User> {
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 9;
+   * @generated from field: int64 role = 9;
    */
-  role = 0;
+  role = protoInt64.zero;
 
   /**
    * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
@@ -3126,7 +3126,7 @@ export class User extends Message<User> {
     { no: 6, name: "phone_number", kind: "message", T: StringValue },
     { no: 7, name: "avatar", kind: "message", T: StringValue },
     { no: 8, name: "gender", kind: "message", T: StringValue },
-    { no: 9, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 9, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 11, name: "location", kind: "message", T: StringValue },
     { no: 12, name: "created_at", kind: "message", T: Timestamp },

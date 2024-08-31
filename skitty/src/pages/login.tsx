@@ -1,5 +1,4 @@
 import SpaceLayout from '../layouts/SpaceLayout';
-import RefreshButton from "../components/refresh_button";
 import { EmailIcon, GoogleIcon } from '../components/svg';
 import { GradientText, H3, H6, P } from '../components/heading';
 import { MaterialButton, OutlinedButton } from '../components/button';
@@ -57,7 +56,7 @@ export default function Login() {
 
    return (
       <SpaceLayout two title='Login'>
-         <RefreshButton />
+
 
          <div class="justify-center h-full items-center flex">
 

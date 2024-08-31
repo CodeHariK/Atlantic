@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"connectrpc.com/connect"
@@ -14,7 +15,6 @@ import (
 	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
-	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 
@@ -29,7 +29,7 @@ import (
 type AuthServiceServer struct {
 	v1connect.UnimplementedAuthServiceHandler
 
-	*sessionstore.JwtConfig
+	JwtConfig *sessionstore.JwtConfig
 	validator *protovalidate.Validator
 	userStore *user.Queries
 	dragon    *dragon.Dragon
@@ -67,17 +67,45 @@ var invalidEmailPassword = connect.NewError(
 func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (any, error) {
 	r, w := req.Request, req.Writer
 
-	user, sessionNumber, err := s.dragon.DragonSessionCheck(r, s.Config)
+	cb := connectbox.ConnectBox{
+		R: r,
+		W: w,
+	}
+
+	if !connectbox.AuthRefreshOrProfileOrRevoke(r) {
+		accessCookie, err := r.Cookie("access-token")
+		if err == nil {
+			accessToken, err := s.JwtConfig.VerifyJwe(accessCookie.Value)
+			if err := connectbox.AuthRedirect(r, w, err); err != nil {
+				return nil, err
+			}
+			if err == nil {
+				cb.User = &v1.AuthUser{ID: accessToken.ID}
+				return cb, nil
+			}
+		}
+	}
+
+	user, sessionNumber, err := s.dragon.DragonSessionCheck(r, s.JwtConfig)
+	fmt.Println(err)
+	if err == nil {
+
+		cb.User = user
+		cb.SessionNumber = sessionNumber
+
+		if !connectbox.AuthRefreshOrProfileOrRevoke(r) {
+			_, _, err = s.RefreshSession(cb)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	if err := connectbox.AuthRedirect(r, w, err); err != nil {
 		return nil, err
 	}
 
-	return connectbox.ConnectBox{
-		User:          user,
-		SessionNumber: sessionNumber,
-		R:             r,
-		W:             w,
-	}, nil
+	return cb, nil
 }
 
 func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error) {
@@ -124,9 +152,17 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 	session := &v1.CookieSession{
 		ID:  dbuser.ID.String(),
 		Iat: time.Now().Unix(),
-		Exp: (time.Now().Add(time.Hour * 24 * 7)).Unix(),
+		Exp: time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
-	sessionId, err := authbox.SaveSession(cb.R, cb.W, s.Config, session)
+
+	sessionId, accessTok, err := authbox.SaveSession(
+		cb.R, cb.W, s.JwtConfig, session,
+		&v1.AccessToken{
+			ID:    dbuser.ID.String(),
+			Roles: strconv.FormatInt(dbuser.Role, 10),
+			Iat:   time.Now().Unix(),
+			Exp:   time.Now().Add(time.Hour).Unix(),
+		})
 	if err != nil {
 		return nil, invalidEmailPassword
 	}
@@ -146,7 +182,8 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 
 	return connect.NewResponse(
 			&v1.EmailLoginResponse{
-				SessionId: sessionId,
+				SessionId:   sessionId,
+				AccessToken: accessTok,
 			}),
 		nil
 }
@@ -199,50 +236,51 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 		return nil, internalServerError
 	}
 
-	session := cb.User.Sessions[cb.SessionNumber]
-	sessionId, err := authbox.SaveSession(cb.R, cb.W, s.Config, &v1.CookieSession{
-		ID:  cb.User.ID,
-		Iat: time.Now().Unix(),
-		Exp: (time.Now().Add(time.Hour * 24 * 7)).Unix(),
-	})
+	sessionId, accessToken, err := s.RefreshSession(cb)
 	if err != nil {
-		return nil, internalServerError
+		return nil, err
+	}
+
+	return connect.NewResponse(
+			&v1.RefreshResponse{
+				SessionId:   sessionId,
+				AccessToken: accessToken,
+			}),
+		nil
+}
+
+func (s AuthServiceServer) RefreshSession(cb connectbox.ConnectBox) (string, string, error) {
+	session := &v1.UserSession{
+		Agent: cb.R.UserAgent(),
+		Iat:   time.Now().Unix(),
+		Exp:   time.Now().Add(time.Hour * 24 * 7).Unix(),
+	}
+
+	sessionId, accessToken, err := authbox.SaveSession(
+		cb.R, cb.W, s.JwtConfig,
+		&v1.CookieSession{
+			ID:  cb.User.ID,
+			Iat: session.Iat,
+			Exp: session.Exp,
+		},
+		&v1.AccessToken{
+			ID:    cb.User.ID,
+			Roles: strconv.FormatInt(cb.User.Role, 10),
+			Iat:   time.Now().Unix(),
+			Exp:   time.Now().Add(time.Hour).Unix(),
+		},
+	)
+	if err != nil {
+		return "", "", internalServerError
 	}
 
 	cb.User.Sessions[cb.SessionNumber] = session
 
 	err = s.dragon.SaveUser(cb.User)
 	if err != nil {
-		return nil, internalServerError
+		return "", "", internalServerError
 	}
-
-	return connect.NewResponse(
-			&v1.RefreshResponse{
-				SessionId: sessionId,
-			}),
-		nil
-}
-
-func (s AuthServiceServer) Logout(ctx context.Context, req *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
-	if !ok {
-		return nil, internalServerError
-	}
-
-	colorlogger.Log(cb.User)
-	cb.User.Sessions[cb.SessionNumber] = nil
-	colorlogger.Log(cb.User)
-
-	if err := s.dragon.SaveUser(cb.User); err != nil {
-		return nil, internalServerError
-	}
-
-	authbox.RevokeSession(cb.W)
-
-	return connect.NewResponse(
-		&v1.LogoutResponse{
-			Success: true,
-		}), nil
+	return sessionId, accessToken, nil
 }
 
 func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {
@@ -251,15 +289,22 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 		return nil, internalServerError
 	}
 
-	colorlogger.Log(cb.User)
-	cb.User.Sessions[req.Msg.SessionNumber] = nil
-	colorlogger.Log(cb.User)
+	indexToRemove := int(req.Msg.SessionNumber)
+	if indexToRemove == -1 {
+		indexToRemove = cb.SessionNumber
+
+		if indexToRemove >= 0 && indexToRemove < len(cb.User.Sessions) {
+			cb.User.Sessions = append(cb.User.Sessions[:indexToRemove], cb.User.Sessions[indexToRemove+1:]...)
+		}
+	}
 
 	if err := s.dragon.SaveUser(cb.User); err != nil {
 		return nil, internalServerError
 	}
 
 	authbox.RevokeSession(cb.W)
+
+	connectbox.AddRedirect(cb.W, "/login")
 
 	return connect.NewResponse(
 		&v1.RevokeResponse{
@@ -273,9 +318,7 @@ func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *conne
 		return nil, internalServerError
 	}
 
-	colorlogger.Log(cb.User)
 	cb.User.Sessions = nil
-	colorlogger.Log(cb.User)
 
 	if err := s.dragon.SaveUser(cb.User); err != nil {
 		return nil, internalServerError

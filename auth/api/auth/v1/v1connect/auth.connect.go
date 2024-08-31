@@ -40,8 +40,6 @@ const (
 	AuthServiceRegisterUserProcedure = "/auth.v1.AuthService/RegisterUser"
 	// AuthServiceAuthRefreshProcedure is the fully-qualified name of the AuthService's AuthRefresh RPC.
 	AuthServiceAuthRefreshProcedure = "/auth.v1.AuthService/AuthRefresh"
-	// AuthServiceLogoutProcedure is the fully-qualified name of the AuthService's Logout RPC.
-	AuthServiceLogoutProcedure = "/auth.v1.AuthService/Logout"
 	// AuthServiceRevokeSessionProcedure is the fully-qualified name of the AuthService's RevokeSession
 	// RPC.
 	AuthServiceRevokeSessionProcedure = "/auth.v1.AuthService/RevokeSession"
@@ -56,7 +54,6 @@ var (
 	authServiceEmailLoginMethodDescriptor            = authServiceServiceDescriptor.Methods().ByName("EmailLogin")
 	authServiceRegisterUserMethodDescriptor          = authServiceServiceDescriptor.Methods().ByName("RegisterUser")
 	authServiceAuthRefreshMethodDescriptor           = authServiceServiceDescriptor.Methods().ByName("AuthRefresh")
-	authServiceLogoutMethodDescriptor                = authServiceServiceDescriptor.Methods().ByName("Logout")
 	authServiceRevokeSessionMethodDescriptor         = authServiceServiceDescriptor.Methods().ByName("RevokeSession")
 	authServiceInvalidateAllSessionsMethodDescriptor = authServiceServiceDescriptor.Methods().ByName("InvalidateAllSessions")
 )
@@ -69,8 +66,6 @@ type AuthServiceClient interface {
 	RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error)
 	// Defines the EmailLogin RPC method
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
-	// Defines the Logout RPC method
-	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
 	// Defines the RevokeSessions RPC method
 	RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error)
 	// Defines the InvalidateAllSessions RPC method
@@ -105,12 +100,6 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceAuthRefreshMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		logout: connect.NewClient[v1.LogoutRequest, v1.LogoutResponse](
-			httpClient,
-			baseURL+AuthServiceLogoutProcedure,
-			connect.WithSchema(authServiceLogoutMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 		revokeSession: connect.NewClient[v1.RevokeRequest, v1.RevokeResponse](
 			httpClient,
 			baseURL+AuthServiceRevokeSessionProcedure,
@@ -131,7 +120,6 @@ type authServiceClient struct {
 	emailLogin            *connect.Client[v1.EmailLoginRequest, v1.EmailLoginResponse]
 	registerUser          *connect.Client[v1.RegisterUserRequest, v1.RegisterUserResponse]
 	authRefresh           *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
-	logout                *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
 	revokeSession         *connect.Client[v1.RevokeRequest, v1.RevokeResponse]
 	invalidateAllSessions *connect.Client[v1.InvalidateAllSessionsRequest, v1.InvalidateAllSessionsResponse]
 }
@@ -149,11 +137,6 @@ func (c *authServiceClient) RegisterUser(ctx context.Context, req *connect.Reque
 // AuthRefresh calls auth.v1.AuthService.AuthRefresh.
 func (c *authServiceClient) AuthRefresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
 	return c.authRefresh.CallUnary(ctx, req)
-}
-
-// Logout calls auth.v1.AuthService.Logout.
-func (c *authServiceClient) Logout(ctx context.Context, req *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
-	return c.logout.CallUnary(ctx, req)
 }
 
 // RevokeSession calls auth.v1.AuthService.RevokeSession.
@@ -174,8 +157,6 @@ type AuthServiceHandler interface {
 	RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error)
 	// Defines the EmailLogin RPC method
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
-	// Defines the Logout RPC method
-	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
 	// Defines the RevokeSessions RPC method
 	RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error)
 	// Defines the InvalidateAllSessions RPC method
@@ -206,12 +187,6 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceAuthRefreshMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	authServiceLogoutHandler := connect.NewUnaryHandler(
-		AuthServiceLogoutProcedure,
-		svc.Logout,
-		connect.WithSchema(authServiceLogoutMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	authServiceRevokeSessionHandler := connect.NewUnaryHandler(
 		AuthServiceRevokeSessionProcedure,
 		svc.RevokeSession,
@@ -232,8 +207,6 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 			authServiceRegisterUserHandler.ServeHTTP(w, r)
 		case AuthServiceAuthRefreshProcedure:
 			authServiceAuthRefreshHandler.ServeHTTP(w, r)
-		case AuthServiceLogoutProcedure:
-			authServiceLogoutHandler.ServeHTTP(w, r)
 		case AuthServiceRevokeSessionProcedure:
 			authServiceRevokeSessionHandler.ServeHTTP(w, r)
 		case AuthServiceInvalidateAllSessionsProcedure:
@@ -257,10 +230,6 @@ func (UnimplementedAuthServiceHandler) RegisterUser(context.Context, *connect.Re
 
 func (UnimplementedAuthServiceHandler) AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.AuthRefresh is not implemented"))
-}
-
-func (UnimplementedAuthServiceHandler) Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.Logout is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {

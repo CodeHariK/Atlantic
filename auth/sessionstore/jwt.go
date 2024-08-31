@@ -6,13 +6,13 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"time"
 
 	"github.com/codeharik/Atlantic/config"
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/crypto/chacha20"
+
+	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 )
 
 func HashPassword(password string) (string, error) {
@@ -36,7 +36,7 @@ func CheckPassword(hashedPassword string, inputPassword string) error {
 	return nil
 }
 
-func (cfg *JwtConfig) GenerateKid(sub uuid.UUID) int {
+func (cfg *JwtConfig) GenerateKid(sub string) int {
 	var sum int
 	for _, b := range sub {
 		sum += int(b)
@@ -44,37 +44,21 @@ func (cfg *JwtConfig) GenerateKid(sub uuid.UUID) int {
 	return sum % cfg.AuthService.KeyMod
 }
 
-// func (cfg *JwtConfig) GenerateKid2(obj *jwt.MapClaims) int {
-// 	b, _ := json.Marshal(obj)
-
-// 	var sum int
-// 	for _, b := range b {
-// 		sum += int(b)
-// 	}
-// 	return sum % cfg.AuthService.KeyMod
-// }
-
 type JwtConfig struct {
 	*config.Config
 }
 
-type JwtObj struct {
-	User  uuid.UUID
-	Roles []string
-	Iat   time.Time
-	Exp   time.Time
-}
-
-func (cfg *JwtConfig) CreateJwtToken(jwtobj *JwtObj, duration time.Duration) (string, *jwt.MapClaims, error) {
+func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.AccessToken) (string, *jwt.MapClaims, error) {
 	claims := jwt.MapClaims{
-		"sub":   jwtobj.User.String(),
+		"sub":   jwtobj.ID,
 		"roles": jwtobj.Roles,
-		"iat":   time.Now().Unix(),
-		"exp":   time.Now().Add(duration).Unix(),
+		"iat":   jwtobj.Iat,
+		"exp":   jwtobj.Exp,
 	}
 
-	kid := cfg.GenerateKid(jwtobj.User)
-	// kid := cfg.GenerateKid2(&claims)
+	fmt.Println(claims)
+
+	kid := cfg.GenerateKid(jwtobj.ID)
 
 	// Create a new token object using EdDSA (Ed25519)
 	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, claims)
@@ -89,37 +73,37 @@ func (cfg *JwtConfig) CreateJwtToken(jwtobj *JwtObj, duration time.Duration) (st
 	return tokenString, &claims, nil
 }
 
-func (cfg *JwtConfig) GetJwtObj(tokenString string) (*JwtObj, error) {
-	j := &JwtObj{}
+func (cfg *JwtConfig) VerifyJwe(tokenString string) (*v1.AccessToken, error) {
+	jwtToken, err := ChaDecrypt(cfg.Config, tokenString)
+	if err != nil {
+		return nil, err
+	}
+
+	return cfg.VerifyJwt(jwtToken)
+}
+
+func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.AccessToken, error) {
+	j := &v1.AccessToken{}
 
 	// Parse the token to extract the `kid` and use it to get the correct key
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Extract the `kid` from the header
-
 		claims := token.Claims.(jwt.MapClaims)
+
 		sub, ok := claims["sub"].(string)
 		if ok {
-			j.User, _ = uuid.Parse(sub)
+			j.ID = sub
 		}
-
 		if exp, ok := claims["exp"].(float64); ok { // Typically JWT exp/iat are float64
-			j.Exp = time.Unix(int64(exp), 0)
+			j.Exp = int64(exp)
 		}
-
 		if iat, ok := claims["iat"].(float64); ok {
-			j.Iat = time.Unix(int64(iat), 0)
+			j.Iat = int64(iat)
+		}
+		if roles, ok := claims["roles"].(string); ok {
+			j.Roles = string(roles)
 		}
 
-		if roles, ok := claims["roles"].([]interface{}); ok {
-			j.Roles = make([]string, len(roles))
-			for i, role := range roles {
-				if r, ok := role.(string); ok {
-					j.Roles[i] = r
-				}
-			}
-		}
-
-		kid := cfg.GenerateKid(j.User)
+		kid := cfg.GenerateKid(j.ID)
 		// kid := cfg.GenerateKid2(&claims)
 
 		// Get the public key based on the `kid`

@@ -16,6 +16,7 @@ require (
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.2.0
 	connectrpc.com/otelconnect v0.7.1
+	github.com/bufbuild/protovalidate-go v0.6.5
 	github.com/codeharik/Atlantic/config v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/database v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/docs v0.0.0-00010101000000-000000000000
@@ -37,7 +38,6 @@ require (
 
 require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
-	github.com/bufbuild/protovalidate-go v0.6.5 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect

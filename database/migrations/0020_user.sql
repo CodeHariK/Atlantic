@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "users" (
     ),
     "avatar" UUID,
     "gender" CHAR(1) CHECK ("gender" IN ('M', 'F')),
-    "role" INT NOT NULL DEFAULT 1 CHECK (role > 0),
+    "role" BIGINT NOT NULL DEFAULT 1 CHECK (role > 0),
 
 
     "date_of_birth" DATE,
