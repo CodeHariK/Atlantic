@@ -12,6 +12,9 @@ service AuthService {
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse);
 
   // Defines the EmailLogin RPC method
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+
+  // Defines the EmailLogin RPC method
   rpc AuthRefresh(RefreshRequest) returns (RefreshResponse);
 
   // Defines the Logout RPC method
@@ -25,12 +28,11 @@ service AuthService {
 }
 
 enum Role {
-  ROLE_UNSPECIFIED = 0; // Default value
-  ADMIN = 1; // Admin role
-  DEVELOPER = 2; // Developer role
-  READONLY = 3; // Read-only role
-  EDITOR = 4; // Editor role
-  MODERATOR = 5; // Moderator role
+  ROLE_INVALID = 0; // Default value
+  ADMIN = 32;
+  DEVELOPER = 31;
+  EDITOR = 30;
+  USER = 1;
 }
 
 // The user profile message
@@ -58,49 +60,56 @@ message AuthUser {
   // `email` validates that a string field is a valid email.
   string email = 5 [(buf.validate.field).string.email = true];
 
-  bool verified = 6;
+  string location = 6;
 
-  int32 role = 7;
+  bool verified = 7;
 
-  repeated Session sessions = 8;
+  int32 role = 8 [(buf.validate.field).int32.gt = 0];
+
+  repeated UserSession sessions = 9;
+  int32 sessionNumber = 10;
 }
 
-// Define Session message
-message Session {
-  string ID = 1 [(buf.validate.field).string.uuid = true];
-  string agent = 2; // UserAgent
-  google.protobuf.Timestamp iat = 3; // IssuedAt time
-  google.protobuf.Timestamp exp = 4; // ExpireAt time
+message CookieSession {
+  string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
+  int64 iat = 2; // IssuedAt time
+  int64 exp = 3; // ExpireAt time
 }
 
-// The request message for the EmailLogin method
+message UserSession {
+  string agent = 1; // UserAgent
+  int64 iat = 2; // IssuedAt time
+  int64 exp = 3; // ExpireAt time
+}
+
 message EmailLoginRequest {
-  string email = 1;
-  string password = 2;
+  string email = 1 [(buf.validate.field).string.email = true];
+  string password = 2 [(buf.validate.field).string.min_len = 8];
 }
 message EmailLoginResponse {
   string sessionId = 1;
   string accessToken = 2;
 }
-
+message RegisterUserRequest {
+  string email = 1 [(buf.validate.field).string.email = true];
+  string password = 2 [(buf.validate.field).string.min_len = 8];
+}
+message RegisterUserResponse {}
 message RefreshRequest {}
 message RefreshResponse {
   string sessionId = 1;
   string accessToken = 2;
 }
-
 message LogoutRequest {}
 message LogoutResponse {
   bool success = 1;
 }
-
 message RevokeRequest {
   int32 sessionNumber = 1;
 }
 message RevokeResponse {
   bool success = 1;
 }
-
 message InvalidateAllSessionsRequest {}
 message InvalidateAllSessionsResponse {
   bool success = 1;

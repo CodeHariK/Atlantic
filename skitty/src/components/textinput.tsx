@@ -71,6 +71,7 @@ export function TextInput(props: TextInputProps) {
                 {props.type === "password" && (
                     <button
                         type="button"
+                        tabindex="-1"
                         onClick={() => setShowPassword(!showPassword())}
                         class="absolute inset-y-0 end-0 flex items-center z-20 px-3 cursor-pointer trounded-e-md focus:outline-none"
                     >

@@ -2,6 +2,8 @@ import { createSignal, createEffect } from "solid-js";
 import { AuthUser, LogoutRequest, Role } from "../../api/auth/v1/auth_pb.ts";
 import { GetProfileRequest } from "../../api/auth/v1/profile_pb.ts";
 
+import { JSX } from "solid-js";
+
 import { useConnect } from '../components/connect';
 
 import { proto3 } from "@bufbuild/protobuf";
@@ -9,9 +11,9 @@ import { proto3 } from "@bufbuild/protobuf";
 import SpaceLayout from '../layouts/SpaceLayout';
 
 import { SuperTable } from "../components/table.tsx";
-import { AddUserIcon, PenIcon, TableHeadingIcon } from "../components/svg.tsx";
+import { AddUserIcon, CrossIcon, PenIcon, TableHeadingIcon } from "../components/svg.tsx";
 import { Avatar, H3, ListTile, P, SmallBadgeText, TitleSubtitle } from "../components/heading.tsx";
-import { MaterialButton, OutlinedButton } from "../components/button.tsx";
+import { IconButton, MaterialButton, OutlinedButton } from "../components/button.tsx";
 
 export default function Profile() {
    const [user, setUser] = createSignal<AuthUser | null>(null);
@@ -19,6 +21,7 @@ export default function Profile() {
    const [error, setError] = createSignal("");
 
    const { authclient, profileclient } = useConnect();
+
 
    // Fetch the user data (you might be fetching this from an API)
    createEffect(async () => {
@@ -34,7 +37,7 @@ export default function Profile() {
             setUser(response.user)
          }
       } catch (err) {
-         console.error("Error refreshing auth:", err);
+         console.error("Failed to get profile:", err);
          setError("Failed to get profile.");
       } finally {
          setLoading(false);
@@ -61,58 +64,59 @@ export default function Profile() {
    return (
 
       <SpaceLayout two title='Profile'>
-         {proto3.getEnumType(Role).findNumber(user()!.role)?.name}
-
          {user() ? (
             <>
                <div>
                   <div class="profile-header">
-                     <img src={user()!.avatar} alt="Avatar" class="avatar" />
+                     {/* <img src={user()!.avatar} alt="Avatar" class="avatar" /> */}
                      <h2>{user()!.username}</h2>
                      <p>Email: {user()!.email}</p>
-                     <p>Role: {user()!.role}</p>
+                     <p>Role: {proto3.getEnumType(Role).findNumber(user()!.role.valueOf())?.name}</p>
                      <p>Status: {user()!.verified ? "Verified" : "Not Verified"}</p>
+                     <p>Phone: {user()!.phoneNumber}</p>
+                     <p>Location: {user()!.location}</p>
                   </div>
-                  <button class="logout-button" onClick={logout}>Logout</button>
                </div>
 
-               {JSON.stringify(user()?.sessions[0])}
-
                <SuperTable
+                  width={900}
+
                   table={{
                      heading: [
                         <>User Agent {TableHeadingIcon()}</>,
-                        <>Employees {TableHeadingIcon()}</>,
-                        <>Employees {TableHeadingIcon()}</>,
-                        <>Employees {TableHeadingIcon()}</>,
+                        <>Started {TableHeadingIcon()}</>,
+                        <>Active {TableHeadingIcon()}</>,
+                        <>Valid {TableHeadingIcon()}</>,
+                        <>Delete</>,
                      ],
+
+                     class: [
+                        "max-w-64",
+                     ],
+
                      rows: [
-                        [
-                           <ListTile
-                              start={<Avatar src='https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-2.jpg'></Avatar>}
-                              title='Alexa Liras' subtitle='alexa@creative-tim.com'>
-                           </ListTile>,
-                           <TitleSubtitle
-                              title='Alexa Liras' subtitle='alexa@creative-tim.com'>
-                           </TitleSubtitle>,
-                           <SmallBadgeText>Employees</SmallBadgeText>,
-                           <P>19/09/17</P>,
-                           <>{PenIcon()}</>,
-                        ],
-                     ]
+                        ...user()?.sessions.map((s, i) =>
+                           [
+                              <P>{s.agent}</P>,
+                              <P>{s.iat.toString()}</P>,
+                              <SmallBadgeText>Active {i == user()?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
+                              <P>{s.exp.toString()}</P>,
+                              <IconButton onClick={() => { console.log(i) }}><CrossIcon /></IconButton>
+                           ]
+                        ) ?? []
+                     ],
+
                   }}
                   headerstart={<div>
-                     <H3>Employees List</H3>
-                     <P>Review each person before edit</P>
+                     <H3>Login sessions</H3>
                   </div>}
                   headerend={
                      <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
                         <OutlinedButton>
                            View All
                         </OutlinedButton>
-                        <MaterialButton>
-                           <AddUserIcon />
-                           AddMember
+                        <MaterialButton onClick={logout}>
+                           Logout
                         </MaterialButton>
                      </div>
                   }
@@ -130,7 +134,8 @@ export default function Profile() {
             </>
          ) : (
             <p> {loading() ? "Loading..." : ""}  {error()}</p>
-         )}
+         )
+         }
 
       </SpaceLayout >
    );

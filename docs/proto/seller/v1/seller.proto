@@ -213,14 +213,16 @@ message UpdateSellerResponse {}
 
 message User {
   string id = 1;
-  string username = 2;
+  google.protobuf.StringValue username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;
-  google.protobuf.StringValue phone_number = 5;
-  google.protobuf.StringValue gender = 6;
-  int32 role = 7;
-  google.protobuf.Timestamp date_of_birth = 8;
-  google.protobuf.StringValue location = 9;
-  google.protobuf.Timestamp created_at = 10;
-  google.protobuf.Timestamp updated_at = 11;
+  bool verified = 5;
+  google.protobuf.StringValue phone_number = 6;
+  google.protobuf.StringValue avatar = 7;
+  google.protobuf.StringValue gender = 8;
+  int32 role = 9;
+  google.protobuf.Timestamp date_of_birth = 10;
+  google.protobuf.StringValue location = 11;
+  google.protobuf.Timestamp created_at = 12;
+  google.protobuf.Timestamp updated_at = 13;
 }

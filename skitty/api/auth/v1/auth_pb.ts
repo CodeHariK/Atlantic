@@ -4,7 +4,7 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, protoInt64 } from "@bufbuild/protobuf";
 
 /**
  * @generated from enum auth.v1.Role
@@ -13,53 +13,37 @@ export enum Role {
   /**
    * Default value
    *
-   * @generated from enum value: ROLE_UNSPECIFIED = 0;
+   * @generated from enum value: ROLE_INVALID = 0;
    */
-  ROLE_UNSPECIFIED = 0,
+  ROLE_INVALID = 0,
 
   /**
-   * Admin role
-   *
-   * @generated from enum value: ADMIN = 1;
+   * @generated from enum value: ADMIN = 32;
    */
-  ADMIN = 1,
+  ADMIN = 32,
 
   /**
-   * Developer role
-   *
-   * @generated from enum value: DEVELOPER = 2;
+   * @generated from enum value: DEVELOPER = 31;
    */
-  DEVELOPER = 2,
+  DEVELOPER = 31,
 
   /**
-   * Read-only role
-   *
-   * @generated from enum value: READONLY = 3;
+   * @generated from enum value: EDITOR = 30;
    */
-  READONLY = 3,
+  EDITOR = 30,
 
   /**
-   * Editor role
-   *
-   * @generated from enum value: EDITOR = 4;
+   * @generated from enum value: USER = 1;
    */
-  EDITOR = 4,
-
-  /**
-   * Moderator role
-   *
-   * @generated from enum value: MODERATOR = 5;
-   */
-  MODERATOR = 5,
+  USER = 1,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Role)
 proto3.util.setEnumType(Role, "auth.v1.Role", [
-  { no: 0, name: "ROLE_UNSPECIFIED" },
-  { no: 1, name: "ADMIN" },
-  { no: 2, name: "DEVELOPER" },
-  { no: 3, name: "READONLY" },
-  { no: 4, name: "EDITOR" },
-  { no: 5, name: "MODERATOR" },
+  { no: 0, name: "ROLE_INVALID" },
+  { no: 32, name: "ADMIN" },
+  { no: 31, name: "DEVELOPER" },
+  { no: 30, name: "EDITOR" },
+  { no: 1, name: "USER" },
 ]);
 
 /**
@@ -102,19 +86,29 @@ export class AuthUser extends Message<AuthUser> {
   email = "";
 
   /**
-   * @generated from field: bool verified = 6;
+   * @generated from field: string location = 6;
+   */
+  location = "";
+
+  /**
+   * @generated from field: bool verified = 7;
    */
   verified = false;
 
   /**
-   * @generated from field: int32 role = 7;
+   * @generated from field: int32 role = 8;
    */
   role = 0;
 
   /**
-   * @generated from field: repeated auth.v1.Session sessions = 8;
+   * @generated from field: repeated auth.v1.UserSession sessions = 9;
    */
-  sessions: Session[] = [];
+  sessions: UserSession[] = [];
+
+  /**
+   * @generated from field: int32 sessionNumber = 10;
+   */
+  sessionNumber = 0;
 
   constructor(data?: PartialMessage<AuthUser>) {
     super();
@@ -129,9 +123,11 @@ export class AuthUser extends Message<AuthUser> {
     { no: 3, name: "phone_number", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "avatar", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 5, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 7, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 8, name: "sessions", kind: "message", T: Session, repeated: true },
+    { no: 6, name: "location", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 8, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 9, name: "sessions", kind: "message", T: UserSession, repeated: true },
+    { no: 10, name: "sessionNumber", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthUser {
@@ -152,71 +148,116 @@ export class AuthUser extends Message<AuthUser> {
 }
 
 /**
- * Define Session message
- *
- * @generated from message auth.v1.Session
+ * @generated from message auth.v1.CookieSession
  */
-export class Session extends Message<Session> {
+export class CookieSession extends Message<CookieSession> {
   /**
+   * ID is required and must not be empty
+   *
    * @generated from field: string ID = 1;
    */
   ID = "";
 
   /**
+   * IssuedAt time
+   *
+   * @generated from field: int64 iat = 2;
+   */
+  iat = protoInt64.zero;
+
+  /**
+   * ExpireAt time
+   *
+   * @generated from field: int64 exp = 3;
+   */
+  exp = protoInt64.zero;
+
+  constructor(data?: PartialMessage<CookieSession>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.CookieSession";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "ID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "iat", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 3, name: "exp", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CookieSession {
+    return new CookieSession().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CookieSession {
+    return new CookieSession().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CookieSession {
+    return new CookieSession().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: CookieSession | PlainMessage<CookieSession> | undefined, b: CookieSession | PlainMessage<CookieSession> | undefined): boolean {
+    return proto3.util.equals(CookieSession, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.UserSession
+ */
+export class UserSession extends Message<UserSession> {
+  /**
    * UserAgent
    *
-   * @generated from field: string agent = 2;
+   * @generated from field: string agent = 1;
    */
   agent = "";
 
   /**
    * IssuedAt time
    *
-   * @generated from field: google.protobuf.Timestamp iat = 3;
+   * @generated from field: int64 iat = 2;
    */
-  iat?: Timestamp;
+  iat = protoInt64.zero;
 
   /**
    * ExpireAt time
    *
-   * @generated from field: google.protobuf.Timestamp exp = 4;
+   * @generated from field: int64 exp = 3;
    */
-  exp?: Timestamp;
+  exp = protoInt64.zero;
 
-  constructor(data?: PartialMessage<Session>) {
+  constructor(data?: PartialMessage<UserSession>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "auth.v1.Session";
+  static readonly typeName = "auth.v1.UserSession";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "ID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "agent", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "iat", kind: "message", T: Timestamp },
-    { no: 4, name: "exp", kind: "message", T: Timestamp },
+    { no: 1, name: "agent", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "iat", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 3, name: "exp", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Session {
-    return new Session().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UserSession {
+    return new UserSession().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Session {
-    return new Session().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UserSession {
+    return new UserSession().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Session {
-    return new Session().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UserSession {
+    return new UserSession().fromJsonString(jsonString, options);
   }
 
-  static equals(a: Session | PlainMessage<Session> | undefined, b: Session | PlainMessage<Session> | undefined): boolean {
-    return proto3.util.equals(Session, a, b);
+  static equals(a: UserSession | PlainMessage<UserSession> | undefined, b: UserSession | PlainMessage<UserSession> | undefined): boolean {
+    return proto3.util.equals(UserSession, a, b);
   }
 }
 
 /**
- * The request message for the EmailLogin method
- *
  * @generated from message auth.v1.EmailLoginRequest
  */
 export class EmailLoginRequest extends Message<EmailLoginRequest> {
@@ -299,6 +340,80 @@ export class EmailLoginResponse extends Message<EmailLoginResponse> {
 
   static equals(a: EmailLoginResponse | PlainMessage<EmailLoginResponse> | undefined, b: EmailLoginResponse | PlainMessage<EmailLoginResponse> | undefined): boolean {
     return proto3.util.equals(EmailLoginResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.RegisterUserRequest
+ */
+export class RegisterUserRequest extends Message<RegisterUserRequest> {
+  /**
+   * @generated from field: string email = 1;
+   */
+  email = "";
+
+  /**
+   * @generated from field: string password = 2;
+   */
+  password = "";
+
+  constructor(data?: PartialMessage<RegisterUserRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.RegisterUserRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "password", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterUserRequest {
+    return new RegisterUserRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RegisterUserRequest {
+    return new RegisterUserRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RegisterUserRequest {
+    return new RegisterUserRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: RegisterUserRequest | PlainMessage<RegisterUserRequest> | undefined, b: RegisterUserRequest | PlainMessage<RegisterUserRequest> | undefined): boolean {
+    return proto3.util.equals(RegisterUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.RegisterUserResponse
+ */
+export class RegisterUserResponse extends Message<RegisterUserResponse> {
+  constructor(data?: PartialMessage<RegisterUserResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.RegisterUserResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterUserResponse {
+    return new RegisterUserResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): RegisterUserResponse {
+    return new RegisterUserResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): RegisterUserResponse {
+    return new RegisterUserResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: RegisterUserResponse | PlainMessage<RegisterUserResponse> | undefined, b: RegisterUserResponse | PlainMessage<RegisterUserResponse> | undefined): boolean {
+    return proto3.util.equals(RegisterUserResponse, a, b);
   }
 }
 

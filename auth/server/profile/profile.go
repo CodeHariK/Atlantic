@@ -51,7 +51,12 @@ func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect
 		return errorResponse, responserError
 	}
 
-	return connect.NewResponse(&v1.GetProfileResponse{User: cb.User}), nil
+	cb.User.SessionNumber = int32(cb.SessionNumber)
+
+	return connect.NewResponse(&v1.GetProfileResponse{
+		User: cb.User,
+	},
+	), nil
 }
 
 func (profile ProfileServiceServer) UpdateProfile(context.Context, *connect.Request[v1.UpdateProfileRequest]) (*connect.Response[v1.UpdateProfileResponse], error) {

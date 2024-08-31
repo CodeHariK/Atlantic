@@ -3,8 +3,11 @@ INSERT INTO
     users (
         id,
         username,
+        password_hash,
         email,
         phone_number,
+        verified,
+        avatar,
         gender,
         role,
         date_of_birth,
@@ -18,34 +21,20 @@ VALUES (
         $5,
         $6,
         $7,
-        $8
+        $8,
+        $9,
+        $10,
+        $11
     ) RETURNING id;
 
 -- name: GetUserByID :one
-SELECT
-    id,
-    username,
-    email,
-    phone_number,
-    gender,
-    role,
-    date_of_birth,
-    created_at,
-    updated_at,
-    location
-FROM users
-WHERE
-    id = $1;
+SELECT * FROM users WHERE id = $1;
 
--- name: GetAuthUserByEmail :one
-SELECT
-    id,
-    username,
-    email,
-    password_hash
-FROM users
-WHERE
-    email = $1;
+-- name: GetUserByEmail :one
+SELECT * FROM users WHERE email = $1;
+
+-- name: GetUserByUsername :one
+SELECT * FROM users WHERE username = $1;
 
 -- name: UpdateUser :exec
 UPDATE users
@@ -53,13 +42,15 @@ SET
     username = $1,
     email = $2,
     phone_number = $3,
-    gender = $4,
-    role = $5,
-    date_of_birth = $6,
-    location = $7,
+    verified = $4,
+    avatar = $5,
+    gender = $6,
+    role = $7,
+    date_of_birth = $8,
+    location = $9,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $8;
+    id = $9;
 
 -- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1;
@@ -80,19 +71,3 @@ FROM users
 LIMIT $1
 OFFSET
     $2;
-
--- name: FindUserByUsername :one
-SELECT
-    id,
-    username,
-    email,
-    phone_number,
-    gender,
-    role,
-    date_of_birth,
-    created_at,
-    updated_at,
-    location
-FROM users
-WHERE
-    username = $1;

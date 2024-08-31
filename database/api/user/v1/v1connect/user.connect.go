@@ -37,14 +37,14 @@ const (
 	UserServiceCreateUserProcedure = "/user.v1.UserService/CreateUser"
 	// UserServiceDeleteUserProcedure is the fully-qualified name of the UserService's DeleteUser RPC.
 	UserServiceDeleteUserProcedure = "/user.v1.UserService/DeleteUser"
-	// UserServiceFindUserByUsernameProcedure is the fully-qualified name of the UserService's
-	// FindUserByUsername RPC.
-	UserServiceFindUserByUsernameProcedure = "/user.v1.UserService/FindUserByUsername"
-	// UserServiceGetAuthUserByEmailProcedure is the fully-qualified name of the UserService's
-	// GetAuthUserByEmail RPC.
-	UserServiceGetAuthUserByEmailProcedure = "/user.v1.UserService/GetAuthUserByEmail"
+	// UserServiceGetUserByEmailProcedure is the fully-qualified name of the UserService's
+	// GetUserByEmail RPC.
+	UserServiceGetUserByEmailProcedure = "/user.v1.UserService/GetUserByEmail"
 	// UserServiceGetUserByIDProcedure is the fully-qualified name of the UserService's GetUserByID RPC.
 	UserServiceGetUserByIDProcedure = "/user.v1.UserService/GetUserByID"
+	// UserServiceGetUserByUsernameProcedure is the fully-qualified name of the UserService's
+	// GetUserByUsername RPC.
+	UserServiceGetUserByUsernameProcedure = "/user.v1.UserService/GetUserByUsername"
 	// UserServiceListUsersProcedure is the fully-qualified name of the UserService's ListUsers RPC.
 	UserServiceListUsersProcedure = "/user.v1.UserService/ListUsers"
 	// UserServiceUpdateUserProcedure is the fully-qualified name of the UserService's UpdateUser RPC.
@@ -53,23 +53,23 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	userServiceServiceDescriptor                  = v1.File_user_v1_user_proto.Services().ByName("UserService")
-	userServiceCreateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("CreateUser")
-	userServiceDeleteUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("DeleteUser")
-	userServiceFindUserByUsernameMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("FindUserByUsername")
-	userServiceGetAuthUserByEmailMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("GetAuthUserByEmail")
-	userServiceGetUserByIDMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("GetUserByID")
-	userServiceListUsersMethodDescriptor          = userServiceServiceDescriptor.Methods().ByName("ListUsers")
-	userServiceUpdateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	userServiceServiceDescriptor                 = v1.File_user_v1_user_proto.Services().ByName("UserService")
+	userServiceCreateUserMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("CreateUser")
+	userServiceDeleteUserMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("DeleteUser")
+	userServiceGetUserByEmailMethodDescriptor    = userServiceServiceDescriptor.Methods().ByName("GetUserByEmail")
+	userServiceGetUserByIDMethodDescriptor       = userServiceServiceDescriptor.Methods().ByName("GetUserByID")
+	userServiceGetUserByUsernameMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("GetUserByUsername")
+	userServiceListUsersMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("ListUsers")
+	userServiceUpdateUserMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("UpdateUser")
 )
 
 // UserServiceClient is a client for the user.v1.UserService service.
 type UserServiceClient interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
-	FindUserByUsername(context.Context, *connect.Request[v1.FindUserByUsernameRequest]) (*connect.Response[v1.FindUserByUsernameResponse], error)
-	GetAuthUserByEmail(context.Context, *connect.Request[v1.GetAuthUserByEmailRequest]) (*connect.Response[v1.GetAuthUserByEmailResponse], error)
+	GetUserByEmail(context.Context, *connect.Request[v1.GetUserByEmailRequest]) (*connect.Response[v1.GetUserByEmailResponse], error)
 	GetUserByID(context.Context, *connect.Request[v1.GetUserByIDRequest]) (*connect.Response[v1.GetUserByIDResponse], error)
+	GetUserByUsername(context.Context, *connect.Request[v1.GetUserByUsernameRequest]) (*connect.Response[v1.GetUserByUsernameResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 }
@@ -96,22 +96,22 @@ func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(userServiceDeleteUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		findUserByUsername: connect.NewClient[v1.FindUserByUsernameRequest, v1.FindUserByUsernameResponse](
+		getUserByEmail: connect.NewClient[v1.GetUserByEmailRequest, v1.GetUserByEmailResponse](
 			httpClient,
-			baseURL+UserServiceFindUserByUsernameProcedure,
-			connect.WithSchema(userServiceFindUserByUsernameMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		getAuthUserByEmail: connect.NewClient[v1.GetAuthUserByEmailRequest, v1.GetAuthUserByEmailResponse](
-			httpClient,
-			baseURL+UserServiceGetAuthUserByEmailProcedure,
-			connect.WithSchema(userServiceGetAuthUserByEmailMethodDescriptor),
+			baseURL+UserServiceGetUserByEmailProcedure,
+			connect.WithSchema(userServiceGetUserByEmailMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		getUserByID: connect.NewClient[v1.GetUserByIDRequest, v1.GetUserByIDResponse](
 			httpClient,
 			baseURL+UserServiceGetUserByIDProcedure,
 			connect.WithSchema(userServiceGetUserByIDMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getUserByUsername: connect.NewClient[v1.GetUserByUsernameRequest, v1.GetUserByUsernameResponse](
+			httpClient,
+			baseURL+UserServiceGetUserByUsernameProcedure,
+			connect.WithSchema(userServiceGetUserByUsernameMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
@@ -131,13 +131,13 @@ func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // userServiceClient implements UserServiceClient.
 type userServiceClient struct {
-	createUser         *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	deleteUser         *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
-	findUserByUsername *connect.Client[v1.FindUserByUsernameRequest, v1.FindUserByUsernameResponse]
-	getAuthUserByEmail *connect.Client[v1.GetAuthUserByEmailRequest, v1.GetAuthUserByEmailResponse]
-	getUserByID        *connect.Client[v1.GetUserByIDRequest, v1.GetUserByIDResponse]
-	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
+	deleteUser        *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
+	getUserByEmail    *connect.Client[v1.GetUserByEmailRequest, v1.GetUserByEmailResponse]
+	getUserByID       *connect.Client[v1.GetUserByIDRequest, v1.GetUserByIDResponse]
+	getUserByUsername *connect.Client[v1.GetUserByUsernameRequest, v1.GetUserByUsernameResponse]
+	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
 }
 
 // CreateUser calls user.v1.UserService.CreateUser.
@@ -150,19 +150,19 @@ func (c *userServiceClient) DeleteUser(ctx context.Context, req *connect.Request
 	return c.deleteUser.CallUnary(ctx, req)
 }
 
-// FindUserByUsername calls user.v1.UserService.FindUserByUsername.
-func (c *userServiceClient) FindUserByUsername(ctx context.Context, req *connect.Request[v1.FindUserByUsernameRequest]) (*connect.Response[v1.FindUserByUsernameResponse], error) {
-	return c.findUserByUsername.CallUnary(ctx, req)
-}
-
-// GetAuthUserByEmail calls user.v1.UserService.GetAuthUserByEmail.
-func (c *userServiceClient) GetAuthUserByEmail(ctx context.Context, req *connect.Request[v1.GetAuthUserByEmailRequest]) (*connect.Response[v1.GetAuthUserByEmailResponse], error) {
-	return c.getAuthUserByEmail.CallUnary(ctx, req)
+// GetUserByEmail calls user.v1.UserService.GetUserByEmail.
+func (c *userServiceClient) GetUserByEmail(ctx context.Context, req *connect.Request[v1.GetUserByEmailRequest]) (*connect.Response[v1.GetUserByEmailResponse], error) {
+	return c.getUserByEmail.CallUnary(ctx, req)
 }
 
 // GetUserByID calls user.v1.UserService.GetUserByID.
 func (c *userServiceClient) GetUserByID(ctx context.Context, req *connect.Request[v1.GetUserByIDRequest]) (*connect.Response[v1.GetUserByIDResponse], error) {
 	return c.getUserByID.CallUnary(ctx, req)
+}
+
+// GetUserByUsername calls user.v1.UserService.GetUserByUsername.
+func (c *userServiceClient) GetUserByUsername(ctx context.Context, req *connect.Request[v1.GetUserByUsernameRequest]) (*connect.Response[v1.GetUserByUsernameResponse], error) {
+	return c.getUserByUsername.CallUnary(ctx, req)
 }
 
 // ListUsers calls user.v1.UserService.ListUsers.
@@ -179,9 +179,9 @@ func (c *userServiceClient) UpdateUser(ctx context.Context, req *connect.Request
 type UserServiceHandler interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[v1.DeleteUserResponse], error)
-	FindUserByUsername(context.Context, *connect.Request[v1.FindUserByUsernameRequest]) (*connect.Response[v1.FindUserByUsernameResponse], error)
-	GetAuthUserByEmail(context.Context, *connect.Request[v1.GetAuthUserByEmailRequest]) (*connect.Response[v1.GetAuthUserByEmailResponse], error)
+	GetUserByEmail(context.Context, *connect.Request[v1.GetUserByEmailRequest]) (*connect.Response[v1.GetUserByEmailResponse], error)
 	GetUserByID(context.Context, *connect.Request[v1.GetUserByIDRequest]) (*connect.Response[v1.GetUserByIDResponse], error)
+	GetUserByUsername(context.Context, *connect.Request[v1.GetUserByUsernameRequest]) (*connect.Response[v1.GetUserByUsernameResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
 }
@@ -204,22 +204,22 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(userServiceDeleteUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	userServiceFindUserByUsernameHandler := connect.NewUnaryHandler(
-		UserServiceFindUserByUsernameProcedure,
-		svc.FindUserByUsername,
-		connect.WithSchema(userServiceFindUserByUsernameMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	userServiceGetAuthUserByEmailHandler := connect.NewUnaryHandler(
-		UserServiceGetAuthUserByEmailProcedure,
-		svc.GetAuthUserByEmail,
-		connect.WithSchema(userServiceGetAuthUserByEmailMethodDescriptor),
+	userServiceGetUserByEmailHandler := connect.NewUnaryHandler(
+		UserServiceGetUserByEmailProcedure,
+		svc.GetUserByEmail,
+		connect.WithSchema(userServiceGetUserByEmailMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceGetUserByIDHandler := connect.NewUnaryHandler(
 		UserServiceGetUserByIDProcedure,
 		svc.GetUserByID,
 		connect.WithSchema(userServiceGetUserByIDMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	userServiceGetUserByUsernameHandler := connect.NewUnaryHandler(
+		UserServiceGetUserByUsernameProcedure,
+		svc.GetUserByUsername,
+		connect.WithSchema(userServiceGetUserByUsernameMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceListUsersHandler := connect.NewUnaryHandler(
@@ -240,12 +240,12 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 			userServiceCreateUserHandler.ServeHTTP(w, r)
 		case UserServiceDeleteUserProcedure:
 			userServiceDeleteUserHandler.ServeHTTP(w, r)
-		case UserServiceFindUserByUsernameProcedure:
-			userServiceFindUserByUsernameHandler.ServeHTTP(w, r)
-		case UserServiceGetAuthUserByEmailProcedure:
-			userServiceGetAuthUserByEmailHandler.ServeHTTP(w, r)
+		case UserServiceGetUserByEmailProcedure:
+			userServiceGetUserByEmailHandler.ServeHTTP(w, r)
 		case UserServiceGetUserByIDProcedure:
 			userServiceGetUserByIDHandler.ServeHTTP(w, r)
+		case UserServiceGetUserByUsernameProcedure:
+			userServiceGetUserByUsernameHandler.ServeHTTP(w, r)
 		case UserServiceListUsersProcedure:
 			userServiceListUsersHandler.ServeHTTP(w, r)
 		case UserServiceUpdateUserProcedure:
@@ -267,16 +267,16 @@ func (UnimplementedUserServiceHandler) DeleteUser(context.Context, *connect.Requ
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.DeleteUser is not implemented"))
 }
 
-func (UnimplementedUserServiceHandler) FindUserByUsername(context.Context, *connect.Request[v1.FindUserByUsernameRequest]) (*connect.Response[v1.FindUserByUsernameResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.FindUserByUsername is not implemented"))
-}
-
-func (UnimplementedUserServiceHandler) GetAuthUserByEmail(context.Context, *connect.Request[v1.GetAuthUserByEmailRequest]) (*connect.Response[v1.GetAuthUserByEmailResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.GetAuthUserByEmail is not implemented"))
+func (UnimplementedUserServiceHandler) GetUserByEmail(context.Context, *connect.Request[v1.GetUserByEmailRequest]) (*connect.Response[v1.GetUserByEmailResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.GetUserByEmail is not implemented"))
 }
 
 func (UnimplementedUserServiceHandler) GetUserByID(context.Context, *connect.Request[v1.GetUserByIDRequest]) (*connect.Response[v1.GetUserByIDResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.GetUserByID is not implemented"))
+}
+
+func (UnimplementedUserServiceHandler) GetUserByUsername(context.Context, *connect.Request[v1.GetUserByUsernameRequest]) (*connect.Response[v1.GetUserByUsernameResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.GetUserByUsername is not implemented"))
 }
 
 func (UnimplementedUserServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {

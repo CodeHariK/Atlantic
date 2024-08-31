@@ -3914,16 +3914,18 @@ type User struct {
 	unknownFields protoimpl.UnknownFields
 
 	Id           string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Username     string                  `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
+	Username     *wrapperspb.StringValue `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
 	PasswordHash *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
 	Email        *wrapperspb.StringValue `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
-	PhoneNumber  *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
-	Gender       *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=gender,proto3" json:"gender,omitempty"`
-	Role         int32                   `protobuf:"varint,7,opt,name=role,proto3" json:"role,omitempty"`
-	DateOfBirth  *timestamppb.Timestamp  `protobuf:"bytes,8,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"`
-	Location     *wrapperspb.StringValue `protobuf:"bytes,9,opt,name=location,proto3" json:"location,omitempty"`
-	CreatedAt    *timestamppb.Timestamp  `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt    *timestamppb.Timestamp  `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	Verified     bool                    `protobuf:"varint,5,opt,name=verified,proto3" json:"verified,omitempty"`
+	PhoneNumber  *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	Avatar       *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	Gender       *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=gender,proto3" json:"gender,omitempty"`
+	Role         int32                   `protobuf:"varint,9,opt,name=role,proto3" json:"role,omitempty"`
+	DateOfBirth  *timestamppb.Timestamp  `protobuf:"bytes,10,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"`
+	Location     *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=location,proto3" json:"location,omitempty"`
+	CreatedAt    *timestamppb.Timestamp  `protobuf:"bytes,12,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt    *timestamppb.Timestamp  `protobuf:"bytes,13,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 }
 
 func (x *User) Reset() {
@@ -3965,11 +3967,11 @@ func (x *User) GetId() string {
 	return ""
 }
 
-func (x *User) GetUsername() string {
+func (x *User) GetUsername() *wrapperspb.StringValue {
 	if x != nil {
 		return x.Username
 	}
-	return ""
+	return nil
 }
 
 func (x *User) GetPasswordHash() *wrapperspb.StringValue {
@@ -3986,9 +3988,23 @@ func (x *User) GetEmail() *wrapperspb.StringValue {
 	return nil
 }
 
+func (x *User) GetVerified() bool {
+	if x != nil {
+		return x.Verified
+	}
+	return false
+}
+
 func (x *User) GetPhoneNumber() *wrapperspb.StringValue {
 	if x != nil {
 		return x.PhoneNumber
+	}
+	return nil
+}
+
+func (x *User) GetAvatar() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Avatar
 	}
 	return nil
 }
@@ -4525,39 +4541,46 @@ var file_product_v1_product_proto_rawDesc = []byte{
 	0x0a, 0x06, 0x72, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x05, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06,
 	0x72, 0x61, 0x74, 0x69, 0x6e, 0x67, 0x22, 0x1d, 0x0a, 0x1b, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
 	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x52, 0x65, 0x76, 0x69, 0x65, 0x77, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0xa4, 0x04, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x0e,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1a,
-	0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x41, 0x0a, 0x0d, 0x70, 0x61,
-	0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x94, 0x05, 0x0a, 0x04, 0x55, 0x73, 0x65, 0x72, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x38,
+	0x0a, 0x08, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x08,
+	0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x41, 0x0a, 0x0d, 0x70, 0x61, 0x73, 0x73,
+	0x77, 0x6f, 0x72, 0x64, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x0c, 0x70,
+	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x48, 0x61, 0x73, 0x68, 0x12, 0x32, 0x0a, 0x05, 0x65,
+	0x6d, 0x61, 0x69, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72,
+	0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12,
+	0x1a, 0x0a, 0x08, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x08, 0x52, 0x08, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x65, 0x64, 0x12, 0x3f, 0x0a, 0x0c, 0x70,
+	0x68, 0x6f, 0x6e, 0x65, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28,
 	0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52,
-	0x0c, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x48, 0x61, 0x73, 0x68, 0x12, 0x32, 0x0a,
-	0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67,
+	0x0b, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x4e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x12, 0x34, 0x0a, 0x06,
+	0x61, 0x76, 0x61, 0x74, 0x61, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67,
 	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53,
-	0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69,
-	0x6c, 0x12, 0x3f, 0x0a, 0x0c, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65,
-	0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
-	0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x0b, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x4e, 0x75, 0x6d, 0x62,
-	0x65, 0x72, 0x12, 0x34, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x06, 0x61, 0x76, 0x61, 0x74,
+	0x61, 0x72, 0x12, 0x34, 0x0a, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x18, 0x08, 0x20, 0x01,
 	0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65,
 	0x52, 0x06, 0x67, 0x65, 0x6e, 0x64, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x6c, 0x65,
-	0x18, 0x07, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x12, 0x3e, 0x0a, 0x0d,
-	0x64, 0x61, 0x74, 0x65, 0x5f, 0x6f, 0x66, 0x5f, 0x62, 0x69, 0x72, 0x74, 0x68, 0x18, 0x08, 0x20,
+	0x18, 0x09, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x12, 0x3e, 0x0a, 0x0d,
+	0x64, 0x61, 0x74, 0x65, 0x5f, 0x6f, 0x66, 0x5f, 0x62, 0x69, 0x72, 0x74, 0x68, 0x18, 0x0a, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52,
 	0x0b, 0x64, 0x61, 0x74, 0x65, 0x4f, 0x66, 0x42, 0x69, 0x72, 0x74, 0x68, 0x12, 0x38, 0x0a, 0x08,
-	0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c,
+	0x6c, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1c,
 	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
 	0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x08, 0x6c, 0x6f,
 	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x39, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65,
-	0x64, 0x5f, 0x61, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f,
+	0x64, 0x5f, 0x61, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f,
 	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d,
 	0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41,
 	0x74, 0x12, 0x39, 0x0a, 0x0a, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18,
-	0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
 	0x70, 0x52, 0x09, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x32, 0x87, 0x13, 0x0a,
 	0x0e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
@@ -4857,65 +4880,67 @@ var file_product_v1_product_proto_depIdxs = []int32{
 	68, // 44: product.v1.UpdateProductRequest.product_name:type_name -> google.protobuf.StringValue
 	67, // 45: product.v1.UpdateProductRequest.category_id3:type_name -> google.protobuf.Int32Value
 	67, // 46: product.v1.UpdateProductRequest.category_id4:type_name -> google.protobuf.Int32Value
-	68, // 47: product.v1.User.password_hash:type_name -> google.protobuf.StringValue
-	68, // 48: product.v1.User.email:type_name -> google.protobuf.StringValue
-	68, // 49: product.v1.User.phone_number:type_name -> google.protobuf.StringValue
-	68, // 50: product.v1.User.gender:type_name -> google.protobuf.StringValue
-	66, // 51: product.v1.User.date_of_birth:type_name -> google.protobuf.Timestamp
-	68, // 52: product.v1.User.location:type_name -> google.protobuf.StringValue
-	66, // 53: product.v1.User.created_at:type_name -> google.protobuf.Timestamp
-	66, // 54: product.v1.User.updated_at:type_name -> google.protobuf.Timestamp
-	7,  // 55: product.v1.ProductService.CreateProduct:input_type -> product.v1.CreateProductRequest
-	3,  // 56: product.v1.ProductService.CreateProductCategory:input_type -> product.v1.CreateProductCategoryRequest
-	5,  // 57: product.v1.ProductService.CreateProductComment:input_type -> product.v1.CreateProductCommentRequest
-	9,  // 58: product.v1.ProductService.CreateProductReview:input_type -> product.v1.CreateProductReviewRequest
-	15, // 59: product.v1.ProductService.DeleteProduct:input_type -> product.v1.DeleteProductRequest
-	11, // 60: product.v1.ProductService.DeleteProductCategory:input_type -> product.v1.DeleteProductCategoryRequest
-	13, // 61: product.v1.ProductService.DeleteProductComment:input_type -> product.v1.DeleteProductCommentRequest
-	17, // 62: product.v1.ProductService.DeleteProductReview:input_type -> product.v1.DeleteProductReviewRequest
-	19, // 63: product.v1.ProductService.GetCategoryPath:input_type -> product.v1.GetCategoryPathRequest
-	21, // 64: product.v1.ProductService.GetProductByID:input_type -> product.v1.GetProductByIDRequest
-	23, // 65: product.v1.ProductService.GetProductCategoryByID:input_type -> product.v1.GetProductCategoryByIDRequest
-	25, // 66: product.v1.ProductService.GetProductCommentByID:input_type -> product.v1.GetProductCommentByIDRequest
-	27, // 67: product.v1.ProductService.GetProductReviewByID:input_type -> product.v1.GetProductReviewByIDRequest
-	29, // 68: product.v1.ProductService.GetProductWithCategoryPath:input_type -> product.v1.GetProductWithCategoryPathRequest
-	34, // 69: product.v1.ProductService.ListCategoriesByParentID:input_type -> product.v1.ListCategoriesByParentIDRequest
-	36, // 70: product.v1.ProductService.ListProductReviews:input_type -> product.v1.ListProductReviewsRequest
-	38, // 71: product.v1.ProductService.ListProducts:input_type -> product.v1.ListProductsRequest
-	40, // 72: product.v1.ProductService.ListReviewsWithComments:input_type -> product.v1.ListReviewsWithCommentsRequest
-	43, // 73: product.v1.ProductService.ListRootCategories:input_type -> product.v1.ListRootCategoriesRequest
-	61, // 74: product.v1.ProductService.UpdateProduct:input_type -> product.v1.UpdateProductRequest
-	57, // 75: product.v1.ProductService.UpdateProductCategory:input_type -> product.v1.UpdateProductCategoryRequest
-	59, // 76: product.v1.ProductService.UpdateProductComment:input_type -> product.v1.UpdateProductCommentRequest
-	63, // 77: product.v1.ProductService.UpdateProductReview:input_type -> product.v1.UpdateProductReviewRequest
-	8,  // 78: product.v1.ProductService.CreateProduct:output_type -> product.v1.CreateProductResponse
-	4,  // 79: product.v1.ProductService.CreateProductCategory:output_type -> product.v1.CreateProductCategoryResponse
-	6,  // 80: product.v1.ProductService.CreateProductComment:output_type -> product.v1.CreateProductCommentResponse
-	10, // 81: product.v1.ProductService.CreateProductReview:output_type -> product.v1.CreateProductReviewResponse
-	16, // 82: product.v1.ProductService.DeleteProduct:output_type -> product.v1.DeleteProductResponse
-	12, // 83: product.v1.ProductService.DeleteProductCategory:output_type -> product.v1.DeleteProductCategoryResponse
-	14, // 84: product.v1.ProductService.DeleteProductComment:output_type -> product.v1.DeleteProductCommentResponse
-	18, // 85: product.v1.ProductService.DeleteProductReview:output_type -> product.v1.DeleteProductReviewResponse
-	20, // 86: product.v1.ProductService.GetCategoryPath:output_type -> product.v1.GetCategoryPathResponse
-	22, // 87: product.v1.ProductService.GetProductByID:output_type -> product.v1.GetProductByIDResponse
-	24, // 88: product.v1.ProductService.GetProductCategoryByID:output_type -> product.v1.GetProductCategoryByIDResponse
-	26, // 89: product.v1.ProductService.GetProductCommentByID:output_type -> product.v1.GetProductCommentByIDResponse
-	28, // 90: product.v1.ProductService.GetProductReviewByID:output_type -> product.v1.GetProductReviewByIDResponse
-	30, // 91: product.v1.ProductService.GetProductWithCategoryPath:output_type -> product.v1.GetProductWithCategoryPathResponse
-	35, // 92: product.v1.ProductService.ListCategoriesByParentID:output_type -> product.v1.ListCategoriesByParentIDResponse
-	37, // 93: product.v1.ProductService.ListProductReviews:output_type -> product.v1.ListProductReviewsResponse
-	39, // 94: product.v1.ProductService.ListProducts:output_type -> product.v1.ListProductsResponse
-	41, // 95: product.v1.ProductService.ListReviewsWithComments:output_type -> product.v1.ListReviewsWithCommentsResponse
-	44, // 96: product.v1.ProductService.ListRootCategories:output_type -> product.v1.ListRootCategoriesResponse
-	62, // 97: product.v1.ProductService.UpdateProduct:output_type -> product.v1.UpdateProductResponse
-	58, // 98: product.v1.ProductService.UpdateProductCategory:output_type -> product.v1.UpdateProductCategoryResponse
-	60, // 99: product.v1.ProductService.UpdateProductComment:output_type -> product.v1.UpdateProductCommentResponse
-	64, // 100: product.v1.ProductService.UpdateProductReview:output_type -> product.v1.UpdateProductReviewResponse
-	78, // [78:101] is the sub-list for method output_type
-	55, // [55:78] is the sub-list for method input_type
-	55, // [55:55] is the sub-list for extension type_name
-	55, // [55:55] is the sub-list for extension extendee
-	0,  // [0:55] is the sub-list for field type_name
+	68, // 47: product.v1.User.username:type_name -> google.protobuf.StringValue
+	68, // 48: product.v1.User.password_hash:type_name -> google.protobuf.StringValue
+	68, // 49: product.v1.User.email:type_name -> google.protobuf.StringValue
+	68, // 50: product.v1.User.phone_number:type_name -> google.protobuf.StringValue
+	68, // 51: product.v1.User.avatar:type_name -> google.protobuf.StringValue
+	68, // 52: product.v1.User.gender:type_name -> google.protobuf.StringValue
+	66, // 53: product.v1.User.date_of_birth:type_name -> google.protobuf.Timestamp
+	68, // 54: product.v1.User.location:type_name -> google.protobuf.StringValue
+	66, // 55: product.v1.User.created_at:type_name -> google.protobuf.Timestamp
+	66, // 56: product.v1.User.updated_at:type_name -> google.protobuf.Timestamp
+	7,  // 57: product.v1.ProductService.CreateProduct:input_type -> product.v1.CreateProductRequest
+	3,  // 58: product.v1.ProductService.CreateProductCategory:input_type -> product.v1.CreateProductCategoryRequest
+	5,  // 59: product.v1.ProductService.CreateProductComment:input_type -> product.v1.CreateProductCommentRequest
+	9,  // 60: product.v1.ProductService.CreateProductReview:input_type -> product.v1.CreateProductReviewRequest
+	15, // 61: product.v1.ProductService.DeleteProduct:input_type -> product.v1.DeleteProductRequest
+	11, // 62: product.v1.ProductService.DeleteProductCategory:input_type -> product.v1.DeleteProductCategoryRequest
+	13, // 63: product.v1.ProductService.DeleteProductComment:input_type -> product.v1.DeleteProductCommentRequest
+	17, // 64: product.v1.ProductService.DeleteProductReview:input_type -> product.v1.DeleteProductReviewRequest
+	19, // 65: product.v1.ProductService.GetCategoryPath:input_type -> product.v1.GetCategoryPathRequest
+	21, // 66: product.v1.ProductService.GetProductByID:input_type -> product.v1.GetProductByIDRequest
+	23, // 67: product.v1.ProductService.GetProductCategoryByID:input_type -> product.v1.GetProductCategoryByIDRequest
+	25, // 68: product.v1.ProductService.GetProductCommentByID:input_type -> product.v1.GetProductCommentByIDRequest
+	27, // 69: product.v1.ProductService.GetProductReviewByID:input_type -> product.v1.GetProductReviewByIDRequest
+	29, // 70: product.v1.ProductService.GetProductWithCategoryPath:input_type -> product.v1.GetProductWithCategoryPathRequest
+	34, // 71: product.v1.ProductService.ListCategoriesByParentID:input_type -> product.v1.ListCategoriesByParentIDRequest
+	36, // 72: product.v1.ProductService.ListProductReviews:input_type -> product.v1.ListProductReviewsRequest
+	38, // 73: product.v1.ProductService.ListProducts:input_type -> product.v1.ListProductsRequest
+	40, // 74: product.v1.ProductService.ListReviewsWithComments:input_type -> product.v1.ListReviewsWithCommentsRequest
+	43, // 75: product.v1.ProductService.ListRootCategories:input_type -> product.v1.ListRootCategoriesRequest
+	61, // 76: product.v1.ProductService.UpdateProduct:input_type -> product.v1.UpdateProductRequest
+	57, // 77: product.v1.ProductService.UpdateProductCategory:input_type -> product.v1.UpdateProductCategoryRequest
+	59, // 78: product.v1.ProductService.UpdateProductComment:input_type -> product.v1.UpdateProductCommentRequest
+	63, // 79: product.v1.ProductService.UpdateProductReview:input_type -> product.v1.UpdateProductReviewRequest
+	8,  // 80: product.v1.ProductService.CreateProduct:output_type -> product.v1.CreateProductResponse
+	4,  // 81: product.v1.ProductService.CreateProductCategory:output_type -> product.v1.CreateProductCategoryResponse
+	6,  // 82: product.v1.ProductService.CreateProductComment:output_type -> product.v1.CreateProductCommentResponse
+	10, // 83: product.v1.ProductService.CreateProductReview:output_type -> product.v1.CreateProductReviewResponse
+	16, // 84: product.v1.ProductService.DeleteProduct:output_type -> product.v1.DeleteProductResponse
+	12, // 85: product.v1.ProductService.DeleteProductCategory:output_type -> product.v1.DeleteProductCategoryResponse
+	14, // 86: product.v1.ProductService.DeleteProductComment:output_type -> product.v1.DeleteProductCommentResponse
+	18, // 87: product.v1.ProductService.DeleteProductReview:output_type -> product.v1.DeleteProductReviewResponse
+	20, // 88: product.v1.ProductService.GetCategoryPath:output_type -> product.v1.GetCategoryPathResponse
+	22, // 89: product.v1.ProductService.GetProductByID:output_type -> product.v1.GetProductByIDResponse
+	24, // 90: product.v1.ProductService.GetProductCategoryByID:output_type -> product.v1.GetProductCategoryByIDResponse
+	26, // 91: product.v1.ProductService.GetProductCommentByID:output_type -> product.v1.GetProductCommentByIDResponse
+	28, // 92: product.v1.ProductService.GetProductReviewByID:output_type -> product.v1.GetProductReviewByIDResponse
+	30, // 93: product.v1.ProductService.GetProductWithCategoryPath:output_type -> product.v1.GetProductWithCategoryPathResponse
+	35, // 94: product.v1.ProductService.ListCategoriesByParentID:output_type -> product.v1.ListCategoriesByParentIDResponse
+	37, // 95: product.v1.ProductService.ListProductReviews:output_type -> product.v1.ListProductReviewsResponse
+	39, // 96: product.v1.ProductService.ListProducts:output_type -> product.v1.ListProductsResponse
+	41, // 97: product.v1.ProductService.ListReviewsWithComments:output_type -> product.v1.ListReviewsWithCommentsResponse
+	44, // 98: product.v1.ProductService.ListRootCategories:output_type -> product.v1.ListRootCategoriesResponse
+	62, // 99: product.v1.ProductService.UpdateProduct:output_type -> product.v1.UpdateProductResponse
+	58, // 100: product.v1.ProductService.UpdateProductCategory:output_type -> product.v1.UpdateProductCategoryResponse
+	60, // 101: product.v1.ProductService.UpdateProductComment:output_type -> product.v1.UpdateProductCommentResponse
+	64, // 102: product.v1.ProductService.UpdateProductReview:output_type -> product.v1.UpdateProductReviewResponse
+	80, // [80:103] is the sub-list for method output_type
+	57, // [57:80] is the sub-list for method input_type
+	57, // [57:57] is the sub-list for extension type_name
+	57, // [57:57] is the sub-list for extension extendee
+	0,  // [0:57] is the sub-list for field type_name
 }
 
 func init() { file_product_v1_product_proto_init() }

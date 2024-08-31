@@ -109,7 +109,7 @@ export const routes: RouteDefinition[] = [
 
 
 function RouteList() {
-    const [iframeSrc, setIframeSrc] = createSignal('/register');
+    const [iframeSrc, setIframeSrc] = createSignal('/profile');
 
     return (
         <div class="w-full flex flex-row h-screen">

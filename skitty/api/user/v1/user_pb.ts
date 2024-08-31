@@ -175,37 +175,52 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   id = "";
 
   /**
-   * @generated from field: string username = 2;
+   * @generated from field: google.protobuf.StringValue username = 2;
    */
-  username = "";
+  username?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue email = 3;
+   * @generated from field: google.protobuf.StringValue password_hash = 3;
+   */
+  passwordHash?: string;
+
+  /**
+   * @generated from field: google.protobuf.StringValue email = 4;
    */
   email?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue phone_number = 4;
+   * @generated from field: google.protobuf.StringValue phone_number = 5;
    */
   phoneNumber?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue gender = 5;
+   * @generated from field: bool verified = 6;
+   */
+  verified = false;
+
+  /**
+   * @generated from field: google.protobuf.StringValue avatar = 7;
+   */
+  avatar?: string;
+
+  /**
+   * @generated from field: google.protobuf.StringValue gender = 8;
    */
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 6;
+   * @generated from field: int32 role = 9;
    */
   role = 0;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 7;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 8;
+   * @generated from field: google.protobuf.StringValue location = 11;
    */
   location?: string;
 
@@ -218,13 +233,16 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   static readonly typeName = "user.v1.CreateUserRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "message", T: StringValue },
-    { no: 4, name: "phone_number", kind: "message", T: StringValue },
-    { no: 5, name: "gender", kind: "message", T: StringValue },
-    { no: 6, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 8, name: "location", kind: "message", T: StringValue },
+    { no: 2, name: "username", kind: "message", T: StringValue },
+    { no: 3, name: "password_hash", kind: "message", T: StringValue },
+    { no: 4, name: "email", kind: "message", T: StringValue },
+    { no: 5, name: "phone_number", kind: "message", T: StringValue },
+    { no: 6, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 7, name: "avatar", kind: "message", T: StringValue },
+    { no: 8, name: "gender", kind: "message", T: StringValue },
+    { no: 9, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 11, name: "location", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUserRequest {
@@ -350,296 +368,76 @@ export class DeleteUserResponse extends Message<DeleteUserResponse> {
 }
 
 /**
- * @generated from message user.v1.FindUserByUsernameRequest
+ * @generated from message user.v1.GetUserByEmailRequest
  */
-export class FindUserByUsernameRequest extends Message<FindUserByUsernameRequest> {
-  /**
-   * @generated from field: string username = 1;
-   */
-  username = "";
-
-  constructor(data?: PartialMessage<FindUserByUsernameRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.FindUserByUsernameRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FindUserByUsernameRequest {
-    return new FindUserByUsernameRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): FindUserByUsernameRequest {
-    return new FindUserByUsernameRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FindUserByUsernameRequest {
-    return new FindUserByUsernameRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: FindUserByUsernameRequest | PlainMessage<FindUserByUsernameRequest> | undefined, b: FindUserByUsernameRequest | PlainMessage<FindUserByUsernameRequest> | undefined): boolean {
-    return proto3.util.equals(FindUserByUsernameRequest, a, b);
-  }
-}
-
-/**
- * @generated from message user.v1.FindUserByUsernameResponse
- */
-export class FindUserByUsernameResponse extends Message<FindUserByUsernameResponse> {
-  /**
-   * @generated from field: user.v1.FindUserByUsernameRow find_user_by_username_row = 1;
-   */
-  findUserByUsernameRow?: FindUserByUsernameRow;
-
-  constructor(data?: PartialMessage<FindUserByUsernameResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.FindUserByUsernameResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "find_user_by_username_row", kind: "message", T: FindUserByUsernameRow },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FindUserByUsernameResponse {
-    return new FindUserByUsernameResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): FindUserByUsernameResponse {
-    return new FindUserByUsernameResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FindUserByUsernameResponse {
-    return new FindUserByUsernameResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: FindUserByUsernameResponse | PlainMessage<FindUserByUsernameResponse> | undefined, b: FindUserByUsernameResponse | PlainMessage<FindUserByUsernameResponse> | undefined): boolean {
-    return proto3.util.equals(FindUserByUsernameResponse, a, b);
-  }
-}
-
-/**
- * @generated from message user.v1.FindUserByUsernameRow
- */
-export class FindUserByUsernameRow extends Message<FindUserByUsernameRow> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string username = 2;
-   */
-  username = "";
-
-  /**
-   * @generated from field: google.protobuf.StringValue email = 3;
-   */
-  email?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue phone_number = 4;
-   */
-  phoneNumber?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue gender = 5;
-   */
-  gender?: string;
-
-  /**
-   * @generated from field: int32 role = 6;
-   */
-  role = 0;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 7;
-   */
-  dateOfBirth?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 8;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 9;
-   */
-  updatedAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.StringValue location = 10;
-   */
-  location?: string;
-
-  constructor(data?: PartialMessage<FindUserByUsernameRow>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.FindUserByUsernameRow";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "message", T: StringValue },
-    { no: 4, name: "phone_number", kind: "message", T: StringValue },
-    { no: 5, name: "gender", kind: "message", T: StringValue },
-    { no: 6, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 8, name: "created_at", kind: "message", T: Timestamp },
-    { no: 9, name: "updated_at", kind: "message", T: Timestamp },
-    { no: 10, name: "location", kind: "message", T: StringValue },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FindUserByUsernameRow {
-    return new FindUserByUsernameRow().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): FindUserByUsernameRow {
-    return new FindUserByUsernameRow().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FindUserByUsernameRow {
-    return new FindUserByUsernameRow().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: FindUserByUsernameRow | PlainMessage<FindUserByUsernameRow> | undefined, b: FindUserByUsernameRow | PlainMessage<FindUserByUsernameRow> | undefined): boolean {
-    return proto3.util.equals(FindUserByUsernameRow, a, b);
-  }
-}
-
-/**
- * @generated from message user.v1.GetAuthUserByEmailRequest
- */
-export class GetAuthUserByEmailRequest extends Message<GetAuthUserByEmailRequest> {
+export class GetUserByEmailRequest extends Message<GetUserByEmailRequest> {
   /**
    * @generated from field: google.protobuf.StringValue email = 1;
    */
   email?: string;
 
-  constructor(data?: PartialMessage<GetAuthUserByEmailRequest>) {
+  constructor(data?: PartialMessage<GetUserByEmailRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.GetAuthUserByEmailRequest";
+  static readonly typeName = "user.v1.GetUserByEmailRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "email", kind: "message", T: StringValue },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailRequest {
-    return new GetAuthUserByEmailRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByEmailRequest {
+    return new GetUserByEmailRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRequest {
-    return new GetAuthUserByEmailRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserByEmailRequest {
+    return new GetUserByEmailRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRequest {
-    return new GetAuthUserByEmailRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserByEmailRequest {
+    return new GetUserByEmailRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetAuthUserByEmailRequest | PlainMessage<GetAuthUserByEmailRequest> | undefined, b: GetAuthUserByEmailRequest | PlainMessage<GetAuthUserByEmailRequest> | undefined): boolean {
-    return proto3.util.equals(GetAuthUserByEmailRequest, a, b);
+  static equals(a: GetUserByEmailRequest | PlainMessage<GetUserByEmailRequest> | undefined, b: GetUserByEmailRequest | PlainMessage<GetUserByEmailRequest> | undefined): boolean {
+    return proto3.util.equals(GetUserByEmailRequest, a, b);
   }
 }
 
 /**
- * @generated from message user.v1.GetAuthUserByEmailResponse
+ * @generated from message user.v1.GetUserByEmailResponse
  */
-export class GetAuthUserByEmailResponse extends Message<GetAuthUserByEmailResponse> {
+export class GetUserByEmailResponse extends Message<GetUserByEmailResponse> {
   /**
-   * @generated from field: user.v1.GetAuthUserByEmailRow get_auth_user_by_email_row = 1;
+   * @generated from field: user.v1.User user = 1;
    */
-  getAuthUserByEmailRow?: GetAuthUserByEmailRow;
+  user?: User;
 
-  constructor(data?: PartialMessage<GetAuthUserByEmailResponse>) {
+  constructor(data?: PartialMessage<GetUserByEmailResponse>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.GetAuthUserByEmailResponse";
+  static readonly typeName = "user.v1.GetUserByEmailResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "get_auth_user_by_email_row", kind: "message", T: GetAuthUserByEmailRow },
+    { no: 1, name: "user", kind: "message", T: User },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailResponse {
-    return new GetAuthUserByEmailResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByEmailResponse {
+    return new GetUserByEmailResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAuthUserByEmailResponse {
-    return new GetAuthUserByEmailResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserByEmailResponse {
+    return new GetUserByEmailResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAuthUserByEmailResponse {
-    return new GetAuthUserByEmailResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserByEmailResponse {
+    return new GetUserByEmailResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetAuthUserByEmailResponse | PlainMessage<GetAuthUserByEmailResponse> | undefined, b: GetAuthUserByEmailResponse | PlainMessage<GetAuthUserByEmailResponse> | undefined): boolean {
-    return proto3.util.equals(GetAuthUserByEmailResponse, a, b);
-  }
-}
-
-/**
- * @generated from message user.v1.GetAuthUserByEmailRow
- */
-export class GetAuthUserByEmailRow extends Message<GetAuthUserByEmailRow> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string username = 2;
-   */
-  username = "";
-
-  /**
-   * @generated from field: google.protobuf.StringValue email = 3;
-   */
-  email?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue password_hash = 4;
-   */
-  passwordHash?: string;
-
-  constructor(data?: PartialMessage<GetAuthUserByEmailRow>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.GetAuthUserByEmailRow";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "message", T: StringValue },
-    { no: 4, name: "password_hash", kind: "message", T: StringValue },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetAuthUserByEmailRow {
-    return new GetAuthUserByEmailRow().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRow {
-    return new GetAuthUserByEmailRow().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetAuthUserByEmailRow {
-    return new GetAuthUserByEmailRow().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetAuthUserByEmailRow | PlainMessage<GetAuthUserByEmailRow> | undefined, b: GetAuthUserByEmailRow | PlainMessage<GetAuthUserByEmailRow> | undefined): boolean {
-    return proto3.util.equals(GetAuthUserByEmailRow, a, b);
+  static equals(a: GetUserByEmailResponse | PlainMessage<GetUserByEmailResponse> | undefined, b: GetUserByEmailResponse | PlainMessage<GetUserByEmailResponse> | undefined): boolean {
+    return proto3.util.equals(GetUserByEmailResponse, a, b);
   }
 }
 
@@ -685,9 +483,9 @@ export class GetUserByIDRequest extends Message<GetUserByIDRequest> {
  */
 export class GetUserByIDResponse extends Message<GetUserByIDResponse> {
   /**
-   * @generated from field: user.v1.GetUserByIDRow get_user_by_id_row = 1;
+   * @generated from field: user.v1.User user = 1;
    */
-  getUserByIdRow?: GetUserByIDRow;
+  user?: User;
 
   constructor(data?: PartialMessage<GetUserByIDResponse>) {
     super();
@@ -697,7 +495,7 @@ export class GetUserByIDResponse extends Message<GetUserByIDResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.GetUserByIDResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "get_user_by_id_row", kind: "message", T: GetUserByIDRow },
+    { no: 1, name: "user", kind: "message", T: User },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByIDResponse {
@@ -718,93 +516,76 @@ export class GetUserByIDResponse extends Message<GetUserByIDResponse> {
 }
 
 /**
- * @generated from message user.v1.GetUserByIDRow
+ * @generated from message user.v1.GetUserByUsernameRequest
  */
-export class GetUserByIDRow extends Message<GetUserByIDRow> {
+export class GetUserByUsernameRequest extends Message<GetUserByUsernameRequest> {
   /**
-   * @generated from field: string id = 1;
+   * @generated from field: google.protobuf.StringValue username = 1;
    */
-  id = "";
+  username?: string;
 
-  /**
-   * @generated from field: string username = 2;
-   */
-  username = "";
-
-  /**
-   * @generated from field: google.protobuf.StringValue email = 3;
-   */
-  email?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue phone_number = 4;
-   */
-  phoneNumber?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue gender = 5;
-   */
-  gender?: string;
-
-  /**
-   * @generated from field: int32 role = 6;
-   */
-  role = 0;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 7;
-   */
-  dateOfBirth?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 8;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 9;
-   */
-  updatedAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.StringValue location = 10;
-   */
-  location?: string;
-
-  constructor(data?: PartialMessage<GetUserByIDRow>) {
+  constructor(data?: PartialMessage<GetUserByUsernameRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.GetUserByIDRow";
+  static readonly typeName = "user.v1.GetUserByUsernameRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "email", kind: "message", T: StringValue },
-    { no: 4, name: "phone_number", kind: "message", T: StringValue },
-    { no: 5, name: "gender", kind: "message", T: StringValue },
-    { no: 6, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 8, name: "created_at", kind: "message", T: Timestamp },
-    { no: 9, name: "updated_at", kind: "message", T: Timestamp },
-    { no: 10, name: "location", kind: "message", T: StringValue },
+    { no: 1, name: "username", kind: "message", T: StringValue },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByIDRow {
-    return new GetUserByIDRow().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByUsernameRequest {
+    return new GetUserByUsernameRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserByIDRow {
-    return new GetUserByIDRow().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserByUsernameRequest {
+    return new GetUserByUsernameRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserByIDRow {
-    return new GetUserByIDRow().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserByUsernameRequest {
+    return new GetUserByUsernameRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetUserByIDRow | PlainMessage<GetUserByIDRow> | undefined, b: GetUserByIDRow | PlainMessage<GetUserByIDRow> | undefined): boolean {
-    return proto3.util.equals(GetUserByIDRow, a, b);
+  static equals(a: GetUserByUsernameRequest | PlainMessage<GetUserByUsernameRequest> | undefined, b: GetUserByUsernameRequest | PlainMessage<GetUserByUsernameRequest> | undefined): boolean {
+    return proto3.util.equals(GetUserByUsernameRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.GetUserByUsernameResponse
+ */
+export class GetUserByUsernameResponse extends Message<GetUserByUsernameResponse> {
+  /**
+   * @generated from field: user.v1.User user = 1;
+   */
+  user?: User;
+
+  constructor(data?: PartialMessage<GetUserByUsernameResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.GetUserByUsernameResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "user", kind: "message", T: User },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetUserByUsernameResponse {
+    return new GetUserByUsernameResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetUserByUsernameResponse {
+    return new GetUserByUsernameResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetUserByUsernameResponse {
+    return new GetUserByUsernameResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetUserByUsernameResponse | PlainMessage<GetUserByUsernameResponse> | undefined, b: GetUserByUsernameResponse | PlainMessage<GetUserByUsernameResponse> | undefined): boolean {
+    return proto3.util.equals(GetUserByUsernameResponse, a, b);
   }
 }
 
@@ -1026,9 +807,9 @@ export class ListUsersRow extends Message<ListUsersRow> {
   id = "";
 
   /**
-   * @generated from field: string username = 2;
+   * @generated from field: google.protobuf.StringValue username = 2;
    */
-  username = "";
+  username?: string;
 
   /**
    * @generated from field: google.protobuf.StringValue email = 3;
@@ -1079,7 +860,7 @@ export class ListUsersRow extends Message<ListUsersRow> {
   static readonly typeName = "user.v1.ListUsersRow";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "username", kind: "message", T: StringValue },
     { no: 3, name: "email", kind: "message", T: StringValue },
     { no: 4, name: "phone_number", kind: "message", T: StringValue },
     { no: 5, name: "gender", kind: "message", T: StringValue },
@@ -1898,9 +1679,9 @@ export class Seller extends Message<Seller> {
  */
 export class UpdateUserRequest extends Message<UpdateUserRequest> {
   /**
-   * @generated from field: string username = 1;
+   * @generated from field: google.protobuf.StringValue username = 1;
    */
-  username = "";
+  username?: string;
 
   /**
    * @generated from field: google.protobuf.StringValue email = 2;
@@ -1913,29 +1694,34 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   phoneNumber?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue gender = 4;
+   * @generated from field: bool verified = 4;
+   */
+  verified = false;
+
+  /**
+   * @generated from field: google.protobuf.StringValue avatar = 5;
+   */
+  avatar?: string;
+
+  /**
+   * @generated from field: google.protobuf.StringValue gender = 6;
    */
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 5;
+   * @generated from field: int32 role = 7;
    */
   role = 0;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 6;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 8;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 7;
+   * @generated from field: google.protobuf.StringValue location = 9;
    */
   location?: string;
-
-  /**
-   * @generated from field: string id = 8;
-   */
-  id = "";
 
   constructor(data?: PartialMessage<UpdateUserRequest>) {
     super();
@@ -1945,14 +1731,15 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.UpdateUserRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "username", kind: "message", T: StringValue },
     { no: 2, name: "email", kind: "message", T: StringValue },
     { no: 3, name: "phone_number", kind: "message", T: StringValue },
-    { no: 4, name: "gender", kind: "message", T: StringValue },
-    { no: 5, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 6, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 7, name: "location", kind: "message", T: StringValue },
-    { no: 8, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 5, name: "avatar", kind: "message", T: StringValue },
+    { no: 6, name: "gender", kind: "message", T: StringValue },
+    { no: 7, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 9, name: "location", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserRequest {
@@ -2013,9 +1800,9 @@ export class User extends Message<User> {
   id = "";
 
   /**
-   * @generated from field: string username = 2;
+   * @generated from field: google.protobuf.StringValue username = 2;
    */
-  username = "";
+  username?: string;
 
   /**
    * @generated from field: google.protobuf.StringValue password_hash = 3;
@@ -2028,37 +1815,47 @@ export class User extends Message<User> {
   email?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue phone_number = 5;
+   * @generated from field: bool verified = 5;
+   */
+  verified = false;
+
+  /**
+   * @generated from field: google.protobuf.StringValue phone_number = 6;
    */
   phoneNumber?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue gender = 6;
+   * @generated from field: google.protobuf.StringValue avatar = 7;
+   */
+  avatar?: string;
+
+  /**
+   * @generated from field: google.protobuf.StringValue gender = 8;
    */
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 7;
+   * @generated from field: int32 role = 9;
    */
   role = 0;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 8;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 9;
+   * @generated from field: google.protobuf.StringValue location = 11;
    */
   location?: string;
 
   /**
-   * @generated from field: google.protobuf.Timestamp created_at = 10;
+   * @generated from field: google.protobuf.Timestamp created_at = 12;
    */
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 11;
+   * @generated from field: google.protobuf.Timestamp updated_at = 13;
    */
   updatedAt?: Timestamp;
 
@@ -2071,16 +1868,18 @@ export class User extends Message<User> {
   static readonly typeName = "user.v1.User";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "username", kind: "message", T: StringValue },
     { no: 3, name: "password_hash", kind: "message", T: StringValue },
     { no: 4, name: "email", kind: "message", T: StringValue },
-    { no: 5, name: "phone_number", kind: "message", T: StringValue },
-    { no: 6, name: "gender", kind: "message", T: StringValue },
-    { no: 7, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 9, name: "location", kind: "message", T: StringValue },
-    { no: 10, name: "created_at", kind: "message", T: Timestamp },
-    { no: 11, name: "updated_at", kind: "message", T: Timestamp },
+    { no: 5, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: "phone_number", kind: "message", T: StringValue },
+    { no: 7, name: "avatar", kind: "message", T: StringValue },
+    { no: 8, name: "gender", kind: "message", T: StringValue },
+    { no: 9, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 11, name: "location", kind: "message", T: StringValue },
+    { no: 12, name: "created_at", kind: "message", T: Timestamp },
+    { no: 13, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): User {

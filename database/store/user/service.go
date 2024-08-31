@@ -30,12 +30,24 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 	} else {
 		arg.ID = v
 	}
-	arg.Username = req.Msg.GetUsername()
+	if v := req.Msg.GetUsername(); v != nil {
+		arg.Username = pgtype.Text{Valid: true, String: v.Value}
+	}
+	if v := req.Msg.GetPasswordHash(); v != nil {
+		arg.PasswordHash = pgtype.Text{Valid: true, String: v.Value}
+	}
 	if v := req.Msg.GetEmail(); v != nil {
 		arg.Email = pgtype.Text{Valid: true, String: v.Value}
 	}
 	if v := req.Msg.GetPhoneNumber(); v != nil {
 		arg.PhoneNumber = pgtype.Text{Valid: true, String: v.Value}
+	}
+	arg.Verified = req.Msg.GetVerified()
+	if v := req.Msg.GetAvatar(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Avatar); err != nil {
+			err = fmt.Errorf("invalid Avatar: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
 	}
 	if v := req.Msg.GetGender(); v != nil {
 		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
@@ -83,29 +95,18 @@ func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[pb.Delete
 	return connect.NewResponse(&pb.DeleteUserResponse{}), nil
 }
 
-func (s *Service) FindUserByUsername(ctx context.Context, req *connect.Request[pb.FindUserByUsernameRequest]) (*connect.Response[pb.FindUserByUsernameResponse], error) {
-	username := req.Msg.GetUsername()
-
-	result, err := s.querier.FindUserByUsername(ctx, username)
-	if err != nil {
-		slog.Error("sql call failed", "error", err, "method", "FindUserByUsername")
-		return nil, err
-	}
-	return connect.NewResponse(&pb.FindUserByUsernameResponse{FindUserByUsernameRow: toFindUserByUsernameRow(result)}), nil
-}
-
-func (s *Service) GetAuthUserByEmail(ctx context.Context, req *connect.Request[pb.GetAuthUserByEmailRequest]) (*connect.Response[pb.GetAuthUserByEmailResponse], error) {
+func (s *Service) GetUserByEmail(ctx context.Context, req *connect.Request[pb.GetUserByEmailRequest]) (*connect.Response[pb.GetUserByEmailResponse], error) {
 	var email pgtype.Text
 	if v := req.Msg.GetEmail(); v != nil {
 		email = pgtype.Text{Valid: true, String: v.Value}
 	}
 
-	result, err := s.querier.GetAuthUserByEmail(ctx, email)
+	result, err := s.querier.GetUserByEmail(ctx, email)
 	if err != nil {
-		slog.Error("sql call failed", "error", err, "method", "GetAuthUserByEmail")
+		slog.Error("sql call failed", "error", err, "method", "GetUserByEmail")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.GetAuthUserByEmailResponse{GetAuthUserByEmailRow: toGetAuthUserByEmailRow(result)}), nil
+	return connect.NewResponse(&pb.GetUserByEmailResponse{User: toUser(result)}), nil
 }
 
 func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUserByIDRequest]) (*connect.Response[pb.GetUserByIDResponse], error) {
@@ -122,7 +123,21 @@ func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUs
 		slog.Error("sql call failed", "error", err, "method", "GetUserByID")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.GetUserByIDResponse{GetUserByIdRow: toGetUserByIDRow(result)}), nil
+	return connect.NewResponse(&pb.GetUserByIDResponse{User: toUser(result)}), nil
+}
+
+func (s *Service) GetUserByUsername(ctx context.Context, req *connect.Request[pb.GetUserByUsernameRequest]) (*connect.Response[pb.GetUserByUsernameResponse], error) {
+	var username pgtype.Text
+	if v := req.Msg.GetUsername(); v != nil {
+		username = pgtype.Text{Valid: true, String: v.Value}
+	}
+
+	result, err := s.querier.GetUserByUsername(ctx, username)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "GetUserByUsername")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.GetUserByUsernameResponse{User: toUser(result)}), nil
 }
 
 func (s *Service) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
@@ -144,12 +159,21 @@ func (s *Service) ListUsers(ctx context.Context, req *connect.Request[pb.ListUse
 
 func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.UpdateUserRequest]) (*connect.Response[pb.UpdateUserResponse], error) {
 	var arg UpdateUserParams
-	arg.Username = req.Msg.GetUsername()
+	if v := req.Msg.GetUsername(); v != nil {
+		arg.Username = pgtype.Text{Valid: true, String: v.Value}
+	}
 	if v := req.Msg.GetEmail(); v != nil {
 		arg.Email = pgtype.Text{Valid: true, String: v.Value}
 	}
 	if v := req.Msg.GetPhoneNumber(); v != nil {
 		arg.PhoneNumber = pgtype.Text{Valid: true, String: v.Value}
+	}
+	arg.Verified = req.Msg.GetVerified()
+	if v := req.Msg.GetAvatar(); v != nil {
+		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Avatar); err != nil {
+			err = fmt.Errorf("invalid Avatar: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		}
 	}
 	if v := req.Msg.GetGender(); v != nil {
 		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
@@ -170,12 +194,6 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
 			return nil, err
 		}
-	}
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		arg.ID = v
 	}
 
 	err := s.querier.UpdateUser(ctx, arg)

@@ -82,7 +82,7 @@ func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *config.Config) (*v1.Au
 				return nil, -1, err
 			}
 
-			s := v1.Session{}
+			s := v1.CookieSession{}
 			json.Unmarshal([]byte(v), &s)
 			colorlogger.Log(&s)
 
@@ -93,7 +93,11 @@ func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *config.Config) (*v1.Au
 			colorlogger.Log(user)
 
 			for i, session := range user.Sessions {
-				b, _ := json.Marshal(session)
+				b, _ := json.Marshal(v1.CookieSession{
+					ID:  user.ID,
+					Exp: session.Exp,
+					Iat: session.Iat,
+				})
 				bs, _ := json.Marshal(&s)
 
 				if bytes.Equal(b, bs) {

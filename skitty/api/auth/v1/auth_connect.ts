@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, LogoutRequest, LogoutResponse, RefreshRequest, RefreshResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
+import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, LogoutRequest, LogoutResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -21,6 +21,17 @@ export const AuthService = {
       name: "EmailLogin",
       I: EmailLoginRequest,
       O: EmailLoginResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * Defines the EmailLogin RPC method
+     *
+     * @generated from rpc auth.v1.AuthService.RegisterUser
+     */
+    registerUser: {
+      name: "RegisterUser",
+      I: RegisterUserRequest,
+      O: RegisterUserResponse,
       kind: MethodKind.Unary,
     },
     /**

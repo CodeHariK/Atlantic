@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, FindUserByUsernameRequest, FindUserByUsernameResponse, GetAuthUserByEmailRequest, GetAuthUserByEmailResponse, GetUserByIDRequest, GetUserByIDResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from "./user_pb.js";
+import { CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, GetUserByEmailRequest, GetUserByEmailResponse, GetUserByIDRequest, GetUserByIDResponse, GetUserByUsernameRequest, GetUserByUsernameResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from "./user_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -31,21 +31,12 @@ export const UserService = {
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc user.v1.UserService.FindUserByUsername
+     * @generated from rpc user.v1.UserService.GetUserByEmail
      */
-    findUserByUsername: {
-      name: "FindUserByUsername",
-      I: FindUserByUsernameRequest,
-      O: FindUserByUsernameResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc user.v1.UserService.GetAuthUserByEmail
-     */
-    getAuthUserByEmail: {
-      name: "GetAuthUserByEmail",
-      I: GetAuthUserByEmailRequest,
-      O: GetAuthUserByEmailResponse,
+    getUserByEmail: {
+      name: "GetUserByEmail",
+      I: GetUserByEmailRequest,
+      O: GetUserByEmailResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -55,6 +46,15 @@ export const UserService = {
       name: "GetUserByID",
       I: GetUserByIDRequest,
       O: GetUserByIDResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc user.v1.UserService.GetUserByUsername
+     */
+    getUserByUsername: {
+      name: "GetUserByUsername",
+      I: GetUserByUsernameRequest,
+      O: GetUserByUsernameResponse,
       kind: MethodKind.Unary,
     },
     /**

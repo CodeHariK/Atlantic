@@ -6,15 +6,34 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import { createPromiseClient, PromiseClient } from '@connectrpc/connect';
 import { AuthService } from "../../api/auth/v1/auth_connect.ts";
 import { ProfileService } from "../../api/auth/v1/profile_connect.ts";
+import { UserService } from "../../api/user/v1/user_connect.ts";
 import { Service } from '../data/Constants.ts';
 
 // Define the types for the services
 type AuthConnect = PromiseClient<typeof AuthService>;
 type ProfileConnect = PromiseClient<typeof ProfileService>;
+type UserConnect = PromiseClient<typeof UserService>;
+
+import { Interceptor } from '@connectrpc/connect';
+
+const logger: Interceptor = (next) => async (req) => {
+    console.log(`Sending request to ${req.url}`);
+
+    // Make the request
+    const response = await next(req);
+
+    let redirect = response.header.get('redirect-to')
+    if (redirect) {
+        window.location.href = redirect;
+    }
+
+    return response;
+};
 
 interface ConnectContextType {
     authclient: AuthConnect;
     profileclient: ProfileConnect;
+    userclient: UserConnect;
 }
 
 // Create the context with a default value of undefined
@@ -28,11 +47,13 @@ export function ConnectProvider(props: ConnectProviderProps) {
     const transport = createConnectTransport({
         baseUrl: Service.Auth,
         credentials: "include",
+        interceptors: [logger],
     });
 
     const [clients] = createStore<ConnectContextType>({
         authclient: createPromiseClient(AuthService, transport),
         profileclient: createPromiseClient(ProfileService, transport),
+        userclient: createPromiseClient(UserService, transport),
     });
 
     return (

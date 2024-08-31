@@ -153,10 +153,12 @@ type Seller struct {
 
 type User struct {
 	ID           uuid.UUID        `json:"id"`
-	Username     string           `json:"username"`
+	Username     pgtype.Text      `json:"username"`
 	PasswordHash pgtype.Text      `json:"password_hash"`
 	Email        pgtype.Text      `json:"email"`
+	Verified     bool             `json:"verified"`
 	PhoneNumber  pgtype.Text      `json:"phone_number"`
+	Avatar       pgtype.UUID      `json:"avatar"`
 	Gender       pgtype.Text      `json:"gender"`
 	Role         int32            `json:"role"`
 	DateOfBirth  pgtype.Date      `json:"date_of_birth"`

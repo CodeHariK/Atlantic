@@ -11,7 +11,6 @@ import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
 
 import { useConnect } from '../components/connect';
 
-
 import * as yup from 'yup';
 
 export const validationSchema = yup.object().shape({

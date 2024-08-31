@@ -6,12 +6,11 @@ import { SpaceForm } from '../components/spaceform.tsx';
 import { TextInput } from '../components/textinput.tsx';
 
 import { createSignal } from "solid-js";
-import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
+import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";
 
 import { useConnect } from '../components/connect.tsx';
 
 import * as yup from 'yup';
-import { CheckboxGroup } from '../components/checkbox.tsx';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -24,7 +23,6 @@ export const validationSchema = yup.object().shape({
 export default function Register() {
 
    const [loading, setLoading] = createSignal(false);
-   const [acceptTerms, setAcceptTerms] = createSignal(false);
    const [error, setError] = createSignal("");
 
    const { authclient } = useConnect();
@@ -39,17 +37,12 @@ export default function Register() {
       setError("");
 
       try {
-         const request = new EmailLoginRequest({
+         const request = new RegisterUserRequest({
             email: cred.email,
             password: cred.password,
          });
-         // Set any necessary fields in the request
-         const response = await authclient.emailLogin(request);
+         const response = await authclient.registerUser(request);
          console.log("Login successful:", response);
-         // if (response.headers.get("Redirect-To")) {
-         //     window.location.href =
-         //         response.headers.get("Redirect-To");
-         // }
       } catch (err) {
          console.error("Error login:", err);
          setError("Failed to login.");
@@ -67,6 +60,10 @@ export default function Register() {
 
                <H3 class="text-center">Create an account</H3>
 
+               <P class='my-2 text-center'>Already have an account?
+                  <a href='/login'><GradientText> Login here</GradientText></a>
+               </P>
+
                <SpaceForm id="Form"
                   schema={validationSchema}
 
@@ -78,20 +75,9 @@ export default function Register() {
                   <TextInput name="password" type="password" label='Password' placeholder="Password" />
                   <TextInput name="confirmpassword" type="password" label='Confirm password' placeholder="Confirm Password" />
 
-                  <CheckboxGroup id="condition"
-                     onChange={(s) => {
-                        setAcceptTerms(s.has('accepted'))
-                     }}
-                     checkboxes={[
-                        {
-                           name: "accepted",
-                           label: <P>I accept the <span class='text-blue-500 dark:text-blue-500'>Terms and Conditions</span></P>,
-                        },
-                     ]} />
-
                   <P class='py-1'>
 
-                     <MaterialButton disabled={loading() || !acceptTerms()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+                     <MaterialButton disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
                         <p class='text-sm'>{loading() ? "Loading..." : "Continue"}</p>
                      </MaterialButton>
 
@@ -99,8 +85,10 @@ export default function Register() {
                   </P>
                </SpaceForm>
 
-               <P class='mt-4 text-center'>Already have an account?
-                  <a href='/login'><GradientText> Login here</GradientText></a>
+               <P class='mt-4 text-center'>
+                  By creating an account you agree to the <a><GradientText>Terms of Service</GradientText></a> and our
+                  <a><GradientText> Privacy Policy</GradientText></a>.
+                  We'll occasionally send you emails about news, products, and services; you can opt-out anytime.
                </P>
             </div>
          </div>

@@ -169,10 +169,12 @@ class Seller:
 @dataclasses.dataclass()
 class User:
     id: uuid.UUID
-    username: str
+    username: Optional[str]
     password_hash: Optional[str]
     email: Optional[str]
+    verified: bool
     phone_number: Optional[str]
+    avatar: Optional[uuid.UUID]
     gender: Optional[str]
     role: int
     date_of_birth: Optional[datetime.date]

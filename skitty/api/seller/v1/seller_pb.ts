@@ -1563,9 +1563,9 @@ export class User extends Message<User> {
   id = "";
 
   /**
-   * @generated from field: string username = 2;
+   * @generated from field: google.protobuf.StringValue username = 2;
    */
-  username = "";
+  username?: string;
 
   /**
    * @generated from field: google.protobuf.StringValue password_hash = 3;
@@ -1578,37 +1578,47 @@ export class User extends Message<User> {
   email?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue phone_number = 5;
+   * @generated from field: bool verified = 5;
+   */
+  verified = false;
+
+  /**
+   * @generated from field: google.protobuf.StringValue phone_number = 6;
    */
   phoneNumber?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue gender = 6;
+   * @generated from field: google.protobuf.StringValue avatar = 7;
+   */
+  avatar?: string;
+
+  /**
+   * @generated from field: google.protobuf.StringValue gender = 8;
    */
   gender?: string;
 
   /**
-   * @generated from field: int32 role = 7;
+   * @generated from field: int32 role = 9;
    */
   role = 0;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 8;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 9;
+   * @generated from field: google.protobuf.StringValue location = 11;
    */
   location?: string;
 
   /**
-   * @generated from field: google.protobuf.Timestamp created_at = 10;
+   * @generated from field: google.protobuf.Timestamp created_at = 12;
    */
   createdAt?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 11;
+   * @generated from field: google.protobuf.Timestamp updated_at = 13;
    */
   updatedAt?: Timestamp;
 
@@ -1621,16 +1631,18 @@ export class User extends Message<User> {
   static readonly typeName = "seller.v1.User";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "username", kind: "message", T: StringValue },
     { no: 3, name: "password_hash", kind: "message", T: StringValue },
     { no: 4, name: "email", kind: "message", T: StringValue },
-    { no: 5, name: "phone_number", kind: "message", T: StringValue },
-    { no: 6, name: "gender", kind: "message", T: StringValue },
-    { no: 7, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 9, name: "location", kind: "message", T: StringValue },
-    { no: 10, name: "created_at", kind: "message", T: Timestamp },
-    { no: 11, name: "updated_at", kind: "message", T: Timestamp },
+    { no: 5, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: "phone_number", kind: "message", T: StringValue },
+    { no: 7, name: "avatar", kind: "message", T: StringValue },
+    { no: 8, name: "gender", kind: "message", T: StringValue },
+    { no: 9, name: "role", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 11, name: "location", kind: "message", T: StringValue },
+    { no: 12, name: "created_at", kind: "message", T: Timestamp },
+    { no: 13, name: "updated_at", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): User {

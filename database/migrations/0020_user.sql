@@ -3,14 +3,16 @@
 -- Create "users" table
 CREATE TABLE IF NOT EXISTS "users" (
     "id" UUID PRIMARY KEY,
-    "username" VARCHAR(255) UNIQUE NOT NULL CHECK (CHAR_LENGTH("username") > 0),
+    "username" VARCHAR(255) UNIQUE CHECK (CHAR_LENGTH("username") > 0),
     "password_hash" VARCHAR(255), -- Nullable for OAuth users
     "email" VARCHAR(255) UNIQUE CHECK (CHAR_LENGTH("email") > 0),
+    "verified" BOOLEAN NOT NULL DEFAULT FALSE,
     "phone_number" VARCHAR(15) UNIQUE CHECK (
         CHAR_LENGTH("phone_number") > 0
     ),
+    "avatar" UUID,
     "gender" CHAR(1) CHECK ("gender" IN ('M', 'F')),
-    "role" INT NOT NULL DEFAULT 1,
+    "role" INT NOT NULL DEFAULT 1 CHECK (role > 0),
 
 
     "date_of_birth" DATE,

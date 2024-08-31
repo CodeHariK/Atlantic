@@ -11,85 +11,13 @@ import (
 	pb "github.com/codeharik/Atlantic/database/api/user/v1"
 )
 
-func toFindUserByUsernameRow(in FindUserByUsernameRow) *pb.FindUserByUsernameRow {
-
-	out := new(pb.FindUserByUsernameRow)
-	out.Id = in.ID.String()
-	out.Username = in.Username
-	if in.Email.Valid {
-		out.Email = wrapperspb.String(in.Email.String)
-	}
-	if in.PhoneNumber.Valid {
-		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
-	}
-	if in.Gender.Valid {
-		out.Gender = wrapperspb.String(in.Gender.String)
-	}
-	out.Role = in.Role
-	if in.DateOfBirth.Valid {
-		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
-	}
-	if in.CreatedAt.Valid {
-		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
-	}
-	if in.UpdatedAt.Valid {
-		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
-	}
-	if v, err := json.Marshal(in.Location); err == nil {
-		out.Location = wrapperspb.String(string(v))
-	}
-	return out
-}
-
-func toGetAuthUserByEmailRow(in GetAuthUserByEmailRow) *pb.GetAuthUserByEmailRow {
-
-	out := new(pb.GetAuthUserByEmailRow)
-	out.Id = in.ID.String()
-	out.Username = in.Username
-	if in.Email.Valid {
-		out.Email = wrapperspb.String(in.Email.String)
-	}
-	if in.PasswordHash.Valid {
-		out.PasswordHash = wrapperspb.String(in.PasswordHash.String)
-	}
-	return out
-}
-
-func toGetUserByIDRow(in GetUserByIDRow) *pb.GetUserByIDRow {
-
-	out := new(pb.GetUserByIDRow)
-	out.Id = in.ID.String()
-	out.Username = in.Username
-	if in.Email.Valid {
-		out.Email = wrapperspb.String(in.Email.String)
-	}
-	if in.PhoneNumber.Valid {
-		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
-	}
-	if in.Gender.Valid {
-		out.Gender = wrapperspb.String(in.Gender.String)
-	}
-	out.Role = in.Role
-	if in.DateOfBirth.Valid {
-		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
-	}
-	if in.CreatedAt.Valid {
-		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
-	}
-	if in.UpdatedAt.Valid {
-		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
-	}
-	if v, err := json.Marshal(in.Location); err == nil {
-		out.Location = wrapperspb.String(string(v))
-	}
-	return out
-}
-
 func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 
 	out := new(pb.ListUsersRow)
 	out.Id = in.ID.String()
-	out.Username = in.Username
+	if in.Username.Valid {
+		out.Username = wrapperspb.String(in.Username.String)
+	}
 	if in.Email.Valid {
 		out.Email = wrapperspb.String(in.Email.String)
 	}
@@ -111,6 +39,45 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 	}
 	if v, err := json.Marshal(in.Location); err == nil {
 		out.Location = wrapperspb.String(string(v))
+	}
+	return out
+}
+
+func toUser(in User) *pb.User {
+
+	out := new(pb.User)
+	out.Id = in.ID.String()
+	if in.Username.Valid {
+		out.Username = wrapperspb.String(in.Username.String)
+	}
+	if in.PasswordHash.Valid {
+		out.PasswordHash = wrapperspb.String(in.PasswordHash.String)
+	}
+	if in.Email.Valid {
+		out.Email = wrapperspb.String(in.Email.String)
+	}
+	out.Verified = in.Verified
+	if in.PhoneNumber.Valid {
+		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
+	}
+	if v, err := json.Marshal(in.Avatar); err == nil {
+		out.Avatar = wrapperspb.String(string(v))
+	}
+	if in.Gender.Valid {
+		out.Gender = wrapperspb.String(in.Gender.String)
+	}
+	out.Role = in.Role
+	if in.DateOfBirth.Valid {
+		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
+	}
+	if v, err := json.Marshal(in.Location); err == nil {
+		out.Location = wrapperspb.String(string(v))
+	}
+	if in.CreatedAt.Valid {
+		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
+	}
+	if in.UpdatedAt.Valid {
+		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
 	return out
 }

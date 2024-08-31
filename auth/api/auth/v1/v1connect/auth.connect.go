@@ -35,6 +35,9 @@ const (
 const (
 	// AuthServiceEmailLoginProcedure is the fully-qualified name of the AuthService's EmailLogin RPC.
 	AuthServiceEmailLoginProcedure = "/auth.v1.AuthService/EmailLogin"
+	// AuthServiceRegisterUserProcedure is the fully-qualified name of the AuthService's RegisterUser
+	// RPC.
+	AuthServiceRegisterUserProcedure = "/auth.v1.AuthService/RegisterUser"
 	// AuthServiceAuthRefreshProcedure is the fully-qualified name of the AuthService's AuthRefresh RPC.
 	AuthServiceAuthRefreshProcedure = "/auth.v1.AuthService/AuthRefresh"
 	// AuthServiceLogoutProcedure is the fully-qualified name of the AuthService's Logout RPC.
@@ -51,6 +54,7 @@ const (
 var (
 	authServiceServiceDescriptor                     = v1.File_auth_v1_auth_proto.Services().ByName("AuthService")
 	authServiceEmailLoginMethodDescriptor            = authServiceServiceDescriptor.Methods().ByName("EmailLogin")
+	authServiceRegisterUserMethodDescriptor          = authServiceServiceDescriptor.Methods().ByName("RegisterUser")
 	authServiceAuthRefreshMethodDescriptor           = authServiceServiceDescriptor.Methods().ByName("AuthRefresh")
 	authServiceLogoutMethodDescriptor                = authServiceServiceDescriptor.Methods().ByName("Logout")
 	authServiceRevokeSessionMethodDescriptor         = authServiceServiceDescriptor.Methods().ByName("RevokeSession")
@@ -61,6 +65,8 @@ var (
 type AuthServiceClient interface {
 	// Defines the EmailLogin RPC method
 	EmailLogin(context.Context, *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error)
+	// Defines the EmailLogin RPC method
+	RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error)
 	// Defines the EmailLogin RPC method
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	// Defines the Logout RPC method
@@ -85,6 +91,12 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			httpClient,
 			baseURL+AuthServiceEmailLoginProcedure,
 			connect.WithSchema(authServiceEmailLoginMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		registerUser: connect.NewClient[v1.RegisterUserRequest, v1.RegisterUserResponse](
+			httpClient,
+			baseURL+AuthServiceRegisterUserProcedure,
+			connect.WithSchema(authServiceRegisterUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		authRefresh: connect.NewClient[v1.RefreshRequest, v1.RefreshResponse](
@@ -117,6 +129,7 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
 	emailLogin            *connect.Client[v1.EmailLoginRequest, v1.EmailLoginResponse]
+	registerUser          *connect.Client[v1.RegisterUserRequest, v1.RegisterUserResponse]
 	authRefresh           *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
 	logout                *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
 	revokeSession         *connect.Client[v1.RevokeRequest, v1.RevokeResponse]
@@ -126,6 +139,11 @@ type authServiceClient struct {
 // EmailLogin calls auth.v1.AuthService.EmailLogin.
 func (c *authServiceClient) EmailLogin(ctx context.Context, req *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error) {
 	return c.emailLogin.CallUnary(ctx, req)
+}
+
+// RegisterUser calls auth.v1.AuthService.RegisterUser.
+func (c *authServiceClient) RegisterUser(ctx context.Context, req *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error) {
+	return c.registerUser.CallUnary(ctx, req)
 }
 
 // AuthRefresh calls auth.v1.AuthService.AuthRefresh.
@@ -153,6 +171,8 @@ type AuthServiceHandler interface {
 	// Defines the EmailLogin RPC method
 	EmailLogin(context.Context, *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error)
 	// Defines the EmailLogin RPC method
+	RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error)
+	// Defines the EmailLogin RPC method
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
 	// Defines the Logout RPC method
 	Logout(context.Context, *connect.Request[v1.LogoutRequest]) (*connect.Response[v1.LogoutResponse], error)
@@ -172,6 +192,12 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		AuthServiceEmailLoginProcedure,
 		svc.EmailLogin,
 		connect.WithSchema(authServiceEmailLoginMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	authServiceRegisterUserHandler := connect.NewUnaryHandler(
+		AuthServiceRegisterUserProcedure,
+		svc.RegisterUser,
+		connect.WithSchema(authServiceRegisterUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	authServiceAuthRefreshHandler := connect.NewUnaryHandler(
@@ -202,6 +228,8 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		switch r.URL.Path {
 		case AuthServiceEmailLoginProcedure:
 			authServiceEmailLoginHandler.ServeHTTP(w, r)
+		case AuthServiceRegisterUserProcedure:
+			authServiceRegisterUserHandler.ServeHTTP(w, r)
 		case AuthServiceAuthRefreshProcedure:
 			authServiceAuthRefreshHandler.ServeHTTP(w, r)
 		case AuthServiceLogoutProcedure:
@@ -221,6 +249,10 @@ type UnimplementedAuthServiceHandler struct{}
 
 func (UnimplementedAuthServiceHandler) EmailLogin(context.Context, *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.EmailLogin is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.RegisterUser is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
