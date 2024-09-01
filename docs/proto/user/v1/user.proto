@@ -24,7 +24,7 @@ service UserService {
 }
 
 message Attribute {
-  int32 id = 1;
+  int64 id = 1;
   string attribute_name = 2;
   string attribute_value = 3;
 }

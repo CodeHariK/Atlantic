@@ -10,7 +10,7 @@ import (
 )
 
 type Attribute struct {
-	ID             int32  `json:"id"`
+	ID             int64  `json:"id"`
 	AttributeName  string `json:"attribute_name"`
 	AttributeValue string `json:"attribute_value"`
 }

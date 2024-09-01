@@ -51,7 +51,7 @@ CREATE INDEX "idx_order_items_order_id" ON "public"."order_items" ("order_id");
 -- Create index "idx_order_items_product_id" to table: "order_items"
 CREATE INDEX "idx_order_items_product_id" ON "public"."order_items" ("product_id");
 -- Create "attributes" table
-CREATE TABLE "public"."attributes" ("id" serial NOT NULL, "attribute_name" character varying(255) NOT NULL, "attribute_value" character varying(255) NOT NULL, PRIMARY KEY ("id"));
+CREATE TABLE "public"."attributes" ("id" bigint NOT NULL, "attribute_name" character varying(255) NOT NULL, "attribute_value" character varying(255) NOT NULL, PRIMARY KEY ("id"));
 -- Create index "idx_attribute_name" to table: "attributes"
 CREATE INDEX "idx_attribute_name" ON "public"."attributes" ("attribute_name");
 -- Create index "idx_attribute_value" to table: "attributes"

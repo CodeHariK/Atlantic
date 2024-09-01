@@ -11,9 +11,9 @@ import { Int32Value, Message, proto3, protoInt64, StringValue, Timestamp } from 
  */
 export class Attribute extends Message<Attribute> {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id = 0;
+  id = protoInt64.zero;
 
   /**
    * @generated from field: string attribute_name = 2;
@@ -33,7 +33,7 @@ export class Attribute extends Message<Attribute> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "seller.v1.Attribute";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "id", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 2, name: "attribute_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "attribute_value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
