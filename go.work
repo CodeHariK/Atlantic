@@ -4,6 +4,7 @@ use (
 	./auth
 	./config
 	./database
+	./dataset
 	./docs
 	./service
 )
