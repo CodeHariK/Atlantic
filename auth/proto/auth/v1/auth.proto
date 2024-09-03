@@ -8,19 +8,16 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
 service AuthService {
-  // Defines the EmailLogin RPC method
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse);
 
-  // Defines the EmailLogin RPC method
   rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
 
-  // Defines the EmailLogin RPC method
   rpc AuthRefresh(RefreshRequest) returns (RefreshResponse);
 
-  // Defines the RevokeSessions RPC method
   rpc RevokeSession(RevokeRequest) returns (RevokeResponse);
 
-  // Defines the InvalidateAllSessions RPC method
+  rpc AckRefreshSession(AckRefreshSessionRequest) returns (AckRefreshSessionResponse);
+
   rpc InvalidateAllSessions(InvalidateAllSessionsRequest) returns (InvalidateAllSessionsResponse);
 }
 
@@ -107,6 +104,13 @@ message RevokeRequest {
   int32 sessionNumber = 1;
 }
 message RevokeResponse {
+  bool success = 1;
+}
+message AckRefreshSessionRequest {
+  int32 oldSessionNumber = 1;
+  int32 newSessionNumber = 2;
+}
+message AckRefreshSessionResponse {
   bool success = 1;
 }
 message InvalidateAllSessionsRequest {}

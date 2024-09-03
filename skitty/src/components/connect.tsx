@@ -27,6 +27,10 @@ const logger: Interceptor = (next) => async (req) => {
     //       const request = new RefreshRequest();
     //       // Set any necessary fields in the request
     //       const response = await authclient.authRefresh(request);
+    let sessionRefreshed = response.header.get('session-refreshed')
+    if (sessionRefreshed) {
+        console.log("Session Refresh")
+    }
     console.log("-----")
 
     let redirect = response.header.get('redirect-to')
