@@ -19,6 +19,7 @@ import Payment from './pages/payment';
 import { Checkout } from './pages/checkout';
 import { ProductModal, Products } from './pages/products';
 import Register from './pages/register';
+import SearchGames from './pages/searchgames';
 
 export const routes: RouteDefinition[] = [
     {
@@ -52,6 +53,10 @@ export const routes: RouteDefinition[] = [
     {
         path: '/search',
         component: SearchProducts,
+    },
+    {
+        path: '/searchgames',
+        component: SearchGames,
     },
     {
         path: '/searchdrawer',
