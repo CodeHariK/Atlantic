@@ -11,8 +11,6 @@ import (
 	"connectrpc.com/connect"
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/codeharik/Atlantic/auth/server/authn"
-	"github.com/codeharik/Atlantic/auth/server/connectbox"
-	"github.com/codeharik/Atlantic/auth/sessionstore"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
 	"github.com/google/uuid"
@@ -29,7 +27,7 @@ import (
 type AuthServiceServer struct {
 	v1connect.UnimplementedAuthServiceHandler
 
-	JwtConfig *sessionstore.JwtConfig
+	JwtConfig *authbox.JwtConfig
 	validator *protovalidate.Validator
 	userStore *user.Queries
 	dragon    *dragon.Dragon
@@ -47,7 +45,7 @@ func CreateAuthServiceServer(
 	}
 
 	return AuthServiceServer{
-		JwtConfig: &sessionstore.JwtConfig{Config: config},
+		JwtConfig: &authbox.JwtConfig{Config: config},
 		validator: validator,
 		userStore: userStore,
 		dragon:    &d,
@@ -67,16 +65,16 @@ var invalidEmailPassword = connect.NewError(
 func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (any, error) {
 	r, w := req.Request, req.Writer
 
-	cb := connectbox.ConnectBox{
+	cb := authbox.ConnectBox{
 		R: r,
 		W: w,
 	}
 
-	if !connectbox.AuthRefreshOrProfileOrRevoke(r) {
+	if !authbox.AuthRefreshOrProfileOrRevoke(r) {
 		accessCookie, err := r.Cookie("access-token")
 		if err == nil {
 			accessToken, err := s.JwtConfig.VerifyJwe(accessCookie.Value)
-			if err := connectbox.AuthRedirect(r, w, err); err != nil {
+			if err := authbox.AuthRedirect(r, w, err); err != nil {
 				return nil, err
 			}
 			if err == nil {
@@ -93,7 +91,7 @@ func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (a
 		cb.User = user
 		cb.SessionNumber = sessionNumber
 
-		if !connectbox.AuthRefreshOrProfileOrRevoke(r) {
+		if !authbox.AuthRefreshOrProfileOrRevoke(r) {
 			_, _, err = s.RefreshSession(cb)
 			if err != nil {
 				return nil, err
@@ -101,7 +99,7 @@ func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (a
 		}
 	}
 
-	if err := connectbox.AuthRedirect(r, w, err); err != nil {
+	if err := authbox.AuthRedirect(r, w, err); err != nil {
 		return nil, err
 	}
 
@@ -109,7 +107,7 @@ func (s AuthServiceServer) Authenticate(_ context.Context, req authn.Request) (a
 }
 
 func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
+	cb, ok := authbox.GetConnectBox(ctx)
 	if !ok {
 		return nil, invalidEmailPassword
 	}
@@ -126,12 +124,12 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 	}
 
 	// Verify password
-	if err := sessionstore.CheckPassword(dbuser.PasswordHash.String, password); err != nil {
+	if err := authbox.CheckPassword(dbuser.PasswordHash.String, password); err != nil {
 		return nil, invalidEmailPassword
 	}
 
 	// Handle error
-	avatarUUid, _ := connectbox.ToUUIDstring(dbuser.Avatar)
+	avatarUUid, _ := authbox.ToUUIDstring(dbuser.Avatar)
 
 	user := &v1.AuthUser{
 		ID:          dbuser.ID.String(),
@@ -178,7 +176,7 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		return nil, invalidEmailPassword
 	}
 
-	connectbox.AddRedirect(cb.W, "/profile")
+	authbox.AddRedirect(cb.W, "/profile")
 
 	return connect.NewResponse(
 			&v1.EmailLoginResponse{
@@ -189,7 +187,7 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 }
 
 func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
+	cb, ok := authbox.GetConnectBox(ctx)
 	if !ok {
 		return nil, internalServerError
 	}
@@ -201,7 +199,7 @@ func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Reques
 	email := req.Msg.Email
 	password := req.Msg.Password
 
-	hash, err := sessionstore.HashPassword(password)
+	hash, err := authbox.HashPassword(password)
 	if err != nil {
 		return nil, internalServerError
 	}
@@ -225,13 +223,13 @@ func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Reques
 		return nil, internalServerError
 	}
 
-	connectbox.AddRedirect(cb.W, "/login")
+	authbox.AddRedirect(cb.W, "/login")
 
 	return connect.NewResponse(&v1.RegisterUserResponse{}), nil
 }
 
 func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
+	cb, ok := authbox.GetConnectBox(ctx)
 	if !ok {
 		return nil, internalServerError
 	}
@@ -249,7 +247,7 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 		nil
 }
 
-func (s AuthServiceServer) RefreshSession(cb connectbox.ConnectBox) (string, string, error) {
+func (s AuthServiceServer) RefreshSession(cb authbox.ConnectBox) (string, string, error) {
 	session := &v1.UserSession{
 		Agent: cb.R.UserAgent(),
 		Iat:   time.Now().Unix(),
@@ -284,7 +282,7 @@ func (s AuthServiceServer) RefreshSession(cb connectbox.ConnectBox) (string, str
 }
 
 func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
+	cb, ok := authbox.GetConnectBox(ctx)
 	if !ok {
 		return nil, internalServerError
 	}
@@ -304,7 +302,7 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 
 	authbox.RevokeSession(cb.W)
 
-	connectbox.AddRedirect(cb.W, "/login")
+	authbox.AddRedirect(cb.W, "/login")
 
 	return connect.NewResponse(
 		&v1.RevokeResponse{
@@ -313,7 +311,7 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 }
 
 func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
+	cb, ok := authbox.GetConnectBox(ctx)
 	if !ok {
 		return nil, internalServerError
 	}

@@ -12,7 +12,7 @@ import (
 	// auth_app "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
-	"github.com/codeharik/Atlantic/auth/server/connectbox"
+	"github.com/codeharik/Atlantic/auth/server/authbox"
 )
 
 type ProfileServiceServer struct {
@@ -39,7 +39,7 @@ func CreateProfileServiceServer(
 }
 
 func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect.Request[v1.GetProfileRequest]) (*connect.Response[v1.GetProfileResponse], error) {
-	cb, ok := connectbox.GetConnectBox(ctx)
+	cb, ok := authbox.GetConnectBox(ctx)
 
 	errorResponse, responserError := connect.NewResponse(&v1.GetProfileResponse{}),
 		connect.NewError(

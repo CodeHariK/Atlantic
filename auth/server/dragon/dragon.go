@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
-	"github.com/codeharik/Atlantic/auth/sessionstore"
+	"github.com/codeharik/Atlantic/auth/server/authbox"
 	"github.com/codeharik/Atlantic/config"
 
 	dragon "github.com/redis/go-redis/v9"
@@ -73,10 +73,10 @@ func (d *Dragon) SaveUser(u *v1.AuthUser) error {
 	return nil
 }
 
-func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *sessionstore.JwtConfig) (*v1.AuthUser, int, error) {
+func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *authbox.JwtConfig) (*v1.AuthUser, int, error) {
 	for _, c := range r.Cookies() {
 		if c.Name == "session-id" {
-			v, err := sessionstore.ChaDecrypt(cfg.Config, c.Value)
+			v, err := authbox.ChaDecrypt(cfg.Config, c.Value)
 			if err != nil {
 				return nil, -1, err
 			}

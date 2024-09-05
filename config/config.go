@@ -48,6 +48,7 @@ type Config struct {
 
 		OAuth OAuth `json:"oauth"`
 	} `json:"auth_service"`
+
 	Database struct {
 		Host           string `json:"host"`
 		Port           int    `json:"port"`
@@ -58,16 +59,29 @@ type Config struct {
 		Timeout        int    `json:"timeout"`
 		SSLMode        string `json:"ssl_mode"`
 	} `json:"database"`
+
 	Dragon struct {
 		Host     string `json:"host"`
 		Port     int    `json:"port"`
 		User     string `json:"user"`
 		Password string `json:"password"`
 	} `json:"dragonfly"`
+
+	CosmogService struct {
+		Address string `json:"address"`
+		Port    int    `json:"port"`
+
+		MeiliSearch struct {
+			Host string `json:"host"`
+			Key  string `json:"key"`
+		} `json:"meilisearch"`
+	} `json:"cosmog_service"`
+
 	FeatureFlags struct {
 		NewFeature bool `json:"new_feature"`
 		BetaAccess bool `json:"beta_access"`
 	} `json:"feature_flags"`
+
 	OTLP struct {
 		GRPC    string            `json:"grpc"`
 		HTTP    string            `json:"http"`

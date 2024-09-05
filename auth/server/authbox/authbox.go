@@ -7,10 +7,9 @@ import (
 	"time"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
-	"github.com/codeharik/Atlantic/auth/sessionstore"
 )
 
-func SaveSession(r *http.Request, w http.ResponseWriter, cfg *sessionstore.JwtConfig,
+func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	session *v1.CookieSession, accessToken *v1.AccessToken,
 ) (string, string, error) {
 	sessionByte, err := json.Marshal(session)
@@ -18,7 +17,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *sessionstore.JwtCo
 		return "", "", err
 	}
 
-	sessionHash, err := sessionstore.ChaEncrypt(cfg.Config, string(sessionByte))
+	sessionHash, err := ChaEncrypt(cfg.Config, string(sessionByte))
 	if err != nil {
 		return "", "", err
 	}
@@ -32,7 +31,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *sessionstore.JwtCo
 		return "", "", err
 	}
 
-	accessHash, err := sessionstore.ChaEncrypt(cfg.Config, string(accessByte))
+	accessHash, err := ChaEncrypt(cfg.Config, string(accessByte))
 	if err != nil {
 		return "", "", err
 	}

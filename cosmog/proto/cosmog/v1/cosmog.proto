@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package cosmog.v1;
+
+option go_package = "github.com/codeharik/Atlantic/cosmog/api/cosmog/v1";
+
+service CosmogService {
+  rpc CreateSearchKey(CreateSearchKeyRequest) returns (CreateSearchKeyResponse);
+}
+
+message CreateSearchKeyRequest {
+  string ID = 1;
+}
+
+message CreateSearchKeyResponse {
+  string key = 1;
+}
