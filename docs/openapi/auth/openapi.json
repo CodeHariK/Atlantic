@@ -88,39 +88,6 @@
         ]
       }
     },
-    "/auth.v1.AuthService/GetAllSessions": {
-      "post": {
-        "summary": "Defines the GetAllSessions RPC method",
-        "operationId": "AuthService_GetAllSessions",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetAllSessionsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetAllSessionsRequest"
-            }
-          }
-        ],
-        "tags": [
-          "AuthService"
-        ]
-      }
-    },
     "/auth.v1.AuthService/InvalidateAllSessions": {
       "post": {
         "summary": "Defines the InvalidateAllSessions RPC method",
@@ -154,15 +121,15 @@
         ]
       }
     },
-    "/auth.v1.AuthService/Logout": {
+    "/auth.v1.AuthService/RegisterUser": {
       "post": {
-        "summary": "Defines the Logout RPC method",
-        "operationId": "AuthService_Logout",
+        "summary": "Defines the EmailLogin RPC method",
+        "operationId": "AuthService_RegisterUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1LogoutResponse"
+              "$ref": "#/definitions/v1RegisterUserResponse"
             }
           },
           "default": {
@@ -178,7 +145,40 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1LogoutRequest"
+              "$ref": "#/definitions/v1RegisterUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AuthService"
+        ]
+      }
+    },
+    "/auth.v1.AuthService/RevokeSession": {
+      "post": {
+        "summary": "Defines the RevokeSessions RPC method",
+        "operationId": "AuthService_RevokeSession",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RevokeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RevokeRequest"
             }
           }
         ],
@@ -317,14 +317,14 @@
         ]
       }
     },
-    "/user.v1.UserService/FindUserByUsername": {
+    "/user.v1.UserService/GetUserByEmail": {
       "post": {
-        "operationId": "UserService_FindUserByUsername",
+        "operationId": "UserService_GetUserByEmail",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1FindUserByUsernameResponse"
+              "$ref": "#/definitions/v1GetUserByEmailResponse"
             }
           },
           "default": {
@@ -340,39 +340,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1FindUserByUsernameRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserService"
-        ]
-      }
-    },
-    "/user.v1.UserService/GetAuthUserByEmail": {
-      "post": {
-        "operationId": "UserService_GetAuthUserByEmail",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetAuthUserByEmailResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1GetAuthUserByEmailRequest"
+              "$ref": "#/definitions/v1GetUserByEmailRequest"
             }
           }
         ],
@@ -405,6 +373,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1GetUserByIDRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user.v1.UserService/GetUserByUsername": {
+      "post": {
+        "operationId": "UserService_GetUserByUsername",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetUserByUsernameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetUserByUsernameRequest"
             }
           }
         ],
@@ -529,15 +529,26 @@
           "type": "string",
           "description": "`email` validates that a string field is a valid email."
         },
+        "location": {
+          "type": "string"
+        },
         "verified": {
           "type": "boolean"
+        },
+        "role": {
+          "type": "string",
+          "format": "int64"
         },
         "sessions": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/v1Session"
+            "$ref": "#/definitions/v1UserSession"
           }
+        },
+        "sessionNumber": {
+          "type": "integer",
+          "format": "int32"
         }
       },
       "title": "The user profile message"
@@ -551,17 +562,27 @@
         "username": {
           "type": "string"
         },
+        "passwordHash": {
+          "type": "string"
+        },
         "email": {
           "type": "string"
         },
         "phoneNumber": {
           "type": "string"
         },
+        "verified": {
+          "type": "boolean"
+        },
+        "avatar": {
+          "type": "string"
+        },
         "gender": {
           "type": "string"
         },
-        "isAdmin": {
-          "type": "boolean"
+        "role": {
+          "type": "string",
+          "format": "int64"
         },
         "dateOfBirth": {
           "type": "string",
@@ -575,24 +596,8 @@
     "v1CreateUserResponse": {
       "type": "object",
       "properties": {
-        "createUserRow": {
-          "$ref": "#/definitions/v1CreateUserRow"
-        }
-      }
-    },
-    "v1CreateUserRow": {
-      "type": "object",
-      "properties": {
-        "id": {
+        "value": {
           "type": "string"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
         }
       }
     },
@@ -616,8 +621,7 @@
         "password": {
           "type": "string"
         }
-      },
-      "title": "The request message for the EmailLogin method"
+      }
     },
     "v1EmailLoginResponse": {
       "type": "object",
@@ -628,125 +632,10 @@
         "accessToken": {
           "type": "string"
         }
-      },
-      "title": "The response message for the EmailLogin method"
-    },
-    "v1FindUserByUsernameRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "v1FindUserByUsernameResponse": {
-      "type": "object",
-      "properties": {
-        "findUserByUsernameRow": {
-          "$ref": "#/definitions/v1FindUserByUsernameRow"
-        }
-      }
-    },
-    "v1FindUserByUsernameRow": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "location": {
-          "type": "string"
-        }
-      }
-    },
-    "v1GetAllSessionsRequest": {
-      "type": "object",
-      "properties": {
-        "userId": {
-          "type": "string"
-        }
-      },
-      "title": "GetAllSessions Messages"
-    },
-    "v1GetAllSessionsResponse": {
-      "type": "object",
-      "properties": {
-        "sessions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/v1Session"
-          }
-        }
-      }
-    },
-    "v1GetAuthUserByEmailRequest": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        }
-      }
-    },
-    "v1GetAuthUserByEmailResponse": {
-      "type": "object",
-      "properties": {
-        "getAuthUserByEmailRow": {
-          "$ref": "#/definitions/v1GetAuthUserByEmailRow"
-        }
-      }
-    },
-    "v1GetAuthUserByEmailRow": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "passwordHash": {
-          "type": "string"
-        }
       }
     },
     "v1GetProfileRequest": {
       "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "title": "ID is required and must not be empty"
-        }
-      },
       "title": "The message for fetching a profile"
     },
     "v1GetProfileResponse": {
@@ -754,6 +643,22 @@
       "properties": {
         "user": {
           "$ref": "#/definitions/v1AuthUser"
+        }
+      }
+    },
+    "v1GetUserByEmailRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GetUserByEmailResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
@@ -768,57 +673,29 @@
     "v1GetUserByIDResponse": {
       "type": "object",
       "properties": {
-        "getUserByIdRow": {
-          "$ref": "#/definitions/v1GetUserByIDRow"
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
-    "v1GetUserByIDRow": {
+    "v1GetUserByUsernameRequest": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
         "username": {
           "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "phoneNumber": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
-        },
-        "isAdmin": {
-          "type": "boolean"
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "location": {
-          "type": "string"
+        }
+      }
+    },
+    "v1GetUserByUsernameResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
         }
       }
     },
     "v1InvalidateAllSessionsRequest": {
-      "type": "object",
-      "properties": {
-        "userId": {
-          "type": "string"
-        }
-      },
-      "title": "InvalidateAllSessions Messages"
+      "type": "object"
     },
     "v1InvalidateAllSessionsResponse": {
       "type": "object",
@@ -871,8 +748,9 @@
         "gender": {
           "type": "string"
         },
-        "isAdmin": {
-          "type": "boolean"
+        "role": {
+          "type": "string",
+          "format": "int64"
         },
         "dateOfBirth": {
           "type": "string",
@@ -891,30 +769,8 @@
         }
       }
     },
-    "v1LogoutRequest": {
-      "type": "object",
-      "properties": {
-        "token": {
-          "type": "string"
-        }
-      },
-      "title": "Logout Messages"
-    },
-    "v1LogoutResponse": {
-      "type": "object",
-      "properties": {
-        "success": {
-          "type": "boolean"
-        }
-      }
-    },
     "v1RefreshRequest": {
-      "type": "object",
-      "properties": {
-        "sessionId": {
-          "type": "string"
-        }
-      }
+      "type": "object"
     },
     "v1RefreshResponse": {
       "type": "object",
@@ -927,37 +783,39 @@
         }
       }
     },
-    "v1Session": {
+    "v1RegisterUserRequest": {
       "type": "object",
       "properties": {
-        "ID": {
+        "email": {
           "type": "string"
         },
-        "agent": {
-          "type": "string",
-          "title": "UserAgent"
-        },
-        "iat": {
-          "type": "string",
-          "format": "date-time",
-          "title": "IssuedAt time"
-        },
-        "exp": {
-          "type": "string",
-          "format": "date-time",
-          "title": "ExpireAt time"
+        "password": {
+          "type": "string"
         }
-      },
-      "title": "Define Session message"
+      }
+    },
+    "v1RegisterUserResponse": {
+      "type": "object"
+    },
+    "v1RevokeRequest": {
+      "type": "object",
+      "properties": {
+        "sessionNumber": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1RevokeResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
     },
     "v1UpdateProfileRequest": {
       "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/v1AuthUser",
-          "title": "AuthUser is required"
-        }
-      },
       "title": "The message for updating a profile"
     },
     "v1UpdateProfileResponse": {
@@ -980,11 +838,61 @@
         "phoneNumber": {
           "type": "string"
         },
+        "verified": {
+          "type": "boolean"
+        },
+        "avatar": {
+          "type": "string"
+        },
         "gender": {
           "type": "string"
         },
-        "isAdmin": {
+        "role": {
+          "type": "string",
+          "format": "int64"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateUserResponse": {
+      "type": "object"
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "verified": {
           "type": "boolean"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "format": "int64"
         },
         "dateOfBirth": {
           "type": "string",
@@ -993,28 +901,32 @@
         "location": {
           "type": "string"
         },
-        "id": {
-          "type": "string"
-        }
-      }
-    },
-    "v1UpdateUserResponse": {
-      "type": "object",
-      "properties": {
-        "updateUserRow": {
-          "$ref": "#/definitions/v1UpdateUserRow"
-        }
-      }
-    },
-    "v1UpdateUserRow": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
         },
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "v1UserSession": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "type": "string",
+          "title": "UserAgent"
+        },
+        "iat": {
+          "type": "string",
+          "format": "int64",
+          "title": "IssuedAt time"
+        },
+        "exp": {
+          "type": "string",
+          "format": "int64",
+          "title": "ExpireAt time"
         }
       }
     }

@@ -11,8 +11,11 @@ export default function NotFound() {
                     <a href="#link3" class="block mb-2 text-blue-600">Link 3</a>
                 </div>
                 <div class="flex-1 dark:invert">
-                    <iframe
+                    {/* <iframe
                         src={Service.Auth + "/docs"}
+                        class="w-full h-full border-0"></iframe> */}
+                    <iframe
+                        src={Service.Cosmog + "/docs"}
                         class="w-full h-full border-0"></iframe>
                 </div>
             </div>

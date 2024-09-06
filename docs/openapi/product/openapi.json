@@ -786,21 +786,24 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         },
         "name": {
           "type": "string"
         },
         "parentId": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
     "v1CreateProductCategoryResponse": {
       "type": "object",
       "properties": {
-        "productCategory": {
-          "$ref": "#/definitions/v1ProductCategory"
+        "value": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -818,8 +821,8 @@
     "v1CreateProductCommentResponse": {
       "type": "object",
       "properties": {
-        "productComment": {
-          "$ref": "#/definitions/v1ProductComment"
+        "value": {
+          "type": "string"
         }
       }
     },
@@ -832,16 +835,29 @@
         "productName": {
           "type": "string"
         },
-        "categoryId": {
-          "type": "string"
+        "categoryId1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId3": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId4": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
     "v1CreateProductResponse": {
       "type": "object",
       "properties": {
-        "product": {
-          "$ref": "#/definitions/v1Product"
+        "value": {
+          "type": "string"
         }
       }
     },
@@ -869,18 +885,7 @@
     "v1CreateProductReviewResponse": {
       "type": "object",
       "properties": {
-        "createProductReviewRow": {
-          "$ref": "#/definitions/v1CreateProductReviewRow"
-        }
-      }
-    },
-    "v1CreateProductReviewRow": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "userId": {
+        "value": {
           "type": "string"
         }
       }
@@ -889,7 +894,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -933,7 +939,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -965,7 +972,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -1034,8 +1042,21 @@
         "productName": {
           "type": "string"
         },
-        "categoryId": {
-          "type": "string"
+        "categoryId1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId3": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId4": {
+          "type": "integer",
+          "format": "int32"
         },
         "categoryPath": {
           "type": "string"
@@ -1046,7 +1067,8 @@
       "type": "object",
       "properties": {
         "parentId": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -1193,8 +1215,21 @@
         "productName": {
           "type": "string"
         },
-        "categoryId": {
-          "type": "string"
+        "categoryId1": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId3": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId4": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -1202,13 +1237,15 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         },
         "name": {
           "type": "string"
         },
         "parentId": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -1256,13 +1293,15 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         },
         "name": {
           "type": "string"
         },
         "parentId": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -1286,24 +1325,32 @@
     "v1UpdateProductRequest": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "productName": {
           "type": "string"
         },
-        "categoryId": {
-          "type": "string"
+        "categoryId1": {
+          "type": "integer",
+          "format": "int32"
         },
-        "id": {
-          "type": "string"
+        "categoryId2": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId3": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "categoryId4": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
     "v1UpdateProductResponse": {
-      "type": "object",
-      "properties": {
-        "product": {
-          "$ref": "#/definitions/v1Product"
-        }
-      }
+      "type": "object"
     },
     "v1UpdateProductReviewRequest": {
       "type": "object",
