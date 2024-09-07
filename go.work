@@ -6,5 +6,6 @@ use (
 	./cosmog
 	./database
 	./docs
+	./inventory
 	./service
 )

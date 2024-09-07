@@ -20,6 +20,9 @@ import { Checkout } from './pages/checkout';
 import { ProductModal, Products } from './pages/products';
 import Register from './pages/register';
 import SearchGames from './pages/searchgames';
+import { MyOrders } from './pages/myorders';
+import { Account, AccountModal, DeleteOrderModal } from './pages/account';
+import { AddProduct } from './pages/addproduct';
 
 export const routes: RouteDefinition[] = [
     {
@@ -95,6 +98,26 @@ export const routes: RouteDefinition[] = [
         component: OrderDetails,
     },
     {
+        path: '/myorders',
+        component: MyOrders,
+    },
+    {
+        path: '/addproduct',
+        component: AddProduct,
+    },
+    {
+        path: '/account',
+        component: Account,
+    },
+    {
+        path: '/accountmodal',
+        component: AccountModal,
+    },
+    {
+        path: '/deleteOrderModal',
+        component: DeleteOrderModal,
+    },
+    {
         path: '/ordermodal',
         component: OrderModal,
     },
@@ -114,7 +137,7 @@ export const routes: RouteDefinition[] = [
 
 
 function RouteList() {
-    const [iframeSrc, setIframeSrc] = createSignal('/profile');
+    const [iframeSrc, setIframeSrc] = createSignal('/addproduct');
 
     return (
         <div class="w-full flex flex-row h-screen">

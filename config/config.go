@@ -67,6 +67,15 @@ type Config struct {
 		Password string `json:"password"`
 	} `json:"dragonfly"`
 
+	Minio struct {
+		Addr   string `json:"addr"`
+		Id     string `json:"id"`
+		Secret string `json:"secret"`
+		Bucket struct {
+			Products string `json:"products"`
+		} `json:"bucket"`
+	} `json:"minio"`
+
 	CosmogService struct {
 		Address string `json:"address"`
 		Port    int    `json:"port"`

@@ -42,4 +42,5 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 MODEL_validate.to(device)
 
 def validate_image(image):
-    return runModel(image, MODEL_validate, MODEL_transform, device, classes)
+    validity = runModel(image, MODEL_validate, MODEL_transform, device, classes)
+    return { "parameters" : validity, "valid" : (validity[classes[0]] + validity[classes[2]] > 70)}
