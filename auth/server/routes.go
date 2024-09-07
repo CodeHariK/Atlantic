@@ -9,12 +9,12 @@ import (
 	"connectrpc.com/grpcreflect"
 	"connectrpc.com/otelconnect"
 	"github.com/codeharik/Atlantic/auth/server/auth"
-	"github.com/codeharik/Atlantic/auth/server/authn"
-	"github.com/codeharik/Atlantic/auth/server/dragon"
 	"github.com/codeharik/Atlantic/auth/server/profile"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
+	"github.com/codeharik/Atlantic/service/authbox"
+	"github.com/codeharik/Atlantic/service/dragon"
 	"go.opentelemetry.io/otel"
 
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
@@ -65,7 +65,7 @@ func CreateRoutes(
 		connect.WithInterceptors(interceptors...), compress1KB,
 	)
 
-	shield := authn.NewMiddleware(authService.Authenticate)
+	shield := authbox.NewMiddleware((&authbox.JwtConfig{Config: config}).Authenticate)
 
 	router.Handle(
 		authPath,

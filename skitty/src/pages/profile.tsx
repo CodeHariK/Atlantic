@@ -66,9 +66,6 @@ export default function Profile() {
          // Set any necessary fields in the request
          const response = await authclient.revokeSession(request);
          console.log("Logout successful:", response);
-         if (!sessionNumber) {
-            window.location.href = "/login";
-         }
       } catch (err) {
          console.error("Error logout:", err);
          setError("Failed to logout.");
@@ -78,6 +75,7 @@ export default function Profile() {
    };
 
    const RevokeAll = async () => {
+      console.log("RevokeAll")
       setLoading(true);
       setError("");
       try {
@@ -153,7 +151,7 @@ export default function Profile() {
                               <P>{s.iat.toString()}</P>,
                               <SmallBadgeText>Active {i == user()?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
                               <P>{s.exp.toString()}</P>,
-                              <IconButton onClick={() => { () => Revoke(i) }}><CrossIcon /></IconButton>
+                              <IconButton onClick={() => Revoke(i)}><CrossIcon /></IconButton>
                            ]
                         ) ?? []
                      ],
@@ -163,16 +161,12 @@ export default function Profile() {
                   </div>}
                   headerend={
                      <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-                        {/* <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
-                           <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
-                        </MaterialButton> */}
                         <OutlinedButton onClick={RevokeAll}>
                            Revoke All
                         </OutlinedButton>
                         <MaterialButton onClick={() => Revoke(-1)}>
                            Logout
                         </MaterialButton>
-                        {error() && <p style={{ color: "red" }}>{error()}</p>}
                      </div>
                   }
                   footerstart={

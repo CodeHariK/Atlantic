@@ -8,8 +8,8 @@ import (
 	"net/http"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
-	"github.com/codeharik/Atlantic/auth/server/authbox"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/service/authbox"
 	"github.com/codeharik/Atlantic/service/colorlogger"
 
 	dragon "github.com/redis/go-redis/v9"

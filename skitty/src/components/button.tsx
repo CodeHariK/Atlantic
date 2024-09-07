@@ -21,7 +21,7 @@ export function MaterialButton(props: ButtonProps) {
 }
 
 export function OutlinedButton(props: ButtonProps) {
-    return <button class={`AppOutlinedButton ${props.class}`} type={props.type} disabled={props.disabled}>
+    return <button onClick={props.onClick} class={`AppOutlinedButton ${props.class}`} type={props.type} disabled={props.disabled}>
         {props.children}
     </button>;
 }

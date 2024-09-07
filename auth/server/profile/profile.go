@@ -7,12 +7,12 @@ import (
 	"connectrpc.com/connect"
 	"github.com/codeharik/Atlantic/config"
 
-	"github.com/codeharik/Atlantic/auth/server/dragon"
+	"github.com/codeharik/Atlantic/service/dragon"
 
-	// auth_app "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
-	"github.com/codeharik/Atlantic/auth/server/authbox"
+
+	"github.com/codeharik/Atlantic/service/authbox"
 )
 
 type ProfileServiceServer struct {
@@ -34,21 +34,16 @@ func CreateProfileServiceServer(
 
 func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect.Request[v1.GetProfileRequest]) (*connect.Response[v1.GetProfileResponse], error) {
 	cb, ok := authbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, authbox.InternalServerError
+	}
 
 	user, sessionNumber, err := profile.dragon.DragonSessionCheck(cb.R, profile.JwtConfig)
 	if err == nil {
 		cb.User = user
 		cb.SessionNumber = sessionNumber
-	}
-
-	errorResponse, responserError := connect.NewResponse(&v1.GetProfileResponse{}),
-		connect.NewError(
-			connect.CodeInternal,
-			errors.New("Internal server error"),
-		)
-
-	if !ok {
-		return errorResponse, responserError
+	} else {
+		return nil, authbox.InternalServerError
 	}
 
 	cb.User.SessionNumber = int32(cb.SessionNumber)
