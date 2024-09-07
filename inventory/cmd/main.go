@@ -4,31 +4,66 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/inventory/server"
+	"github.com/codeharik/Atlantic/service/servemux"
 	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 )
+
+func InventoryServerFullUrl(config *config.Config) string {
+	return fmt.Sprintf("http://%s:%d", config.InventoryService.Host, config.InventoryService.Port)
+}
+
+func InventoryServerPortUrl(config *config.Config) string {
+	return fmt.Sprintf(":%d", config.InventoryService.Port)
+}
 
 func main() {
 	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
 
-	s3Client, err := minio.New(
-		cfg.Minio.Addr,
-		&minio.Options{
-			Creds:  credentials.NewStaticV4(cfg.Minio.Id, cfg.Minio.Secret, ""),
-			Secure: false,
-		})
-	if err != nil {
-		log.Fatalln(err)
-	}
+	servemux.Serve(
+		func(router *http.ServeMux) {
+			server.CreateRoutes(router, &cfg)
+		},
+		func() {
+		},
+		InventoryServerPortUrl(&cfg),
+		InventoryServerFullUrl(&cfg),
+		"Auth",
+		&cfg,
+	)
 
-	makeBucket(s3Client, cfg.Minio.Bucket.Products, "us-east-1")
-	publicBucket(s3Client, cfg.Minio.Bucket.Products)
-	putObject(s3Client, cfg.Minio.Bucket.Products, "go.mod")
-	getObject(s3Client, cfg.Minio.Bucket.Products, "go.mod")
-	listObjects(s3Client, cfg.Minio.Bucket.Products)
+	// url := "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
+	// img, err := utils.FetchImage(url)
+	// if err != nil {
+	// 	log.Fatalf("Error fetching image: %v", err)
+	// }
+
+	// err = utils.SaveImage(img, "output_image.png")
+	// if err != nil {
+	// 	log.Fatalf("Error saving image: %v", err)
+	// }
+
+	// cfg := config.LoadConfig(true, "config.json", "../config/config.json")
+
+	// s3Client, err := minio.New(
+	// 	cfg.Minio.Addr,
+	// 	&minio.Options{
+	// 		Creds:  credentials.NewStaticV4(cfg.Minio.Id, cfg.Minio.Secret, ""),
+	// 		Secure: false,
+	// 	})
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	// makeBucket(s3Client, cfg.Minio.Bucket.Products, "us-east-1")
+	// publicBucket(s3Client, cfg.Minio.Bucket.Products)
+	// putObject(s3Client, cfg.Minio.Bucket.Products, "go.mod")
+	// getObject(s3Client, cfg.Minio.Bucket.Products, "go.mod")
+	// listObjects(s3Client, cfg.Minio.Bucket.Products)
 }
 
 func makeBucket(s3Client *minio.Client, bucketName string, region string) error {

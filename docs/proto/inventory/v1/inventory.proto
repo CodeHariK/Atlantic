@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package inventory.v1;
+
+option go_package = "github.com/codeharik/Atlantic/inventory/api/inventory/v1";
+
+service InventoryService {
+  rpc UploadImage(UploadImageRequest) returns (UploadImageResponse);
+}
+
+message UploadImageRequest {}
+
+message UploadImageResponse {}

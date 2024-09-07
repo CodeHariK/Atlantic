@@ -2,15 +2,13 @@ package authbox
 
 import (
 	"crypto/md5"
-	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"io"
 
 	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/crypto/chacha20"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 )
@@ -48,7 +46,7 @@ type JwtConfig struct {
 	*config.Config
 }
 
-func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.AccessToken) (string, *jwt.MapClaims, error) {
+func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.JwtObj) (string, *jwt.MapClaims, error) {
 	claims := jwt.MapClaims{
 		"sub":   jwtobj.ID,
 		"roles": jwtobj.Roles,
@@ -73,17 +71,19 @@ func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.AccessToken) (string, *jwt.MapCl
 	return tokenString, &claims, nil
 }
 
-func (cfg *JwtConfig) VerifyJwe(tokenString string) (*v1.AccessToken, error) {
+func (cfg *JwtConfig) VerifyJwe(tokenString string) (*v1.JwtObj, error) {
 	jwtToken, err := ChaDecrypt(cfg.Config, tokenString)
 	if err != nil {
 		return nil, err
 	}
 
+	colorlogger.Log(jwtToken)
+
 	return cfg.VerifyJwt(jwtToken)
 }
 
-func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.AccessToken, error) {
-	j := &v1.AccessToken{}
+func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.JwtObj, error) {
+	j := &v1.JwtObj{}
 
 	// Parse the token to extract the `kid` and use it to get the correct key
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -137,41 +137,43 @@ func GetMD5Hash(text string) string {
 
 // Encrypt encrypts the given plaintext using ChaCha20.
 func ChaEncrypt(cfg *config.Config, plaintext string) (string, error) {
-	nonce := make([]byte, chacha20.NonceSizeX)
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return "", err
-	}
+	return plaintext, nil
+	// nonce := make([]byte, chacha20.NonceSizeX)
+	// if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+	// 	return "", err
+	// }
 
-	block, err := chacha20.NewUnauthenticatedCipher(cfg.AuthService.EncryptKey, nonce)
-	if err != nil {
-		return "", err
-	}
+	// block, err := chacha20.NewUnauthenticatedCipher(cfg.AuthService.EncryptKey, nonce)
+	// if err != nil {
+	// 	return "", err
+	// }
 
-	ciphertext := make([]byte, len(plaintext))
-	block.XORKeyStream(ciphertext, []byte(plaintext))
+	// ciphertext := make([]byte, len(plaintext))
+	// block.XORKeyStream(ciphertext, []byte(plaintext))
 
-	return hex.EncodeToString(append(nonce, ciphertext...)), nil
+	// return hex.EncodeToString(append(nonce, ciphertext...)), nil
 }
 
 // Decrypt decrypts the given ciphertext using ChaCha20.
 func ChaDecrypt(cfg *config.Config, ciphertextHex string) (string, error) {
-	ciphertext, err := hex.DecodeString(ciphertextHex)
-	if err != nil {
-		return "", err
-	}
+	return ciphertextHex, nil
+	// ciphertext, err := hex.DecodeString(ciphertextHex)
+	// if err != nil {
+	// 	return "", err
+	// }
 
-	if len(ciphertext) < chacha20.NonceSizeX {
-		return "", fmt.Errorf("ciphertext too short")
-	}
+	// if len(ciphertext) < chacha20.NonceSizeX {
+	// 	return "", fmt.Errorf("ciphertext too short")
+	// }
 
-	nonce, ciphertext := ciphertext[:chacha20.NonceSizeX], ciphertext[chacha20.NonceSizeX:]
-	block, err := chacha20.NewUnauthenticatedCipher(cfg.AuthService.EncryptKey, nonce)
-	if err != nil {
-		return "", err
-	}
+	// nonce, ciphertext := ciphertext[:chacha20.NonceSizeX], ciphertext[chacha20.NonceSizeX:]
+	// block, err := chacha20.NewUnauthenticatedCipher(cfg.AuthService.EncryptKey, nonce)
+	// if err != nil {
+	// 	return "", err
+	// }
 
-	plaintext := make([]byte, len(ciphertext))
-	block.XORKeyStream(plaintext, ciphertext)
+	// plaintext := make([]byte, len(ciphertext))
+	// block.XORKeyStream(plaintext, ciphertext)
 
-	return string(plaintext), nil
+	// return string(plaintext), nil
 }

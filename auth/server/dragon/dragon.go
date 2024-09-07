@@ -1,7 +1,6 @@
 package dragon
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -11,6 +10,7 @@ import (
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/auth/server/authbox"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/service/colorlogger"
 
 	dragon "github.com/redis/go-redis/v9"
 )
@@ -56,6 +56,8 @@ func (d *Dragon) GetDragonUser(userID string) (*v1.AuthUser, error) {
 }
 
 func (d *Dragon) SaveUser(u *v1.AuthUser) error {
+	colorlogger.Log("Save user")
+
 	// Serialize the struct to JSON
 	sessionByte, err := json.Marshal(u)
 	if err != nil {
@@ -74,33 +76,28 @@ func (d *Dragon) SaveUser(u *v1.AuthUser) error {
 }
 
 func (d *Dragon) DragonSessionCheck(r *http.Request, cfg *authbox.JwtConfig) (*v1.AuthUser, int, error) {
-	for _, c := range r.Cookies() {
-		if c.Name == "session-id" {
-			v, err := authbox.ChaDecrypt(cfg.Config, c.Value)
-			if err != nil {
-				return nil, -1, err
-			}
+	colorlogger.Log("-----@@@@ Dragon")
 
-			s := v1.CookieSession{}
-			json.Unmarshal([]byte(v), &s)
+	sessionCookie, err := r.Cookie("session-id")
+	if err != nil {
+		return nil, -1, errors.New("Cookie Not Found")
+	}
 
-			user, err := d.GetDragonUser(s.ID)
-			if err != nil {
-				return nil, -1, errors.New("User Not Found")
-			}
+	sessionObj, err := cfg.VerifyJwe(sessionCookie.Value)
+	if err != nil {
+		return nil, -1, errors.New("Invalid cookie")
+	}
 
-			for i, session := range user.Sessions {
-				b, _ := json.Marshal(v1.CookieSession{
-					ID:  user.ID,
-					Exp: session.Exp,
-					Iat: session.Iat,
-				})
-				bs, _ := json.Marshal(&s)
+	user, err := d.GetDragonUser(sessionObj.ID)
+	if err != nil {
+		return nil, -1, errors.New("User Not Found")
+	}
 
-				if bytes.Equal(b, bs) {
-					return user, i, nil
-				}
-			}
+	colorlogger.Log(user)
+
+	for i, session := range user.Sessions {
+		if session.Iat == sessionObj.Iat && session.Exp == sessionObj.Exp {
+			return user, i, nil
 		}
 	}
 	return nil, -1, errors.New("User Not Found")

@@ -7,7 +7,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/codeharik/Atlantic/config"
 
-	dragon "github.com/redis/go-redis/v9"
+	"github.com/codeharik/Atlantic/auth/server/dragon"
 
 	// auth_app "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
@@ -18,28 +18,28 @@ import (
 type ProfileServiceServer struct {
 	v1connect.UnimplementedProfileServiceHandler
 
-	dragon *dragon.Client
+	JwtConfig *authbox.JwtConfig
+	dragon    *dragon.Dragon
 }
 
 func CreateProfileServiceServer(
+	dragon dragon.Dragon,
 	config *config.Config,
 ) ProfileServiceServer {
-	dragonURI := config.DragonConnectionUri()
-
-	options, err := dragon.ParseURL(dragonURI)
-	if err != nil {
-		panic(err)
-	}
-
-	dragonClient := dragon.NewClient(options)
-
 	return ProfileServiceServer{
-		dragon: dragonClient,
+		dragon:    &dragon,
+		JwtConfig: &authbox.JwtConfig{Config: config},
 	}
 }
 
 func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect.Request[v1.GetProfileRequest]) (*connect.Response[v1.GetProfileResponse], error) {
 	cb, ok := authbox.GetConnectBox(ctx)
+
+	user, sessionNumber, err := profile.dragon.DragonSessionCheck(cb.R, profile.JwtConfig)
+	if err == nil {
+		cb.User = user
+		cb.SessionNumber = sessionNumber
+	}
 
 	errorResponse, responserError := connect.NewResponse(&v1.GetProfileResponse{}),
 		connect.NewError(

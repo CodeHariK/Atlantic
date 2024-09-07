@@ -1,40 +1,40 @@
 package authbox
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
+	"github.com/codeharik/Atlantic/service/colorlogger"
 )
 
 func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
-	session *v1.CookieSession, accessToken *v1.AccessToken,
+	session *v1.JwtObj, accessToken *v1.JwtObj,
 ) (string, string, error) {
-	sessionByte, err := json.Marshal(session)
+	colorlogger.Log("Save Session")
+
+	sessionJwt, _, err := cfg.CreateJwtToken(session)
 	if err != nil {
 		return "", "", err
 	}
 
-	sessionHash, err := ChaEncrypt(cfg.Config, string(sessionByte))
+	sessionHash, err := ChaEncrypt(cfg.Config, sessionJwt)
 	if err != nil {
 		return "", "", err
 	}
 
-	accessByte, err := json.Marshal(accessToken)
-	if err != nil {
-		return "", "", err
-	}
-	_, _, err = cfg.CreateJwtToken(accessToken)
+	accessJwt, _, err := cfg.CreateJwtToken(accessToken)
 	if err != nil {
 		return "", "", err
 	}
 
-	accessHash, err := ChaEncrypt(cfg.Config, string(accessByte))
+	accessHash, err := ChaEncrypt(cfg.Config, accessJwt)
 	if err != nil {
 		return "", "", err
 	}
+
+	colorlogger.Log("Save Session Set cookie")
 
 	sessionCookie := http.Cookie{
 		Name:     "session-id",
@@ -56,7 +56,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	}
 	http.SetCookie(w, &accessCookie)
 
-	return sessionHash, string(accessByte), nil
+	return sessionHash, accessJwt, nil
 }
 
 func RevokeSession(w http.ResponseWriter) {

@@ -43,6 +43,9 @@ const (
 	// AuthServiceRevokeSessionProcedure is the fully-qualified name of the AuthService's RevokeSession
 	// RPC.
 	AuthServiceRevokeSessionProcedure = "/auth.v1.AuthService/RevokeSession"
+	// AuthServiceAckRefreshSessionProcedure is the fully-qualified name of the AuthService's
+	// AckRefreshSession RPC.
+	AuthServiceAckRefreshSessionProcedure = "/auth.v1.AuthService/AckRefreshSession"
 	// AuthServiceInvalidateAllSessionsProcedure is the fully-qualified name of the AuthService's
 	// InvalidateAllSessions RPC.
 	AuthServiceInvalidateAllSessionsProcedure = "/auth.v1.AuthService/InvalidateAllSessions"
@@ -55,20 +58,17 @@ var (
 	authServiceRegisterUserMethodDescriptor          = authServiceServiceDescriptor.Methods().ByName("RegisterUser")
 	authServiceAuthRefreshMethodDescriptor           = authServiceServiceDescriptor.Methods().ByName("AuthRefresh")
 	authServiceRevokeSessionMethodDescriptor         = authServiceServiceDescriptor.Methods().ByName("RevokeSession")
+	authServiceAckRefreshSessionMethodDescriptor     = authServiceServiceDescriptor.Methods().ByName("AckRefreshSession")
 	authServiceInvalidateAllSessionsMethodDescriptor = authServiceServiceDescriptor.Methods().ByName("InvalidateAllSessions")
 )
 
 // AuthServiceClient is a client for the auth.v1.AuthService service.
 type AuthServiceClient interface {
-	// Defines the EmailLogin RPC method
 	EmailLogin(context.Context, *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error)
-	// Defines the EmailLogin RPC method
 	RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error)
-	// Defines the EmailLogin RPC method
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
-	// Defines the RevokeSessions RPC method
 	RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error)
-	// Defines the InvalidateAllSessions RPC method
+	AckRefreshSession(context.Context, *connect.Request[v1.AckRefreshSessionRequest]) (*connect.Response[v1.AckRefreshSessionResponse], error)
 	InvalidateAllSessions(context.Context, *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error)
 }
 
@@ -106,6 +106,12 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceRevokeSessionMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		ackRefreshSession: connect.NewClient[v1.AckRefreshSessionRequest, v1.AckRefreshSessionResponse](
+			httpClient,
+			baseURL+AuthServiceAckRefreshSessionProcedure,
+			connect.WithSchema(authServiceAckRefreshSessionMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 		invalidateAllSessions: connect.NewClient[v1.InvalidateAllSessionsRequest, v1.InvalidateAllSessionsResponse](
 			httpClient,
 			baseURL+AuthServiceInvalidateAllSessionsProcedure,
@@ -121,6 +127,7 @@ type authServiceClient struct {
 	registerUser          *connect.Client[v1.RegisterUserRequest, v1.RegisterUserResponse]
 	authRefresh           *connect.Client[v1.RefreshRequest, v1.RefreshResponse]
 	revokeSession         *connect.Client[v1.RevokeRequest, v1.RevokeResponse]
+	ackRefreshSession     *connect.Client[v1.AckRefreshSessionRequest, v1.AckRefreshSessionResponse]
 	invalidateAllSessions *connect.Client[v1.InvalidateAllSessionsRequest, v1.InvalidateAllSessionsResponse]
 }
 
@@ -144,6 +151,11 @@ func (c *authServiceClient) RevokeSession(ctx context.Context, req *connect.Requ
 	return c.revokeSession.CallUnary(ctx, req)
 }
 
+// AckRefreshSession calls auth.v1.AuthService.AckRefreshSession.
+func (c *authServiceClient) AckRefreshSession(ctx context.Context, req *connect.Request[v1.AckRefreshSessionRequest]) (*connect.Response[v1.AckRefreshSessionResponse], error) {
+	return c.ackRefreshSession.CallUnary(ctx, req)
+}
+
 // InvalidateAllSessions calls auth.v1.AuthService.InvalidateAllSessions.
 func (c *authServiceClient) InvalidateAllSessions(ctx context.Context, req *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error) {
 	return c.invalidateAllSessions.CallUnary(ctx, req)
@@ -151,15 +163,11 @@ func (c *authServiceClient) InvalidateAllSessions(ctx context.Context, req *conn
 
 // AuthServiceHandler is an implementation of the auth.v1.AuthService service.
 type AuthServiceHandler interface {
-	// Defines the EmailLogin RPC method
 	EmailLogin(context.Context, *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error)
-	// Defines the EmailLogin RPC method
 	RegisterUser(context.Context, *connect.Request[v1.RegisterUserRequest]) (*connect.Response[v1.RegisterUserResponse], error)
-	// Defines the EmailLogin RPC method
 	AuthRefresh(context.Context, *connect.Request[v1.RefreshRequest]) (*connect.Response[v1.RefreshResponse], error)
-	// Defines the RevokeSessions RPC method
 	RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error)
-	// Defines the InvalidateAllSessions RPC method
+	AckRefreshSession(context.Context, *connect.Request[v1.AckRefreshSessionRequest]) (*connect.Response[v1.AckRefreshSessionResponse], error)
 	InvalidateAllSessions(context.Context, *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error)
 }
 
@@ -193,6 +201,12 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceRevokeSessionMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	authServiceAckRefreshSessionHandler := connect.NewUnaryHandler(
+		AuthServiceAckRefreshSessionProcedure,
+		svc.AckRefreshSession,
+		connect.WithSchema(authServiceAckRefreshSessionMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	authServiceInvalidateAllSessionsHandler := connect.NewUnaryHandler(
 		AuthServiceInvalidateAllSessionsProcedure,
 		svc.InvalidateAllSessions,
@@ -209,6 +223,8 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 			authServiceAuthRefreshHandler.ServeHTTP(w, r)
 		case AuthServiceRevokeSessionProcedure:
 			authServiceRevokeSessionHandler.ServeHTTP(w, r)
+		case AuthServiceAckRefreshSessionProcedure:
+			authServiceAckRefreshSessionHandler.ServeHTTP(w, r)
 		case AuthServiceInvalidateAllSessionsProcedure:
 			authServiceInvalidateAllSessionsHandler.ServeHTTP(w, r)
 		default:
@@ -234,6 +250,10 @@ func (UnimplementedAuthServiceHandler) AuthRefresh(context.Context, *connect.Req
 
 func (UnimplementedAuthServiceHandler) RevokeSession(context.Context, *connect.Request[v1.RevokeRequest]) (*connect.Response[v1.RevokeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.RevokeSession is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) AckRefreshSession(context.Context, *connect.Request[v1.AckRefreshSessionRequest]) (*connect.Response[v1.AckRefreshSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.AckRefreshSession is not implemented"))
 }
 
 func (UnimplementedAuthServiceHandler) InvalidateAllSessions(context.Context, *connect.Request[v1.InvalidateAllSessionsRequest]) (*connect.Response[v1.InvalidateAllSessionsResponse], error) {

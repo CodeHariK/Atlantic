@@ -18,32 +18,32 @@ export enum Role {
   ROLE_INVALID = 0,
 
   /**
-   * @generated from enum value: ADMIN = 32;
-   */
-  ADMIN = 32,
-
-  /**
-   * @generated from enum value: DEVELOPER = 31;
-   */
-  DEVELOPER = 31,
-
-  /**
-   * @generated from enum value: EDITOR = 30;
-   */
-  EDITOR = 30,
-
-  /**
    * @generated from enum value: USER = 1;
    */
   USER = 1,
+
+  /**
+   * @generated from enum value: EDITOR = 62;
+   */
+  EDITOR = 62,
+
+  /**
+   * @generated from enum value: DEVELOPER = 63;
+   */
+  DEVELOPER = 63,
+
+  /**
+   * @generated from enum value: ADMIN = 64;
+   */
+  ADMIN = 64,
 }
 // Retrieve enum metadata with: proto3.getEnumType(Role)
 proto3.util.setEnumType(Role, "auth.v1.Role", [
   { no: 0, name: "ROLE_INVALID" },
-  { no: 32, name: "ADMIN" },
-  { no: 31, name: "DEVELOPER" },
-  { no: 30, name: "EDITOR" },
   { no: 1, name: "USER" },
+  { no: 62, name: "EDITOR" },
+  { no: 63, name: "DEVELOPER" },
+  { no: 64, name: "ADMIN" },
 ]);
 
 /**
@@ -148,61 +148,6 @@ export class AuthUser extends Message<AuthUser> {
 }
 
 /**
- * @generated from message auth.v1.CookieSession
- */
-export class CookieSession extends Message<CookieSession> {
-  /**
-   * ID is required and must not be empty
-   *
-   * @generated from field: string ID = 1;
-   */
-  ID = "";
-
-  /**
-   * IssuedAt time
-   *
-   * @generated from field: int64 iat = 2;
-   */
-  iat = protoInt64.zero;
-
-  /**
-   * ExpireAt time
-   *
-   * @generated from field: int64 exp = 3;
-   */
-  exp = protoInt64.zero;
-
-  constructor(data?: PartialMessage<CookieSession>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "auth.v1.CookieSession";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "ID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "iat", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 3, name: "exp", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CookieSession {
-    return new CookieSession().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CookieSession {
-    return new CookieSession().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CookieSession {
-    return new CookieSession().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: CookieSession | PlainMessage<CookieSession> | undefined, b: CookieSession | PlainMessage<CookieSession> | undefined): boolean {
-    return proto3.util.equals(CookieSession, a, b);
-  }
-}
-
-/**
  * @generated from message auth.v1.UserSession
  */
 export class UserSession extends Message<UserSession> {
@@ -258,9 +203,9 @@ export class UserSession extends Message<UserSession> {
 }
 
 /**
- * @generated from message auth.v1.AccessToken
+ * @generated from message auth.v1.JwtObj
  */
-export class AccessToken extends Message<AccessToken> {
+export class JwtObj extends Message<JwtObj> {
   /**
    * ID is required and must not be empty
    *
@@ -287,13 +232,13 @@ export class AccessToken extends Message<AccessToken> {
    */
   exp = protoInt64.zero;
 
-  constructor(data?: PartialMessage<AccessToken>) {
+  constructor(data?: PartialMessage<JwtObj>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "auth.v1.AccessToken";
+  static readonly typeName = "auth.v1.JwtObj";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "ID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "roles", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -301,20 +246,20 @@ export class AccessToken extends Message<AccessToken> {
     { no: 4, name: "exp", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AccessToken {
-    return new AccessToken().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): JwtObj {
+    return new JwtObj().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AccessToken {
-    return new AccessToken().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): JwtObj {
+    return new JwtObj().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AccessToken {
-    return new AccessToken().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): JwtObj {
+    return new JwtObj().fromJsonString(jsonString, options);
   }
 
-  static equals(a: AccessToken | PlainMessage<AccessToken> | undefined, b: AccessToken | PlainMessage<AccessToken> | undefined): boolean {
-    return proto3.util.equals(AccessToken, a, b);
+  static equals(a: JwtObj | PlainMessage<JwtObj> | undefined, b: JwtObj | PlainMessage<JwtObj> | undefined): boolean {
+    return proto3.util.equals(JwtObj, a, b);
   }
 }
 
@@ -623,6 +568,86 @@ export class RevokeResponse extends Message<RevokeResponse> {
 
   static equals(a: RevokeResponse | PlainMessage<RevokeResponse> | undefined, b: RevokeResponse | PlainMessage<RevokeResponse> | undefined): boolean {
     return proto3.util.equals(RevokeResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.AckRefreshSessionRequest
+ */
+export class AckRefreshSessionRequest extends Message<AckRefreshSessionRequest> {
+  /**
+   * @generated from field: int32 oldSessionNumber = 1;
+   */
+  oldSessionNumber = 0;
+
+  /**
+   * @generated from field: int32 newSessionNumber = 2;
+   */
+  newSessionNumber = 0;
+
+  constructor(data?: PartialMessage<AckRefreshSessionRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.AckRefreshSessionRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "oldSessionNumber", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "newSessionNumber", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AckRefreshSessionRequest {
+    return new AckRefreshSessionRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AckRefreshSessionRequest {
+    return new AckRefreshSessionRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AckRefreshSessionRequest {
+    return new AckRefreshSessionRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AckRefreshSessionRequest | PlainMessage<AckRefreshSessionRequest> | undefined, b: AckRefreshSessionRequest | PlainMessage<AckRefreshSessionRequest> | undefined): boolean {
+    return proto3.util.equals(AckRefreshSessionRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message auth.v1.AckRefreshSessionResponse
+ */
+export class AckRefreshSessionResponse extends Message<AckRefreshSessionResponse> {
+  /**
+   * @generated from field: bool success = 1;
+   */
+  success = false;
+
+  constructor(data?: PartialMessage<AckRefreshSessionResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "auth.v1.AckRefreshSessionResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "success", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AckRefreshSessionResponse {
+    return new AckRefreshSessionResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AckRefreshSessionResponse {
+    return new AckRefreshSessionResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AckRefreshSessionResponse {
+    return new AckRefreshSessionResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AckRefreshSessionResponse | PlainMessage<AckRefreshSessionResponse> | undefined, b: AckRefreshSessionResponse | PlainMessage<AckRefreshSessionResponse> | undefined): boolean {
+    return proto3.util.equals(AckRefreshSessionResponse, a, b);
   }
 }
 

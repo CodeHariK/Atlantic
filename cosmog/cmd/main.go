@@ -10,7 +10,7 @@ import (
 )
 
 func CosmogServerFullUrl(config *config.Config) string {
-	return fmt.Sprintf("http://%s:%d", config.CosmogService.Address, config.CosmogService.Port)
+	return fmt.Sprintf("http://%s:%d", config.CosmogService.Host, config.CosmogService.Port)
 }
 
 func CosmogServerPortUrl(config *config.Config) string {

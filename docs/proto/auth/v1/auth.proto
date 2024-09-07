@@ -8,28 +8,25 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
 service AuthService {
-  // Defines the EmailLogin RPC method
   rpc EmailLogin(EmailLoginRequest) returns (EmailLoginResponse);
 
-  // Defines the EmailLogin RPC method
   rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
 
-  // Defines the EmailLogin RPC method
   rpc AuthRefresh(RefreshRequest) returns (RefreshResponse);
 
-  // Defines the RevokeSessions RPC method
   rpc RevokeSession(RevokeRequest) returns (RevokeResponse);
 
-  // Defines the InvalidateAllSessions RPC method
+  rpc AckRefreshSession(AckRefreshSessionRequest) returns (AckRefreshSessionResponse);
+
   rpc InvalidateAllSessions(InvalidateAllSessionsRequest) returns (InvalidateAllSessionsResponse);
 }
 
 enum Role {
   ROLE_INVALID = 0; // Default value
-  ADMIN = 32;
-  DEVELOPER = 31;
-  EDITOR = 30;
   USER = 1;
+  EDITOR = 62;
+  DEVELOPER = 63;
+  ADMIN = 64;
 }
 
 // The user profile message
@@ -67,18 +64,12 @@ message AuthUser {
   int32 sessionNumber = 10;
 }
 
-message CookieSession {
-  string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
-  int64 iat = 2; // IssuedAt time
-  int64 exp = 3; // ExpireAt time
-}
-
 message UserSession {
   string agent = 1; // UserAgent
   int64 iat = 2; // IssuedAt time
   int64 exp = 3; // ExpireAt time
 }
-message AccessToken {
+message JwtObj {
   string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
   string roles = 2;
   int64 iat = 3; // IssuedAt time
@@ -107,6 +98,13 @@ message RevokeRequest {
   int32 sessionNumber = 1;
 }
 message RevokeResponse {
+  bool success = 1;
+}
+message AckRefreshSessionRequest {
+  int32 oldSessionNumber = 1;
+  int32 newSessionNumber = 2;
+}
+message AckRefreshSessionResponse {
   bool success = 1;
 }
 message InvalidateAllSessionsRequest {}

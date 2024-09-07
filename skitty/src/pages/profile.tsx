@@ -1,5 +1,5 @@
 import { createSignal, createEffect } from "solid-js";
-import { AuthUser, RevokeRequest, InvalidateAllSessionsRequest, RefreshRequest } from "../../api/auth/v1/auth_pb.ts";
+import { AuthUser, RevokeRequest, InvalidateAllSessionsRequest, RefreshRequest, Role } from "../../api/auth/v1/auth_pb.ts";
 import { GetProfileRequest } from "../../api/auth/v1/profile_pb.ts";
 
 import { useConnect } from '../components/connect';
@@ -41,22 +41,22 @@ export default function Profile() {
       }
    });
 
-   // const handleRefresh = async () => {
-   //    setLoading(true);
-   //    setError("");
+   const handleRefresh = async () => {
+      setLoading(true);
+      setError("");
 
-   //    try {
-   //       const request = new RefreshRequest();
-   //       // Set any necessary fields in the request
-   //       const response = await authclient.authRefresh(request);
-   //       console.log("Refresh successful:", response);
-   //    } catch (err) {
-   //       console.error("Error refreshing auth:", err);
-   //       setError("Failed to refresh authentication.");
-   //    } finally {
-   //       setLoading(false);
-   //    }
-   // };
+      try {
+         const request = new RefreshRequest();
+         // Set any necessary fields in the request
+         const response = await authclient.authRefresh(request);
+         console.log("Refresh successful:", response);
+      } catch (err) {
+         console.error("Error refreshing auth:", err);
+         setError("Failed to refresh authentication.");
+      } finally {
+         setLoading(false);
+      }
+   };
 
    const Revoke = async (sessionNumber: number) => {
       setLoading(true);
@@ -97,6 +97,11 @@ export default function Profile() {
    return (
 
       <SpaceLayout two title='Profile'>
+
+         <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+            <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
+         </MaterialButton>
+
          {user() ? (
             <>
                <div>
@@ -104,6 +109,22 @@ export default function Profile() {
                      {/* <img src={user()!.avatar} alt="Avatar" class="avatar" /> */}
                      <h2>{user()!.username}</h2>
                      <p>Email: {user()!.email}</p>
+
+                     {
+                        (() => {
+                           let a = [];
+                           for (let i = 0; i < 64; i++) {
+                              // Check if the i-th bit is set in the role
+                              let b = (user()!.role >> BigInt(i)) & BigInt(1)
+                              if (b) {
+                                 a.push(proto3.getEnumType(Role).findNumber(i + 1)?.name);
+                              }
+                           }
+                           return <p>Role : {a.join(", ")}</p>;
+                        })()
+                     }
+
+
                      {/* <p>Role: {proto3.getEnumType(Role).findNumber(user()!.role.valueOf() & 1)?.name}</p> */}
                      <p>Status: {user()!.verified ? "Verified" : "Not Verified"}</p>
                      <p>Phone: {user()!.phoneNumber}</p>

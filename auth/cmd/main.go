@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/codeharik/Atlantic/auth/server"
+	"github.com/codeharik/Atlantic/auth/server/dragon"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/service/colorlogger"
@@ -33,12 +34,15 @@ func main() {
 		log.Fatalf("Cannot connect to database : %v", err.Error())
 	}
 
+	dragon := dragon.CreateDragon(&cfg)
+
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(router, storeInstance, &cfg)
+			server.CreateRoutes(router, storeInstance, dragon, &cfg)
 		},
 		func() {
 			storeInstance.Db.Close()
+			dragon.Client.Close()
 		},
 		AuthServerPortUrl(&cfg),
 		AuthServerFullUrl(&cfg),

@@ -10,6 +10,7 @@ import (
 	"connectrpc.com/otelconnect"
 	"github.com/codeharik/Atlantic/auth/server/auth"
 	"github.com/codeharik/Atlantic/auth/server/authn"
+	"github.com/codeharik/Atlantic/auth/server/dragon"
 	"github.com/codeharik/Atlantic/auth/server/profile"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
@@ -25,6 +26,7 @@ import (
 func CreateRoutes(
 	router *http.ServeMux,
 	storeInstance store.Store,
+	dragon dragon.Dragon,
 	config *config.Config,
 ) {
 	//------------------
@@ -55,6 +57,7 @@ func CreateRoutes(
 
 	authService := auth.CreateAuthServiceServer(
 		config,
+		dragon,
 		storeInstance.UserStore,
 	)
 	authPath, authHandler := v1connect.NewAuthServiceHandler(
@@ -73,6 +76,7 @@ func CreateRoutes(
 	// ProfileService
 
 	profileService := profile.CreateProfileServiceServer(
+		dragon,
 		config,
 	)
 	profilePath, profileHandler := v1connect.NewProfileServiceHandler(

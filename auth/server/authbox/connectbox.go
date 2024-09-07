@@ -28,12 +28,10 @@ func AddRedirect(w http.ResponseWriter, to string) {
 	w.Header().Set("Redirect-To", to)
 }
 
-func AuthRefreshOrProfileOrRevoke(r *http.Request) bool {
+func IsAuthRefresh(r *http.Request) bool {
 	refresh := r.URL.Path == v1connect.AuthServiceAuthRefreshProcedure
-	profile := r.URL.Path == v1connect.ProfileServiceGetProfileProcedure
-	revoke := r.URL.Path == v1connect.AuthServiceRevokeSessionProcedure
 
-	return refresh || profile || revoke
+	return refresh
 }
 
 func AuthRedirect(r *http.Request, w http.ResponseWriter, err error) error {

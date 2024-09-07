@@ -77,14 +77,19 @@ type Config struct {
 	} `json:"minio"`
 
 	CosmogService struct {
-		Address string `json:"address"`
-		Port    int    `json:"port"`
+		Host string `json:"host"`
+		Port int    `json:"port"`
 
 		MeiliSearch struct {
 			Host string `json:"host"`
 			Key  string `json:"key"`
 		} `json:"meilisearch"`
 	} `json:"cosmog_service"`
+
+	InventoryService struct {
+		Host string `json:"host"`
+		Port int    `json:"port"`
+	} `json:"inventory_service"`
 
 	FeatureFlags struct {
 		NewFeature bool `json:"new_feature"`

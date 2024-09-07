@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
+import { AckRefreshSessionRequest, AckRefreshSessionResponse, EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -13,8 +13,6 @@ export const AuthService = {
   typeName: "auth.v1.AuthService",
   methods: {
     /**
-     * Defines the EmailLogin RPC method
-     *
      * @generated from rpc auth.v1.AuthService.EmailLogin
      */
     emailLogin: {
@@ -24,8 +22,6 @@ export const AuthService = {
       kind: MethodKind.Unary,
     },
     /**
-     * Defines the EmailLogin RPC method
-     *
      * @generated from rpc auth.v1.AuthService.RegisterUser
      */
     registerUser: {
@@ -35,8 +31,6 @@ export const AuthService = {
       kind: MethodKind.Unary,
     },
     /**
-     * Defines the EmailLogin RPC method
-     *
      * @generated from rpc auth.v1.AuthService.AuthRefresh
      */
     authRefresh: {
@@ -46,8 +40,6 @@ export const AuthService = {
       kind: MethodKind.Unary,
     },
     /**
-     * Defines the RevokeSessions RPC method
-     *
      * @generated from rpc auth.v1.AuthService.RevokeSession
      */
     revokeSession: {
@@ -57,8 +49,15 @@ export const AuthService = {
       kind: MethodKind.Unary,
     },
     /**
-     * Defines the InvalidateAllSessions RPC method
-     *
+     * @generated from rpc auth.v1.AuthService.AckRefreshSession
+     */
+    ackRefreshSession: {
+      name: "AckRefreshSession",
+      I: AckRefreshSessionRequest,
+      O: AckRefreshSessionResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
      * @generated from rpc auth.v1.AuthService.InvalidateAllSessions
      */
     invalidateAllSessions: {
