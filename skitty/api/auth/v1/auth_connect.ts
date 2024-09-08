@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AckRefreshSessionRequest, AckRefreshSessionResponse, EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
+import { EmailLoginRequest, EmailLoginResponse, InvalidateAllSessionsRequest, InvalidateAllSessionsResponse, RefreshRequest, RefreshResponse, RegisterUserRequest, RegisterUserResponse, RevokeRequest, RevokeResponse } from "./auth_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -46,15 +46,6 @@ export const AuthService = {
       name: "RevokeSession",
       I: RevokeRequest,
       O: RevokeResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc auth.v1.AuthService.AckRefreshSession
-     */
-    ackRefreshSession: {
-      name: "AckRefreshSession",
-      I: AckRefreshSessionRequest,
-      O: AckRefreshSessionResponse,
       kind: MethodKind.Unary,
     },
     /**

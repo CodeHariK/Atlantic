@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
 	"strconv"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
-	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/codeharik/Atlantic/service/uuidservice"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -87,33 +87,36 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		Avatar:      avatarUUid,
 	}
 
-	uu, err := s.dragon.GetDragonUser(dbuser.ID.String())
-	if err == nil {
-		user.Sessions = uu.Sessions
+	session := &v1.JwtObj{
+		TokenId: rand.Int31(),
+		ID:      dbuser.ID.String(),
+		Iat:     time.Now().Unix(),
+		Exp:     time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
 
-	session := &v1.JwtObj{
-		ID:  dbuser.ID.String(),
-		Iat: time.Now().Unix(),
-		Exp: time.Now().Add(time.Hour * 24 * 7).Unix(),
+	uu, _, err := s.dragon.GetDragonUser(session)
+	if err == nil {
+		user.Sessions = uu.Sessions
 	}
 
 	sessionId, accessTok, err := authbox.SaveSession(
 		cb.R, cb.W, s.JwtConfig, session,
 		&v1.JwtObj{
-			ID:    dbuser.ID.String(),
-			Roles: strconv.FormatInt(dbuser.Role, 10),
-			Iat:   time.Now().Unix(),
-			Exp:   time.Now().Add(time.Hour).Unix(),
+			TokenId: session.TokenId,
+			ID:      dbuser.ID.String(),
+			Roles:   strconv.FormatInt(dbuser.Role, 10),
+			Iat:     time.Now().Unix(),
+			Exp:     time.Now().Add(time.Hour).Unix(),
 		})
 	if err != nil {
 		return nil, authbox.InvalidEmailPassword
 	}
 
 	user.Sessions = append(user.Sessions, &v1.UserSession{
-		Agent: cb.R.UserAgent(),
-		Iat:   session.Iat,
-		Exp:   session.Exp,
+		TokenId: session.TokenId,
+		Agent:   cb.R.UserAgent(),
+		Iat:     session.Iat,
+		Exp:     session.Exp,
 	})
 
 	err = s.dragon.SaveUser(user)
@@ -178,13 +181,10 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 		return nil, authbox.InternalServerError
 	}
 
-	user, sessionNumber, err := s.dragon.DragonSessionCheck(cb.R, s.JwtConfig)
+	user, sessionNumber, err := s.dragon.GetDragonSessionUser(cb.R, s.JwtConfig)
 	if err == nil {
 
-		cb.User = user
-		cb.SessionNumber = sessionNumber
-
-		sessionId, accessToken, err := s.RefreshSession(cb)
+		sessionId, accessToken, err := s.RefreshSession(cb, user, sessionNumber)
 		if err != nil {
 			return nil, err
 		}
@@ -198,37 +198,38 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 	return nil, err
 }
 
-func (s AuthServiceServer) RefreshSession(cb authbox.ConnectBox) (string, string, error) {
-	colorlogger.Log("Refresh Session")
-	colorlogger.Log(cb.R, cb.W, cb.SessionNumber, cb.User)
+func (s AuthServiceServer) RefreshSession(cb authbox.ConnectBox, user *v1.AuthUser, sessionNumber int) (string, string, error) {
+	tokenId := rand.Int31()
 
 	session := &v1.UserSession{
-		Agent: cb.R.UserAgent(),
-		Iat:   time.Now().Unix(),
-		Exp:   time.Now().Add(time.Hour * 24 * 7).Unix(),
+		TokenId: tokenId,
+		Agent:   cb.R.UserAgent(),
+		Iat:     time.Now().Unix(),
+		Exp:     time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
-
 	sessionId, accessToken, err := authbox.SaveSession(
 		cb.R, cb.W, s.JwtConfig,
 		&v1.JwtObj{
-			ID:  cb.User.ID,
-			Iat: session.Iat,
-			Exp: session.Exp,
+			TokenId: tokenId,
+			ID:      user.ID,
+			Iat:     session.Iat,
+			Exp:     session.Exp,
 		},
 		&v1.JwtObj{
-			ID:    cb.User.ID,
-			Roles: strconv.FormatInt(cb.User.Role, 10),
-			Iat:   time.Now().Unix(),
-			Exp:   time.Now().Add(time.Hour).Unix(),
+			TokenId: tokenId,
+			ID:      user.ID,
+			Roles:   strconv.FormatInt(user.Role, 10),
+			Iat:     time.Now().Unix(),
+			Exp:     time.Now().Add(time.Hour).Unix(),
 		},
 	)
 	if err != nil {
 		return "", "", authbox.InternalServerError
 	}
 
-	cb.User.Sessions[cb.SessionNumber] = session
+	user.Sessions[sessionNumber] = session
 
-	err = s.dragon.SaveUser(cb.User)
+	err = s.dragon.SaveUser(user)
 	if err != nil {
 		return "", "", authbox.InternalServerError
 	}
@@ -241,11 +242,8 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 		return nil, authbox.InternalServerError
 	}
 
-	user, sessionNumber, err := s.dragon.DragonSessionCheck(cb.R, s.JwtConfig)
+	user, sessionNumber, err := s.dragon.GetDragonUser(cb.Access)
 	if err == nil {
-
-		cb.User = user
-		cb.SessionNumber = sessionNumber
 
 		fmt.Println("-------")
 		fmt.Println(req.Msg.SessionNumber)
@@ -253,17 +251,17 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 
 		indexToRemove := int(req.Msg.SessionNumber)
 		if indexToRemove == -1 {
-			indexToRemove = cb.SessionNumber
+			indexToRemove = sessionNumber
 		}
-		if indexToRemove >= 0 && indexToRemove < len(cb.User.Sessions) {
-			cb.User.Sessions = append(cb.User.Sessions[:indexToRemove], cb.User.Sessions[indexToRemove+1:]...)
+		if indexToRemove >= 0 && indexToRemove < len(user.Sessions) {
+			user.Sessions = append(user.Sessions[:indexToRemove], user.Sessions[indexToRemove+1:]...)
 		}
 
-		if err := s.dragon.SaveUser(cb.User); err != nil {
+		if err := s.dragon.SaveUser(user); err != nil {
 			return nil, authbox.InternalServerError
 		}
 
-		if indexToRemove == cb.SessionNumber {
+		if indexToRemove == sessionNumber {
 			authbox.RevokeSession(cb.W)
 
 			authbox.AddRedirect(cb.W, "/login")
@@ -282,7 +280,7 @@ func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *conne
 		return nil, authbox.InternalServerError
 	}
 
-	user, _, err := s.dragon.DragonSessionCheck(cb.R, s.JwtConfig)
+	user, _, err := s.dragon.GetDragonUser(cb.Access)
 	if err == nil {
 
 		user.Sessions = nil

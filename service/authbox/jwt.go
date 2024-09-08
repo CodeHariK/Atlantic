@@ -48,10 +48,12 @@ type JwtConfig struct {
 
 func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.JwtObj) (string, *jwt.MapClaims, error) {
 	claims := jwt.MapClaims{
+		"iss":   "Atlantic",
 		"sub":   jwtobj.ID,
 		"roles": jwtobj.Roles,
 		"iat":   jwtobj.Iat,
 		"exp":   jwtobj.Exp,
+		"jti":   jwtobj.TokenId,
 	}
 
 	fmt.Println(claims)
@@ -101,6 +103,10 @@ func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.JwtObj, error) {
 		}
 		if roles, ok := claims["roles"].(string); ok {
 			j.Roles = string(roles)
+		}
+		jti, ok := claims["jti"].(int32)
+		if ok {
+			j.TokenId = jti
 		}
 
 		kid := cfg.GenerateKid(j.ID)

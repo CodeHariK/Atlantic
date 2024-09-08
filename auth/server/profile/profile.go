@@ -3,6 +3,7 @@ package profile
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"connectrpc.com/connect"
 	"github.com/codeharik/Atlantic/config"
@@ -38,18 +39,16 @@ func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect
 		return nil, authbox.InternalServerError
 	}
 
-	user, sessionNumber, err := profile.dragon.DragonSessionCheck(cb.R, profile.JwtConfig)
-	if err == nil {
-		cb.User = user
-		cb.SessionNumber = sessionNumber
-	} else {
+	user, sessionNumber, err := profile.dragon.GetDragonUser(cb.Access)
+	fmt.Println(err)
+	if err != nil {
 		return nil, authbox.InternalServerError
 	}
 
-	cb.User.SessionNumber = int32(cb.SessionNumber)
+	user.SessionNumber = int32(sessionNumber)
 
 	return connect.NewResponse(&v1.GetProfileResponse{
-		User: cb.User,
+		User: user,
 	},
 	), nil
 }

@@ -16,8 +16,6 @@ service AuthService {
 
   rpc RevokeSession(RevokeRequest) returns (RevokeResponse);
 
-  rpc AckRefreshSession(AckRefreshSessionRequest) returns (AckRefreshSessionResponse);
-
   rpc InvalidateAllSessions(InvalidateAllSessionsRequest) returns (InvalidateAllSessionsResponse);
 }
 
@@ -65,15 +63,17 @@ message AuthUser {
 }
 
 message UserSession {
-  string agent = 1; // UserAgent
-  int64 iat = 2; // IssuedAt time
-  int64 exp = 3; // ExpireAt time
-}
-message JwtObj {
-  string ID = 1 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
-  string roles = 2;
+  int32 tokenId = 1;
+  string agent = 2; // UserAgent
   int64 iat = 3; // IssuedAt time
   int64 exp = 4; // ExpireAt time
+}
+message JwtObj {
+  int32 tokenId = 1;
+  string ID = 2 [(buf.validate.field).string.uuid = true]; // ID is required and must not be empty
+  string roles = 3;
+  int64 iat = 4; // IssuedAt time
+  int64 exp = 5; // ExpireAt time
 }
 
 message EmailLoginRequest {
@@ -98,13 +98,6 @@ message RevokeRequest {
   int32 sessionNumber = 1;
 }
 message RevokeResponse {
-  bool success = 1;
-}
-message AckRefreshSessionRequest {
-  int32 oldSessionNumber = 1;
-  int32 newSessionNumber = 2;
-}
-message AckRefreshSessionResponse {
   bool success = 1;
 }
 message InvalidateAllSessionsRequest {}

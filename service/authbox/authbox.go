@@ -2,18 +2,15 @@ package authbox
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
-	"github.com/codeharik/Atlantic/service/colorlogger"
+	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
 )
 
 func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	session *v1.JwtObj, accessToken *v1.JwtObj,
 ) (string, string, error) {
-	colorlogger.Log("Save Session")
-
 	sessionJwt, _, err := cfg.CreateJwtToken(session)
 	if err != nil {
 		return "", "", err
@@ -34,12 +31,10 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 		return "", "", err
 	}
 
-	colorlogger.Log("Save Session Set cookie")
-
 	sessionCookie := http.Cookie{
-		Name:     "session-id",
+		Name:     ConstSessionID,
 		Value:    sessionHash,
-		Path:     "/",
+		Path:     v1connect.AuthServiceAuthRefreshProcedure,
 		HttpOnly: true,
 		Secure:   false,
 		Expires:  time.Unix(session.Exp, 0),
@@ -47,7 +42,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	http.SetCookie(w, &sessionCookie)
 
 	accessCookie := http.Cookie{
-		Name:     "access-token",
+		Name:     ConstAccessToken,
 		Value:    accessHash,
 		Path:     "/",
 		HttpOnly: true,
@@ -61,9 +56,9 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 
 func RevokeSession(w http.ResponseWriter) {
 	sessionCookie := http.Cookie{
-		Name:     "session-id",
+		Name:     ConstSessionID,
 		Value:    "",
-		Path:     "/",
+		Path:     v1connect.AuthServiceAuthRefreshProcedure,
 		HttpOnly: true,
 		Secure:   false,
 		MaxAge:   -1,
@@ -71,7 +66,7 @@ func RevokeSession(w http.ResponseWriter) {
 	http.SetCookie(w, &sessionCookie)
 
 	accessCookie := http.Cookie{
-		Name:     "access-token",
+		Name:     ConstAccessToken,
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
@@ -79,8 +74,4 @@ func RevokeSession(w http.ResponseWriter) {
 		MaxAge:   -1,
 	}
 	http.SetCookie(w, &accessCookie)
-}
-
-func RoleFromString(role string) (int64, error) {
-	return strconv.ParseInt(role, 10, 64)
 }

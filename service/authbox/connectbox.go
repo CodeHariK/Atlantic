@@ -9,10 +9,9 @@ import (
 )
 
 type ConnectBox struct {
-	User          *v1.AuthUser
-	SessionNumber int
-	R             *http.Request
-	W             http.ResponseWriter
+	Access *v1.JwtObj
+	R      *http.Request
+	W      http.ResponseWriter
 }
 
 func GetConnectBox(ctx context.Context) (ConnectBox, bool) {
