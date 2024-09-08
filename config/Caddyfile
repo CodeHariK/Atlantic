@@ -1,4 +1,0 @@
-localhost {
-	root * skitty/dist
-	file_server
-}

@@ -4,7 +4,16 @@
 
 * [Implementing A Modern E-Commerce Search](https://spinscale.de/posts/2020-06-22-implementing-a-modern-ecommerce-search.html)
 
-* [Book] Deep Learning for Search
+```code
+Add to /etc/hosts
+
+127.0.0.1 atlantic.shark.run
+```
+```code
+make caddy or make traefik
+make meilisearch
+make minio
+```
 
 E-Commerce Platform
 

@@ -26,7 +26,7 @@ func CreateMeterProvider(exporter sdkmetric.Exporter, config *config.Config) *sd
 		sdkmetric.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
-				semconv.ServiceNameKey.String(config.Service.Name),
+				semconv.ServiceNameKey.String(config.Atlantic),
 			),
 		),
 	)

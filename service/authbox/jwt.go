@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/codeharik/Atlantic/config"
-	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 
@@ -79,8 +78,6 @@ func (cfg *JwtConfig) VerifyJwe(tokenString string) (*v1.JwtObj, error) {
 		return nil, err
 	}
 
-	colorlogger.Log(jwtToken)
-
 	return cfg.VerifyJwt(jwtToken)
 }
 
@@ -104,9 +101,9 @@ func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.JwtObj, error) {
 		if roles, ok := claims["roles"].(string); ok {
 			j.Roles = string(roles)
 		}
-		jti, ok := claims["jti"].(int32)
+		jti, ok := claims["jti"].(float64)
 		if ok {
-			j.TokenId = jti
+			j.TokenId = int32(jti)
 		}
 
 		kid := cfg.GenerateKid(j.ID)

@@ -9,6 +9,8 @@ import (
 	"github.com/codeharik/Atlantic/service/servemux"
 )
 
+const serviceName = "cosmog"
+
 func CosmogServerFullUrl(config *config.Config) string {
 	return fmt.Sprintf("http://%s:%d", config.CosmogService.Host, config.CosmogService.Port)
 }
@@ -22,13 +24,13 @@ func main() {
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(router, &cfg)
+			server.CreateRoutes(serviceName, router, &cfg)
 		},
 		func() {
 		},
 		CosmogServerPortUrl(&cfg),
 		CosmogServerFullUrl(&cfg),
-		"Auth",
+		serviceName,
 		&cfg,
 	)
 }

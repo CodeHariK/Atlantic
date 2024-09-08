@@ -1,13 +1,11 @@
 package server
 
 import (
-	"log"
 	"net/http"
 
 	"connectrpc.com/connect"
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
-	"connectrpc.com/otelconnect"
 	"github.com/codeharik/Atlantic/auth/server/auth"
 	"github.com/codeharik/Atlantic/auth/server/profile"
 	"github.com/codeharik/Atlantic/auth/store"
@@ -15,7 +13,6 @@ import (
 	"github.com/codeharik/Atlantic/docs"
 	"github.com/codeharik/Atlantic/service/authbox"
 	"github.com/codeharik/Atlantic/service/dragon"
-	"go.opentelemetry.io/otel"
 
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"
@@ -24,6 +21,7 @@ import (
 )
 
 func CreateRoutes(
+	serviceName string,
 	router *http.ServeMux,
 	storeInstance store.Store,
 	dragon dragon.Dragon,
@@ -32,25 +30,12 @@ func CreateRoutes(
 	//------------------
 	// Docs
 
-	docs.OpenapiHandler(router, "auth", "Auth")
+	docs.OpenapiHandler(router, serviceName)
 
 	//------------------
 	// Interceptors
 
-	var interceptors []connect.Interceptor
-	if config.OTLP.GRPC != "" {
-		observability, err := otelconnect.NewInterceptor(
-			otelconnect.WithTracerProvider(otel.GetTracerProvider()),
-			otelconnect.WithMeterProvider(otel.GetMeterProvider()),
-			otelconnect.WithPropagator(otel.GetTextMapPropagator()),
-		)
-		if err != nil {
-			log.Fatalf("%v", err.Error())
-		}
-		interceptors = append(interceptors, observability)
-	}
-
-	compress1KB := connect.WithCompressMinBytes(1024)
+	interceptors := authbox.ConnectInterceptors(config)
 
 	//------------------
 	// AuthService
@@ -62,10 +47,10 @@ func CreateRoutes(
 	)
 	authPath, authHandler := v1connect.NewAuthServiceHandler(
 		authService,
-		connect.WithInterceptors(interceptors...), compress1KB,
+		interceptors...,
 	)
 
-	shield := authbox.NewMiddleware((&authbox.JwtConfig{Config: config}).Authenticate)
+	shield := authbox.ConnectShield(config)
 
 	router.Handle(
 		authPath,
@@ -81,7 +66,7 @@ func CreateRoutes(
 	)
 	profilePath, profileHandler := v1connect.NewProfileServiceHandler(
 		profileService,
-		connect.WithInterceptors(interceptors...), compress1KB,
+		interceptors...,
 	)
 	router.Handle(
 		profilePath,
@@ -96,7 +81,7 @@ func CreateRoutes(
 	)
 	userPath, userHandler := user_v1connect.NewUserServiceHandler(
 		userService,
-		connect.WithInterceptors(interceptors...), compress1KB,
+		interceptors...,
 	)
 	router.Handle(
 		userPath,
@@ -115,7 +100,7 @@ func CreateRoutes(
 	router.Handle(grpcreflect.NewHandlerV1(reflector))
 	router.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	router.Handle(grpchealth.NewHandler(
-		grpchealth.NewStaticChecker(config.Service.Name),
-		compress1KB,
+		grpchealth.NewStaticChecker(config.Atlantic),
+		connect.WithCompressMinBytes(1024),
 	))
 }

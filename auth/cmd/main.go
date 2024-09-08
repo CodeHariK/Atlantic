@@ -14,6 +14,8 @@ import (
 	"github.com/codeharik/Atlantic/service/servemux"
 )
 
+const serviceName = "auth"
+
 func AuthServerFullUrl(config *config.Config) string {
 	return fmt.Sprintf("http://%s:%d", config.AuthService.Address, config.AuthService.Port)
 }
@@ -38,7 +40,7 @@ func main() {
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(router, storeInstance, dragon, &cfg)
+			server.CreateRoutes(serviceName, router, storeInstance, dragon, &cfg)
 		},
 		func() {
 			storeInstance.Db.Close()
@@ -46,7 +48,7 @@ func main() {
 		},
 		AuthServerPortUrl(&cfg),
 		AuthServerFullUrl(&cfg),
-		"Auth",
+		serviceName,
 		&cfg,
 	)
 }

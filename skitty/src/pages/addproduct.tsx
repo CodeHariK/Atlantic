@@ -1,11 +1,25 @@
 import { ImageUploader } from "../components/uploadpic";
+import { Atlantic } from "../data/Constants";
+
+import { InventoryService } from "../../api/inventory/v1/inventory_connect";
 
 export function AddProduct() {
     return (
         <>
             <form>
 
-                <ImageUploader />
+                <ImageUploader uploadFunc={async (formData, setImageValid, setImageCategories) => {
+
+                    console.log(`${Atlantic}/${InventoryService.typeName}/UploadImage`)
+
+                    const response = await fetch(`${Atlantic}/${InventoryService.typeName}/UploadImage`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    console.log("Image upload successful:", response);
+
+                }} />
 
                 <div class="space-y-12">
                     <div class="border-b border-gray-900/10 pb-12">

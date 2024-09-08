@@ -15,23 +15,19 @@ require (
 	connectrpc.com/connect v1.16.2
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.2.0
-	connectrpc.com/otelconnect v0.7.1
 	github.com/bufbuild/protovalidate-go v0.6.5
 	github.com/codeharik/Atlantic/config v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/database v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/docs v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/service v0.0.0-00010101000000-000000000000
 	github.com/exaring/otelpgx v0.6.2
-	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.6.0
-	github.com/redis/go-redis/v9 v9.6.1
-	go.opentelemetry.io/otel v1.29.0
-	golang.org/x/crypto v0.26.0
 	google.golang.org/protobuf v1.34.2
 )
 
 require (
+	connectrpc.com/otelconnect v0.7.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -39,6 +35,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/google/cel-go v0.21.0 // indirect
 	github.com/gorilla/csrf v1.7.2 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
@@ -47,10 +44,12 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
+	github.com/redis/go-redis/v9 v9.6.1 // indirect
 	github.com/rs/cors v1.11.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.53.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.53.0 // indirect
+	go.opentelemetry.io/otel v1.29.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.0.0-20240816180739-2db4ef2c032c // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.5.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.28.0 // indirect
@@ -66,6 +65,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.29.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	go.uber.org/automaxprocs v1.5.3 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/net v0.28.0 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect

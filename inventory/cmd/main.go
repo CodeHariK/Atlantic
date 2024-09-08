@@ -13,6 +13,8 @@ import (
 	"github.com/minio/minio-go/v7"
 )
 
+const serviceName = "inventory"
+
 func InventoryServerFullUrl(config *config.Config) string {
 	return fmt.Sprintf("http://%s:%d", config.InventoryService.Host, config.InventoryService.Port)
 }
@@ -26,26 +28,15 @@ func main() {
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(router, &cfg)
+			server.CreateRoutes(serviceName, router, &cfg)
 		},
 		func() {
 		},
 		InventoryServerPortUrl(&cfg),
 		InventoryServerFullUrl(&cfg),
-		"Auth",
+		serviceName,
 		&cfg,
 	)
-
-	// url := "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
-	// img, err := utils.FetchImage(url)
-	// if err != nil {
-	// 	log.Fatalf("Error fetching image: %v", err)
-	// }
-
-	// err = utils.SaveImage(img, "output_image.png")
-	// if err != nil {
-	// 	log.Fatalf("Error saving image: %v", err)
-	// }
 
 	// cfg := config.LoadConfig(true, "config.json", "../config/config.json")
 

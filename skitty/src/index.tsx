@@ -137,7 +137,7 @@ export const routes: RouteDefinition[] = [
 
 
 function RouteList() {
-    const [iframeSrc, setIframeSrc] = createSignal('/profile');
+    const [iframeSrc, setIframeSrc] = createSignal('/addproduct');
 
     return (
         <div class="w-full flex flex-row h-screen">

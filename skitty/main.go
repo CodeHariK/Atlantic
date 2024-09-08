@@ -31,7 +31,7 @@ func main() {
 		}
 	})
 
-	// Start the server on port 8080
-	log.Println("Serving files on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Start the server on port 3000
+	log.Println("Serving files on http://localhost:3000")
+	log.Fatal(http.ListenAndServe(":3000", nil))
 }

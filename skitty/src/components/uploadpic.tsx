@@ -1,6 +1,11 @@
-import { createSignal } from 'solid-js';
+import { createSignal, Setter } from 'solid-js';
 
-export const ImageUploader = () => {
+
+type ImageUploaderProps = {
+    uploadFunc: (formdata: FormData, setImageValid: Setter<boolean>, setImageCategories: Setter<{}>) => void;
+};
+
+export const ImageUploader = (props: ImageUploaderProps) => {
     const [imageValid, setImageValid] = createSignal(true);
     const [imageCategories, setImageCategories] = createSignal({});
     const [imageSrc, setImageSrc] = createSignal('');
@@ -17,19 +22,21 @@ export const ImageUploader = () => {
         formData.append('item', file);
 
         try {
-            const response = await fetch('http://localhost:6543/upload', {
-                method: 'POST',
-                body: formData,
-            });
+            // const response = await fetch('http://localhost:6543/upload', {
+            //     method: 'POST',
+            //     body: formData,
+            // });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            props.uploadFunc(formData, setImageValid, setImageCategories)
 
-            const result = await response.json();
-            setImageValid(result.valid.valid)
-            setImageCategories(result.class)
-            console.log('File uploaded successfully:', result);
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
+
+            // const result = await response.json();
+            // setImageValid(result.valid.valid)
+            // setImageCategories(result.class)
+            // console.log('File uploaded successfully:', result);
         } catch (error) {
             console.error('Error uploading file:', error);
         }
@@ -45,6 +52,7 @@ export const ImageUploader = () => {
         const items = event.dataTransfer?.items;
 
         if (items && items[0].kind === 'file') {
+            // os file drag
             const file = items[0].getAsFile();
             if (file && file.type.startsWith('image/')) {
                 displayImage(URL.createObjectURL(file));
@@ -53,6 +61,7 @@ export const ImageUploader = () => {
                 alert('Please drop a valid image file.');
             }
         } else {
+            // browser file drag
             const url = event.dataTransfer?.getData('text/uri-list');
             if (url) {
                 displayImage(url);

@@ -1,0 +1,17 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+providers:
+  file:
+    filename: ./dynamic.yml
+    watch: true
+
+api:
+  dashboard: true
+  insecure: true  # Allows access to the dashboard without authentication (not recommended for production)
+
+log:
+  level: DEBUG  # Set log level to DEBUG to troubleshoot issues

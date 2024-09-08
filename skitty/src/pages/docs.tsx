@@ -1,4 +1,4 @@
-import { Service } from '../data/Constants';
+import { Atlantic } from '../data/Constants';
 import SpaceLayout from '../layouts/SpaceLayout';
 
 export default function NotFound() {
@@ -15,7 +15,7 @@ export default function NotFound() {
                         src={Service.Auth + "/docs"}
                         class="w-full h-full border-0"></iframe> */}
                     <iframe
-                        src={Service.Cosmog + "/docs"}
+                        src={Atlantic + "/docs"}
                         class="w-full h-full border-0"></iframe>
                 </div>
             </div>

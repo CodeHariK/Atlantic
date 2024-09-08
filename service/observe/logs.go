@@ -22,7 +22,7 @@ func CreateLoggerProvider(exporter sdklog.Exporter, config *config.Config) *sdkl
 		sdklog.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
-				semconv.ServiceNameKey.String(config.Service.Name),
+				semconv.ServiceNameKey.String(config.Atlantic),
 			),
 		),
 	)

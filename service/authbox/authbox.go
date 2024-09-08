@@ -34,6 +34,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	sessionCookie := http.Cookie{
 		Name:     ConstSessionID,
 		Value:    sessionHash,
+		Domain:   cfg.Domain,
 		Path:     v1connect.AuthServiceAuthRefreshProcedure,
 		HttpOnly: true,
 		Secure:   false,
@@ -44,6 +45,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	accessCookie := http.Cookie{
 		Name:     ConstAccessToken,
 		Value:    accessHash,
+		Domain:   cfg.Domain,
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   false,
@@ -54,10 +56,11 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	return sessionHash, accessJwt, nil
 }
 
-func RevokeSession(w http.ResponseWriter) {
+func RevokeSession(w http.ResponseWriter, cfg *JwtConfig) {
 	sessionCookie := http.Cookie{
 		Name:     ConstSessionID,
 		Value:    "",
+		Domain:   cfg.Domain,
 		Path:     v1connect.AuthServiceAuthRefreshProcedure,
 		HttpOnly: true,
 		Secure:   false,
@@ -68,6 +71,7 @@ func RevokeSession(w http.ResponseWriter) {
 	accessCookie := http.Cookie{
 		Name:     ConstAccessToken,
 		Value:    "",
+		Domain:   cfg.Domain,
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   false,

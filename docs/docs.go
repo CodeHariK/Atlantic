@@ -4,17 +4,18 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 //go:embed openapi
 var openapi embed.FS
 
-func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
+func OpenapiHandler(app *http.ServeMux, serviceName string) {
 	// Serve the embedded openapi.json file at /docs/openapi.json
 	app.HandleFunc("GET /docs/openapi.json", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/json")
 
-		openapiBytes, err := openapi.ReadFile("openapi/" + path + "/openapi.json")
+		openapiBytes, err := openapi.ReadFile("openapi/" + serviceName + "/openapi.json")
 		if err != nil {
 			http.Error(w, "Failed to read openapi.json", http.StatusInternalServerError)
 			return
@@ -92,6 +93,6 @@ func OpenapiHandler(app *http.ServeMux, path string, serviceName string) {
 
 </script>
 
-</html>`, serviceName, serviceName)))
+</html>`, strings.ToUpper(serviceName), strings.ToUpper(serviceName))))
 	})
 }

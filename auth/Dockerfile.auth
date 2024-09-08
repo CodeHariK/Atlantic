@@ -19,6 +19,6 @@ WORKDIR /
 COPY --from=build-stage /auth /auth
 # COPY --from=build-stage /app/config.json .
 
-EXPOSE 8080
+EXPOSE 7777
 
 CMD ["./auth"]

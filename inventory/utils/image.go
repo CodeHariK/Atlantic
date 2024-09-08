@@ -7,8 +7,8 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
-	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -28,28 +28,34 @@ func FetchImage(url string) (image.Image, error) {
 			return nil, fmt.Errorf("failed to decode image from base64 data: %v", err)
 		}
 	} else {
-		// Fetch the image from a URL
-		resp, err := http.Get(url)
-		if err != nil {
-			return nil, fmt.Errorf("failed to fetch image from url: %v", err)
-		}
-		defer resp.Body.Close()
+		return DownloadImage(url)
+	}
 
-		if resp.StatusCode != http.StatusOK {
-			return nil, fmt.Errorf("failed to fetch image: status code %d", resp.StatusCode)
-		}
+	return img, err
+}
 
-		img, _, err = image.Decode(resp.Body)
-		if err != nil {
-			return nil, fmt.Errorf("failed to decode image from response body: %v", err)
-		}
+func DownloadImage(url string) (image.Image, error) {
+	// Fetch the image from a URL
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch image from url: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch image: status code %d", resp.StatusCode)
+	}
+
+	img, _, err := image.Decode(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode image from response body: %v", err)
 	}
 
 	return img, err
 }
 
 func SaveImage(img image.Image, filename string) error {
-	outFile, err := ioutil.TempFile(".", filename)
+	outFile, err := os.Create("./uploads/" + filename)
 	if err != nil {
 		return fmt.Errorf("failed to create output file: %v", err)
 	}

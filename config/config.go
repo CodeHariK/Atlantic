@@ -28,11 +28,11 @@ type OAuthService struct {
 }
 
 type Config struct {
-	Service struct {
-		Name          string `json:"name"`
-		Dev           bool   `json:"dev"`
-		EnableMetrics bool   `json:"enable_metrics"`
-	} `json:"service"`
+	Atlantic      string `json:"atlantic"`
+	Domain        string `json:"domain"`
+	Dev           bool   `json:"dev"`
+	EnableMetrics bool   `json:"enable_metrics"`
+
 	AuthService struct {
 		Address string `json:"address"`
 		Port    int    `json:"port"`

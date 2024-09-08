@@ -37,7 +37,7 @@ func SetLogger(config config.Config) {
 		AddSource: true,
 	}
 	switch {
-	case config.Service.Dev:
+	case config.Dev:
 		handler = slog.NewTextHandler(os.Stderr, &opts)
 	default:
 		handler = slog.NewJSONHandler(os.Stderr, &opts)
@@ -46,7 +46,7 @@ func SetLogger(config config.Config) {
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	ProjectName = config.Service.Name
+	ProjectName = config.Atlantic
 }
 
 func Log(msgs ...any) {

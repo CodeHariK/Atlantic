@@ -57,11 +57,11 @@ func (d *Dragon) GetDragonUser(obj *v1.JwtObj) (*v1.AuthUser, int, error) {
 		}
 	}
 
+	// On Email Login
 	return &user, -1, nil
 }
 
 func (d *Dragon) SaveUser(u *v1.AuthUser) error {
-	// Serialize the struct to JSON
 	sessionByte, err := json.Marshal(u)
 	if err != nil {
 		return err

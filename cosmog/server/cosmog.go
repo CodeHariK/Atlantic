@@ -8,7 +8,6 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	v1 "github.com/codeharik/Atlantic/cosmog/api/cosmog/v1"
 	"github.com/codeharik/Atlantic/cosmog/api/cosmog/v1/v1connect"
-	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/meilisearch/meilisearch-go"
 )
 
@@ -48,8 +47,6 @@ func (c CosmogServiceServer) CreateSearchKey(ctx context.Context, req *connect.R
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
-
-	colorlogger.Log(c.cosmog.GetKeys(&meilisearch.KeysQuery{}))
 
 	return connect.NewResponse(&v1.CreateSearchKeyResponse{
 		Key: key.Key,

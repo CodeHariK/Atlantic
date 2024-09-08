@@ -73,7 +73,6 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		return nil, authbox.InvalidEmailPassword
 	}
 
-	// Handle error
 	avatarUUid, _ := uuidservice.ToUUIDstring(dbuser.Avatar)
 
 	user := &v1.AuthUser{
@@ -182,8 +181,7 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 	}
 
 	user, sessionNumber, err := s.dragon.GetDragonSessionUser(cb.R, s.JwtConfig)
-	if err == nil {
-
+	if err == nil && sessionNumber != -1 {
 		sessionId, accessToken, err := s.RefreshSession(cb, user, sessionNumber)
 		if err != nil {
 			return nil, err
@@ -242,7 +240,7 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 		return nil, authbox.InternalServerError
 	}
 
-	user, sessionNumber, err := s.dragon.GetDragonUser(cb.Access)
+	user, sessionNumber, err := s.dragon.GetDragonUser(cb.AccessObj)
 	if err == nil {
 
 		fmt.Println("-------")
@@ -262,7 +260,7 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 		}
 
 		if indexToRemove == sessionNumber {
-			authbox.RevokeSession(cb.W)
+			authbox.RevokeSession(cb.W, s.JwtConfig)
 
 			authbox.AddRedirect(cb.W, "/login")
 		}
@@ -280,7 +278,7 @@ func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *conne
 		return nil, authbox.InternalServerError
 	}
 
-	user, _, err := s.dragon.GetDragonUser(cb.Access)
+	user, _, err := s.dragon.GetDragonUser(cb.AccessObj)
 	if err == nil {
 
 		user.Sessions = nil
@@ -290,7 +288,7 @@ func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *conne
 		}
 
 	}
-	authbox.RevokeSession(cb.W)
+	authbox.RevokeSession(cb.W, s.JwtConfig)
 	authbox.AddRedirect(cb.W, "/login")
 
 	return connect.NewResponse(

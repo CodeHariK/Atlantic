@@ -21,7 +21,7 @@ func CreateTracerProvider(exporter sdktrace.SpanExporter, config *config.Config)
 		sdktrace.WithResource(
 			resource.NewWithAttributes(
 				semconv.SchemaURL,
-				semconv.ServiceNameKey.String(config.Service.Name),
+				semconv.ServiceNameKey.String(config.Atlantic),
 			),
 		),
 	)

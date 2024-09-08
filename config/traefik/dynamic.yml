@@ -1,0 +1,40 @@
+http:
+
+  routers:
+
+    inventory:
+      rule: "PathPrefix(`/inventory.v1.InventoryService`)"
+      service: inventory-service
+    profile:
+      rule: "PathPrefix(`/profile.v1.ProfileService`)"
+      service: profile-service
+    auth:
+      rule: "PathPrefix(`/auth.v1.AuthService`)"
+      service: auth-service
+    skitty:
+      rule: "PathPrefix(`/`)"
+      service: skitty
+      entryPoints:
+        - web
+
+  services:
+    inventory-service:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:9100"
+
+    profile-service:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:7777"
+
+    auth-service:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:7777"
+
+    skitty:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:3000"
+          

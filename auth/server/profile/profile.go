@@ -39,7 +39,7 @@ func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect
 		return nil, authbox.InternalServerError
 	}
 
-	user, sessionNumber, err := profile.dragon.GetDragonUser(cb.Access)
+	user, sessionNumber, err := profile.dragon.GetDragonUser(cb.AccessObj)
 	fmt.Println(err)
 	if err != nil {
 		return nil, authbox.InternalServerError

@@ -7,7 +7,7 @@ services:
       context: auth
       dockerfile: Dockerfile.auth
     ports:
-      - "8080:8080"
+      - "7777:7777"
     volumes:
       - ./config/config.json:/config.json
     # depends_on:

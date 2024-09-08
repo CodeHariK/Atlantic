@@ -1,4 +1,4 @@
-PORT = 8080
+PORT = 7777
 CONTAINER_NAME = auth
 
 gen:

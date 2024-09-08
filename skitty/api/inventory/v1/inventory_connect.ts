@@ -3,24 +3,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { UploadImageRequest, UploadImageResponse } from "./inventory_pb.js";
-import { MethodKind } from "@bufbuild/protobuf";
-
 /**
  * @generated from service inventory.v1.InventoryService
  */
 export const InventoryService = {
   typeName: "inventory.v1.InventoryService",
   methods: {
-    /**
-     * @generated from rpc inventory.v1.InventoryService.UploadImage
-     */
-    uploadImage: {
-      name: "UploadImage",
-      I: UploadImageRequest,
-      O: UploadImageResponse,
-      kind: MethodKind.Unary,
-    },
   }
 } as const;
 

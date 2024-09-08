@@ -1,46 +1,34 @@
 package server
 
 import (
-	"log"
 	"net/http"
 
 	"connectrpc.com/connect"
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
-	"connectrpc.com/otelconnect"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
-	"go.opentelemetry.io/otel"
+	"github.com/codeharik/Atlantic/service/authbox"
 
 	"github.com/codeharik/Atlantic/inventory/api/inventory/v1/v1connect"
 )
 
 func CreateRoutes(
+	serviceName string,
 	router *http.ServeMux,
 	config *config.Config,
 ) {
 	//------------------
 	// Docs
 
-	docs.OpenapiHandler(router, "inventory", "Inventory")
+	docs.OpenapiHandler(router, serviceName)
 
 	//------------------
-	// Interceptors
+	//
 
-	var interceptors []connect.Interceptor
-	if config.OTLP.GRPC != "" {
-		observability, err := otelconnect.NewInterceptor(
-			otelconnect.WithTracerProvider(otel.GetTracerProvider()),
-			otelconnect.WithMeterProvider(otel.GetMeterProvider()),
-			otelconnect.WithPropagator(otel.GetTextMapPropagator()),
-		)
-		if err != nil {
-			log.Fatalf("%v", err.Error())
-		}
-		interceptors = append(interceptors, observability)
-	}
+	httpShield := authbox.HttpShield(config)
 
-	compress1KB := connect.WithCompressMinBytes(1024)
+	router.HandleFunc("/inventory.v1.InventoryService/UploadImage", httpShield(uploadFile))
 
 	//------------------
 	// CosmogService
@@ -48,15 +36,14 @@ func CreateRoutes(
 	inventoryService := CreateInventoryServiceServer()
 	inventoryPath, inventoryHandler := v1connect.NewInventoryServiceHandler(
 		inventoryService,
-		connect.WithInterceptors(interceptors...), compress1KB,
+		authbox.ConnectInterceptors(config)...,
 	)
 
-	// shield := authn.NewMiddleware(cosmogService.Authenticate)
+	shield := authbox.ConnectShield(config)
 
 	router.Handle(
 		inventoryPath,
-		// shield.Wrap(cosmogHandler),
-		inventoryHandler,
+		shield.Wrap(inventoryHandler),
 	)
 
 	//------------------
@@ -68,7 +55,7 @@ func CreateRoutes(
 	router.Handle(grpcreflect.NewHandlerV1(reflector))
 	router.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	router.Handle(grpchealth.NewHandler(
-		grpchealth.NewStaticChecker(config.Service.Name),
-		compress1KB,
+		grpchealth.NewStaticChecker(config.Atlantic),
+		connect.WithCompressMinBytes(1024),
 	))
 }
