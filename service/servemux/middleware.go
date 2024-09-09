@@ -37,7 +37,6 @@ func CORSMiddleware(handler http.Handler) http.Handler {
 			http.MethodPatch,
 			http.MethodDelete,
 		},
-		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
 		AllowedHeaders: []string{
 			"*",

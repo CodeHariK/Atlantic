@@ -1,0 +1,26 @@
+# Stage 1: Build Go application and Vite frontend
+FROM golang:1.23.1-alpine3.20 AS build-stage
+
+WORKDIR /app
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /skitty main.go
+
+FROM oven/bun:latest AS bun-stage
+WORKDIR /app
+COPY . .
+RUN bun install
+RUN bun vite build
+
+FROM alpine:latest
+
+WORKDIR /
+
+# Copy the built Go binary and the frontend dist folder from the build stage
+COPY --from=build-stage /skitty /skitty
+COPY --from=bun-stage /app/dist /dist
+
+# Expose the required port
+EXPOSE 3000
+
+# Command to run the Go binary
+CMD ["./skitty"]

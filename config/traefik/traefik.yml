@@ -6,7 +6,7 @@ entryPoints:
 
 providers:
   file:
-    filename: ./dynamic.yml
+    directory: ./config/traefik
     watch: true
 
 api:
