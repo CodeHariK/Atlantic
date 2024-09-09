@@ -77,12 +77,18 @@ func (d *Dragon) SaveUser(u *v1.AuthUser) error {
 	return nil
 }
 
-func (d *Dragon) GetDragonSessionUser(r *http.Request, cfg *authbox.JwtConfig) (*v1.AuthUser, int, error) {
+func (d *Dragon) GetDragonSessionUser(r *http.Request, cfg *config.Config) (*v1.AuthUser, int, error) {
 	sessionCookie, err := r.Cookie(authbox.ConstSessionID)
 	if err != nil {
 		return nil, -1, errors.New("Cookie Not Found")
 	}
-	sessionObj, err := cfg.VerifyJwe(sessionCookie.Value)
+
+	sessionObj, err := authbox.VerifyJwe(
+		cfg.AuthService.Encrypt_Key,
+		sessionCookie.Value,
+		cfg.AuthService.KeyMod,
+		cfg.AuthService.SessionKeyPairs,
+	)
 	if err != nil {
 		return nil, -1, errors.New("Invalid cookie")
 	}

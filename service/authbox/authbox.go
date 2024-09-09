@@ -6,27 +6,36 @@ import (
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/auth/api/auth/v1/v1connect"
+	"github.com/codeharik/Atlantic/config"
 )
 
-func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
+func SaveSession(r *http.Request, w http.ResponseWriter, cfg *config.Config,
 	session *v1.JwtObj, accessToken *v1.JwtObj,
 ) (string, string, error) {
-	sessionJwt, _, err := cfg.CreateJwtToken(session)
+	sessionJwt, _, err := CreateJwtToken(
+		session,
+		cfg.AuthService.KeyMod,
+		cfg.AuthService.SessionKeyPairs,
+	)
 	if err != nil {
 		return "", "", err
 	}
 
-	sessionHash, err := ChaEncrypt(cfg.Config, sessionJwt)
+	sessionHash, err := ChaEncrypt(cfg.AuthService.Encrypt_Key, sessionJwt)
 	if err != nil {
 		return "", "", err
 	}
 
-	accessJwt, _, err := cfg.CreateJwtToken(accessToken)
+	accessJwt, _, err := CreateJwtToken(
+		accessToken,
+		cfg.AuthService.KeyMod,
+		cfg.AuthService.AccessKeyPairs,
+	)
 	if err != nil {
 		return "", "", err
 	}
 
-	accessHash, err := ChaEncrypt(cfg.Config, accessJwt)
+	accessHash, err := ChaEncrypt(cfg.AuthService.Encrypt_Key, accessJwt)
 	if err != nil {
 		return "", "", err
 	}
@@ -56,7 +65,7 @@ func SaveSession(r *http.Request, w http.ResponseWriter, cfg *JwtConfig,
 	return sessionHash, accessJwt, nil
 }
 
-func RevokeSession(w http.ResponseWriter, cfg *JwtConfig) {
+func RevokeSession(w http.ResponseWriter, cfg *config.Config) {
 	sessionCookie := http.Cookie{
 		Name:     ConstSessionID,
 		Value:    "",

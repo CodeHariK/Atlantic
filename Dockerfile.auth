@@ -2,12 +2,13 @@ FROM golang:1.23.1-alpine3.20 AS build-stage
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN go mod download
-
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /auth ./cmd
+RUN cd auth
+
+RUN go mod download
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o ../auth ./auth/cmd
 
 FROM build-stage AS run-test-stage
 RUN go test -v ./...
@@ -17,7 +18,7 @@ FROM alpine:latest
 WORKDIR /
 
 COPY --from=build-stage /auth /auth
-# COPY --from=build-stage /app/config.json .
+COPY --from=build-stage /app/config/config.json .
 
 EXPOSE 7777
 

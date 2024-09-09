@@ -1,12 +1,12 @@
 package config
 
 import (
-	"crypto/ed25519"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/codeharik/Atlantic/config/secret"
 	"golang.org/x/oauth2"
@@ -37,14 +37,13 @@ type Config struct {
 		Address string `json:"address"`
 		Port    int    `json:"port"`
 
-		KeyMod     int    `json:"keymod"`
-		JwtKeyPath string `json:"jwt_keys"`
+		KeyMod int `json:"keymod"`
 
 		Encrypt_Key string `json:"encypt_key"`
 		EncryptKey  []byte
 
-		PublicKeys  []ed25519.PublicKey
-		PrivateKeys []ed25519.PrivateKey
+		AccessKeyPairs  []secret.KeyPair
+		SessionKeyPairs []secret.KeyPair
 
 		OAuth OAuth `json:"oauth"`
 	} `json:"auth_service"`
@@ -170,24 +169,10 @@ func (config *Config) DragonConnectionUri() string {
 }
 
 func loadSecretKeys(cfg *Config) {
-	for i := range cfg.AuthService.KeyMod {
-		privateKeyPath := (fmt.Sprintf("%sjwt_%d_private_key.pem", cfg.AuthService.JwtKeyPath, i))
-		publicKeyPath := (fmt.Sprintf("%sjwt_%d_public_key.pem", cfg.AuthService.JwtKeyPath, i))
+	generateSessionKeys(cfg)
+	cfg.AuthService.SessionKeyPairs = secret.LoadKeys(cfg.AuthService.KeyMod, "s")
 
-		privateKey, err := secret.ReadPrivateKeyFromFile(privateKeyPath)
-		if err != nil {
-			fmt.Println("Error reading private key:", err)
-			os.Exit(1)
-		}
-		cfg.AuthService.PrivateKeys = append(cfg.AuthService.PrivateKeys, privateKey)
-
-		publicKey, err := secret.ReadPublicKeyFromFile(publicKeyPath)
-		if err != nil {
-			fmt.Println("Error reading public key:", err)
-			os.Exit(1)
-		}
-		cfg.AuthService.PublicKeys = append(cfg.AuthService.PublicKeys, publicKey)
-	}
+	cfg.AuthService.AccessKeyPairs = secret.GenerateAndSaveKeys(cfg.AuthService.KeyMod, "")
 }
 
 // Setup OAuth2 configuration
@@ -201,5 +186,22 @@ func loadOauthConfig(cfg *Config) {
 			AuthURL:  cfg.AuthService.OAuth.Discord.AuthURL,
 			TokenURL: cfg.AuthService.OAuth.Discord.TokenURL,
 		},
+	}
+}
+
+func generateSessionKeys(cfg *Config) {
+	count := 0
+	filepath.Walk("keys", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !info.IsDir() {
+			count++
+		}
+		return nil
+	})
+
+	if count != 2*cfg.AuthService.KeyMod {
+		cfg.AuthService.SessionKeyPairs = secret.GenerateAndSaveKeys(cfg.AuthService.KeyMod, "s")
 	}
 }

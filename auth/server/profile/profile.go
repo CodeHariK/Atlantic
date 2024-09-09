@@ -19,8 +19,8 @@ import (
 type ProfileServiceServer struct {
 	v1connect.UnimplementedProfileServiceHandler
 
-	JwtConfig *authbox.JwtConfig
-	dragon    *dragon.Dragon
+	config *config.Config
+	dragon *dragon.Dragon
 }
 
 func CreateProfileServiceServer(
@@ -28,8 +28,8 @@ func CreateProfileServiceServer(
 	config *config.Config,
 ) ProfileServiceServer {
 	return ProfileServiceServer{
-		dragon:    &dragon,
-		JwtConfig: &authbox.JwtConfig{Config: config},
+		dragon: &dragon,
+		config: config,
 	}
 }
 

@@ -26,9 +26,9 @@ func CreateRoutes(
 	//------------------
 	//
 
-	httpShield := authbox.HttpShield(config)
-
-	router.HandleFunc("/inventory.v1.InventoryService/UploadImage", httpShield(uploadFile))
+	router.HandleFunc(
+		"/inventory.v1.InventoryService/UploadImage",
+		authbox.HttpShield(config, uploadFile))
 
 	//------------------
 	// CosmogService

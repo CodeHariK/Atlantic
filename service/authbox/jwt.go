@@ -5,11 +5,11 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/codeharik/Atlantic/config"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
+	"github.com/codeharik/Atlantic/config/secret"
 )
 
 func HashPassword(password string) (string, error) {
@@ -33,19 +33,15 @@ func CheckPassword(hashedPassword string, inputPassword string) error {
 	return nil
 }
 
-func (cfg *JwtConfig) GenerateKid(sub string) int {
+func GenerateKid(uid string, KeyMod int) int {
 	var sum int
-	for _, b := range sub {
+	for _, b := range uid {
 		sum += int(b)
 	}
-	return sum % cfg.AuthService.KeyMod
+	return sum % KeyMod
 }
 
-type JwtConfig struct {
-	*config.Config
-}
-
-func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.JwtObj) (string, *jwt.MapClaims, error) {
+func CreateJwtToken(jwtobj *v1.JwtObj, KeyMod int, KeyPairs []secret.KeyPair) (string, *jwt.MapClaims, error) {
 	claims := jwt.MapClaims{
 		"iss":   "Atlantic",
 		"sub":   jwtobj.ID,
@@ -57,13 +53,13 @@ func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.JwtObj) (string, *jwt.MapClaims,
 
 	fmt.Println(claims)
 
-	kid := cfg.GenerateKid(jwtobj.ID)
+	kid := GenerateKid(jwtobj.ID, KeyMod)
 
 	// Create a new token object using EdDSA (Ed25519)
 	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, claims)
 
 	// Sign the token using the private key
-	tokenString, err := token.SignedString(cfg.AuthService.PrivateKeys[kid])
+	tokenString, err := token.SignedString(KeyPairs[kid].Private)
 	if err != nil {
 		fmt.Println("Error signing token:", err)
 		return "", nil, err
@@ -72,16 +68,16 @@ func (cfg *JwtConfig) CreateJwtToken(jwtobj *v1.JwtObj) (string, *jwt.MapClaims,
 	return tokenString, &claims, nil
 }
 
-func (cfg *JwtConfig) VerifyJwe(tokenString string) (*v1.JwtObj, error) {
-	jwtToken, err := ChaDecrypt(cfg.Config, tokenString)
+func VerifyJwe(EncryptKey string, tokenString string, KeyMod int, KeyPairs []secret.KeyPair) (*v1.JwtObj, error) {
+	jwtToken, err := ChaDecrypt(EncryptKey, tokenString)
 	if err != nil {
 		return nil, err
 	}
 
-	return cfg.VerifyJwt(jwtToken)
+	return VerifyJwt(jwtToken, KeyMod, KeyPairs)
 }
 
-func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.JwtObj, error) {
+func VerifyJwt(tokenString string, KeyMod int, KeyPairs []secret.KeyPair) (*v1.JwtObj, error) {
 	j := &v1.JwtObj{}
 
 	// Parse the token to extract the `kid` and use it to get the correct key
@@ -106,11 +102,10 @@ func (cfg *JwtConfig) VerifyJwt(tokenString string) (*v1.JwtObj, error) {
 			j.TokenId = int32(jti)
 		}
 
-		kid := cfg.GenerateKid(j.ID)
-		// kid := cfg.GenerateKid2(&claims)
+		kid := GenerateKid(j.ID, KeyMod)
 
 		// Get the public key based on the `kid`
-		publicKey := cfg.AuthService.PublicKeys[kid]
+		publicKey := KeyPairs[kid].Public
 
 		// Ensure the signing method is Ed25519
 		if _, ok := token.Method.(*jwt.SigningMethodEd25519); !ok {
@@ -139,14 +134,14 @@ func GetMD5Hash(text string) string {
 }
 
 // Encrypt encrypts the given plaintext using ChaCha20.
-func ChaEncrypt(cfg *config.Config, plaintext string) (string, error) {
+func ChaEncrypt(EncryptKey string, plaintext string) (string, error) {
 	return plaintext, nil
 	// nonce := make([]byte, chacha20.NonceSizeX)
 	// if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
 	// 	return "", err
 	// }
 
-	// block, err := chacha20.NewUnauthenticatedCipher(cfg.AuthService.EncryptKey, nonce)
+	// block, err := chacha20.NewUnauthenticatedCipher(EncryptKey, nonce)
 	// if err != nil {
 	// 	return "", err
 	// }
@@ -158,7 +153,7 @@ func ChaEncrypt(cfg *config.Config, plaintext string) (string, error) {
 }
 
 // Decrypt decrypts the given ciphertext using ChaCha20.
-func ChaDecrypt(cfg *config.Config, ciphertextHex string) (string, error) {
+func ChaDecrypt(EncryptKey string, ciphertextHex string) (string, error) {
 	return ciphertextHex, nil
 	// ciphertext, err := hex.DecodeString(ciphertextHex)
 	// if err != nil {
@@ -170,7 +165,7 @@ func ChaDecrypt(cfg *config.Config, ciphertextHex string) (string, error) {
 	// }
 
 	// nonce, ciphertext := ciphertext[:chacha20.NonceSizeX], ciphertext[chacha20.NonceSizeX:]
-	// block, err := chacha20.NewUnauthenticatedCipher(cfg.AuthService.EncryptKey, nonce)
+	// block, err := chacha20.NewUnauthenticatedCipher(EncryptKey, nonce)
 	// if err != nil {
 	// 	return "", err
 	// }
