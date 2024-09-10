@@ -9,7 +9,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
-	"github.com/codeharik/Atlantic/config/secret"
+	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/service/colorlogger"
 )
 
 func HashPassword(password string) (string, error) {
@@ -41,7 +42,7 @@ func GenerateKid(uid string, KeyMod int) int {
 	return sum % KeyMod
 }
 
-func CreateJwtToken(jwtobj *v1.JwtObj, KeyMod int, KeyPairs []secret.KeyPair) (string, *jwt.MapClaims, error) {
+func CreateJwtToken(jwtobj *v1.JwtObj, KeyMod int, KeyPairs []config.KeyPair) (string, *jwt.MapClaims, error) {
 	claims := jwt.MapClaims{
 		"iss":   "Atlantic",
 		"sub":   jwtobj.ID,
@@ -65,10 +66,19 @@ func CreateJwtToken(jwtobj *v1.JwtObj, KeyMod int, KeyPairs []secret.KeyPair) (s
 		return "", nil, err
 	}
 
+	//////
+	//////
+	//////
+	publicKey := KeyPairs[kid].Public
+	colorlogger.Log("--- Create : ", kid, publicKey)
+	//////
+	//////
+	//////
+
 	return tokenString, &claims, nil
 }
 
-func VerifyJwe(EncryptKey string, tokenString string, KeyMod int, KeyPairs []secret.KeyPair) (*v1.JwtObj, error) {
+func VerifyJwe(EncryptKey string, tokenString string, KeyMod int, KeyPairs []config.KeyPair) (*v1.JwtObj, error) {
 	jwtToken, err := ChaDecrypt(EncryptKey, tokenString)
 	if err != nil {
 		return nil, err
@@ -77,7 +87,7 @@ func VerifyJwe(EncryptKey string, tokenString string, KeyMod int, KeyPairs []sec
 	return VerifyJwt(jwtToken, KeyMod, KeyPairs)
 }
 
-func VerifyJwt(tokenString string, KeyMod int, KeyPairs []secret.KeyPair) (*v1.JwtObj, error) {
+func VerifyJwt(tokenString string, KeyMod int, KeyPairs []config.KeyPair) (*v1.JwtObj, error) {
 	j := &v1.JwtObj{}
 
 	// Parse the token to extract the `kid` and use it to get the correct key
@@ -106,6 +116,8 @@ func VerifyJwt(tokenString string, KeyMod int, KeyPairs []secret.KeyPair) (*v1.J
 
 		// Get the public key based on the `kid`
 		publicKey := KeyPairs[kid].Public
+
+		colorlogger.Log("--- Verify : ", kid, publicKey)
 
 		// Ensure the signing method is Ed25519
 		if _, ok := token.Method.(*jwt.SigningMethodEd25519); !ok {

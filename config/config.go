@@ -1,16 +1,20 @@
 package config
 
 import (
+	"crypto/ed25519"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"os"
-	"path/filepath"
 
-	"github.com/codeharik/Atlantic/config/secret"
 	"golang.org/x/oauth2"
 )
+
+type KeyPair struct {
+	Public  ed25519.PublicKey
+	Private ed25519.PrivateKey
+}
 
 type OAuth struct {
 	Discord OAuthService `json:"discord"`
@@ -40,10 +44,9 @@ type Config struct {
 		KeyMod int `json:"keymod"`
 
 		Encrypt_Key string `json:"encypt_key"`
-		EncryptKey  []byte
 
-		AccessKeyPairs  []secret.KeyPair
-		SessionKeyPairs []secret.KeyPair
+		AccessKeyPairs  []KeyPair
+		SessionKeyPairs []KeyPair
 
 		OAuth OAuth `json:"oauth"`
 	} `json:"auth_service"`
@@ -90,6 +93,11 @@ type Config struct {
 		Port int    `json:"port"`
 	} `json:"inventory_service"`
 
+	SyncService struct {
+		Host string `json:"host"`
+		Port int    `json:"port"`
+	} `json:"sync_service"`
+
 	FeatureFlags struct {
 		NewFeature bool `json:"new_feature"`
 		BetaAccess bool `json:"beta_access"`
@@ -102,7 +110,7 @@ type Config struct {
 	} `json:"otlp"`
 }
 
-func LoadConfig(load bool, paths ...string) Config {
+func LoadConfig(paths ...string) Config {
 	var filePath string
 	fileExists := false
 
@@ -138,12 +146,7 @@ func LoadConfig(load bool, paths ...string) Config {
 		log.Fatalf("error unmarshaling config: %v", err)
 	}
 
-	if load {
-		loadSecretKeys(&cfg)
-		loadOauthConfig(&cfg)
-
-		cfg.AuthService.EncryptKey = []byte(cfg.AuthService.Encrypt_Key)
-	}
+	loadOauthConfig(&cfg)
 
 	return cfg
 }
@@ -168,13 +171,6 @@ func (config *Config) DragonConnectionUri() string {
 	)
 }
 
-func loadSecretKeys(cfg *Config) {
-	generateSessionKeys(cfg)
-	cfg.AuthService.SessionKeyPairs = secret.LoadKeys(cfg.AuthService.KeyMod, "s")
-
-	cfg.AuthService.AccessKeyPairs = secret.GenerateAndSaveKeys(cfg.AuthService.KeyMod, "")
-}
-
 // Setup OAuth2 configuration
 func loadOauthConfig(cfg *Config) {
 	cfg.AuthService.OAuth.Discord.Config = &oauth2.Config{
@@ -186,22 +182,5 @@ func loadOauthConfig(cfg *Config) {
 			AuthURL:  cfg.AuthService.OAuth.Discord.AuthURL,
 			TokenURL: cfg.AuthService.OAuth.Discord.TokenURL,
 		},
-	}
-}
-
-func generateSessionKeys(cfg *Config) {
-	count := 0
-	filepath.Walk("keys", func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			log.Fatal(err)
-		}
-		if !info.IsDir() {
-			count++
-		}
-		return nil
-	})
-
-	if count != 2*cfg.AuthService.KeyMod {
-		cfg.AuthService.SessionKeyPairs = secret.GenerateAndSaveKeys(cfg.AuthService.KeyMod, "s")
 	}
 }

@@ -27,7 +27,7 @@ func AuthServerPortUrl(config *config.Config) string {
 func main() {
 	process.SetMaxProcs()
 
-	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
+	cfg := config.LoadConfig("config.json", "../config/config.json")
 
 	colorlogger.SetLogger(cfg)
 
@@ -42,13 +42,14 @@ func main() {
 		func(router *http.ServeMux) {
 			server.CreateRoutes(serviceName, router, storeInstance, dragon, &cfg)
 		},
-		func() {
+		func() error {
 			storeInstance.Db.Close()
-			dragon.Client.Close()
+			return nil
 		},
 		AuthServerPortUrl(&cfg),
 		AuthServerFullUrl(&cfg),
 		serviceName,
 		&cfg,
+		dragon,
 	)
 }

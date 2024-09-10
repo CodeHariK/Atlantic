@@ -3,7 +3,7 @@ import { type JSX } from 'solid-js';
 import { createContext, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { createConnectTransport } from "@connectrpc/connect-web";
-import { createPromiseClient, PromiseClient } from '@connectrpc/connect';
+import { Code, ConnectError, createPromiseClient, PromiseClient } from '@connectrpc/connect';
 import { AuthService } from "../../api/auth/v1/auth_connect.ts";
 import { ProfileService } from "../../api/auth/v1/profile_connect.ts";
 import { UserService } from "../../api/user/v1/user_connect.ts";
@@ -31,20 +31,26 @@ const interceptor: (authclient: AuthConnect) => Interceptor = (authclient: AuthC
         if (redirect) {
             window.location.href = redirect;
         }
+        return response
     } catch (error) {
-        console.log(error)
-        try {
-            const request = new RefreshRequest();
-            await authclient.authRefresh(request);
-            console.log("Refresh successful:", response);
-            response = await next(req);
-            console.log("Retried request successful:", response);
-        } catch (err) {
-            console.error("Error refreshing auth:", err);
+        if (error instanceof ConnectError && error.code == Code.Unauthenticated) {
+            try {
+                const request = new RefreshRequest();
+                await authclient.authRefresh(request);
+                console.log("Refresh successful:", response);
+                response = await next(req);
+                console.log("Retried request successful:", response);
+                let redirect = response.header.get('redirect-to')
+                if (redirect) {
+                    window.location.href = redirect;
+                }
+                return response
+            } catch (err) {
+                console.error("Error refreshing auth:", err);
+            }
         }
+        throw error
     }
-
-    return response!
 }
 
 interface ConnectClients {

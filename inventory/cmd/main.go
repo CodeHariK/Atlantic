@@ -9,6 +9,7 @@ import (
 
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/inventory/server"
+	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/servemux"
 	"github.com/minio/minio-go/v7"
 )
@@ -24,18 +25,20 @@ func InventoryServerPortUrl(config *config.Config) string {
 }
 
 func main() {
-	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
+	cfg := config.LoadConfig("config.json", "../config/config.json")
+
+	dragon := dragon.CreateDragon(&cfg)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
 			server.CreateRoutes(serviceName, router, &cfg)
 		},
-		func() {
-		},
+		func() error { return nil },
 		InventoryServerPortUrl(&cfg),
 		InventoryServerFullUrl(&cfg),
 		serviceName,
 		&cfg,
+		dragon,
 	)
 
 	// cfg := config.LoadConfig(true, "config.json", "../config/config.json")

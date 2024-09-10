@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	DestroyConfig := config.LoadConfig(true, "../config/config.json")
+	DestroyConfig := config.LoadConfig("../config/config.json")
 
 	connString := DestroyConfig.DatabaseConnectionUri()
 

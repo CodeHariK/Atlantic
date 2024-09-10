@@ -26,7 +26,7 @@ func CreateRoutes(
 	//------------------
 	// CosmogService
 
-	cosmogService := CreateCosmogServiceServer()
+	cosmogService := CreateCosmogServiceServer(*config)
 	cosmogPath, cosmogHandler := v1connect.NewCosmogServiceHandler(
 		cosmogService,
 		authbox.ConnectInterceptors(config)...,

@@ -33,7 +33,7 @@ func CreateRoutes(
 	//------------------
 	// CosmogService
 
-	inventoryService := CreateInventoryServiceServer()
+	inventoryService := CreateInventoryServiceServer(*config)
 	inventoryPath, inventoryHandler := v1connect.NewInventoryServiceHandler(
 		inventoryService,
 		authbox.ConnectInterceptors(config)...,

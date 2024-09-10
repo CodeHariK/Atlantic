@@ -11,6 +11,7 @@ import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";
 import { useConnect } from '../components/connect.tsx';
 
 import * as yup from 'yup';
+import { ConnectError } from '@connectrpc/connect';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -42,10 +43,12 @@ export default function Register() {
             password: cred.password,
          });
          const response = await authclient.registerUser(request);
-         console.log("Login successful:", response);
+         console.log("Register successful:", response);
       } catch (err) {
-         console.error("Error login:", err);
-         setError("Failed to login.");
+         console.error("Failed Register: ", err);
+         if (err instanceof ConnectError) {
+            setError(err.rawMessage);
+         }
       } finally {
          setLoading(false);
       }

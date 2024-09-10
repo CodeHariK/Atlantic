@@ -6,17 +6,24 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/service/basecontext"
+	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/observe"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
 
-func Serve(createRoutes func(router *http.ServeMux), closeFn func(), portUrl string, fullUrl string, serviceName string, config *config.Config) {
+func Serve(
+	createRoutes func(router *http.ServeMux),
+	closeFn func() error,
+	portUrl string, fullUrl string, serviceName string,
+	config *config.Config, dragon dragon.Dragon,
+) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(
 		context.Background(),
@@ -29,6 +36,10 @@ func Serve(createRoutes func(router *http.ServeMux), closeFn func(), portUrl str
 	if otelerr != nil {
 		fmt.Println(otelerr)
 	}
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	dragon.SyncKeys(sigctx, config, &wg)
 
 	router := http.NewServeMux()
 
@@ -78,14 +89,20 @@ func Serve(createRoutes func(router *http.ServeMux), closeFn func(), portUrl str
 			fmt.Printf("Error shutting down OpenTelemetry: %v", shutdownErr)
 		}
 
-		closeFn()
-
+		err = closeFn()
 		if err != nil {
-			fmt.Printf("Error shutting down SessionStore: %v", err)
+			fmt.Printf("Error terminating server: %v", err)
+		}
+
+		err = dragon.Client.Close()
+		if err != nil {
+			fmt.Printf("Error shutting down dragon: %v", err)
 		}
 
 		fmt.Println("Server Shutdown, OtelShutdown, Store closed, Session store closed")
 	}()
+
+	wg.Wait()
 
 	// Wait for interruption.
 	select {

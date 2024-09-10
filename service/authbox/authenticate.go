@@ -57,6 +57,7 @@ func HttpShield(config *config.Config, next http.HandlerFunc) http.HandlerFunc {
 				config.AuthService.KeyMod,
 				config.AuthService.AccessKeyPairs,
 			)
+			colorlogger.Log(err)
 			if err := AuthRedirect(r, w, err); err != nil {
 				http.Error(w, "Not Authenticated", http.StatusUnauthorized)
 				return

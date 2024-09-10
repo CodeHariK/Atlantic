@@ -11,9 +11,7 @@ type InventoryServiceServer struct {
 	cfg config.Config
 }
 
-func CreateInventoryServiceServer() InventoryServiceServer {
-	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
-
+func CreateInventoryServiceServer(cfg config.Config) InventoryServiceServer {
 	return InventoryServiceServer{
 		cfg: cfg,
 	}

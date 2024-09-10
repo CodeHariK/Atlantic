@@ -19,9 +19,7 @@ type CosmogServiceServer struct {
 	cosmog meilisearch.ServiceManager
 }
 
-func CreateCosmogServiceServer() CosmogServiceServer {
-	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
-
+func CreateCosmogServiceServer(cfg config.Config) CosmogServiceServer {
 	cosmog := meilisearch.New(
 		cfg.CosmogService.MeiliSearch.Host,
 		meilisearch.WithAPIKey(cfg.CosmogService.MeiliSearch.Key),

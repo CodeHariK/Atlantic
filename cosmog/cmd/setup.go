@@ -10,7 +10,7 @@ import (
 const MOVIE_INDEX = "movies"
 
 func setup() {
-	cfg := config.LoadConfig(true, "config.json", "../config/config.json")
+	cfg := config.LoadConfig("config.json", "../config/config.json")
 
 	client := meilisearch.New(
 		cfg.CosmogService.MeiliSearch.Host,

@@ -10,8 +10,8 @@ import (
 	"connectrpc.com/connect"
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/codeharik/Atlantic/config"
-	"github.com/codeharik/Atlantic/config/secret"
 	"github.com/codeharik/Atlantic/database/store/user"
+	"github.com/codeharik/Atlantic/service/pgservice"
 	"github.com/codeharik/Atlantic/service/uuidservice"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -166,7 +166,7 @@ func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Reques
 		},
 	)
 	if err != nil {
-		return nil, authbox.InternalServerError
+		return nil, connect.NewError(connect.CodeInvalidArgument, pgservice.PgCheck(err))
 	}
 
 	authbox.AddRedirect(cb.W, "/login")
@@ -184,7 +184,7 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 	if err == nil && sessionNumber != -1 {
 		sessionId, accessToken, err := s.RefreshSession(cb, user, sessionNumber)
 		if err != nil {
-			return nil, err
+			return nil, connect.NewError(connect.CodeUnauthenticated, err)
 		}
 		return connect.NewResponse(
 				&v1.RefreshResponse{
@@ -193,7 +193,7 @@ func (s AuthServiceServer) AuthRefresh(ctx context.Context, req *connect.Request
 				}),
 			nil
 	}
-	return nil, err
+	return nil, connect.NewError(connect.CodeUnauthenticated, err)
 }
 
 func (s AuthServiceServer) RefreshSession(cb authbox.ConnectBox, user *v1.AuthUser, sessionNumber int) (string, string, error) {
@@ -256,7 +256,7 @@ func (s AuthServiceServer) RevokeSession(ctx context.Context, req *connect.Reque
 		}
 
 		if indexToRemove == sessionNumber {
-			ReplaceKey(s.config, user.ID)
+			s.dragon.SyncKeyPublish(s.config, user.ID)
 			authbox.RevokeSession(cb.W, s.config)
 			authbox.AddRedirect(cb.W, "/login")
 		}
@@ -282,9 +282,9 @@ func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *conne
 		if err := s.dragon.SaveUser(user); err != nil {
 			return nil, authbox.InternalServerError
 		}
-
 	}
-	ReplaceKey(s.config, user.ID)
+
+	s.dragon.SyncKeyPublish(s.config, user.ID)
 	authbox.RevokeSession(cb.W, s.config)
 	authbox.AddRedirect(cb.W, "/login")
 
@@ -292,9 +292,4 @@ func (s AuthServiceServer) InvalidateAllSessions(ctx context.Context, req *conne
 		&v1.InvalidateAllSessionsResponse{
 			Success: true,
 		}), nil
-}
-
-func ReplaceKey(config *config.Config, uid string) {
-	g := authbox.GenerateKid(uid, config.AuthService.KeyMod)
-	secret.ReplaceKey(&config.AuthService.AccessKeyPairs, g)
 }
