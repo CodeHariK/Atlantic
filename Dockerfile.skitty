@@ -2,7 +2,7 @@
 FROM golang:1.23.1-alpine3.20 AS build-stage
 
 WORKDIR /app
-COPY . .
+COPY ./skitty .
 RUN CGO_ENABLED=0 GOOS=linux go build -o /skitty main.go
 
 FROM oven/bun:latest AS bun-stage

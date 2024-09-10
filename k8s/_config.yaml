@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlantic-config
+  namespace: atlantic
+data:
+  config.json: |
+    # Paste your config.json content here

@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 	"sync"
 
 	"github.com/codeharik/Atlantic/config"
@@ -137,7 +139,7 @@ func (d *Dragon) ReplaceKey(key string, i int) error {
 	return nil
 }
 
-func (d *Dragon) SyncKeys(ctx context.Context, cfg *config.Config, wg *sync.WaitGroup) {
+func (d *Dragon) SyncKeys(cfg *config.Config, wg *sync.WaitGroup) {
 	sessionKeys, err := d.GenerateOrLoadKeys(*cfg, "session")
 	if err != nil {
 		log.Fatal(err)
@@ -149,22 +151,28 @@ func (d *Dragon) SyncKeys(ctx context.Context, cfg *config.Config, wg *sync.Wait
 	cfg.AuthService.SessionKeyPairs = sessionKeys
 	cfg.AuthService.AccessKeyPairs = accessKeys
 
-	go d.SyncKeySubscribe(ctx, cfg, wg)
+	go d.SyncKeySubscribe(cfg, wg)
 }
 
 type SyncKeyMessage struct {
 	Key int `json:"key"`
 }
 
-func (d *Dragon) SyncKeySubscribe(ctx context.Context, cfg *config.Config, wg *sync.WaitGroup) {
+func (d *Dragon) SyncKeySubscribe(cfg *config.Config, wg *sync.WaitGroup) {
+	sigctx, stop := signal.NotifyContext(
+		context.Background(),
+		os.Interrupt,
+	)
+
+	defer stop()    // Stop receiving signal notifications when we're done
 	defer wg.Done() // Notify the WaitGroup that this goroutine is done
 
-	SyncKeyPubSub := d.Client.Subscribe(ctx, "SyncKey")
+	SyncKeyPubSub := d.Client.Subscribe(sigctx, "SyncKey")
 	defer SyncKeyPubSub.Close()
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-sigctx.Done():
 			return
 		case msg := <-SyncKeyPubSub.Channel():
 			var syncmsg SyncKeyMessage

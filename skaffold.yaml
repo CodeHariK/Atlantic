@@ -1,0 +1,18 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: atlantic
+build:
+  artifacts:
+    - image: auth
+      docker:
+        dockerfile: Dockerfile.skitty
+    - image: skitty
+      docker:
+        dockerfile: Dockerfile.auth
+manifests:
+  rawYaml:
+    - k8s/_atlantic.yaml
+    - k8s/_config.yaml
+    - k8s/auth-service.yaml
+    - k8s/skitty-service.yaml

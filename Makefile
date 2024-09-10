@@ -23,4 +23,13 @@ minio:
 	cd ./executables/minio && ./minio server --address :9000 --console-address :9001 store
 
 meilisearch:
-	cd ./executables/meilisearch && ./meilisearch --http-addr localhost:7700 --master-key aSampleMasterKey
+	cd ./executables/meilisearch && ./meilisearch  --config-file-path="../../config/meilisearch/config.toml"
+
+
+
+skaffoldinit:
+	./executables/skaffold/skaffold init
+skaffoldev:
+	./executables/skaffold/skaffold dev
+skittyforward:
+	kubectl port-forward service/skitty-service 3000:3000

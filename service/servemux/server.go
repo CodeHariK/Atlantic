@@ -39,7 +39,7 @@ func Serve(
 
 	var wg sync.WaitGroup
 	wg.Add(1)
-	dragon.SyncKeys(sigctx, config, &wg)
+	dragon.SyncKeys(config, &wg)
 
 	router := http.NewServeMux()
 
@@ -102,16 +102,16 @@ func Serve(
 		fmt.Println("Server Shutdown, OtelShutdown, Store closed, Session store closed")
 	}()
 
-	wg.Wait()
-
 	// Wait for interruption.
 	select {
 	case serverError := <-srvErr:
-		fmt.Println(serverError)
+		fmt.Println("Server error:", serverError)
 		return
 	case <-sigctx.Done():
 		// Wait for first CTRL+C.
 		// Stop receiving signal notifications as soon as possible.
 		stop()
+
+		wg.Wait()
 	}
 }

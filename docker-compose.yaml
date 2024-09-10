@@ -2,37 +2,36 @@ version: '3.8'
 
 services:
 
-  skitty:
-    build: 
-      context: skitty
-      dockerfile: Dockerfile.skitty
-    ports:
-      - "3000:3000"
+  # skitty:
+  #   build: 
+  #     dockerfile: Dockerfile.skitty
+  #   ports:
+  #     - "3000:3000"
 
-  auth:
-    build: 
-      dockerfile: Dockerfile.auth
-    ports:
-      - "7777:7777"
-    volumes:
-      - ./config/config.json:/config.json
-    depends_on:
-      - postgres
+  # auth:
+  #   build: 
+  #     dockerfile: Dockerfile.auth
+  #   ports:
+  #     - "7777:7777"
+  #   volumes:
+  #     - ./config/config.json:/config.json
+  #   depends_on:
+  #     - postgres
 
-  postgres:
-    image: postgres:alpine
-    container_name: goddess
-    restart: always
-    environment:
-      POSTGRES_USER: superuser
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: test
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+  # postgres:
+  #   image: postgres:alpine
+  #   container_name: goddess
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: superuser
+  #     POSTGRES_PASSWORD: secret
+  #     POSTGRES_DB: test
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pg-data:/var/lib/postgresql/data
+  #     - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+  #   command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
   # otelcol:
   #   image: otel/opentelemetry-collector-contrib:latest
@@ -80,16 +79,59 @@ services:
   #   ports:
   #     - "16686:16686"
 
-  dragonfly:
-    image: 'cgr.dev/chainguard/dragonfly:latest'
-    ulimits:
-      memlock: -1
+  # dragonfly:
+  #   container_name: dragonfly
+  #   image: 'cgr.dev/chainguard/dragonfly:latest'
+  #   ulimits:
+  #     memlock: -1
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - dragonfly-data:/data
+
+  # minio:
+  #   container_name: minio
+  #   image: 'cgr.dev/chainguard/minio:latest'
+  #   ports:
+  #     - '9000:9000'
+  #     - '9001:9001'
+  #   command: server /data --console-address ":9001"
+  #   volumes:
+  #     - minio-data:/data
+  #   environment:
+  #     MINIO_ROOT_USER: minioadmin
+  #     MINIO_ROOT_PASSWORD: minioadmin
+  #     MINIO_DEFAULT_BUCKETS: your_bucket_name
+  #   healthcheck:
+  #     test: ["CMD", "mc", "ready", "local"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+
+  meilisearch:
+    container_name: meilisearch
+    image: 'getmeili/meilisearch:latest'
     ports:
-      - "6379:6379"
+      - "7700:7700"
     volumes:
-      - dragonflydata:/data
+      - ./config/meilisearch/config.toml:/config.toml
+      - ./executables/meilisearch/data.ms:/data.ms
+      - ./executables/meilisearch/dumps:/dumps
+    command: ["meilisearch", "--config-file-path", "/config.toml"]
+    restart: unless-stopped
+    user: "0"
+
+  # nats:
+  #   container_name: nats
+  #   image: 'cgr.dev/chainguard/nats:latest'
+  #   ports:
+  #     - "4222:4222"
+  #   volumes:
+  #     - nats-data:/data
 
 volumes:
-  pgdata:
+  pg-data:
   grafana-data:
-  dragonflydata:
+  dragonfly-data:
+  minio-data:
+  nats-data:
