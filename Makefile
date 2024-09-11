@@ -6,30 +6,31 @@ dcup:
 
 caddy:
 	open -a "Google chrome" https://localhost
-	./executables/caddy/caddy fmt --overwrite config/caddy/Caddyfile
-	./executables/caddy/caddy run --config config/caddy/Caddyfile
+	caddy fmt --overwrite config/caddy/Caddyfile
+	caddy run --config config/caddy/Caddyfile
 
 caddyatlantic:
 	open -a "Google chrome" http://atlantic.shark.run/
-	./executables/caddy/caddy fmt --overwrite config/caddy/Caddyfileatlantic
-	./executables/caddy/caddy run --config config/caddy/Caddyfileatlantic
+	caddy fmt --overwrite config/caddy/Caddyfileatlantic
+	caddy run --config config/caddy/Caddyfileatlantic
 
 traefik:
 	open -a "Google chrome" http://atlantic.shark.run
 	open -a "Google chrome" http://localhost
-	./executables/traefik/traefik --configfile ./config/traefik/traefik.yml
+	traefik --configfile ./config/traefik/traefik.yml
 
 minio:
-	cd ./executables/minio && ./minio server --address :9000 --console-address :9001 store
+	minio server --address :9000 --console-address :9001 executables/minio
 
 meilisearch:
-	cd ./executables/meilisearch && ./meilisearch  --config-file-path="../../config/meilisearch/config.toml"
-
-
+	meilisearch  --config-file-path="./config/meilisearch/config.toml"
 
 skaffoldinit:
-	./executables/skaffold/skaffold init
+	skaffold init
 skaffoldev:
-	./executables/skaffold/skaffold dev
+	skaffold dev
 skittyforward:
 	kubectl port-forward service/skitty-service 3000:3000
+
+kompose:
+	kompose convert -f docker-compose.yaml -o k8s
