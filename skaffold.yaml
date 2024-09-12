@@ -5,16 +5,22 @@ metadata:
 build:
   artifacts:
     - image: auth
-      context: auth
-      buildpacks:
-        builder: gcr.io/buildpacks/builder:v1
+      docker:
+        dockerfile: Dockerfile.auth
     - image: skitty
-      context: skitty
-      buildpacks:
-        builder: gcr.io/buildpacks/builder:v1
+      docker:
+        dockerfile: Dockerfile.skitty
 manifests:
   rawYaml:
     - k8s/_atlantic.yaml
     - k8s/_config.yaml
+    - k8s/auth-cm0-configmap.yaml
+    - k8s/auth-deployment.yaml
+    - k8s/auth-horizontalpodautoscaler.yaml
     - k8s/auth-service.yaml
+    - k8s/pg-data-persistentvolumeclaim.yaml
+    - k8s/postgres-cm1-configmap.yaml
+    - k8s/postgres-deployment.yaml
+    - k8s/postgres-service.yaml
+    - k8s/skitty-deployment.yaml
     - k8s/skitty-service.yaml
