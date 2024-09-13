@@ -25,10 +25,10 @@ import { Account, AccountModal, DeleteOrderModal } from './pages/account';
 import { AddProduct } from './pages/addproduct';
 
 export const routes: RouteDefinition[] = [
-    {
-        path: '/',
-        component: Home,
-    },
+    // {
+    //     path: '/',
+    //     component: Home,
+    // },
     {
         path: '/form',
         component: lazy(() => import('./pages/form')),
@@ -41,98 +41,98 @@ export const routes: RouteDefinition[] = [
         path: '/register',
         component: Register,
     },
-    {
-        path: '/profile',
-        component: Profile,
-    },
-    {
-        path: '/docs',
-        component: Docs,
-    },
-    {
-        path: '/test',
-        component: Test,
-    },
-    {
-        path: '/search',
-        component: SearchProducts,
-    },
-    {
-        path: '/searchgames',
-        component: SearchGames,
-    },
-    {
-        path: '/searchdrawer',
-        component: SearchDrawer,
-    },
-    {
-        path: '/payment',
-        component: Payment,
-    },
-    {
-        path: '/checkout',
-        component: Checkout,
-    },
-    {
-        path: '/reviews',
-        component: Reviews,
-    },
-    {
-        path: '/reviewsmodal',
-        component: ReviewsModal,
-    },
-    {
-        path: '/search/:productId',
-        component: SearchProducts,
-    },
-    {
-        path: '/product/:productId',
-        component: Products,
-    },
-    {
-        path: '/productmodal',
-        component: ProductModal,
-    },
-    {
-        path: '/order/:orderId',
-        component: OrderDetails,
-    },
-    {
-        path: '/myorders',
-        component: MyOrders,
-    },
+    // {
+    //     path: '/profile',
+    //     component: Profile,
+    // },
+    // {
+    //     path: '/docs',
+    //     component: Docs,
+    // },
+    // {
+    //     path: '/test',
+    //     component: Test,
+    // },
+    // {
+    //     path: '/search',
+    //     component: SearchProducts,
+    // },
+    // {
+    //     path: '/searchgames',
+    //     component: SearchGames,
+    // },
+    // {
+    //     path: '/searchdrawer',
+    //     component: SearchDrawer,
+    // },
+    // {
+    //     path: '/payment',
+    //     component: Payment,
+    // },
+    // {
+    //     path: '/checkout',
+    //     component: Checkout,
+    // },
+    // {
+    //     path: '/reviews',
+    //     component: Reviews,
+    // },
+    // {
+    //     path: '/reviewsmodal',
+    //     component: ReviewsModal,
+    // },
+    // {
+    //     path: '/search/:productId',
+    //     component: SearchProducts,
+    // },
+    // {
+    //     path: '/product/:productId',
+    //     component: Products,
+    // },
+    // {
+    //     path: '/productmodal',
+    //     component: ProductModal,
+    // },
+    // {
+    //     path: '/order/:orderId',
+    //     component: OrderDetails,
+    // },
+    // {
+    //     path: '/myorders',
+    //     component: MyOrders,
+    // },
     {
         path: '/addproduct',
         component: AddProduct,
     },
-    {
-        path: '/account',
-        component: Account,
-    },
-    {
-        path: '/accountmodal',
-        component: AccountModal,
-    },
-    {
-        path: '/deleteOrderModal',
-        component: DeleteOrderModal,
-    },
-    {
-        path: '/ordermodal',
-        component: OrderModal,
-    },
-    {
-        path: '/questionmodal',
-        component: QuestionModal,
-    },
-    {
-        path: '**',
-        component: lazy(() => import('./pages/404')),
-    },
-    {
-        path: '/routes',
-        component: RouteList,
-    }
+    // {
+    //     path: '/account',
+    //     component: Account,
+    // },
+    // {
+    //     path: '/accountmodal',
+    //     component: AccountModal,
+    // },
+    // {
+    //     path: '/deleteOrderModal',
+    //     component: DeleteOrderModal,
+    // },
+    // {
+    //     path: '/ordermodal',
+    //     component: OrderModal,
+    // },
+    // {
+    //     path: '/questionmodal',
+    //     component: QuestionModal,
+    // },
+    // {
+    //     path: '**',
+    //     component: lazy(() => import('./pages/404')),
+    // },
+    // {
+    //     path: '/routes',
+    //     component: RouteList,
+    // }
 ];
 
 

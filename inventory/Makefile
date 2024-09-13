@@ -8,4 +8,8 @@ gen:
 	cp -r ./proto/ ../docs/proto
 
 run:
-	go run cmd/main.go
+	minio_addr="localhost:9000" go run cmd/main.go
+rundocker:
+	minio_addr="minio:9000" go run cmd/main.go
+runk8s:
+	minio_addr="minio:9000" go run cmd/main.go

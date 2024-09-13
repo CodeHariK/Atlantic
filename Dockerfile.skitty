@@ -7,17 +7,21 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /skitty main.go
 
 FROM oven/bun:latest AS bun-stage
 WORKDIR /app
-COPY . .
+COPY ./skitty .
 RUN bun install
-RUN bun vite build
+RUN bun run sbuild
 
-FROM alpine:latest
+FROM cgr.dev/chainguard/static:latest
 
 WORKDIR /
 
 # Copy the built Go binary and the frontend dist folder from the build stage
 COPY --from=build-stage /skitty /skitty
-COPY --from=bun-stage /app/dist /dist
+COPY --from=bun-stage /app/kodata /kodata
+
+# Create a non-root user and switch to it
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
 
 # Expose the required port
 EXPOSE 3000

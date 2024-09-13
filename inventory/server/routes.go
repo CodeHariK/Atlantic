@@ -24,13 +24,6 @@ func CreateRoutes(
 	docs.OpenapiHandler(router, serviceName)
 
 	//------------------
-	//
-
-	router.HandleFunc(
-		"/inventory.v1.InventoryService/UploadImage",
-		authbox.HttpShield(config, uploadFile))
-
-	//------------------
 	// CosmogService
 
 	inventoryService := CreateInventoryServiceServer(*config)
@@ -45,6 +38,15 @@ func CreateRoutes(
 		inventoryPath,
 		shield.Wrap(inventoryHandler),
 	)
+
+	//------------------
+	//
+
+	// fmt.Sprintf("/%s/UploadImage", v1connect.InventoryServiceName)
+
+	router.HandleFunc(
+		"/inventory.v1.InventoryService/UploadImage",
+		authbox.HttpShield(config, inventoryService.uploadFile))
 
 	//------------------
 	// Reflectors

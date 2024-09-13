@@ -8,8 +8,10 @@ import (
 )
 
 func main() {
-	// The directory to serve files from (e.g., "./dist")
-	staticDir := "./dist"
+	staticDir := os.Getenv("KO_DATA_PATH")
+	if staticDir == "" {
+		staticDir = "kodata"
+	}
 
 	// File server for serving static assets (CSS, JS, etc.)
 	fs := http.FileServer(http.Dir(staticDir))

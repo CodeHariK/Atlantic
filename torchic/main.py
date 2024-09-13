@@ -11,7 +11,7 @@ from typing import Any
 from valid import validate_image
 from classify import classify_image
 from helper import fetchImage
-from text_generate import Prompt, generate_text
+# from text_generate import Prompt, generate_text
 
 app = FastAPI()
 
@@ -23,9 +23,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/generate")
-async def generate_text_route(prompt: Prompt):
-    return await generate_text(prompt)
+# @app.post("/generate")
+# async def generate_text_route(prompt: Prompt):
+#     return await generate_text(prompt)
 
 @app.post("/upload/")
 async def upload_image(

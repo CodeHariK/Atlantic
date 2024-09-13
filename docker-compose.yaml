@@ -1,46 +1,55 @@
-version: '3.8'
-
 services:
+
+  tcpdump:
+    image: nicolaka/netshoot
+    command: tcpdump -i any
 
   skitty:
     build: 
       dockerfile: Dockerfile.skitty
-    ports:
-      - "3000:3000"
-
-  auth:
-    build: 
-      dockerfile: Dockerfile.auth
-    ports:
-      - "7777:7777"
-    volumes:
-      - ./config/config.json:/config.json
-    labels:
-      kompose.service.healthcheck.liveness.http_get_path: /health
-      kompose.service.type: clusterip
-      kompose.hpa.cpu: 80
-      kompose.hpa.memory: 512Mi
-      kompose.hpa.replicas.min: 1
-      kompose.hpa.replicas.max: 3
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:alpine
-    container_name: goddess
-    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: ${SKITTY_CPU_LIMIT}
+          memory: ${SKITTY_MEMORY_LIMIT}
     environment:
-      POSTGRES_USER: superuser
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: test
+      - DEBUG=${DEBUG}
     ports:
-      - "5432:5432"
-    labels:      
-      kompose.volume.size: 1Gi
-    volumes:
-      - pg-data:/var/lib/postgresql/data
-      - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+      - "${SKITTY_PORT}:${SKITTY_PORT}"
+
+  # auth.atlantic:
+  #   build: 
+  #     dockerfile: Dockerfile.auth
+  #   ports:
+  #     - "7777:7777"
+  #   volumes:
+  #     - ./config/config.json:/config.json
+  #   labels:
+  #     kompose.service.healthcheck.liveness.http_get_path: /health
+  #     kompose.service.type: clusterip
+  #     kompose.hpa.cpu: 80
+  #     kompose.hpa.memory: 512Mi
+  #     kompose.hpa.replicas.min: 1
+  #     kompose.hpa.replicas.max: 3
+  #   depends_on:
+  #     - postgres
+
+  # postgres:
+  #   image: postgres:alpine
+  #   container_name: goddess
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: superuser
+  #     POSTGRES_PASSWORD: secret
+  #     POSTGRES_DB: test
+  #   ports:
+  #     - "5432:5432"
+  #   labels:      
+  #     kompose.volume.size: 1Gi
+  #   volumes:
+  #     - pg-data:/var/lib/postgresql/data
+  #     - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+  #   command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
   # otelcol:
   #   image: otel/opentelemetry-collector-contrib:latest
@@ -144,3 +153,7 @@ volumes:
   dragonfly-data:
   minio-data:
   nats-data:
+
+networks:
+  my-network:
+    driver: bridge

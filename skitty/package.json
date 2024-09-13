@@ -4,8 +4,15 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "VITE_HOST=http://localhost vite",
+    "sldev": "VITE_HOST=https://localhost vite",
+    "adev": "VITE_HOST=http://atlantic.shark.run vite",
+    "sadev": "VITE_HOST=https://atlantic.shark.run vite",
+    "build": "tsc -b && vite build --outDir kodata",
+    "lbuild": "VITE_HOST=http://localhost vite build --outDir kodata",
+    "slbuild": "VITE_HOST=https://localhost vite build --outDir kodata",
+    "abuild": "VITE_HOST=http://atlantic.shark.run vite build --outDir kodata",
+    "sabuild": "VITE_HOST=https://atlantic.shark.run vite build --outDir kodata",
     "preview": "vite preview"
   },
   "dependencies": {

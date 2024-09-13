@@ -1,5 +1,6 @@
 # Use a lightweight base image
 FROM python:3.11-slim
+# FROM cgr.dev/chainguard/python:latest
 
 # Set environment variables to prevent Python from writing .pyc files and to ensure output is sent straight to the terminal (no buffering)
 ENV PYTHONUNBUFFERED=1 \

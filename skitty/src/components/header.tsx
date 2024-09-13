@@ -8,10 +8,10 @@ export const Header = () => (
 
                     <div class="flex items-center space-x-8">
                         <div class="shrink-0">
-                            <a href="#" title="" class="">
+                            {/* <a href="#" title="" class="">
                                 <img class="block w-auto h-8 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/logo-full.svg" alt="" />
                                 <img class="hidden w-auto h-8 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/logo-full-dark.svg" alt="" />
-                            </a>
+                            </a> */}
                         </div>
 
                         <ul class="hidden lg:flex items-center justify-start gap-6 md:gap-8 py-3 sm:justify-center">
