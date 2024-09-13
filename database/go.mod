@@ -1,6 +1,6 @@
 module github.com/codeharik/Atlantic/database
 
-go 1.22.4
+go 1.23.1
 
 replace github.com/codeharik/Atlantic/config => ../config
 
@@ -19,6 +19,6 @@ require (
 	github.com/stretchr/testify v1.9.0 // indirect
 	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/net v0.28.0 // indirect
-	golang.org/x/oauth2 v0.22.0 // indirect
+	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 )

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/codeharik/Atlantic/auth/server"
 	"github.com/codeharik/Atlantic/auth/store"
@@ -28,6 +29,9 @@ func main() {
 	process.SetMaxProcs()
 
 	cfg := config.LoadConfig("config.json", "../config/config.json")
+
+	fmt.Println("---->", os.Getenv("AUTH_HOST"))
+	cfg.Database.Host = os.Getenv("AUTH_HOST")
 
 	colorlogger.SetLogger(cfg)
 

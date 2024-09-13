@@ -1,0 +1,442 @@
+apiVersion: v1
+data:
+  0010_location.sql: |-
+    -- +goose Up
+
+    -- Create "locations" table
+    CREATE TABLE IF NOT EXISTS "locations" (
+        "id" UUID PRIMARY KEY,
+        "address" VARCHAR(255) NOT NULL CHECK (CHAR_LENGTH("address") > 0),
+        "city" VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH("city") > 0),
+        "state" VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH("state") > 0),
+        "country" VARCHAR(100) NOT NULL CHECK (CHAR_LENGTH("country") > 0),
+        "postal_code" VARCHAR(20) NOT NULL CHECK (
+            CHAR_LENGTH("postal_code") > 0
+        ),
+        "latitude" FLOAT NOT NULL CHECK ("latitude" BETWEEN -90 AND 90),
+        "longitude" FLOAT NOT NULL CHECK (
+            "longitude" BETWEEN -180 AND 180
+        )
+    );
+
+    -- Create an index on the latitude and longitude for efficient spatial queries
+    CREATE INDEX IF NOT EXISTS idx_locations_latitude_longitude ON "locations" ("latitude", "longitude");
+
+    -- +goose Down
+
+    DROP TABLE IF EXISTS "locations";
+  0020_user.sql: |-
+    -- +goose Up
+
+    -- Create "users" table
+    CREATE TABLE IF NOT EXISTS "users" (
+        "id" UUID PRIMARY KEY,
+        "username" VARCHAR(255) UNIQUE CHECK (CHAR_LENGTH("username") > 0),
+        "password_hash" VARCHAR(255), -- Nullable for OAuth users
+        "email" VARCHAR(255) UNIQUE CHECK (CHAR_LENGTH("email") > 0),
+        "verified" BOOLEAN NOT NULL DEFAULT FALSE,
+        "phone_number" VARCHAR(15) UNIQUE CHECK (
+            CHAR_LENGTH("phone_number") > 0
+        ),
+        "avatar" UUID,
+        "gender" CHAR(1) CHECK ("gender" IN ('M', 'F')),
+        "role" BIGINT NOT NULL DEFAULT 1 CHECK (role > 0),
+
+
+        "date_of_birth" DATE,
+        "location" UUID REFERENCES "locations" ("id") ON UPDATE NO ACTION ON DELETE SET NULL,
+        CHECK (
+            (
+                "email" IS NOT NULL
+                AND CHAR_LENGTH("email") > 0
+            )
+            OR (
+                "phone_number" IS NOT NULL
+                AND CHAR_LENGTH("phone_number") > 0
+            )
+        ), -- Ensure either email or phone number is provided
+        "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS "idx_users_email" ON "users" ("email");
+
+    -- +goose Down
+
+    DROP TABLE IF EXISTS "users";
+  0021_seller.sql: |-
+    -- +goose Up
+
+    -- Create "seller" table
+    CREATE TABLE IF NOT EXISTS "seller" (
+        "id" UUID PRIMARY KEY,
+        "name" VARCHAR(255) NOT NULL,
+        "location" UUID REFERENCES "locations" ("id") ON UPDATE NO ACTION ON DELETE SET NULL,
+        "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "seller";
+  0030_product_category.sql: |-
+    -- +goose Up
+
+    CREATE TABLE IF NOT EXISTS "product_category" (
+        "id" SERIAL PRIMARY KEY,
+        "name" VARCHAR(255) UNIQUE NOT NULL CHECK (
+            CHAR_LENGTH("name") > 0
+            AND CHAR_LENGTH("name") < 32
+        ),
+        "parent_id" INT REFERENCES "product_category" ("id") ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_category_name ON "product_category" ("name");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "product_category";
+  0031_products.sql: |-
+    -- +goose Up
+
+    -- Create the products table
+    CREATE TABLE IF NOT EXISTS "products" (
+        "id" UUID PRIMARY KEY,
+        "product_name" VARCHAR(255) UNIQUE CHECK (
+            CHAR_LENGTH("product_name") > 0
+        ),
+        "category_id1" INT NOT NULL REFERENCES "product_category" ("id"),
+        "category_id2" INT NOT NULL REFERENCES "product_category" ("id"),
+        "category_id3" INT REFERENCES "product_category" ("id"),
+        "category_id4" INT REFERENCES "product_category" ("id")
+    );
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "products";
+  0032_product_attribute.sql: |-
+    -- +goose Up
+
+    -- Create the attributes table with a variant_id
+    CREATE TABLE IF NOT EXISTS "attributes" (
+        "id" BIGINT PRIMARY KEY,
+        "attribute_name" VARCHAR(255) NOT NULL,
+        "attribute_value" VARCHAR(255) NOT NULL
+    );
+
+    -- Create indexes for the attributes table
+    CREATE INDEX IF NOT EXISTS idx_attribute_name ON "attributes" ("attribute_name");
+
+    CREATE INDEX IF NOT EXISTS idx_attribute_value ON "attributes" ("attribute_value");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "attributes";
+  0033_product_variants.sql: |-
+    -- +goose Up
+
+    -- Create the product_variants table
+    CREATE TABLE IF NOT EXISTS "product_variants" (
+        "id" UUID PRIMARY KEY,
+        "product_id" UUID NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+        "variant_name" VARCHAR(255) NOT NULL
+    );
+
+    -- Create indexes for the product_variants table
+    CREATE INDEX IF NOT EXISTS idx_variant_product_id ON "product_variants" ("product_id");
+
+    CREATE INDEX IF NOT EXISTS idx_variant_name ON "product_variants" ("variant_name");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "product_variants";
+  0034_product_attributes.sql: |-
+    -- +goose Up
+
+    -- Create the product_attributes table with a variant_id
+    CREATE TABLE IF NOT EXISTS "product_attributes" (
+        "id" UUID PRIMARY KEY,
+        "product_id" UUID NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+        "variant_id" UUID REFERENCES "product_variants" ("id") ON DELETE CASCADE,
+        "attribute_id" INT NOT NULL REFERENCES "attributes" ("id")
+    );
+
+    -- Create indexes for the product_attributes table
+    CREATE INDEX IF NOT EXISTS idx_attribute_product_id ON "product_attributes" ("product_id");
+
+    CREATE INDEX IF NOT EXISTS idx_attribute_variant_id ON "product_attributes" ("variant_id");
+
+    CREATE INDEX IF NOT EXISTS idx_attribute_id ON "product_attributes" ("attribute_id");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "product_attributes";
+  0035_product_description.sql: |-
+    -- +goose Up
+
+    -- Create the products table
+    CREATE TABLE IF NOT EXISTS "product_description" (
+        "id" UUID PRIMARY KEY,
+        "product_id" UUID NOT NULL REFERENCES "products" ("id") ON DELETE CASCADE,
+        "variant_id" UUID REFERENCES "product_variants" ("id") ON DELETE CASCADE,
+        "description" VARCHAR(2048),
+        "images" VARCHAR(1024) [],
+        "videos" VARCHAR(1024) [],
+        CONSTRAINT "unique_description_per_variant" UNIQUE (
+            "product_id",
+            "variant_id"
+        )
+    );
+
+    CREATE UNIQUE INDEX unique_description_per_product ON "product_description" ("product_id")
+    WHERE
+        "variant_id" IS NULL;
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "product_description";
+  0036_product_promotion.sql: |-
+    -- +goose Up
+
+    -- Create the promotions table
+    CREATE TABLE IF NOT EXISTS "product_promotions" (
+        "id" UUID PRIMARY KEY,
+        "variant_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON DELETE SET NULL,
+        "promotion_name" VARCHAR(255) NOT NULL,
+        "discount" INT NOT NULL CHECK ("discount" < 100),
+        "start_date" DATE NOT NULL,
+        "end_date" DATE NOT NULL
+    );
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "product_promotions";
+  0037_product_reviews.sql: |-
+    -- +goose Up
+
+    -- Create "product_reviews" table
+    CREATE TABLE IF NOT EXISTS "product_reviews" (
+        "id" UUID PRIMARY KEY,
+        "user_id" UUID NOT NULL REFERENCES "users" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "product_id" UUID NOT NULL REFERENCES "products" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "seller_id" UUID NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "rating" INTEGER NOT NULL,
+        "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_product_reviews_product_id ON "product_reviews" ("product_id");
+
+    CREATE INDEX IF NOT EXISTS idx_product_reviews_user_id ON "product_reviews" ("user_id");
+
+    -- Create "product_comment" table
+    CREATE TABLE IF NOT EXISTS "product_comment" (
+        "id" UUID PRIMARY KEY REFERENCES "product_reviews" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "comment" VARCHAR(1024)
+    );
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "product_reviews";
+
+    DROP TABLE IF EXISTS "product_comment";
+  0040_inventory.sql: |-
+    -- +goose Up
+
+    -- Create "inventory" table
+    CREATE TABLE IF NOT EXISTS "inventory" (
+        "id" UUID PRIMARY KEY,
+        "variant_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "seller_id" UUID NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+
+
+        "quantity" INTEGER NOT NULL,
+        "amount_units" BIGINT NOT NULL,
+        "amount_nanos" INTEGER NOT NULL,
+        "amount_currency" VARCHAR(4) NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_inventory_seller_id_id ON "inventory" ("seller_id");
+
+    CREATE INDEX IF NOT EXISTS idx_inventory_product_id ON "inventory" ("variant_id");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "inventory";
+  0050_order.sql: "-- +goose Up\n\n-- Create \"orders\" table\nCREATE TABLE IF NOT EXISTS \"orders\" (\n    \"id\" UUID PRIMARY KEY,\n    \"user_id\" UUID NOT NULL REFERENCES \"users\" (\"id\") ON UPDATE NO ACTION ON DELETE CASCADE,\n    \n    \"created_at\" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"updated_at\" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \n    \"amount_units\" BIGINT NOT NULL,\n    \"amount_nanos\" INTEGER NOT NULL,\n    \"amount_currency\" VARCHAR(4) NOT NULL,\n\n\n    \"status\" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (\n        \"status\" IN (\n            'RETURNED',\n            'CANCELED',\n            'PENDING',\n            'CONFIRMED',\n            'PROCESSING',\n            'SHIPPED',\n            'DELIVERED'\n        )\n    ),\n    \"payment_status\" VARCHAR(12) NOT NULL CHECK (\n        \"status\" IN (\n            'REFUNDED',\n            'CASH_ON_DELIVERY',\n            'PAID'\n        )\n    )\n);\n\nCREATE INDEX IF NOT EXISTS idx_orders_user_id ON \"orders\" (\"user_id\");\n\n-- +goose Down\n\nDROP TABLE IF EXISTS \"orders\";"
+  0051_order_items.sql: |-
+    -- +goose Up
+
+    -- Create "order_items" table
+    CREATE TABLE IF NOT EXISTS "order_items" (
+        "id" UUID PRIMARY KEY,
+        "order_id" UUID NOT NULL REFERENCES "orders" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "product_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "seller_id" UUID NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "quantity" INTEGER NOT NULL,
+        "amount_units" BIGINT NOT NULL,
+        "amount_nanos" INTEGER NOT NULL,
+        "amount_currency" VARCHAR(4) NOT NULL,
+
+
+        "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
+            "status" IN (
+                'RETURNED',
+                'CANCELED',
+                'PENDING',
+                'CONFIRMED',
+                'PROCESSING',
+                'SHIPPED',
+                'DELIVERED'
+            )
+        ),
+        "payment_status" VARCHAR(12) NOT NULL CHECK (
+            "status" IN (
+                'REFUNDED',
+                'CASH_ON_DELIVERY',
+                'PAID'
+            )
+        )
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON "order_items" ("order_id");
+
+    CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON "order_items" ("product_id");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "order_items";
+  0060_cart.sql: |-
+    -- +goose Up
+
+    -- Create "carts" table
+    CREATE TABLE IF NOT EXISTS "carts" (
+        "id" UUID PRIMARY KEY,
+        "user_id" UUID NOT NULL REFERENCES "users" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_carts_user_id ON "carts" ("user_id");
+
+    -- +goose Down
+
+    DROP TABLE IF EXISTS "carts";
+  0061_cart_items.sql: |-
+    -- +goose Up
+
+    -- Create "cart_items" table
+    CREATE TABLE IF NOT EXISTS "cart_items" (
+        "id" UUID PRIMARY KEY,
+        "cart_id" UUID NOT NULL REFERENCES "carts" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "product_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+        "quantity" INTEGER NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_cart_items_cart_id ON "cart_items" ("cart_id");
+
+    -- +goose Down
+    DROP TABLE IF EXISTS "cart_items";
+  0111_data.sql: |-
+    -- +goose Up
+
+    -------------Location-------------
+    INSERT INTO
+        "locations" (
+            "id",
+            "address",
+            "city",
+            "state",
+            "country",
+            "postal_code",
+            "latitude",
+            "longitude"
+        )
+    VALUES (
+            '25173097-653b-400b-9e98-78830fdd630e',
+            '789 Oak St',
+            'Spring',
+            'Antarctic',
+            'USA',
+            '90001',
+            34.0522,
+            -118.2437
+        );
+
+    -------------User-------------
+    INSERT INTO
+        "users" (
+            "id",
+            "username",
+            "password_hash",
+            "email",
+            "phone_number",
+            "gender",
+            "role",
+            "date_of_birth",
+            "location"
+        )
+    VALUES (
+            '66173097-653b-400b-9e98-78830fdd630e',
+            '123',
+            '$2a$10$WRvV0s.re29MDH7e4EM3eeWosEgrNI176.kNyVoD6eHcVDu/Nq.aG',
+            '123@123.com',
+            '5551234567',
+            'F',
+            1,
+            '1988-03-22',
+            '25173097-653b-400b-9e98-78830fdd630e'
+        );
+
+    -------------Seller-------------
+    INSERT INTO
+        seller (id, name, location)
+    VALUES (
+            '123e4567-e89b-12d3-a456-426614174000',
+            'Dummy Seller',
+            '25173097-653b-400b-9e98-78830fdd630e'
+        );
+
+    -------------Category-------------
+
+    -- Insert top-level categories
+    INSERT INTO
+        product_category (id, name, parent_id)
+    VALUES (1, 'Electronics', NULL),
+        (2, 'Clothing', NULL);
+
+    -- Insert subcategories under 'Electronics'
+    INSERT INTO
+        product_category (id, name, parent_id)
+    VALUES (4, 'Mobile Phones', 1),
+        (5, 'Laptops', 1),
+        (6, 'Mens Clothing', 2);
+
+    -- +goose Down
+
+    TRUNCATE TABLE product_comment RESTART IDENTITY CASCADE;
+
+    TRUNCATE TABLE product_reviews RESTART IDENTITY CASCADE;
+
+    TRUNCATE TABLE product_category RESTART IDENTITY CASCADE;
+
+    TRUNCATE TABLE seller RESTART IDENTITY CASCADE;
+
+    TRUNCATE TABLE users RESTART IDENTITY CASCADE;
+
+    TRUNCATE TABLE products RESTART IDENTITY CASCADE;
+
+    TRUNCATE TABLE locations RESTART IDENTITY CASCADE;
+  atlas.sum: |
+    h1:b7+d62gKtvtGDUhzrlKgXOxCqwWwFcq3KGLawTICMvw=
+    0010_location.sql h1:PNWNficwee4ja0A/W2RabMLCfJdNRjMnnU9F3douUWk=
+    0020_user.sql h1:1ov558sG9sY1tvdy/Pz7DokKK+coMf5pI227iJIg0Fs=
+    0021_seller.sql h1:jYKoeWgG41tT+zddt+S9p9mLd+2c6BJ/V2EC0dHlUYc=
+    0030_product_category.sql h1:NttHA2baodXBKhtxwZTQ7UeFKB6294ZENDhncOD0NW4=
+    0031_products.sql h1:qSDdEHsxfgeujdPhVNlS6j02bvdy+CYGUeV7yCGU9k8=
+    0032_product_attribute.sql h1:TSjt+rjltcKnVwXtonPJ/K0YAxGqHx1J2FBA7WkfTgc=
+    0033_product_variants.sql h1:NyHg1ODhZD0fRibW4kNMyyIQYmpTWQuw2lF8m4+N1mk=
+    0034_product_attributes.sql h1:7WSv66e1fHTw9sXfD26XOefRB+ExJInXnYrBceXaZNg=
+    0035_product_description.sql h1:8VIg8N44qy09l9etLAlu0qd39Td4ZeK5zui3s+i2xjg=
+    0036_product_promotion.sql h1:y33QUVJbBKnKuaG1fQdLK8WPKiVX5MQ30zoS59MI04M=
+    0037_product_reviews.sql h1:GVYCOCwEeCdPWMRoFHko3bjmUIaINGwY4utuRKwoulU=
+    0040_inventory.sql h1:kpnRkuKPEj+ABd93Ii5jp/JZ7cAFbgve/4SNHzBKRdU=
+    0050_order.sql h1:1zDlN6yzx3ZF2luJzDJTZ1vv0ofIwGSq0ZVhrg/lAIc=
+    0051_order_items.sql h1:eE3HVRVD1wSvBA0RbjCw5WPTI6OIFqx/nBPfU20TMuw=
+    0060_cart.sql h1:Qnl4+o4OYQnqfmxId6ZSmwOp0paADIrg1GOOqHYrY4g=
+    0061_cart_items.sql h1:QlfVB49I+LbmYuLZ1ZXqL6I/I95A4lPnFrVsfZd038Q=
+    0111_data.sql h1:nnhfjz7AkdR+4yVlE0YVDjaLqie2/Sm2xdnmrdLGOTk=
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: goose
+  name: goose-cm0

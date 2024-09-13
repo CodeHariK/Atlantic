@@ -1,159 +1,136 @@
+name: atlantic
 services:
-
-  tcpdump:
-    image: nicolaka/netshoot
-    command: tcpdump -i any
-
+  auth:
+    build:
+      context: /Users/Shared/Go/Atlantic
+      dockerfile: Dockerfile.auth
+    depends_on:
+      goose:
+        condition: service_started
+        required: true
+      postgres:
+        condition: service_started
+        required: true
+    environment:
+      AUTH_HOST: postgres
+    labels:
+      kompose.hpa.cpu: "80"
+      kompose.hpa.memory: 512Mi
+      kompose.hpa.replicas.max: "3"
+      kompose.hpa.replicas.min: "1"
+      kompose.service.healthcheck.liveness.http_get_path: /health
+      kompose.service.type: clusterip
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 7777
+        published: "7777"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/config.json
+        target: /config.json
+        bind:
+          create_host_path: true
+  caddy:
+    command:
+      - run
+      - --config
+      - /etc/caddy/Caddyfile
+    image: cgr.dev/chainguard/caddy:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "80"
+        protocol: tcp
+      - mode: ingress
+        target: 443
+        published: "443"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/caddy/CaddyfileDocker
+        target: /etc/caddy/Caddyfile
+        bind:
+          create_host_path: true
+  goose:
+    build:
+      context: /Users/Shared/Go/Atlantic
+      dockerfile: Dockerfile.goose
+    depends_on:
+      postgres:
+        condition: service_started
+        required: true
+    entrypoint:
+      - /bin/sh
+      - -c
+      - goose -dir /migrations postgres postgres://superuser:secret@postgres:5432/test?sslmode=disable up
+    environment:
+      DATABASE_URL: postgres://superuser:secret@postgres:5432/test?sslmode=disable
+    networks:
+      default: null
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/database/migrations
+        target: /migrations
+        bind:
+          create_host_path: true
+  postgres:
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+    container_name: goddess
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: superuser
+    image: postgres:alpine
+    labels:
+      kompose.volume.size: 1Gi
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: pg-data
+        target: /var/lib/postgresql/data
+        volume: {}
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/postgres/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        bind:
+          create_host_path: true
   skitty:
-    build: 
+    build:
+      context: /Users/Shared/Go/Atlantic
       dockerfile: Dockerfile.skitty
     deploy:
       resources:
         limits:
-          cpus: ${SKITTY_CPU_LIMIT}
-          memory: ${SKITTY_MEMORY_LIMIT}
+          cpus: "0.5"
+          memory: "268435456"
     environment:
-      - DEBUG=${DEBUG}
+      DEBUG: debug-mode
+    networks:
+      default: null
     ports:
-      - "${SKITTY_PORT}:${SKITTY_PORT}"
-
-  # auth.atlantic:
-  #   build: 
-  #     dockerfile: Dockerfile.auth
-  #   ports:
-  #     - "7777:7777"
-  #   volumes:
-  #     - ./config/config.json:/config.json
-  #   labels:
-  #     kompose.service.healthcheck.liveness.http_get_path: /health
-  #     kompose.service.type: clusterip
-  #     kompose.hpa.cpu: 80
-  #     kompose.hpa.memory: 512Mi
-  #     kompose.hpa.replicas.min: 1
-  #     kompose.hpa.replicas.max: 3
-  #   depends_on:
-  #     - postgres
-
-  # postgres:
-  #   image: postgres:alpine
-  #   container_name: goddess
-  #   restart: always
-  #   environment:
-  #     POSTGRES_USER: superuser
-  #     POSTGRES_PASSWORD: secret
-  #     POSTGRES_DB: test
-  #   ports:
-  #     - "5432:5432"
-  #   labels:      
-  #     kompose.volume.size: 1Gi
-  #   volumes:
-  #     - pg-data:/var/lib/postgresql/data
-  #     - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-  #   command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
-
-  # otelcol:
-  #   image: otel/opentelemetry-collector-contrib:latest
-  #   container_name: otelcol
-  #   ports:
-  #     - 4317:4317 # OTLP gRPC receiver
-  #     - 4318:4318 # OTLP http receiver
-
-  #     - 8888:8888 # Prometheus metrics exposed by the Collector
-  #     - 8889:8889 # Prometheus exporter metrics
-
-  #     - 13133:13133 # health_check extension
-
-  #     - 1888:1888 # pprof extension
-  #     - 55679:55679 # zpages extension
-
-  #   volumes:
-  #     - ./config/otelcol-config.yml:/etc/otelcol-config.yml
-  #   command: ["--config", "/etc/otelcol-config.yml"]
-  #   restart: unless-stopped
-
-  # prometheus:
-  #   image: prom/prometheus
-  #   command: --config.file=/etc/config/prometheus.yml
-  #   volumes:
-  #     - ./config/prometheus.yml:/etc/config/prometheus.yml
-  #   ports:
-  #     - "9000:9000"
-
-  # grafana:
-  #   image: grafana/grafana
-  #   volumes:
-  #     - ./config/grafana/datasources:/etc/grafana/provisioning/datasources/
-  #     - ./config/grafana/dashboards:/etc/grafana/provisioning/dashboards/
-  #     - grafana-data:/var/lib/grafana
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - GF_SECURITY_ADMIN_USER=admin
-  #     - GF_SECURITY_ADMIN_PASSWORD=password
-  #   restart: unless-stopped
-
-  # jaeger:
-  #   image: jaegertracing/all-in-one
-  #   ports:
-  #     - "16686:16686"
-
-  # dragonfly:
-  #   container_name: dragonfly
-  #   image: 'cgr.dev/chainguard/dragonfly:latest'
-  #   ulimits:
-  #     memlock: -1
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - dragonfly-data:/data
-
-  # minio:
-  #   container_name: minio
-  #   image: 'cgr.dev/chainguard/minio:latest'
-  #   ports:
-  #     - '9000:9000'
-  #     - '9001:9001'
-  #   command: server /data --console-address ":9001"
-  #   volumes:
-  #     - minio-data:/data
-  #   environment:
-  #     MINIO_ROOT_USER: minioadmin
-  #     MINIO_ROOT_PASSWORD: minioadmin
-  #     MINIO_DEFAULT_BUCKETS: your_bucket_name
-  #   healthcheck:
-  #     test: ["CMD", "mc", "ready", "local"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 5
-
-  # meilisearch:
-  #   container_name: meilisearch
-  #   image: 'getmeili/meilisearch:latest'
-  #   ports:
-  #     - "7700:7700"
-  #   volumes:
-  #     - ./config/meilisearch/config.toml:/config.toml
-  #     - ./executables/meilisearch/data.ms:/data.ms
-  #     - ./executables/meilisearch/dumps:/dumps
-  #   command: ["meilisearch", "--config-file-path", "/config.toml"]
-  #   restart: unless-stopped
-  #   user: "0"
-
-  # nats:
-  #   container_name: nats
-  #   image: 'cgr.dev/chainguard/nats:latest'
-  #   ports:
-  #     - "4222:4222"
-  #   volumes:
-  #     - nats-data:/data
-
+      - mode: ingress
+        target: 3000
+        published: "3000"
+        protocol: tcp
+networks:
+  default:
+    name: atlantic_default
 volumes:
   pg-data:
-  grafana-data:
-  dragonfly-data:
-  minio-data:
-  nats-data:
-
-networks:
-  my-network:
-    driver: bridge
+    name: atlantic_pg-data

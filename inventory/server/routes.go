@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"connectrpc.com/connect"
@@ -42,10 +43,8 @@ func CreateRoutes(
 	//------------------
 	//
 
-	// fmt.Sprintf("/%s/UploadImage", v1connect.InventoryServiceName)
-
 	router.HandleFunc(
-		"/inventory.v1.InventoryService/UploadImage",
+		fmt.Sprintf("/%s/UploadImage", v1connect.InventoryServiceName),
 		authbox.HttpShield(config, inventoryService.uploadFile))
 
 	//------------------

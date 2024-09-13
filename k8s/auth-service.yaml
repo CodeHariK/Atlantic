@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: /Users/shark/.asdf/installs/kompose/1.34.0/bin/kompose convert -f docker-compose.yaml -o k8s
+    kompose.hpa.cpu: "80"
+    kompose.hpa.memory: 512Mi
+    kompose.hpa.replicas.max: "3"
+    kompose.hpa.replicas.min: "1"
+    kompose.service.healthcheck.liveness.http_get_path: /health
+    kompose.service.type: clusterip
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: auth
+  name: auth
+spec:
+  ports:
+    - name: "7777"
+      port: 7777
+      targetPort: 7777
+  selector:
+    io.kompose.service: auth
+  type: ClusterIP

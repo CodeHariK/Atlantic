@@ -1,4 +1,4 @@
-localhost:80 {
+localhost {
 	# Reverse proxy for specific services
 	reverse_proxy /inventory.v1.InventoryService/* 127.0.0.1:9100
 	reverse_proxy /profile.v1.ProfileService/* 127.0.0.1:7777

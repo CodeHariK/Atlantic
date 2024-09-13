@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/codeharik/Atlantic/config"
 
@@ -20,6 +21,8 @@ type Store struct {
 
 func ConnectDatabase(config config.Config) (store Store, err error) {
 	dsn := config.DatabaseConnectionUri()
+
+	fmt.Println(dsn)
 
 	var db *pgxpool.Pool
 	if config.OTLP.GRPC != "" {

@@ -1,0 +1,9 @@
+localhost:80 {
+	# Reverse proxy for specific services
+	reverse_proxy /auth.v1.AuthService/* auth:7777
+	reverse_proxy /profile.v1.ProfileService/* auth:7777
+	reverse_proxy /inventory.v1.InventoryService/* inventory:9100
+
+	# Forward all other requests to the Next.js server
+	reverse_proxy /* skitty:3000
+}

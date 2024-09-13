@@ -33,6 +33,8 @@ skittyforward:
 	kubectl port-forward service/skitty 3000:3000
 
 kompose:
+	docker compose -f docker-compose.gen.yaml --env-file k8svar config > docker-compose.yaml
+
 	kompose convert -f docker-compose.yaml -o k8s
 
 skittybuild:
