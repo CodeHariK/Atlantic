@@ -13,8 +13,8 @@ func setup() {
 	cfg := config.LoadConfig("config.json", "../config/config.json")
 
 	client := meilisearch.New(
-		cfg.CosmogService.MeiliSearch.Host,
-		meilisearch.WithAPIKey(cfg.CosmogService.MeiliSearch.Key),
+		fmt.Sprintf("%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port),
+		meilisearch.WithAPIKey(cfg.MeiliSearch.Key),
 	)
 
 	fmt.Println(`🚀 Seeding your Meilisearch instance`)

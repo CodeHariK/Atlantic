@@ -1,6 +1,8 @@
+TAG=v0.0.1
+
 SKITTY_CPU_LIMIT=0.5
 SKITTY_MEMORY_LIMIT=256M
-SKITTY_PORT=3000
-DEBUG="debug-mode"
+
+DATABASE_HOST=postgres
 
 DATABASE_URL="postgres://superuser:secret@postgres:5432/test?sslmode=disable"

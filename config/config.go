@@ -38,8 +38,8 @@ type Config struct {
 	EnableMetrics bool   `json:"enable_metrics"`
 
 	AuthService struct {
-		Address string `json:"address"`
-		Port    int    `json:"port"`
+		Host string `json:"host"`
+		Port int    `json:"port"`
 
 		KeyMod int `json:"keymod"`
 
@@ -70,7 +70,8 @@ type Config struct {
 	} `json:"dragonfly"`
 
 	Minio struct {
-		Addr   string `json:"addr"`
+		Host   string `json:"host"`
+		Port   int    `json:"port"`
 		Id     string `json:"id"`
 		Secret string `json:"secret"`
 		Bucket struct {
@@ -81,12 +82,13 @@ type Config struct {
 	CosmogService struct {
 		Host string `json:"host"`
 		Port int    `json:"port"`
-
-		MeiliSearch struct {
-			Host string `json:"host"`
-			Key  string `json:"key"`
-		} `json:"meilisearch"`
 	} `json:"cosmog_service"`
+
+	MeiliSearch struct {
+		Host string `json:"host"`
+		Port int    `json:"port"`
+		Key  string `json:"key"`
+	} `json:"meilisearch"`
 
 	InventoryService struct {
 		Host string `json:"host"`
@@ -143,6 +145,8 @@ func LoadConfig(paths ...string) Config {
 
 	loadOauthConfig(&cfg)
 
+	loadEnv(&cfg)
+
 	return cfg
 }
 
@@ -177,5 +181,23 @@ func loadOauthConfig(cfg *Config) {
 			AuthURL:  cfg.AuthService.OAuth.Discord.AuthURL,
 			TokenURL: cfg.AuthService.OAuth.Discord.TokenURL,
 		},
+	}
+}
+
+func loadEnv(cfg *Config) {
+	//
+	loadStringEnv(&cfg.Database.Host, "DATABASE_HOST")
+	loadStringEnv(&cfg.Database.User, "DATABASE_USER")
+	loadStringEnv(&cfg.Database.Password, "DATABASE_PASSWORD")
+	loadStringEnv(&cfg.Database.DbName, "DATABASE_DBNAME")
+	loadStringEnv(&cfg.Database.SSLMode, "DATABASE_SSLMODE")
+
+	//
+	loadStringEnv(&cfg.Minio.Host, "MINIO_HOST")
+}
+
+func loadStringEnv(cfg *string, env string) {
+	if ENV := os.Getenv(env); ENV != "" {
+		*cfg = ENV
 	}
 }

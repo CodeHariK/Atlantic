@@ -8,7 +8,7 @@ data:
       "dev": true,
       "enable_metrics": true,
       "auth_service": {
-        "address": "localhost",
+        "host": "localhost",
         "port": 7777,
         "keymod": 10,
         "encypt_key": "thisis32bytekeyforchacha20encryp",
@@ -26,7 +26,7 @@ data:
           }
         }
       },
-      "database3": {
+      "database": {
         "host": "ep-wild-snowflake-a1b4472h.ap-southeast-1.aws.neon.tech",
         "port": 5432,
         "user": "sandslash_owner",
@@ -46,16 +46,6 @@ data:
         "timeout": 30,
         "ssl_mode": "require"
       },
-      "database": {
-        "host": "localhost",
-        "port": 5432,
-        "user": "superuser",
-        "password": "secret",
-        "dbname": "test",
-        "max_connections": 100,
-        "timeout": 30,
-        "ssl_mode": "disable"
-      },
       "dragonfly": {
         "host": "dragonfly-f263094-hoopaunbounded.g.aivencloud.com",
         "port": 18814,
@@ -63,7 +53,8 @@ data:
         "password": "AVNS_fvIXVv3_zT2ryGaJTf8"
       },
       "minio": {
-        "addr": "127.0.0.1:9000",
+        "host": "localhost",
+        "port": 9000,
         "id": "AS5G7ATEZOatOrkUntSC",
         "secret": "72294uVxarsMcKJemt0zpWP0rQG88XkhzNyH3tX",
         "bucket": {
@@ -72,11 +63,12 @@ data:
       },
       "cosmog_service": {
         "host": "localhost",
-        "port": 7800,
-        "meilisearch": {
-          "host": "http://localhost:7700",
-          "key": "aSampleMasterKey"
-        }
+        "port": 7800
+      },
+      "meilisearch": {
+        "host": "localhost",
+        "port": 7700,
+        "key": "aSampleMasterKey"
       },
       "inventory_service": {
         "host": "localhost",

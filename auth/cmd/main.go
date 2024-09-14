@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/codeharik/Atlantic/auth/server"
 	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
+	db "github.com/codeharik/Atlantic/database/migrations"
 	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/process"
@@ -18,7 +18,7 @@ import (
 const serviceName = "auth"
 
 func AuthServerFullUrl(config *config.Config) string {
-	return fmt.Sprintf("http://%s:%d", config.AuthService.Address, config.AuthService.Port)
+	return fmt.Sprintf("http://%s:%d", config.AuthService.Host, config.AuthService.Port)
 }
 
 func AuthServerPortUrl(config *config.Config) string {
@@ -30,10 +30,9 @@ func main() {
 
 	cfg := config.LoadConfig("config.json", "../config/config.json")
 
-	fmt.Println("---->", os.Getenv("AUTH_HOST"))
-	cfg.Database.Host = os.Getenv("AUTH_HOST")
-
 	colorlogger.SetLogger(cfg)
+
+	db.MigrateUp(cfg)
 
 	storeInstance, err := store.ConnectDatabase(cfg)
 	if err != nil {

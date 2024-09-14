@@ -22,7 +22,7 @@ type Store struct {
 func ConnectDatabase(config config.Config) (store Store, err error) {
 	dsn := config.DatabaseConnectionUri()
 
-	fmt.Println(dsn)
+	fmt.Printf("<--- %v\n", dsn)
 
 	var db *pgxpool.Pool
 	if config.OTLP.GRPC != "" {

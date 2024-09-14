@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/inventory/server"
@@ -22,13 +21,7 @@ func InventoryServerPortUrl(config *config.Config) string {
 }
 
 func main() {
-	minio_addr := os.Getenv("minio_addr")
-
 	cfg := config.LoadConfig("config.json", "../config/config.json")
-
-	cfg.Minio.Addr = minio_addr
-
-	fmt.Println("----> MINIO_ADDR : " + cfg.Minio.Addr)
 
 	dragon := dragon.CreateDragon(&cfg)
 
@@ -43,7 +36,4 @@ func main() {
 		&cfg,
 		dragon,
 	)
-
-	// getObject(s3Client, cfg.Minio.Bucket.Products, "go.mod")
-	// listObjects(s3Client, cfg.Minio.Bucket.Products)
 }

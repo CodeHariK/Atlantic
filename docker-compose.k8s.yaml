@@ -14,7 +14,7 @@ services:
       DATABASE_PASSWORD: secret
       DATABASE_SSLMODE: disable
       DATABASE_USER: superuser
-    image: auth:latest
+    image: auth:v0.0.1
     labels:
       kompose.hpa.cpu: "80"
       kompose.hpa.memory: 512Mi
@@ -99,7 +99,7 @@ services:
         limits:
           cpus: "0.5"
           memory: "268435456"
-    image: skitty:latest
+    image: skitty:v0.0.1
     networks:
       default: null
     ports:

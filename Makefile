@@ -1,9 +1,3 @@
-dcbuild:
-	docker compose build --no-cache
-
-dcup:
-	docker compose up
-
 caddy:
 	open -a "Google chrome" https://localhost
 	caddy fmt --overwrite config/caddy/Caddyfile
@@ -25,17 +19,24 @@ minio:
 meilisearch:
 	meilisearch  --config-file-path="./config/meilisearch/config.toml"
 
+kompose:
+	docker compose -f docker-compose.gen.yaml config > docker-compose.yaml
+
+	docker compose -f docker-compose.gen.yaml --env-file var.k8s config > docker-compose.k8s.yaml
+
+	kompose convert -f docker-compose.k8s.yaml -o k8s
+
+dcbuild:
+	docker compose build --no-cache
+dcup:
+	make kompose
+	docker compose up
+
 skaffoldinit:
 	skaffold init
 skaffoldev:
+	make kompose
 	skaffold dev
-skittyforward:
-	kubectl port-forward service/skitty 3000:3000
-
-kompose:
-	docker compose -f docker-compose.gen.yaml --env-file k8svar config > docker-compose.yaml
-
-	kompose convert -f docker-compose.yaml -o k8s
 
 skittybuild:
 	docker build -f Dockerfile.skitty -t skitty .

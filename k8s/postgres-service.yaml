@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: /Users/shark/.asdf/installs/kompose/1.34.0/bin/kompose convert -f docker-compose.yaml -o k8s
+    kompose.cmd: /Users/shark/.asdf/installs/kompose/1.34.0/bin/kompose convert -f docker-compose.k8s.yaml -o k8s
     kompose.version: 1.34.0 (cbf2835db)
     kompose.volume.size: 1Gi
   labels:

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"connectrpc.com/connect"
@@ -21,8 +22,8 @@ type CosmogServiceServer struct {
 
 func CreateCosmogServiceServer(cfg config.Config) CosmogServiceServer {
 	cosmog := meilisearch.New(
-		cfg.CosmogService.MeiliSearch.Host,
-		meilisearch.WithAPIKey(cfg.CosmogService.MeiliSearch.Key),
+		fmt.Sprintf("%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port),
+		meilisearch.WithAPIKey(cfg.MeiliSearch.Key),
 	)
 
 	return CosmogServiceServer{

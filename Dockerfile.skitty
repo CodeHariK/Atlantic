@@ -9,7 +9,10 @@ FROM oven/bun:latest AS bun-stage
 WORKDIR /app
 COPY ./skitty .
 RUN bun install
-RUN bun run lbuild
+
+ARG VITE_HOST
+ENV VITE_HOST=${VITE_HOST}
+RUN VITE_HOST=${VITE_HOST} bun run vite build --outDir kodata
 
 FROM cgr.dev/chainguard/static:latest
 

@@ -18,7 +18,7 @@ type MinioClient struct {
 
 func CreateClient(cfg *config.Config) (*MinioClient, error) {
 	c, err := minio.New(
-		cfg.Minio.Addr,
+		fmt.Sprintf("%s:%d", cfg.Minio.Host, cfg.Minio.Port),
 		&minio.Options{
 			Creds:  credentials.NewStaticV4(cfg.Minio.Id, cfg.Minio.Secret, ""),
 			Secure: false,
