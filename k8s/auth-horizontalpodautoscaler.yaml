@@ -2,6 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: auth
+  namespace: atlantic
 spec:
   maxReplicas: 3
   metrics:

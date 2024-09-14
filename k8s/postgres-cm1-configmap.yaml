@@ -33,3 +33,4 @@ metadata:
   labels:
     io.kompose.service: postgres
   name: postgres-cm1
+  namespace: atlantic

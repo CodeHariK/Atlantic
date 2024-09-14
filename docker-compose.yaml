@@ -22,6 +22,7 @@ services:
       kompose.hpa.replicas.min: "1"
       kompose.service.healthcheck.liveness.http_get_path: /health
       kompose.service.type: clusterip
+      org: AtlanticSpaceship
     networks:
       default: null
     ports:
@@ -29,6 +30,8 @@ services:
         target: 7777
         published: "7777"
         protocol: tcp
+    secrets:
+      - source: my_secret
     volumes:
       - type: bind
         source: /Users/Shared/Go/Atlantic/config/config.json
@@ -114,3 +117,7 @@ networks:
 volumes:
   pg-data:
     name: atlantic_pg-data
+secrets:
+  my_secret:
+    name: atlantic_my_secret
+    file: /Users/Shared/Go/Atlantic/var.k8s

@@ -94,3 +94,4 @@ metadata:
   labels:
     io.kompose.service: auth
   name: auth-cm0
+  namespace: atlantic

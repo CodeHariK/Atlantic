@@ -5,59 +5,62 @@ networks:
 
 services:
 
-  caddy:
-    image: cgr.dev/chainguard/caddy:latest
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./config/caddy/CaddyfileDocker:/etc/caddy/Caddyfile 
-    command: "run --config /etc/caddy/Caddyfile"
+  # caddy:
+  #   image: cgr.dev/chainguard/caddy:latest
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   volumes:
+  #     - ./config/caddy/CaddyfileDocker:/etc/caddy/Caddyfile 
+  #   command: "run --config /etc/caddy/Caddyfile"
 
-  postgres:
-    image: cgr.dev/chainguard/postgres:latest
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${DATABASE_USER:-superuser}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-secret}
-      POSTGRES_DB: ${DATABASE_DBNAME:-test}
-    ports:
-      - 5432:5432
-    labels:      
-      kompose.volume.size: 1Gi
-    volumes:
-      - pg-data:/var/lib/postgresql/data
-      - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-    command: " -c config_file=/etc/postgresql/postgresql.conf"
+  # postgres:
+  #   image: cgr.dev/chainguard/postgres:latest
+  #   container_name: postgres
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: ${DATABASE_USER:-superuser}
+  #     POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-secret}
+  #     POSTGRES_DB: ${DATABASE_DBNAME:-test}
+  #   ports:
+  #     - 5432:5432
+  #   labels:      
+  #     kompose.volume.size: 1Gi
+  #   volumes:
+  #     - pg-data:/var/lib/postgresql/data
+  #     - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+  #   command: " -c config_file=/etc/postgresql/postgresql.conf"
 
   # tcpdump:
   #   image: nicolaka/netshoot
   #   command: tcpdump -i any
 
-  auth:
-    image: "auth:${TAG:-latest}"
-    build: 
-      dockerfile: Dockerfile.auth
-    ports:
-      - 7777:7777
-    volumes:
-      - ./config/config.json:/config.json
-    labels:
-      kompose.service.healthcheck.liveness.http_get_path: /health
-      kompose.service.type: clusterip
-      kompose.hpa.cpu: 80
-      kompose.hpa.memory: 512Mi
-      kompose.hpa.replicas.min: 1
-      kompose.hpa.replicas.max: 3
-    environment:
-      DATABASE_HOST: ${DATABASE_HOST:-postgres}
-      DATABASE_USER: ${DATABASE_USER:-superuser}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-secret}
-      DATABASE_DBNAME: ${DATABASE_DBNAME:-test}
-      DATABASE_SSLMODE: ${DATABASE_SSLMODE:-disable}
-    depends_on:
-      - postgres
+  # auth:
+  #   image: "auth:${TAG:-latest}"
+  #   build: 
+  #     dockerfile: Dockerfile.auth
+  #   ports:
+  #     - 7777:7777
+  #   volumes:
+  #     - ./config/config.json:/config.json
+  #   labels:
+  #     kompose.service.healthcheck.liveness.http_get_path: /health
+  #     kompose.service.type: clusterip
+  #     kompose.hpa.cpu: 80
+  #     kompose.hpa.memory: 512Mi
+  #     kompose.hpa.replicas.min: 1
+  #     kompose.hpa.replicas.max: 3
+  #     org: AtlanticSpaceship
+  #   secrets:
+  #     - my_secret
+  #   environment:
+  #     DATABASE_HOST: ${DATABASE_HOST:-postgres}
+  #     DATABASE_USER: ${DATABASE_USER:-superuser}
+  #     DATABASE_PASSWORD: ${DATABASE_PASSWORD:-secret}
+  #     DATABASE_DBNAME: ${DATABASE_DBNAME:-test}
+  #     DATABASE_SSLMODE: ${DATABASE_SSLMODE:-disable}
+  #   depends_on:
+  #     - postgres
 
   skitty:
     image: "skitty:${TAG:-latest}"
@@ -175,3 +178,7 @@ volumes:
   dragonfly-data:
   minio-data:
   nats-data:
+
+secrets:
+  my_secret:
+    file: ./var.k8s

@@ -12,6 +12,17 @@ build:
       docker:
         dockerfile: Dockerfile.skitty
 
+  # - image: skitty
+  #   ko:
+  #     dependencies:
+  #       paths:
+  #       - "**/*.go"
+  #       - go.*
+  #       - kodata/**/*
+  #     fromImage: gcr.io/distroless/static-debian11:nonroot
+  #   sync:
+  #     infer:
+  #     - kodata/**/*
 
 manifests:
   rawYaml:
@@ -27,7 +38,7 @@ manifests:
     # - k8s/postgres-service.yaml
     - k8s/skitty-deployment.yaml
     - k8s/skitty-service.yaml
-    - k8s/tcpdump-deployment.yaml
+    # - k8s/tcpdump-deployment.yaml
 portForward:
 - resourceType: service
   resourceName: skitty

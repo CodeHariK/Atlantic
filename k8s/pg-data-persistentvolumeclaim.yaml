@@ -4,6 +4,7 @@ metadata:
   labels:
     io.kompose.service: pg-data
   name: pg-data
+  namespace: atlantic
 spec:
   accessModes:
     - ReadWriteOnce

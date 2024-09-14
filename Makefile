@@ -24,7 +24,7 @@ kompose:
 
 	docker compose -f docker-compose.gen.yaml --env-file var.k8s config > docker-compose.k8s.yaml
 
-	kompose convert -f docker-compose.k8s.yaml -o k8s
+	kompose convert -v --with-kompose-annotation=false -f docker-compose.k8s.yaml -n atlantic -o k8s
 
 dcbuild:
 	docker compose build --no-cache
@@ -45,6 +45,34 @@ skittyrun:
 skittykobuild:
 	KO_DATA_PATH=. KO_DEFAULTPLATFORMS=linux/arm64 KO_DOCKER_REPO=ttl.sh/skitty ko build main.go
 
-clean:
+kubecreate:
 	minikube delete --all --purge
 	docker system prune
+
+	minikube start --network-plugin=cni --cni=false --driver=docker
+cilium:
+	cilium install --version 1.16.1 --set kubeProxyReplacement=true --set gatewayAPI.enabled=true
+	cilium hubble enable
+	cilium hubble enable --ui
+ciliumstatus:
+	cilium status --wait
+hubblestatus:
+	hubble status
+hubbleui:
+	cilium hubble ui
+hubbleforward:
+	cilium hubble port-forward
+
+gatewayapi:
+	kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+gateway:
+	kubectl get gateway -A
+httproutes:
+	kubectl get httproute -A
+descroute:
+	kubectl describe httproute $(var)
+descgateway:
+	kubectl describe gateway %(var)
+
+ka:
+	kubectl get all -A

@@ -20,6 +20,6 @@ WORKDIR /
 COPY --from=build-stage /inventory /inventory
 COPY --from=build-stage /app/config/config.json .
 
-EXPOSE 7777
+EXPOSE 9100
 
 CMD ["./inventory"]
