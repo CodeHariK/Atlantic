@@ -1,10 +1,20 @@
 FROM golang:1.23.1-alpine3.20 AS build-stage
 
-COPY . /app
+# COPY . /app
+WORKDIR /app
+
+COPY ./cosmog ./cosmog
+COPY ./auth ./auth
+COPY ./config ./config
+COPY ./service ./service
+COPY ./docs ./docs
+COPY ./database ./database
+
+RUN go work init && go work use cosmog auth config service docs database
 
 WORKDIR /app/cosmog
 
-RUN go mod download 
+RUN go mod download
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /cosmog ./cmd
 

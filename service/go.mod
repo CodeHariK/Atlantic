@@ -34,7 +34,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.29.0
 	go.uber.org/automaxprocs v1.5.3
 	golang.org/x/crypto v0.27.0
-	golang.org/x/net v0.28.0
+	golang.org/x/net v0.29.0
 )
 
 require (
@@ -66,5 +66,5 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240822170219-fc7c04adadcd // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240822170219-fc7c04adadcd // indirect
 	google.golang.org/grpc v1.65.0 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
+	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689 // indirect
 )

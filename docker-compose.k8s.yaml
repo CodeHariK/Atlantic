@@ -21,7 +21,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
+          cpus: 0.5
           memory: "268435456"
     image: skitty:v0.0.1
     networks:

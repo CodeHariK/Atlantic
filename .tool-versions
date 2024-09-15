@@ -3,7 +3,6 @@ cilium-cli 0.16.16
 cilium-hubble 1.16.1
 ko 0.16.0
 skaffold 2.13.2
-grype 0.80.1
 dive 0.12.0
 helm 3.16.1
 kompose 1.34.0

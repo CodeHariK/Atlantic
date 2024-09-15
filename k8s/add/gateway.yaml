@@ -2,6 +2,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
   name: cilium-gateway
+  namespace: atlantic
 spec:
   controllerName: "io.cilium/gateway-controller"
 
@@ -18,11 +19,9 @@ spec:
   - name: http
     protocol: HTTP
     port: 80
-    routes:
-      kind: HTTPRoute
-      selector:
-        matchLabels:
-          gateway: my-gateway
+    allowedRoutes:
+      namespaces:
+        from: Same
 
 ---
 
@@ -41,8 +40,8 @@ spec:
     - path:
         type: PathPrefix
         value: "/"
-    forwardTo:
-    - serviceName: skitty
+    backendRefs:
+    - name: skitty
       port: 3000
 
 ---
@@ -62,63 +61,6 @@ spec:
     - path:
         type: PathPrefix
         value: "/cosmog.v1.CosmogService/"
-    forwardTo:
-    - serviceName: cosmog
+    backendRefs:
+    - name: cosmog
       port: 7800
-# ---
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: inventory-service-route
-#   namespace: atlantic
-#   labels:
-#     gateway: my-gateway
-# spec:
-#   parentRefs:
-#   - name: my-gateway
-#   rules:
-#   - matches:
-#     - path:
-#         type: PathPrefix
-#         value: "/inventory.v1.InventoryService/"
-#     forwardTo:
-#     - serviceName: inventory
-#       port: 9100
-# ---
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: profile-service-route
-#   namespace: atlantic
-#   labels:
-#     gateway: my-gateway
-# spec:
-#   parentRefs:
-#   - name: my-gateway
-#   rules:
-#   - matches:
-#     - path:
-#         type: PathPrefix
-#         value: "/profile.v1.ProfileService/"
-#     forwardTo:
-#     - serviceName: auth
-#       port: 7777
-# ---
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: auth-service-route
-#   namespace: atlantic
-#   labels:
-#     gateway: my-gateway
-# spec:
-#   parentRefs:
-#   - name: my-gateway
-#   rules:
-#   - matches:
-#     - path:
-#         type: PathPrefix
-#         value: "/auth.v1.AuthService/"
-#     forwardTo:
-#     - serviceName: auth
-#       port: 7777

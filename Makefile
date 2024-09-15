@@ -34,7 +34,7 @@ skaffoldev:
 	skaffold dev
 
 dbuild:
-	docker build -f Dockerfile.$(var) -t $(var) .
+	docker build -f Dockerfile.$(image) -t $(image) .
 
 skittybuild:
 	docker build -f Dockerfile.skitty -t skitty .
@@ -64,9 +64,9 @@ hubbleforward:
 gatewayapi:
 	kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
 gateway:
-	kubectl get gateway -A
-httproutes:
-	kubectl get httproute -A
+	kubectl get gateway -A --show-labels=true --show-kind=true
+	kubectl get gatewayclass -A --show-labels=true --show-kind=true
+	kubectl get httproute -A --show-labels=true --show-kind=true
 descroute:
 	kubectl describe httproute $(var)
 descgateway:
@@ -74,3 +74,7 @@ descgateway:
 
 ka:
 	kubectl get all -A
+crds:
+	kubectl get crds
+kver:
+	kubectl api-versions
