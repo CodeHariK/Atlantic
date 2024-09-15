@@ -3,14 +3,8 @@
 #   sqlc v1.27.0
 # source: product_category.sql
 import dataclasses
-from typing import AsyncIterator, Iterator, Optional
+from typing import Optional
 import uuid
-
-import sqlalchemy
-import sqlalchemy.ext.asyncio
-
-from product import models
-
 
 CREATE_PRODUCT_CATEGORY = """-- name: create_product_category \\:one
 INSERT INTO
@@ -54,7 +48,7 @@ WITH RECURSIVE CategoryHierarchy AS (
     SELECT id, name, parent_id, name\\:\\:TEXT AS path
     FROM product_category
     WHERE id = (
-        SELECT category_id
+        SELECT category_id1
         FROM products
         WHERE id = :p1  -- Use product ID to find the category_id
     )
@@ -119,133 +113,3 @@ ORDER BY name
 UPDATE_PRODUCT_CATEGORY = """-- name: update_product_category \\:exec
 UPDATE product_category SET name = :p2, parent_id = :p3 WHERE id = :p1
 """
-
-
-class Querier:
-    def __init__(self, conn: sqlalchemy.engine.Connection):
-        self._conn = conn
-
-    def create_product_category(self, *, id: int, name: str, parent_id: Optional[int]) -> Optional[int]:
-        row = self._conn.execute(sqlalchemy.text(CREATE_PRODUCT_CATEGORY), {"p1": id, "p2": name, "p3": parent_id}).first()
-        if row is None:
-            return None
-        return row[0]
-
-    def delete_product_category(self, *, id: int) -> None:
-        self._conn.execute(sqlalchemy.text(DELETE_PRODUCT_CATEGORY), {"p1": id})
-
-    def get_category_path(self, *, id: int) -> Optional[str]:
-        row = self._conn.execute(sqlalchemy.text(GET_CATEGORY_PATH), {"p1": id}).first()
-        if row is None:
-            return None
-        return row[0]
-
-    def get_product_category_by_id(self, *, id: int) -> Optional[models.ProductCategory]:
-        row = self._conn.execute(sqlalchemy.text(GET_PRODUCT_CATEGORY_BY_ID), {"p1": id}).first()
-        if row is None:
-            return None
-        return models.ProductCategory(
-            id=row[0],
-            name=row[1],
-            parent_id=row[2],
-        )
-
-    def get_product_with_category_path(self, *, id: uuid.UUID) -> Optional[GetProductWithCategoryPathRow]:
-        row = self._conn.execute(sqlalchemy.text(GET_PRODUCT_WITH_CATEGORY_PATH), {"p1": id}).first()
-        if row is None:
-            return None
-        return GetProductWithCategoryPathRow(
-            product_id=row[0],
-            product_name=row[1],
-            category_id1=row[2],
-            category_id2=row[3],
-            category_id3=row[4],
-            category_id4=row[5],
-            category_path=row[6],
-        )
-
-    def list_categories_by_parent_id(self, *, parent_id: Optional[int]) -> Iterator[models.ProductCategory]:
-        result = self._conn.execute(sqlalchemy.text(LIST_CATEGORIES_BY_PARENT_ID), {"p1": parent_id})
-        for row in result:
-            yield models.ProductCategory(
-                id=row[0],
-                name=row[1],
-                parent_id=row[2],
-            )
-
-    def list_root_categories(self) -> Iterator[models.ProductCategory]:
-        result = self._conn.execute(sqlalchemy.text(LIST_ROOT_CATEGORIES))
-        for row in result:
-            yield models.ProductCategory(
-                id=row[0],
-                name=row[1],
-                parent_id=row[2],
-            )
-
-    def update_product_category(self, *, id: int, name: str, parent_id: Optional[int]) -> None:
-        self._conn.execute(sqlalchemy.text(UPDATE_PRODUCT_CATEGORY), {"p1": id, "p2": name, "p3": parent_id})
-
-
-class AsyncQuerier:
-    def __init__(self, conn: sqlalchemy.ext.asyncio.AsyncConnection):
-        self._conn = conn
-
-    async def create_product_category(self, *, id: int, name: str, parent_id: Optional[int]) -> Optional[int]:
-        row = (await self._conn.execute(sqlalchemy.text(CREATE_PRODUCT_CATEGORY), {"p1": id, "p2": name, "p3": parent_id})).first()
-        if row is None:
-            return None
-        return row[0]
-
-    async def delete_product_category(self, *, id: int) -> None:
-        await self._conn.execute(sqlalchemy.text(DELETE_PRODUCT_CATEGORY), {"p1": id})
-
-    async def get_category_path(self, *, id: int) -> Optional[str]:
-        row = (await self._conn.execute(sqlalchemy.text(GET_CATEGORY_PATH), {"p1": id})).first()
-        if row is None:
-            return None
-        return row[0]
-
-    async def get_product_category_by_id(self, *, id: int) -> Optional[models.ProductCategory]:
-        row = (await self._conn.execute(sqlalchemy.text(GET_PRODUCT_CATEGORY_BY_ID), {"p1": id})).first()
-        if row is None:
-            return None
-        return models.ProductCategory(
-            id=row[0],
-            name=row[1],
-            parent_id=row[2],
-        )
-
-    async def get_product_with_category_path(self, *, id: uuid.UUID) -> Optional[GetProductWithCategoryPathRow]:
-        row = (await self._conn.execute(sqlalchemy.text(GET_PRODUCT_WITH_CATEGORY_PATH), {"p1": id})).first()
-        if row is None:
-            return None
-        return GetProductWithCategoryPathRow(
-            product_id=row[0],
-            product_name=row[1],
-            category_id1=row[2],
-            category_id2=row[3],
-            category_id3=row[4],
-            category_id4=row[5],
-            category_path=row[6],
-        )
-
-    async def list_categories_by_parent_id(self, *, parent_id: Optional[int]) -> AsyncIterator[models.ProductCategory]:
-        result = await self._conn.stream(sqlalchemy.text(LIST_CATEGORIES_BY_PARENT_ID), {"p1": parent_id})
-        async for row in result:
-            yield models.ProductCategory(
-                id=row[0],
-                name=row[1],
-                parent_id=row[2],
-            )
-
-    async def list_root_categories(self) -> AsyncIterator[models.ProductCategory]:
-        result = await self._conn.stream(sqlalchemy.text(LIST_ROOT_CATEGORIES))
-        async for row in result:
-            yield models.ProductCategory(
-                id=row[0],
-                name=row[1],
-                parent_id=row[2],
-            )
-
-    async def update_product_category(self, *, id: int, name: str, parent_id: Optional[int]) -> None:
-        await self._conn.execute(sqlalchemy.text(UPDATE_PRODUCT_CATEGORY), {"p1": id, "p2": name, "p3": parent_id})

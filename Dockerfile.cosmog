@@ -1,0 +1,23 @@
+FROM golang:1.23.1-alpine3.20 AS build-stage
+
+COPY . /app
+
+WORKDIR /app/cosmog
+
+RUN go mod download 
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /cosmog ./cmd
+
+FROM build-stage AS run-test-stage
+RUN go test -v ./...
+
+FROM cgr.dev/chainguard/static:latest
+
+WORKDIR /
+
+COPY --from=build-stage /cosmog /cosmog
+COPY --from=build-stage /app/config/config.json .
+
+EXPOSE 9100
+
+CMD ["./cosmog"]

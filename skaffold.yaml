@@ -12,6 +12,10 @@ build:
       docker:
         dockerfile: Dockerfile.skitty
 
+    - image: cosmog
+      docker:
+        dockerfile: Dockerfile.cosmog
+
   # - image: skitty
   #   ko:
   #     dependencies:
@@ -26,19 +30,8 @@ build:
 
 manifests:
   rawYaml:
-    - k8s/_atlantic.yaml
-    - k8s/_config.yaml
-    # - k8s/auth-cm0-configmap.yaml
-    # - k8s/auth-deployment.yaml
-    # - k8s/auth-horizontalpodautoscaler.yaml
-    # - k8s/auth-service.yaml
-    # - k8s/pg-data-persistentvolumeclaim.yaml
-    # - k8s/postgres-cm1-configmap.yaml
-    # - k8s/postgres-deployment.yaml
-    # - k8s/postgres-service.yaml
-    - k8s/skitty-deployment.yaml
-    - k8s/skitty-service.yaml
-    # - k8s/tcpdump-deployment.yaml
+    - k8s/add/*.yaml
+    - k8s/gen/*.yaml
 portForward:
 - resourceType: service
   resourceName: skitty

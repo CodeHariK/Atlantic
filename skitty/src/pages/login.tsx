@@ -11,6 +11,7 @@ import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
 import { useConnect } from '../components/connect';
 
 import * as yup from 'yup';
+import { HelloRequest } from '../../api/cosmog/v1/cosmog_pb.ts';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -22,12 +23,21 @@ export default function Login() {
    const [loading, setLoading] = createSignal(false);
    const [error, setError] = createSignal("");
 
-   const { authclient } = useConnect();
+   const { authclient, cosmogclient } = useConnect();
 
    type Credentials = {
       email: string,
       password: string
    };
+
+   const hello = async () => {
+      const helloresponse = await cosmogclient.hello(
+         new HelloRequest({
+            message: "Hello " + Math.random() * 10
+         })
+      )
+      console.log(helloresponse)
+   }
 
    const login = async (cred: Credentials) => {
       setLoading(true);
@@ -57,6 +67,7 @@ export default function Login() {
    return (
       <SpaceLayout two title='Login'>
 
+         <MaterialButton onClick={hello}>Hello</MaterialButton>
 
          <div class="justify-center h-full items-center flex">
 

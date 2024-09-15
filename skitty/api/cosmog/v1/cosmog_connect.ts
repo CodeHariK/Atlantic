@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateSearchKeyRequest, CreateSearchKeyResponse } from "./cosmog_pb.js";
+import { CreateSearchKeyRequest, CreateSearchKeyResponse, HelloRequest, HelloResponse } from "./cosmog_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,15 @@ export const CosmogService = {
       name: "CreateSearchKey",
       I: CreateSearchKeyRequest,
       O: CreateSearchKeyResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc cosmog.v1.CosmogService.Hello
+     */
+    hello: {
+      name: "Hello",
+      I: HelloRequest,
+      O: HelloResponse,
       kind: MethodKind.Unary,
     },
   }

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: cosmog
+  name: cosmog
+  namespace: atlantic
+spec:
+  ports:
+    - name: "7800"
+      port: 7800
+      targetPort: 7800
+  selector:
+    io.kompose.service: cosmog

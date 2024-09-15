@@ -2,6 +2,7 @@ import os
 import json
 from typing import List, Optional
 
+
 def find_existing_path(paths: List[str]) -> Optional[str]:
     """
     Check a list of file paths and return the first one that exists.

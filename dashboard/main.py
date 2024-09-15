@@ -22,7 +22,7 @@ def main():
         GetProductWithCategoryPathRow,
     )
 
-    df = execute_query(conn, GET_PRODUCT_WITH_CATEGORY_PATH, {"p1": 1})
+    df = execute_query(conn, GET_PRODUCT_WITH_CATEGORY_PATH, {"p1": "dcf84b7f-e33a-4ad8-a8ab-5b8b6e69d737"})
     dataclass_list = convert_dataframe_to_dataclass(
         df.df(), GetProductWithCategoryPathRow
     )

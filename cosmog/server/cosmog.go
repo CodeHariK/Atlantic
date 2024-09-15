@@ -51,3 +51,11 @@ func (c CosmogServiceServer) CreateSearchKey(ctx context.Context, req *connect.R
 		Key: key.Key,
 	}), nil
 }
+
+func (s CosmogServiceServer) Hello(ctx context.Context, req *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
+	return connect.NewResponse(
+			&v1.HelloResponse{
+				Message: "--> " + req.Msg.Message,
+			}),
+		nil
+}

@@ -8,6 +8,7 @@ import { AuthService } from "../../api/auth/v1/auth_connect.ts";
 import { ProfileService } from "../../api/auth/v1/profile_connect.ts";
 import { UserService } from "../../api/user/v1/user_connect.ts";
 import { InventoryService } from "../../api/inventory/v1/inventory_connect.ts";
+import { CosmogService } from "../../api/cosmog/v1/cosmog_connect.ts";
 import { Atlantic } from '../data/Constants.ts';
 
 // Define the types for the services
@@ -15,6 +16,7 @@ type AuthConnect = PromiseClient<typeof AuthService>;
 type ProfileConnect = PromiseClient<typeof ProfileService>;
 type UserConnect = PromiseClient<typeof UserService>;
 type InventoryConnect = PromiseClient<typeof InventoryService>;
+type CosmogConnect = PromiseClient<typeof CosmogService>;
 
 import { Interceptor } from '@connectrpc/connect';
 import { RefreshRequest } from '../../api/auth/v1/auth_pb.ts';
@@ -58,6 +60,7 @@ interface ConnectClients {
     profileclient: ProfileConnect;
     userclient: UserConnect;
     inventoryclient: InventoryConnect;
+    cosmogclient: CosmogConnect;
 }
 
 // Create the context with a default value of undefined
@@ -69,28 +72,24 @@ type ConnectProviderProps = {
 
 export function ConnectProvider(props: ConnectProviderProps) {
 
-    const authBaseTransport = createConnectTransport({
+    const baseTransport = createConnectTransport({
         baseUrl: Atlantic,
         credentials: "include",
     })
 
-    const authTransport = createConnectTransport({
+    const transport = createConnectTransport({
         baseUrl: Atlantic,
         credentials: "include",
-        interceptors: [interceptor(createPromiseClient(AuthService, authBaseTransport))],
+        interceptors: [interceptor(createPromiseClient(AuthService, baseTransport))],
     });
 
-    const inventoryTransport = createConnectTransport({
-        baseUrl: Atlantic,
-        credentials: "include",
-        interceptors: [interceptor(createPromiseClient(AuthService, authBaseTransport))],
-    });
 
     const [clients] = createStore<ConnectClients>({
-        authclient: createPromiseClient(AuthService, authTransport),
-        profileclient: createPromiseClient(ProfileService, authTransport),
-        userclient: createPromiseClient(UserService, authTransport),
-        inventoryclient: createPromiseClient(InventoryService, inventoryTransport),
+        authclient: createPromiseClient(AuthService, transport),
+        profileclient: createPromiseClient(ProfileService, transport),
+        userclient: createPromiseClient(UserService, transport),
+        inventoryclient: createPromiseClient(InventoryService, transport),
+        cosmogclient: createPromiseClient(CosmogService, transport),
     });
 
     return (

@@ -82,7 +82,7 @@ WITH RECURSIVE CategoryHierarchy AS (
     SELECT id, name, parent_id, name::TEXT AS path
     FROM product_category
     WHERE id = (
-        SELECT category_id
+        SELECT category_id1
         FROM products
         WHERE id = $1  -- Use product ID to find the category_id
     )

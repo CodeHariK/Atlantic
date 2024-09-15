@@ -3,11 +3,10 @@
 #   sqlc v1.27.0
 # source: product.sql
 import dataclasses
-from typing import AsyncIterator, Iterator, Optional
+from typing import Optional
 import uuid
 
 import sqlalchemy
-import sqlalchemy.ext.asyncio
 
 from product import models
 
@@ -72,115 +71,3 @@ class UpdateProductParams:
     category_id2: int
     category_id3: Optional[int]
     category_id4: Optional[int]
-
-
-class Querier:
-    def __init__(self, conn: sqlalchemy.engine.Connection):
-        self._conn = conn
-
-    def create_product(self, arg: CreateProductParams) -> Optional[uuid.UUID]:
-        row = self._conn.execute(sqlalchemy.text(CREATE_PRODUCT), {
-            "p1": arg.id,
-            "p2": arg.product_name,
-            "p3": arg.category_id1,
-            "p4": arg.category_id2,
-            "p5": arg.category_id3,
-            "p6": arg.category_id4,
-        }).first()
-        if row is None:
-            return None
-        return row[0]
-
-    def delete_product(self, *, id: uuid.UUID) -> None:
-        self._conn.execute(sqlalchemy.text(DELETE_PRODUCT), {"p1": id})
-
-    def get_product_by_id(self, *, id: uuid.UUID) -> Optional[models.Product]:
-        row = self._conn.execute(sqlalchemy.text(GET_PRODUCT_BY_ID), {"p1": id}).first()
-        if row is None:
-            return None
-        return models.Product(
-            id=row[0],
-            product_name=row[1],
-            category_id1=row[2],
-            category_id2=row[3],
-            category_id3=row[4],
-            category_id4=row[5],
-        )
-
-    def list_products(self, *, limit: int, offset: int) -> Iterator[models.Product]:
-        result = self._conn.execute(sqlalchemy.text(LIST_PRODUCTS), {"p1": limit, "p2": offset})
-        for row in result:
-            yield models.Product(
-                id=row[0],
-                product_name=row[1],
-                category_id1=row[2],
-                category_id2=row[3],
-                category_id3=row[4],
-                category_id4=row[5],
-            )
-
-    def update_product(self, arg: UpdateProductParams) -> None:
-        self._conn.execute(sqlalchemy.text(UPDATE_PRODUCT), {
-            "p1": arg.id,
-            "p2": arg.product_name,
-            "p3": arg.category_id1,
-            "p4": arg.category_id2,
-            "p5": arg.category_id3,
-            "p6": arg.category_id4,
-        })
-
-
-class AsyncQuerier:
-    def __init__(self, conn: sqlalchemy.ext.asyncio.AsyncConnection):
-        self._conn = conn
-
-    async def create_product(self, arg: CreateProductParams) -> Optional[uuid.UUID]:
-        row = (await self._conn.execute(sqlalchemy.text(CREATE_PRODUCT), {
-            "p1": arg.id,
-            "p2": arg.product_name,
-            "p3": arg.category_id1,
-            "p4": arg.category_id2,
-            "p5": arg.category_id3,
-            "p6": arg.category_id4,
-        })).first()
-        if row is None:
-            return None
-        return row[0]
-
-    async def delete_product(self, *, id: uuid.UUID) -> None:
-        await self._conn.execute(sqlalchemy.text(DELETE_PRODUCT), {"p1": id})
-
-    async def get_product_by_id(self, *, id: uuid.UUID) -> Optional[models.Product]:
-        row = (await self._conn.execute(sqlalchemy.text(GET_PRODUCT_BY_ID), {"p1": id})).first()
-        if row is None:
-            return None
-        return models.Product(
-            id=row[0],
-            product_name=row[1],
-            category_id1=row[2],
-            category_id2=row[3],
-            category_id3=row[4],
-            category_id4=row[5],
-        )
-
-    async def list_products(self, *, limit: int, offset: int) -> AsyncIterator[models.Product]:
-        result = await self._conn.stream(sqlalchemy.text(LIST_PRODUCTS), {"p1": limit, "p2": offset})
-        async for row in result:
-            yield models.Product(
-                id=row[0],
-                product_name=row[1],
-                category_id1=row[2],
-                category_id2=row[3],
-                category_id3=row[4],
-                category_id4=row[5],
-            )
-
-    async def update_product(self, arg: UpdateProductParams) -> None:
-        await self._conn.execute(sqlalchemy.text(UPDATE_PRODUCT), {
-            "p1": arg.id,
-            "p2": arg.product_name,
-            "p3": arg.category_id1,
-            "p4": arg.category_id2,
-            "p5": arg.category_id3,
-            "p6": arg.category_id4,
-        })

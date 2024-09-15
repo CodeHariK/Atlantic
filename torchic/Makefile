@@ -2,15 +2,9 @@ PORT = 6543
 CONTAINER_NAME = torchic
 
 run:
-	uvicorn main:app --reload --host localhost --port $(PORT)
-
-act:
-	conda activate torchic
-env:
-	conda env list
-	conda env export > environment.yml
-install:
-	conda install -c conda-forge transformers pytorch fastapi uvicorn python-multipart pillow torchvision
+	rye run uvicorn main:app --reload --host localhost --port $(PORT)
+shell:
+	rye show
 
 once:
 	curl -X POST "http://127.0.0.1:$(PORT)/generate" -H "Content-Type: application/json" -d '{"text": "Once upon a time"}'

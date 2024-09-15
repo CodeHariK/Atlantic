@@ -23,6 +23,9 @@ def execute_query(
     # Clean up the query and replace placeholders with parameter values
     query = query.replace("\\", "")
     for key, value in params.items():
+        # Check if the value is a string and add single quotes
+        if isinstance(value, str):
+            value = f"'{value}'"
         query = re.sub(f":{key}", str(value), query)
 
     # Execute the query and return the result

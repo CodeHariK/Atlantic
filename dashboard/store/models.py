@@ -35,7 +35,7 @@ class GooseDbVersion:
     id: int
     version_id: int
     is_applied: bool
-    tstamp: Optional[datetime.datetime]
+    tstamp: datetime.datetime
 
 
 @dataclasses.dataclass()

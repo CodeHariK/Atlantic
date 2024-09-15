@@ -2,22 +2,13 @@ PORT = 8501
 CONTAINER_NAME = dashboard
 
 run:
-	python3 main.py
+	rye run python main.py
 app:
-	streamlit run app.py
+	rye run streamlit run app.py
 format:
-	ruff format .
+	rye fmt
 shell:
-	poetry shell
-	poetry env info --path
-
-act:
-	conda activate dashboard
-env:
-	conda env list
-	conda env export > environment.yml
-install:
-	conda install -c conda-forge streamlit altair
+	rye show
 
 dockerbuild:
 	docker build -f Dockerfile.$(CONTAINER_NAME) -t $(CONTAINER_NAME) .

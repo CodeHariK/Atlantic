@@ -6,9 +6,10 @@ from PIL import Image
 
 import torch
 
+
 def fetchImage(url):
-    if url.startswith('data:image'):
-        url = url.split(',')[1]
+    if url.startswith("data:image"):
+        url = url.split(",")[1]
         image_data = base64.b64decode(url)
         image = Image.open(BytesIO(image_data))
         return image
@@ -18,16 +19,19 @@ def fetchImage(url):
         image = Image.open(BytesIO(response.content))
         return image
 
+
 def cache_file(url, filename):
     if not os.path.isfile(filename):
         print(f"{filename} not found. Downloading from {url}...")
         response = requests.get(url)
         if response.status_code == 200:
-            with open(filename, 'wb') as file:
+            with open(filename, "wb") as file:
                 file.write(response.content)
             print(f"{filename} downloaded successfully.")
         else:
-            raise Exception(f"Failed to download {filename}. Status code: {response.status_code}")
+            raise Exception(
+                f"Failed to download {filename}. Status code: {response.status_code}"
+            )
 
 
 def runModel(image, MODEL, MODEL_transform, device, classes):
@@ -44,8 +48,10 @@ def runModel(image, MODEL, MODEL_transform, device, classes):
 
     top5_probabilities, top5_class_indices = torch.topk(probabilities, k=5, dim=-1)
 
-    result={}
-    for index, (class_idx, probability) in enumerate(zip(top5_class_indices[0], top5_probabilities[0])):
+    result = {}
+    for index, (class_idx, probability) in enumerate(
+        zip(top5_class_indices[0], top5_probabilities[0])
+    ):
         result[classes[class_idx.item()]] = round(probability.item() * 100, 2)
 
     return result

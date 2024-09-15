@@ -17,7 +17,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,10 +27,9 @@ app.add_middleware(
 # async def generate_text_route(prompt: Prompt):
 #     return await generate_text(prompt)
 
+
 @app.post("/upload/")
-async def upload_image(
-    item: Any = Form(None)
-):
+async def upload_image(item: Any = Form(None)):
     try:
         if isinstance(item, StarletteUploadFile):
             image = Image.open(item.file).convert("RGB")
@@ -41,20 +40,24 @@ async def upload_image(
 
     try:
         validResponse = validate_image(image)
-    except :
-        return JSONResponse(content="Image not supported") 
+    except:
+        return JSONResponse(content="Image not supported")
 
     try:
         classifyResponse = classify_image(image)
     except:
-        return JSONResponse(content="Image not supported") 
+        return JSONResponse(content="Image not supported")
 
-    return JSONResponse(content={
-        "valid": validResponse,
-        "class": classifyResponse,
-    })
+    return JSONResponse(
+        content={
+            "valid": validResponse,
+            "class": classifyResponse,
+        }
+    )
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.get("/", response_class=HTMLResponse)
 async def read_index():

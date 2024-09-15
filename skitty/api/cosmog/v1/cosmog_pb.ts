@@ -80,3 +80,77 @@ export class CreateSearchKeyResponse extends Message<CreateSearchKeyResponse> {
   }
 }
 
+/**
+ * @generated from message cosmog.v1.HelloRequest
+ */
+export class HelloRequest extends Message<HelloRequest> {
+  /**
+   * @generated from field: string message = 1;
+   */
+  message = "";
+
+  constructor(data?: PartialMessage<HelloRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.HelloRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HelloRequest {
+    return new HelloRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HelloRequest {
+    return new HelloRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HelloRequest {
+    return new HelloRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: HelloRequest | PlainMessage<HelloRequest> | undefined, b: HelloRequest | PlainMessage<HelloRequest> | undefined): boolean {
+    return proto3.util.equals(HelloRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.HelloResponse
+ */
+export class HelloResponse extends Message<HelloResponse> {
+  /**
+   * @generated from field: string message = 1;
+   */
+  message = "";
+
+  constructor(data?: PartialMessage<HelloResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.HelloResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HelloResponse {
+    return new HelloResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HelloResponse {
+    return new HelloResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HelloResponse {
+    return new HelloResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: HelloResponse | PlainMessage<HelloResponse> | undefined, b: HelloResponse | PlainMessage<HelloResponse> | undefined): boolean {
+    return proto3.util.equals(HelloResponse, a, b);
+  }
+}
+

@@ -36,17 +36,21 @@ const (
 	// CosmogServiceCreateSearchKeyProcedure is the fully-qualified name of the CosmogService's
 	// CreateSearchKey RPC.
 	CosmogServiceCreateSearchKeyProcedure = "/cosmog.v1.CosmogService/CreateSearchKey"
+	// CosmogServiceHelloProcedure is the fully-qualified name of the CosmogService's Hello RPC.
+	CosmogServiceHelloProcedure = "/cosmog.v1.CosmogService/Hello"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	cosmogServiceServiceDescriptor               = v1.File_cosmog_v1_cosmog_proto.Services().ByName("CosmogService")
 	cosmogServiceCreateSearchKeyMethodDescriptor = cosmogServiceServiceDescriptor.Methods().ByName("CreateSearchKey")
+	cosmogServiceHelloMethodDescriptor           = cosmogServiceServiceDescriptor.Methods().ByName("Hello")
 )
 
 // CosmogServiceClient is a client for the cosmog.v1.CosmogService service.
 type CosmogServiceClient interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
+	Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error)
 }
 
 // NewCosmogServiceClient constructs a client for the cosmog.v1.CosmogService service. By default,
@@ -65,12 +69,19 @@ func NewCosmogServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		hello: connect.NewClient[v1.HelloRequest, v1.HelloResponse](
+			httpClient,
+			baseURL+CosmogServiceHelloProcedure,
+			connect.WithSchema(cosmogServiceHelloMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // cosmogServiceClient implements CosmogServiceClient.
 type cosmogServiceClient struct {
 	createSearchKey *connect.Client[v1.CreateSearchKeyRequest, v1.CreateSearchKeyResponse]
+	hello           *connect.Client[v1.HelloRequest, v1.HelloResponse]
 }
 
 // CreateSearchKey calls cosmog.v1.CosmogService.CreateSearchKey.
@@ -78,9 +89,15 @@ func (c *cosmogServiceClient) CreateSearchKey(ctx context.Context, req *connect.
 	return c.createSearchKey.CallUnary(ctx, req)
 }
 
+// Hello calls cosmog.v1.CosmogService.Hello.
+func (c *cosmogServiceClient) Hello(ctx context.Context, req *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
+	return c.hello.CallUnary(ctx, req)
+}
+
 // CosmogServiceHandler is an implementation of the cosmog.v1.CosmogService service.
 type CosmogServiceHandler interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
+	Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error)
 }
 
 // NewCosmogServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -95,10 +112,18 @@ func NewCosmogServiceHandler(svc CosmogServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	cosmogServiceHelloHandler := connect.NewUnaryHandler(
+		CosmogServiceHelloProcedure,
+		svc.Hello,
+		connect.WithSchema(cosmogServiceHelloMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/cosmog.v1.CosmogService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case CosmogServiceCreateSearchKeyProcedure:
 			cosmogServiceCreateSearchKeyHandler.ServeHTTP(w, r)
+		case CosmogServiceHelloProcedure:
+			cosmogServiceHelloHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -110,4 +135,8 @@ type UnimplementedCosmogServiceHandler struct{}
 
 func (UnimplementedCosmogServiceHandler) CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.CreateSearchKey is not implemented"))
+}
+
+func (UnimplementedCosmogServiceHandler) Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.Hello is not implemented"))
 }

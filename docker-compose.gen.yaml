@@ -62,6 +62,22 @@ services:
   #   depends_on:
   #     - postgres
 
+  # inventory:
+  #   image: "inventory:${TAG:-latest}"
+  #   build: 
+  #     dockerfile: Dockerfile.inventory
+  #   ports:
+  #     - 9100:9100
+  #   volumes:
+  #     - ./config/config.json:/config.json
+
+  cosmog:
+    image: "cosmog:${TAG:-latest}"
+    build: 
+      dockerfile: Dockerfile.cosmog
+    ports:
+      - 7800:7800
+
   skitty:
     image: "skitty:${TAG:-latest}"
     build: 
