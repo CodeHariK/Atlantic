@@ -1,3 +1,6 @@
+atlantic:
+	echo Welcome to Atlantic
+
 caddy:
 	open -a "Google chrome" http://localhost
 	caddy fmt --overwrite config/caddy/Caddyfile
@@ -15,6 +18,8 @@ meilisearch:
 	meilisearch  --config-file-path="./config/meilisearch/config.toml"
 
 kompose:
+	rm -f k8s/gen/*
+
 	docker compose -f docker-compose.gen.yaml config > docker-compose.yaml
 
 	docker compose -f docker-compose.gen.yaml --env-file var.k8s config > docker-compose.k8s.yaml
@@ -47,30 +52,15 @@ kubecreate:
 	minikube delete --all --purge
 	docker system prune
 
-	minikube start --network-plugin=cni --cni=false --driver=docker
-cilium:
-	cilium install --version 1.16.1 --set kubeProxyReplacement=true --set gatewayAPI.enabled=true
-	cilium hubble enable
-	cilium hubble enable --ui
-ciliumstatus:
-	cilium status --wait
-hubblestatus:
-	hubble status
-hubbleui:
-	cilium hubble ui
-hubbleforward:
-	cilium hubble port-forward
+	minikube start
 
-gatewayapi:
-	kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+envoy:
+	helm install eg oci://docker.io/envoyproxy/gateway-helm --version v0.0.0-latest -n envoy-gateway-system --create-namespace
+
 gateway:
-	kubectl get gateway -A --show-labels=true --show-kind=true
 	kubectl get gatewayclass -A --show-labels=true --show-kind=true
+	kubectl get gateway -A --show-labels=true --show-kind=true
 	kubectl get httproute -A --show-labels=true --show-kind=true
-descroute:
-	kubectl describe httproute $(var)
-descgateway:
-	kubectl describe gateway %(var)
 
 ka:
 	kubectl get all -A
@@ -78,3 +68,20 @@ crds:
 	kubectl get crds
 kver:
 	kubectl api-versions
+
+configview:
+	kubectl config view
+
+call:
+	curl -s \
+		--resolve atlantic.shark.run:443:172.18.255.202 \
+		http://atlantic.shark.run/
+	curl -s \
+		--resolve atlantic.shark.run:443:172.18.255.202 \
+		https://atlantic.shark.run/
+
+	curl --resolve www.example.com:80:127.0.0.1 http://www.example.com/
+	curl --resolve www.example.com:80:0.0.0.0 http://www.example.com/
+	curl --resolve www.example.com:80:0.0.0.0 http://www.example.com/
+	curl --resolve cow.example.com:8080:0.0.0.0 http://cow.example.com/
+	curl --resolve cow.example.com:8080:0.0.0.0 http://cow.example.com/cow

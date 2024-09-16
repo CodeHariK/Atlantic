@@ -34,14 +34,14 @@ manifests:
   rawYaml:
     - k8s/gen/*.yaml
     - k8s/add/*.yaml
-portForward:
-- resourceType: service
-  resourceName: skitty
-  namespace: atlantic
-  port: 3000
-  localPort: 3000
-- resourceType: service
-  resourceName: cosmog
-  namespace: atlantic
-  port: 7800
-  localPort: 7800
+# portForward:
+# - resourceType: service
+#   resourceName: skitty
+#   namespace: atlantic
+#   port: 3000
+#   localPort: 3000
+# - resourceType: service
+#   resourceName: cosmog
+#   namespace: atlantic
+#   port: 7800
+#   localPort: 7800
