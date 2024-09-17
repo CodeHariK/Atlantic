@@ -10,7 +10,7 @@ import (
 const MOVIE_INDEX = "movies"
 
 func setup() {
-	cfg := config.LoadConfig("config.json", "../config/config.json")
+	cfg := config.LoadConfig()
 
 	client := meilisearch.New(
 		fmt.Sprintf("%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port),

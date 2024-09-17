@@ -107,7 +107,9 @@ type Config struct {
 	} `json:"otlp"`
 }
 
-func LoadConfig(paths ...string) Config {
+func LoadConfig() Config {
+	paths := []string{"config.json", "./config/config.json", "../config/config.json"}
+
 	var filePath string
 	fileExists := false
 

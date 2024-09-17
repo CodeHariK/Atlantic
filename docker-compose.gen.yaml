@@ -4,15 +4,15 @@ networks:
     driver: bridge
 
 services:
-
-  # caddy:
-  #   image: cgr.dev/chainguard/caddy:latest
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   volumes:
-  #     - ./config/caddy/CaddyfileDocker:/etc/caddy/Caddyfile 
-  #   command: "run --config /etc/caddy/Caddyfile"
+  caddy:
+    image: cgr.dev/chainguard/caddy:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/caddy/CaddyfileDocker:/etc/caddy/Caddyfile
+    command: "run --config /etc/caddy/Caddyfile"
+    profiles: [docker]
 
   # postgres:
   #   image: cgr.dev/chainguard/postgres:latest
@@ -24,7 +24,7 @@ services:
   #     POSTGRES_DB: ${DATABASE_DBNAME:-test}
   #   ports:
   #     - 5432:5432
-  #   labels:      
+  #   labels:
   #     kompose.volume.size: 1Gi
   #   volumes:
   #     - pg-data:/var/lib/postgresql/data
@@ -37,7 +37,7 @@ services:
 
   # auth:
   #   image: "auth:${TAG:-latest}"
-  #   build: 
+  #   build:
   #     dockerfile: Dockerfile.auth
   #   ports:
   #     - 7777:7777
@@ -64,26 +64,26 @@ services:
 
   # inventory:
   #   image: "inventory:${TAG:-latest}"
-  #   build: 
+  #   build:
   #     dockerfile: Dockerfile.inventory
   #   ports:
   #     - 9100:9100
   #   volumes:
   #     - ./config/config.json:/config.json
 
-  cosmog:
-    image: "cosmog:${TAG:-latest}"
-    build: 
-      dockerfile: Dockerfile.cosmog
-    ports:
-      - 7800:7800
+  # cosmog:
+  #   image: "cosmog:${TAG:-latest}"
+  #   build:
+  #     dockerfile: Dockerfile.cosmog
+  #   ports:
+  #     - 7800:7800
 
   skitty:
     image: "skitty:${TAG:-latest}"
-    build: 
+    build:
       dockerfile: Dockerfile.skitty
       args:
-        VITE_HOST: ${VITE_HOST:-http://localhost} 
+        VITE_HOST: ${VITE_HOST:-http://localhost}
     deploy:
       resources:
         limits:

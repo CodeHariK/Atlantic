@@ -1,3 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: example-certificate
+  namespace: default
+spec:
+  secretName: example-certificate-tls
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer
+  commonName: www.example.com
+  dnsNames:
+    - www.example.com
+
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
@@ -15,6 +38,13 @@ spec:
     - name: http
       protocol: HTTP
       port: 80
+    - port: 443
+      protocol: HTTPS
+      name: https
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: example-certificate-tls
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -89,7 +119,7 @@ spec:
           args:
             - "-text=Hello from Cow!"
           ports:
-            - containerPort: 8080
+            - containerPort: 5678
 ---
 apiVersion: v1
 kind: Service
@@ -100,8 +130,8 @@ spec:
     app: http-echo
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 5678 # External port
+      targetPort: 5678 # Container port
   type: ClusterIP
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -128,18 +158,18 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: http-echo-route
+  name: cowsay-route
 spec:
   parentRefs:
     - name: eg # Replace with your actual Gateway name
   hostnames:
-    - "cow.example.com" # Replace with your hostname
+    - "cow.example.com"
   rules:
     - backendRefs:
         - group: ""
           kind: Service
           name: http-echo-service
-          port: 8080
+          port: 5678
           # name: backend
           # port: 3000
           weight: 1

@@ -21,7 +21,7 @@ func InventoryServerPortUrl(config *config.Config) string {
 }
 
 func main() {
-	cfg := config.LoadConfig("config.json", "../config/config.json")
+	cfg := config.LoadConfig()
 
 	dragon := dragon.CreateDragon(&cfg)
 

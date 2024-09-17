@@ -8,8 +8,9 @@ helm 3.16.1
 kompose 1.34.0
 minio 2024-09-09T16-59-28Z
 caddy 2.8.4
-minikube 1.33.1
 buf 1.41.0
 bun 1.1.27
 kubectl 1.30.5
 rye 0.39.0
+cloudflared 2024.9.1
+argocd 2.12.3

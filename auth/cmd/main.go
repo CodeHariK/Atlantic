@@ -28,7 +28,7 @@ func AuthServerPortUrl(config *config.Config) string {
 func main() {
 	process.SetMaxProcs()
 
-	cfg := config.LoadConfig("config.json", "../config/config.json")
+	cfg := config.LoadConfig()
 
 	colorlogger.SetLogger(cfg)
 

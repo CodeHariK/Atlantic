@@ -1,17 +1,5 @@
 name: atlantic
 services:
-  cosmog:
-    build:
-      context: /Users/Shared/Go/Atlantic
-      dockerfile: Dockerfile.cosmog
-    image: cosmog:v0.0.1
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 7800
-        published: "7800"
-        protocol: tcp
   skitty:
     build:
       context: /Users/Shared/Go/Atlantic

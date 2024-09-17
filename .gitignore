@@ -8,3 +8,6 @@ config.json
 __pycache__
 *.pyc
 .git
+
+k8s/chart
+k8s/gen

@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	DestroyConfig := config.LoadConfig("../config/config.json")
+	DestroyConfig := config.LoadConfig()
 
 	connString := DestroyConfig.DatabaseConnectionUri()
 
@@ -70,7 +70,7 @@ func main() {
 const dropGooseTableQuery = `DROP TABLE IF EXISTS goose_db_version;`
 
 const dropIndexesQuery = `
-DO $$ 
+DO $$
 DECLARE
 	r RECORD;
 BEGIN
@@ -80,7 +80,7 @@ BEGIN
 END $$;`
 
 const dropTablesQuery = `
-DO $$ 
+DO $$
 DECLARE
 	r RECORD;
 BEGIN
@@ -106,29 +106,29 @@ BEGIN
 END $$;`
 
 const dropTriggersQuery = `
-DO $$ 
-DECLARE 
-    r RECORD; 
-BEGIN 
-    FOR r IN (SELECT trigger_schema, trigger_name, event_object_table 
-		FROM information_schema.triggers) 
-    LOOP 
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT trigger_schema, trigger_name, event_object_table
+		FROM information_schema.triggers)
+    LOOP
         EXECUTE 'DROP TRIGGER ' || r.trigger_name || ' ON ' || r.event_object_table;
-    END LOOP; 
+    END LOOP;
 END $$;`
 
 const dropFunctionsQuery = `
-DO $$ 
-DECLARE 
-    r RECORD; 
-BEGIN 
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
     FOR r IN (SELECT n.nspname as schema_name,
 		p.proname as function_name,
 			pg_catalog.pg_get_function_identity_arguments(p.oid) as args
 		FROM pg_catalog.pg_proc p
 			JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
-		WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')) 
-    LOOP 
+		WHERE n.nspname NOT IN ('pg_catalog', 'information_schema'))
+    LOOP
         EXECUTE 'DROP FUNCTION ' || r.schema_name || '.' || r.function_name || '(' || r.args || ');';
-    END LOOP; 
+    END LOOP;
 END $$;`

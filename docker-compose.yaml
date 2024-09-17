@@ -1,17 +1,30 @@
 name: atlantic
 services:
-  cosmog:
-    build:
-      context: /Users/Shared/Go/Atlantic
-      dockerfile: Dockerfile.cosmog
-    image: cosmog:latest
+  caddy:
+    profiles:
+      - docker
+    command:
+      - run
+      - --config
+      - /etc/caddy/Caddyfile
+    image: cgr.dev/chainguard/caddy:latest
     networks:
       default: null
     ports:
       - mode: ingress
-        target: 7800
-        published: "7800"
+        target: 80
+        published: "80"
         protocol: tcp
+      - mode: ingress
+        target: 443
+        published: "443"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/caddy/CaddyfileDocker
+        target: /etc/caddy/Caddyfile
+        bind:
+          create_host_path: true
   skitty:
     build:
       context: /Users/Shared/Go/Atlantic
