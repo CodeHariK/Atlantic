@@ -12,20 +12,22 @@ import (
 func main() {
 	staticDir := os.Getenv("KO_DATA_PATH")
 	if staticDir == "" {
-		staticDir = "kodata"
+		staticDir = "./kodata"
 	}
 
 	// File server for serving static assets (CSS, JS, etc.)
 	fs := http.FileServer(http.Dir(staticDir))
 
 	// Custom handler to serve index.html for unknown routes
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		// Check if the requested file exists
 		path := filepath.Join(staticDir, r.URL.Path)
+		ext := strings.ToLower(filepath.Ext(path))
+
+		fmt.Println("StaticDir:", staticDir, "Path:", path, "url:", r.URL.Path, "ext:", ext)
 
 		// If the file doesn't exist, serve index.html
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-
+		if _, err := os.Stat(path); os.IsNotExist(err) || ext == "" {
 			fmt.Println("index.html")
 			w.Header().Set("Content-Type", "text/html")
 			// Serve index.html for unknown routes
@@ -33,10 +35,8 @@ func main() {
 			return
 		}
 
-		fmt.Println(filepath.Ext(path))
-
 		// Set the content type based on the file extension
-		switch ext := strings.ToLower(filepath.Ext(path)); ext {
+		switch ext {
 		case ".html":
 			w.Header().Set("Content-Type", "text/html")
 		case ".css":

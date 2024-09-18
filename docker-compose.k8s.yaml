@@ -1,11 +1,142 @@
 name: atlantic
 services:
+  auth:
+    build:
+      context: /Users/Shared/Go/Atlantic
+      dockerfile: Dockerfile.auth
+    depends_on:
+      postgres:
+        condition: service_started
+        required: true
+    environment:
+      DATABASE_DBNAME: test
+      DATABASE_HOST: postgres
+      DATABASE_PASSWORD: secret
+      DATABASE_SSLMODE: disable
+      DATABASE_USER: superuser
+      VITE_DOMAIN: http://localhost
+    image: auth:v0.0.1
+    labels:
+      kompose.hpa.cpu: "80"
+      kompose.hpa.memory: 512Mi
+      kompose.hpa.replicas.max: "3"
+      kompose.hpa.replicas.min: "1"
+      kompose.service.healthcheck.liveness.http_get_path: /health
+      kompose.service.type: clusterip
+      org: AtlanticSpaceship
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 7777
+        published: "7777"
+        protocol: tcp
+    secrets:
+      - source: my_secret
+        target: /run/secrets/my_secret
+    volumes:
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/config.json
+        target: /config.json
+        bind:
+          create_host_path: true
+  inventory:
+    build:
+      context: /Users/Shared/Go/Atlantic
+      dockerfile: Dockerfile.inventory
+    depends_on:
+      minio:
+        condition: service_started
+        required: true
+    environment:
+      MINIO_HOST: minio
+    image: inventory:v0.0.1
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 9100
+        published: "9100"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/config.json
+        target: /config.json
+        bind:
+          create_host_path: true
+  minio:
+    command:
+      - server
+      - /data
+      - --console-address
+      - :9001
+    container_name: minio
+    environment:
+      MINIO_DEFAULT_BUCKETS: your_bucket_name
+      MINIO_ROOT_PASSWORD: password
+      MINIO_ROOT_USER: admin
+    healthcheck:
+      test:
+        - CMD
+        - mc
+        - ready
+        - local
+      timeout: 5s
+      interval: 5s
+      retries: 5
+    image: cgr.dev/chainguard/minio:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 9000
+        published: "9000"
+        protocol: tcp
+      - mode: ingress
+        target: 9001
+        published: "9001"
+        protocol: tcp
+    volumes:
+      - type: volume
+        source: minio-data
+        target: /data
+        volume: {}
+  postgres:
+    command:
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+    container_name: postgres
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: superuser
+    image: cgr.dev/chainguard/postgres:latest
+    labels:
+      kompose.volume.size: 1Gi
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 5432
+        published: "5432"
+        protocol: tcp
+    restart: always
+    volumes:
+      - type: volume
+        source: pg-data
+        target: /var/lib/postgresql/data
+        volume: {}
+      - type: bind
+        source: /Users/Shared/Go/Atlantic/config/postgres/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        bind:
+          create_host_path: true
   skitty:
     build:
       context: /Users/Shared/Go/Atlantic
       dockerfile: Dockerfile.skitty
       args:
-        VITE_HOST: http://localhost
+        VITE_DOMAIN: http://localhost
     deploy:
       resources:
         limits:
@@ -23,3 +154,12 @@ networks:
   default:
     name: atlantic
     driver: bridge
+volumes:
+  minio-data:
+    name: atlantic_minio-data
+  pg-data:
+    name: atlantic_pg-data
+secrets:
+  my_secret:
+    name: atlantic_my_secret
+    file: /Users/Shared/Go/Atlantic/var.k8s

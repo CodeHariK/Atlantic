@@ -1,6 +1,7 @@
-#atlantic.shark.run:80 {
 :80 {
-	# Reverse proxy for specific services
+	reverse_proxy /atlantic.minio/* 127.0.0.1:9001
+
+	#---------
 	reverse_proxy /inventory.v1.InventoryService/* 127.0.0.1:9100
 
 	reverse_proxy /profile.v1.ProfileService/* 127.0.0.1:7777
@@ -8,6 +9,6 @@
 
 	reverse_proxy /cosmog.v1.CosmogService/* 127.0.0.1:7800
 
-	# Forward all other requests to the Next.js server
+	#---------
 	reverse_proxy /* 127.0.0.1:3000
 }

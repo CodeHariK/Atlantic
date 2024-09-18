@@ -1,50 +1,50 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: atlantic
+   name: atlantic
 build:
-  artifacts:
-    # - image: auth
-    #   docker:
-    #     dockerfile: Dockerfile.auth
+   artifacts:
+      # - image: auth
+      #   docker:
+      #     dockerfile: Dockerfile.auth
 
-    # - image: skitty
-    #   docker:
-    #     dockerfile: Dockerfile.skitty
-    #     buildArgs:
-    #       VITE_HOST: http://localhost
+      # - image: skitty
+      #   docker:
+      #     dockerfile: Dockerfile.skitty
+      #     buildArgs:
+      #       VITE_DOMAIN: http://localhost
 
-    # - image: cosmog
-    #   docker:
-    #     dockerfile: Dockerfile.cosmog
+      # - image: cosmog
+      #   docker:
+      #     dockerfile: Dockerfile.cosmog
 
-    - image: skitty
-      ko:
-        dir: ./skitty
-        #   flags:
-        #     - -mod=vendor
-        #     - -v
-        #   dependencies:
-        #     paths:
-        #       - skitty/**.go
-        #       - skitty/kodata/**/*
-        # fromImage: cgr.dev/chainguard/static:latest
-      # sync:
-      #   infer:
-      #     - skitty/kodata/**/*
+      - image: skitty
+        ko:
+           dir: ./skitty
+           #   flags:
+           #     - -mod=vendor
+           #     - -v
+           #   dependencies:
+           #     paths:
+           #       - skitty/**.go
+           #       - skitty/kodata/**/*
+           # fromImage: cgr.dev/chainguard/static:latest
+        # sync:
+        #   infer:
+        #     - skitty/kodata/**/*
 
 manifests:
-  rawYaml:
-    - k8s/gen/*.yaml
-    # - k8s/add/*.yaml
+   rawYaml:
+      - k8s/gen/*.yaml
+      # - k8s/add/*.yaml
 portForward:
-  - resourceType: service
-    resourceName: skitty
-    namespace: atlantic
-    port: 3000
-    localPort: 3000
-  # - resourceType: service
-  #   resourceName: cosmog
-  #   namespace: atlantic
-  #   port: 7800
-  #   localPort: 7800
+   - resourceType: service
+     resourceName: skitty
+     namespace: atlantic
+     port: 3000
+     localPort: 3000
+   # - resourceType: service
+   #   resourceName: cosmog
+   #   namespace: atlantic
+   #   port: 7800
+   #   localPort: 7800

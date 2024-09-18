@@ -1,5 +1,8 @@
-localhost:80 {
-	# Reverse proxy for specific services
+:80 {
+
+	reverse_proxy /atlantic.minio/* minio:9001
+
+   #---------
 	reverse_proxy /inventory.v1.InventoryService/* inventory:9100
 
 	reverse_proxy /profile.v1.ProfileService/* auth:7777
@@ -7,6 +10,6 @@ localhost:80 {
 
 	reverse_proxy /cosmog.v1.CosmogService/* cosmog:7800
 
-	# Forward all other requests to the Next.js server
+   #---------
 	reverse_proxy /* skitty:3000
 }

@@ -1,6 +1,7 @@
 executables
+
 config.json
-*.pyc
+
 .DS_Store
 
 *.pem
@@ -11,3 +12,5 @@ __pycache__
 
 k8s/chart
 k8s/gen
+
+logfile.html

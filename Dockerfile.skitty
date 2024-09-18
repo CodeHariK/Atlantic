@@ -10,9 +10,10 @@ WORKDIR /app
 COPY ./skitty .
 RUN bun install
 
-ARG VITE_HOST
-ENV VITE_HOST=${VITE_HOST}
-RUN VITE_HOST=${VITE_HOST} bun run vite build --outDir kodata
+ARG VITE_DOMAIN
+ENV VITE_DOMAIN=${VITE_DOMAIN}
+RUN VITE_DOMAIN=${VITE_DOMAIN} bun run vite build --outDir kodata
+RUN echo "Welcome to Atlantic ~> ${VITE_DOMAIN}" > kodata/hello.html
 
 FROM cgr.dev/chainguard/static:latest
 

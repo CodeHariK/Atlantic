@@ -188,6 +188,11 @@ func loadOauthConfig(cfg *Config) {
 
 func loadEnv(cfg *Config) {
 	//
+	loadStringEnv(&cfg.Domain, "VITE_DOMAIN")
+
+	fmt.Println("Atlantic", cfg.Domain)
+
+	//
 	loadStringEnv(&cfg.Database.Host, "DATABASE_HOST")
 	loadStringEnv(&cfg.Database.User, "DATABASE_USER")
 	loadStringEnv(&cfg.Database.Password, "DATABASE_PASSWORD")
