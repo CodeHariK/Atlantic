@@ -4,6 +4,10 @@ metadata:
    name: atlantic
 # build:
 #    artifacts:
+#       # - image: test
+#       #   docker:
+#       #      dockerfile: Dockerfile.test
+
 #       # - image: auth
 #       #   docker:
 #       #     dockerfile: Dockerfile.auth
@@ -18,20 +22,20 @@ metadata:
 #       #   docker:
 #       #     dockerfile: Dockerfile.cosmog
 
-#       - image: skitty
-#         ko:
-#            dir: ./skitty
-#            #   flags:
-#            #     - -mod=vendor
-#            #     - -v
-#            #   dependencies:
-#            #     paths:
-#            #       - skitty/**.go
-#            #       - skitty/kodata/**/*
-#            # fromImage: cgr.dev/chainguard/static:latest
-#         # sync:
-#         #   infer:
-#         #     - skitty/kodata/**/*
+#       # - image: skitty
+#       #   ko:
+#       #      dir: ./skitty
+#       #   flags:
+#       #     - -mod=vendor
+#       #     - -v
+#       #   dependencies:
+#       #     paths:
+#       #       - skitty/**.go
+#       #       - skitty/kodata/**/*
+#       # fromImage: cgr.dev/chainguard/static:latest
+#       # sync:
+#       #   infer:
+#       #     - skitty/kodata/**/*
 
 deploy:
    helm:
@@ -46,17 +50,19 @@ deploy:
               - k8s/values/argo.yaml
 manifests:
    rawYaml:
-      # - k8s/argo/argo-sealed-secrets.yaml
-      # - k8s/argo/argo-cilium.yaml
       # - k8s/argo/argo-certmanager.yaml
+
+      # - k8s/argo/argo-sealed-secrets.yaml
       # - k8s/argo/argo-dragon.yaml
       # - k8s/argo/argo-minio.yaml
       # - k8s/argo/argo-postgres.yaml
       # - k8s/argo/argo-nats.yaml
-      - k8s/argo/argo-dashboard.yaml
-      - k8s/argo/argo-headlamp.yaml
+      # - k8s/argo/argo-headlamp.yaml
+
       # - k8s/gen/*.yaml
       # - k8s/add/*.yaml
+
+      - clonek7s/quickstart.yaml
 # portForward:
 #    - resourceType: service
 #      resourceName: skitty

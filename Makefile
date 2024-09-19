@@ -49,14 +49,13 @@ dcup:
 	make kompose
 	docker compose --profile docker up
 
-skaffoldinit:
-	skaffold init
-skaffoldev:
-	make kompose
-	skaffold dev
-
 img:
 	docker build -f Dockerfile.$(img) -t $(img) .
+
+test:
+	make img img=test
+	docker rm test || true
+	docker run -it --name test --network atlantic test
 
 auth:
 	go run auth/cmd/main.go
@@ -147,7 +146,14 @@ argopassword:
 	@make bcrypt PWD=password
 
 argoforward:
-	@kubectl port-forward service/argo-argocd-server -n argocd 8080:443
+	@kubectl port-forward service/argo-argocd-server -n argocd 5000:5010
 
 headlamp:
-	@kubectl port-forward service/headlamp -n headlamp 8000:80
+	@kubectl create token headlamp-admin -n kube-system
+	@kubectl port-forward service/headlamp -n headlamp 5001:80
+
+dev:
+	make kompose
+	kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.yaml
+	kubectl apply --server-side -f https://github.com/envoyproxy/gateway/releases/download/v1.1.1/install.yaml
+	skaffold dev

@@ -13,12 +13,13 @@ spec:
    project: default
    source:
       repoURL: https://charts.bitnami.com/bitnami
-      targetRevision: 1.0.0
+      targetRevision: 1.0.1
       chart: valkey
       helm:
          releaseName: valkey
-         valueFiles:
-            - k8s/values/dragon.yaml
+         values: |
+            replica:
+               replicaCount: 1
    destination:
       server: "https://kubernetes.default.svc"
       namespace: dragon-system

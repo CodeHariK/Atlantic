@@ -3,7 +3,7 @@ TAG=v0.0.1
 SKITTY_CPU_LIMIT=0.5
 SKITTY_MEMORY_LIMIT=256M
 
-DATABASE_HOST=postgres
+DATABASE_HOST=postgres.atlantic.svc.cluster.local
 
 MINIO_HOST=minio
 

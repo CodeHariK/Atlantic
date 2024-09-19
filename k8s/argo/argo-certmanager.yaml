@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: certmanager-system
+   name: cert-manager
 
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -17,9 +17,12 @@ spec:
       chart: cert-manager
       helm:
          releaseName: cert-manager
+         values: |
+            crds:
+              enabled: true
    destination:
       server: "https://kubernetes.default.svc"
-      namespace: certmanager-system
+      namespace: cert-manager
    syncPolicy:
       automated:
          prune: true

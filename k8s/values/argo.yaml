@@ -1,7 +1,9 @@
 # values.yaml
 server:
    service:
-      type: LoadBalancer
+      type: ClusterIP
+      servicePortHttp: 5010
+      servicePortHttps: 5015
    rbac:
       create: true
 configs:

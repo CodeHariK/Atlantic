@@ -1,132 +1,8 @@
 name: atlantic
 services:
-  auth:
-    build:
-      context: /Users/Shared/Go/Atlantic
-      dockerfile: Dockerfile.auth
-    depends_on:
-      postgres:
-        condition: service_started
-        required: true
-    environment:
-      DATABASE_DBNAME: test
-      DATABASE_HOST: postgres
-      DATABASE_PASSWORD: secret
-      DATABASE_SSLMODE: disable
-      DATABASE_USER: superuser
-      VITE_DOMAIN: http://hello.shark.run
-    image: auth:latest
-    labels:
-      kompose.hpa.cpu: "80"
-      kompose.hpa.memory: 512Mi
-      kompose.hpa.replicas.max: "3"
-      kompose.hpa.replicas.min: "1"
-      kompose.service.healthcheck.liveness.http_get_path: /health
-      kompose.service.type: clusterip
-      org: AtlanticSpaceship
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 7777
-        published: "7777"
-        protocol: tcp
-    secrets:
-      - source: my_secret
-        target: /run/secrets/my_secret
-    volumes:
-      - type: bind
-        source: /Users/Shared/Go/Atlantic/config/config.json
-        target: /config.json
-        bind:
-          create_host_path: true
-  caddy:
+  postgres:
     profiles:
       - docker
-    command:
-      - run
-      - --config
-      - /etc/caddy/Caddyfile
-    image: cgr.dev/chainguard/caddy:latest
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 80
-        published: "80"
-        protocol: tcp
-      - mode: ingress
-        target: 443
-        published: "443"
-        protocol: tcp
-    volumes:
-      - type: bind
-        source: /Users/Shared/Go/Atlantic/config/caddy/CaddyfileDocker
-        target: /etc/caddy/Caddyfile
-        bind:
-          create_host_path: true
-  inventory:
-    build:
-      context: /Users/Shared/Go/Atlantic
-      dockerfile: Dockerfile.inventory
-    depends_on:
-      minio:
-        condition: service_started
-        required: true
-    environment:
-      MINIO_HOST: minio
-    image: inventory:latest
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 9100
-        published: "9100"
-        protocol: tcp
-    volumes:
-      - type: bind
-        source: /Users/Shared/Go/Atlantic/config/config.json
-        target: /config.json
-        bind:
-          create_host_path: true
-  minio:
-    command:
-      - server
-      - /data
-      - --console-address
-      - :9001
-    container_name: minio
-    environment:
-      MINIO_DEFAULT_BUCKETS: your_bucket_name
-      MINIO_ROOT_PASSWORD: password
-      MINIO_ROOT_USER: admin
-    healthcheck:
-      test:
-        - CMD
-        - mc
-        - ready
-        - local
-      timeout: 5s
-      interval: 5s
-      retries: 5
-    image: cgr.dev/chainguard/minio:latest
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 9000
-        published: "9000"
-        protocol: tcp
-      - mode: ingress
-        target: 9001
-        published: "9001"
-        protocol: tcp
-    volumes:
-      - type: volume
-        source: minio-data
-        target: /data
-        volume: {}
-  postgres:
     command:
       - -c
       - config_file=/etc/postgresql/postgresql.conf
@@ -156,35 +32,27 @@ services:
         target: /etc/postgresql/postgresql.conf
         bind:
           create_host_path: true
-  skitty:
+  test:
     build:
       context: /Users/Shared/Go/Atlantic
-      dockerfile: Dockerfile.skitty
-      args:
-        VITE_DOMAIN: http://hello.shark.run
-    deploy:
-      resources:
-        limits:
-          cpus: 0.5
-          memory: "268435456"
-    image: skitty:latest
+      dockerfile: Dockerfile.test
+    environment:
+      PGPASSWORD: secret
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: superuser
+    image: test:latest
     networks:
       default: null
     ports:
       - mode: ingress
-        target: 3000
-        published: "3000"
+        target: 15155
+        published: "15155"
         protocol: tcp
 networks:
   default:
     name: atlantic
     driver: bridge
 volumes:
-  minio-data:
-    name: atlantic_minio-data
   pg-data:
     name: atlantic_pg-data
-secrets:
-  my_secret:
-    name: atlantic_my_secret
-    file: /Users/Shared/Go/Atlantic/var.k8s
