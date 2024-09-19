@@ -86,11 +86,8 @@ koskitty:
 	# KO_DATA_PATH=. KO_DEFAULTPLATFORMS=linux/arm64 KO_DOCKER_REPO=ko.local/skitty ko build skitty/main.go
 	# docker run -p 3000:3000 --name skitty $(image)
 
-kubecreate:
-	minikube delete --all --purge
+clear:
 	docker system prune
-
-	minikube start
 
 argo:
 	kubectl create namespace argocd
@@ -142,3 +139,15 @@ call:
 	curl cow.example.com/cow
 	curl www.example.com
 	curl --insecure https://cow.example.com/cow
+
+bcrypt:
+	@htpasswd -nbBC 10 "" $(PWD) | tr -d ':\n' | sed 's/$2y/$2a/'
+
+argopassword:
+	@make bcrypt PWD=password
+
+argoforward:
+	@kubectl port-forward service/argo-argocd-server -n argocd 8080:443
+
+headlamp:
+	@kubectl port-forward service/headlamp -n headlamp 8000:80

@@ -1,25 +1,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: certmanager-system
+   name: postgresql-system
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-   name: certmanager-system
+   name: postgresql-system
    namespace: argocd
 spec:
    project: default
    source:
-      repoURL: https://charts.jetstack.io
-      targetRevision: 1.15.3
-      chart: cert-manager
+      repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: 15.5.32
+      chart: postgresql
       helm:
-         releaseName: cert-manager
+         releaseName: postgresql
    destination:
       server: "https://kubernetes.default.svc"
-      namespace: certmanager-system
+      namespace: postgresql-system
    syncPolicy:
       automated:
          prune: true

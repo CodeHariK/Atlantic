@@ -16,6 +16,8 @@ HTML_BLUE='<p style="color: #9393ed;">'
 HTML_PURPLE='<p style="color: #ca63c2;">'
 HTML_NC='</p>' # No Color
 
+open -a 'Google chrome' ./logfile.html
+
 # Function to run a command and print its output in a specific format and color
 run_command() {
     name="$1"

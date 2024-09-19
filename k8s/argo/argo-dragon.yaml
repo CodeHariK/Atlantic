@@ -1,25 +1,27 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: certmanager-system
+   name: dragon-system
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-   name: certmanager-system
+   name: dragon-system
    namespace: argocd
 spec:
    project: default
    source:
-      repoURL: https://charts.jetstack.io
-      targetRevision: 1.15.3
-      chart: cert-manager
+      repoURL: https://charts.bitnami.com/bitnami
+      targetRevision: 1.0.0
+      chart: valkey
       helm:
-         releaseName: cert-manager
+         releaseName: valkey
+         valueFiles:
+            - k8s/values/dragon.yaml
    destination:
       server: "https://kubernetes.default.svc"
-      namespace: certmanager-system
+      namespace: dragon-system
    syncPolicy:
       automated:
          prune: true

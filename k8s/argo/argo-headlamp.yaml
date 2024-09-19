@@ -1,25 +1,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: certmanager-system
+   name: headlamp
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-   name: certmanager-system
+   name: headlamp-system
    namespace: argocd
 spec:
    project: default
    source:
-      repoURL: https://charts.jetstack.io
-      targetRevision: 1.15.3
-      chart: cert-manager
+      repoURL: https://headlamp-k8s.github.io/headlamp/
+      targetRevision: 0.25.0
+      chart: headlamp
       helm:
-         releaseName: cert-manager
+         releaseName: headlamp
    destination:
       server: "https://kubernetes.default.svc"
-      namespace: certmanager-system
+      namespace: headlamp
    syncPolicy:
       automated:
          prune: true

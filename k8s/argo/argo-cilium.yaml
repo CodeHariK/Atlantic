@@ -1,25 +1,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: certmanager-system
+   name: cilium-system
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-   name: certmanager-system
+   name: cilium-gateway
    namespace: argocd
 spec:
    project: default
    source:
-      repoURL: https://charts.jetstack.io
-      targetRevision: 1.15.3
-      chart: cert-manager
+      repoURL: https://helm.cilium.io/
+      targetRevision: 1.17.0-pre.0
+      chart: cilium
       helm:
-         releaseName: cert-manager
+         releaseName: cilium
    destination:
       server: "https://kubernetes.default.svc"
-      namespace: certmanager-system
+      namespace: cilium-system
    syncPolicy:
       automated:
          prune: true

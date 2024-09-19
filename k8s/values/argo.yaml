@@ -1,0 +1,9 @@
+# values.yaml
+server:
+   service:
+      type: LoadBalancer
+   rbac:
+      create: true
+configs:
+   secret:
+      argocdServerAdminPassword: "$2a$10$VAqID1DuIqDvUNz4HLU0ReRm0/ZpHV.GcIwEs/hO5fXwLyxys/w3W"
