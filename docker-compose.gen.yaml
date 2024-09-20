@@ -32,17 +32,25 @@ services:
       command: " -c config_file=/etc/postgresql/postgresql.conf"
       profiles: [docker]
 
-   test:
-      image: "test:${TAG:-latest}"
+   overtools:
+      image: "overtools:${TAG:-latest}"
       build:
-         dockerfile: Dockerfile.test
+         dockerfile: Dockerfile.overtools
       ports:
-         - 15155:15155
+         - 12121:12121
       environment:
+         PGHOST: ${DATABASE_HOST:-postgres}
+         DATABASE_HOST: ${DATABASE_HOST:-postgres}
+
+         PGUSER: ${DATABASE_USER:-superuser}
          POSTGRES_USER: ${DATABASE_USER:-superuser}
-         POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-secret}
-         POSTGRES_DB: ${DATABASE_DBNAME:-test}
+
          PGPASSWORD: ${DATABASE_PASSWORD:-secret}
+         POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-secret}
+
+         POSTGRES_DB: ${DATABASE_DBNAME:-test}
+         PGDATABASE: ${DATABASE_DBNAME:-test}
+
       # profiles: [docker]
 
    # auth:
@@ -94,19 +102,19 @@ services:
    # #   ports:
    # #     - 7800:7800
 
-   # skitty:
-   #    image: "skitty:${TAG:-latest}"
-   #    build:
-   #       dockerfile: Dockerfile.skitty
-   #       args:
-   #          VITE_DOMAIN: ${VITE_DOMAIN:-http://localhost}
-   #    deploy:
-   #       resources:
-   #          limits:
-   #             cpus: ${SKITTY_CPU_LIMIT:-0.5}
-   #             memory: ${SKITTY_MEMORY_LIMIT:-256M}
-   #    ports:
-   #       - 3000:3000
+   skitty:
+      image: "skitty:${TAG:-latest}"
+      build:
+         dockerfile: Dockerfile.skitty
+         args:
+            VITE_DOMAIN: ${VITE_DOMAIN:-http://localhost}
+      deploy:
+         resources:
+            limits:
+               cpus: ${SKITTY_CPU_LIMIT:-0.5}
+               memory: ${SKITTY_MEMORY_LIMIT:-256M}
+      ports:
+         - 3000:3000
 
    # minio:
    #    container_name: minio

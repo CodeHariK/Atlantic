@@ -1,11 +1,14 @@
 # values.yaml
 server:
-   service:
-      type: ClusterIP
-      servicePortHttp: 5010
-      servicePortHttps: 5015
+   # service:
+   #    type: ClusterIP
+   #    servicePortHttp: 5010
+   #    servicePortHttps: 5015
    rbac:
       create: true
 configs:
+   params:
+      server.insecure: true
+      server.disable.auth: true
    secret:
       argocdServerAdminPassword: "$2a$10$VAqID1DuIqDvUNz4HLU0ReRm0/ZpHV.GcIwEs/hO5fXwLyxys/w3W"

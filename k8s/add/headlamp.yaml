@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+   name: headlamp-route
+   namespace: headlamp
+spec:
+   parentRefs:
+      - name: atlantic-gateway
+        namespace: atlantic-gateway
+   hostnames:
+      - "headlamp.atlantic.shark.run"
+   rules:
+      - backendRefs:
+           - group: ""
+             kind: Service
+             name: headlamp
+             port: 80
+             weight: 1
+        matches:
+           - path:
+                value: /

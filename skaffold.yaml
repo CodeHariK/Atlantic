@@ -2,40 +2,39 @@ apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
    name: atlantic
-# build:
-#    artifacts:
-#       # - image: test
-#       #   docker:
-#       #      dockerfile: Dockerfile.test
+build:
+   artifacts:
+      - image: overtools
+        docker:
+           dockerfile: Dockerfile.overtools
 
-#       # - image: auth
-#       #   docker:
-#       #     dockerfile: Dockerfile.auth
+      # - image: auth
+      #   docker:
+      #     dockerfile: Dockerfile.auth
 
-#       # - image: skitty
-#       #   docker:
-#       #     dockerfile: Dockerfile.skitty
-#       #     buildArgs:
-#       #       VITE_DOMAIN: http://localhost
+      # - image: skitty
+      #   docker:
+      #      dockerfile: Dockerfile.skitty
+      #      buildArgs:
+      #         VITE_DOMAIN: http://localhost
 
-#       # - image: cosmog
-#       #   docker:
-#       #     dockerfile: Dockerfile.cosmog
+      # - image: cosmog
+      #   docker:
+      #     dockerfile: Dockerfile.cosmog
 
-#       # - image: skitty
-#       #   ko:
-#       #      dir: ./skitty
-#       #   flags:
-#       #     - -mod=vendor
-#       #     - -v
-#       #   dependencies:
-#       #     paths:
-#       #       - skitty/**.go
-#       #       - skitty/kodata/**/*
-#       # fromImage: cgr.dev/chainguard/static:latest
-#       # sync:
-#       #   infer:
-#       #     - skitty/kodata/**/*
+      - image: skitty
+        ko:
+           dir: ./skitty
+           # flags:
+           #    - "-ldflags=-X main.VITE_DOMAIN=http://localhost"
+      #   dependencies:
+      #     paths:
+      #       - skitty/**.go
+      #       - skitty/kodata/**/*
+      # fromImage: cgr.dev/chainguard/static:latest
+      # sync:
+      #   infer:
+      #     - skitty/kodata/**/*
 
 deploy:
    helm:
@@ -55,14 +54,12 @@ manifests:
       # - k8s/argo/argo-sealed-secrets.yaml
       # - k8s/argo/argo-dragon.yaml
       # - k8s/argo/argo-minio.yaml
-      # - k8s/argo/argo-postgres.yaml
+      - k8s/argo/argo-postgres.yaml
       # - k8s/argo/argo-nats.yaml
-      # - k8s/argo/argo-headlamp.yaml
+      - k8s/argo/argo-headlamp.yaml
 
-      # - k8s/gen/*.yaml
-      # - k8s/add/*.yaml
-
-      - clonek7s/quickstart.yaml
+      - k8s/gen/*.yaml
+      - k8s/add/*.yaml
 # portForward:
 #    - resourceType: service
 #      resourceName: skitty

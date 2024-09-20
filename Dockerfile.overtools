@@ -1,0 +1,23 @@
+FROM golang:1.23.1-alpine3.20 AS build-stage
+
+WORKDIR /app
+
+COPY ./overtools .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /overtools main.go
+
+FROM alpine:latest
+
+WORKDIR /
+
+RUN apk update && \
+   apk add --no-cache \
+   postgresql-client \
+   curl \
+   && rm -rf /var/cache/apk/*
+
+COPY --from=build-stage /overtools /overtools
+
+EXPOSE 12121
+
+CMD ["./overtools"]

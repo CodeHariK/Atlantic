@@ -1,4 +1,4 @@
-.PHONY: start local atlantic auth inventory skitty
+.PHONY: start local atlantic auth inventory skitty overtools
 
 start:
 	@VITE_DOMAIN=$(VITE_DOMAIN) ./run.sh \
@@ -52,10 +52,10 @@ dcup:
 img:
 	docker build -f Dockerfile.$(img) -t $(img) .
 
-test:
-	make img img=test
-	docker rm test || true
-	docker run -it --name test --network atlantic test
+overtools:
+	make img img=overtools
+	docker rm overtools || true
+	docker run -it --name overtools --network atlantic overtools
 
 auth:
 	go run auth/cmd/main.go
@@ -88,23 +88,6 @@ koskitty:
 clear:
 	docker system prune
 
-argo:
-	kubectl create namespace argocd
-	kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-
-envoy:
-	helm pull oci://docker.io/envoyproxy/gateway-helm --version v0.0.0-latest --untar --untardir ./k8s/chart
-
-certmanager:
-	helm repo add jetstack https://charts.jetstack.io --force-update
-
-	helm pull jetstack/cert-manager --version v1.15.3 --untar --untardir ./k8s/chart
-
-argocertsync:
-	argocd app sync cert-manager-local
-argocertcheck:
-	argocd app get cert-manager-local
-
 gateway:
 	kubectl get gatewayclass -A --show-labels=true --show-kind=true
 	kubectl get gateway -A --show-labels=true --show-kind=true
@@ -116,9 +99,10 @@ crds:
 	kubectl get crds
 kver:
 	kubectl api-versions
-
 configview:
 	kubectl config view
+clusterinfo:
+	kubectl cluster-info
 
 kurl:
 	kubectl run -i --tty --rm curl-test --image=curlimages/curl --restart=Never -- sh
@@ -146,11 +130,13 @@ argopassword:
 	@make bcrypt PWD=password
 
 argoforward:
-	@kubectl port-forward service/argo-argocd-server -n argocd 5000:5010
+	@kubectl port-forward service/argo-argocd-server -n argocd 5000:80
 
 headlamp:
 	@kubectl create token headlamp-admin -n kube-system
-	@kubectl port-forward service/headlamp -n headlamp 5001:80
+
+overtoolsexec:
+	@kubectl exec -it deployment.apps/overtools -n atlantic -- sh
 
 dev:
 	make kompose

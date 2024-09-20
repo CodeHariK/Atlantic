@@ -1,21 +1,44 @@
 name: atlantic
 services:
-  test:
+  overtools:
     build:
       context: /Users/Shared/Go/Atlantic
-      dockerfile: Dockerfile.test
+      dockerfile: Dockerfile.overtools
     environment:
+      DATABASE_HOST: postgres.atlantic.svc.cluster.local
+      PGDATABASE: test
+      PGHOST: postgres.atlantic.svc.cluster.local
       PGPASSWORD: secret
+      PGUSER: superuser
       POSTGRES_DB: test
       POSTGRES_PASSWORD: secret
       POSTGRES_USER: superuser
-    image: test:v0.0.1
+    image: overtools:v0.0.1
     networks:
       default: null
     ports:
       - mode: ingress
-        target: 15155
-        published: "15155"
+        target: 12121
+        published: "12121"
+        protocol: tcp
+  skitty:
+    build:
+      context: /Users/Shared/Go/Atlantic
+      dockerfile: Dockerfile.skitty
+      args:
+        VITE_DOMAIN: http://localhost
+    deploy:
+      resources:
+        limits:
+          cpus: 0.5
+          memory: "268435456"
+    image: skitty:v0.0.1
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 3000
+        published: "3000"
         protocol: tcp
 networks:
   default:

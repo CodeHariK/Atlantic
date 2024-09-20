@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-   name: postgresql-system
+   name: pgatlantic
 
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -17,9 +17,20 @@ spec:
       chart: postgresql
       helm:
          releaseName: postgresql
+         values: |
+            global:
+               postgresql:
+                  auth:
+                     database: test
+                     password: secret
+                     username: superuser
+            auth:
+               database: test
+               password: secret
+               username: superuser
    destination:
       server: "https://kubernetes.default.svc"
-      namespace: postgresql-system
+      namespace: pgatlantic
    syncPolicy:
       automated:
          prune: true
