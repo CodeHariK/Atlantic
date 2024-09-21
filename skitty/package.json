@@ -1,40 +1,43 @@
 {
-	"name": "skitty",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "tsc -b && vite build --outDir kodata",
-		"kbuild": "vite build --outDir kodata",
-		"preview": "vite preview"
-	},
-	"dependencies": {
-		"@algolia/autocomplete-js": "1.8.3",
-		"@algolia/autocomplete-plugin-query-suggestions": "1.8.3",
-		"@algolia/autocomplete-preset-algolia": "1.8.3",
-		"@algolia/autocomplete-theme-classic": "1.8.3",
-		"@bufbuild/buf": "^1.39.0",
-		"@bufbuild/protobuf": "^1.10.0",
-		"@bufbuild/protoc-gen-es": "^1.10.0",
-		"@connectrpc/connect": "^1.4.0",
-		"@connectrpc/connect-web": "^1.4.0",
-		"@connectrpc/protoc-gen-connect-es": "^1.4.0",
-		"@meilisearch/autocomplete-client": "0.2.1",
-		"@meilisearch/instant-meilisearch": "^0.20.0",
-		"@solid-primitives/keyed": "^1.2.2",
-		"@solidjs/meta": "^0.29.4",
-		"@solidjs/router": "^0.14.3",
-		"algoliasearch": "4.14.3",
-		"instantsearch.js": "^4.74.0",
-		"solid-js": "^1.8.22",
-		"yup": "^1.4.0"
-	},
-	"devDependencies": {
-		"postcss": "^8.4.45",
-		"tailwindcss": "^3.4.10",
-		"typescript": "^5.5.4",
-		"vite": "^5.4.3",
-		"vite-plugin-solid": "^2.10.2"
-	}
+   "name": "skitty",
+   "private": true,
+   "version": "0.0.1",
+   "type": "module",
+   "scripts": {
+      "dev": "vite",
+      "ldev": "VITE_DOMAIN=http://localhost vite",
+      "adev": "VITE_DOMAIN=http://atlantic.shark.run vite",
+      "build": "tsc -b && vite build --outDir kodata",
+      "lbuild": "VITE_DOMAIN=http://localhost vite build --outDir kodata",
+      "abuild": "VITE_DOMAIN=http://atlantic.shark.run vite build --outDir kodata",
+      "preview": "vite preview"
+   },
+   "dependencies": {
+      "@algolia/autocomplete-js": "1.8.3",
+      "@algolia/autocomplete-plugin-query-suggestions": "1.8.3",
+      "@algolia/autocomplete-preset-algolia": "1.8.3",
+      "@algolia/autocomplete-theme-classic": "1.8.3",
+      "@bufbuild/buf": "^1.39.0",
+      "@bufbuild/protobuf": "^1.10.0",
+      "@bufbuild/protoc-gen-es": "^1.10.0",
+      "@connectrpc/connect": "^1.4.0",
+      "@connectrpc/connect-web": "^1.4.0",
+      "@connectrpc/protoc-gen-connect-es": "^1.4.0",
+      "@meilisearch/autocomplete-client": "0.2.1",
+      "@meilisearch/instant-meilisearch": "^0.20.0",
+      "@solid-primitives/keyed": "^1.2.2",
+      "@solidjs/meta": "^0.29.4",
+      "@solidjs/router": "^0.14.3",
+      "algoliasearch": "4.14.3",
+      "instantsearch.js": "^4.74.0",
+      "solid-js": "^1.8.22",
+      "yup": "^1.4.0"
+   },
+   "devDependencies": {
+      "postcss": "^8.4.45",
+      "tailwindcss": "^3.4.10",
+      "typescript": "^5.5.4",
+      "vite": "^5.4.3",
+      "vite-plugin-solid": "^2.10.2"
+   }
 }

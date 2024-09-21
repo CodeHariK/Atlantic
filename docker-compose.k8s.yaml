@@ -5,9 +5,9 @@ services:
       context: /Users/Shared/Go/Atlantic
       dockerfile: Dockerfile.overtools
     environment:
-      DATABASE_HOST: postgres.atlantic.svc.cluster.local
+      DATABASE_HOST: postgresql.pgatlantic.svc.cluster.local
       PGDATABASE: test
-      PGHOST: postgres.atlantic.svc.cluster.local
+      PGHOST: postgresql.pgatlantic.svc.cluster.local
       PGPASSWORD: secret
       PGUSER: superuser
       POSTGRES_DB: test

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"math/rand/v2"
 	"net/http"
 	"os"
@@ -15,8 +16,9 @@ import (
 var SERVERID = rand.Int() % 1000
 
 type echoResponse struct {
-	Id   int    `json:"id"`
-	Time string `json:"time"`
+	Id       int                    `json:"id"`
+	Time     string                 `json:"time"`
+	Location map[string]interface{} `json:"location"`
 
 	Method   string              `json:"method"`
 	URL      string              `json:"url"`
@@ -68,8 +70,9 @@ func echoHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Prepare the response data
 	response := echoResponse{
-		Id:   SERVERID,
-		Time: time.Now().String(),
+		Id:       SERVERID,
+		Time:     time.Now().String(),
+		Location: lookupGeo(),
 
 		Method:   r.Method,
 		URL:      r.URL.String(),
@@ -91,7 +94,9 @@ func echoHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Convert the response to JSON
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+
+	b, _ := json.MarshalIndent(response, "", "  ")
+	w.Write(b)
 }
 
 func main() {
@@ -100,4 +105,29 @@ func main() {
 	if err := http.ListenAndServe(":12121", nil); err != nil {
 		fmt.Println("Failed to start server:", err)
 	}
+}
+
+// lookupGeo retrieves and parses the location data from ipapi.co
+func lookupGeo() map[string]interface{} {
+	c := &http.Client{Timeout: 2 * time.Second}
+
+	resp, err := c.Get("https://ipapi.co/json")
+	if err != nil || resp == nil {
+		log.Fatalf("Could not retrieve geo location data: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("Error reading response body: %v", err)
+	}
+
+	// Parse the JSON response into a map
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		log.Fatalf("Error parsing JSON: %v", err)
+	}
+
+	return result
 }
