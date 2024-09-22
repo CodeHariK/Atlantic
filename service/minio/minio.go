@@ -16,7 +16,7 @@ type MinioClient struct {
 	Client *minio.Client
 }
 
-func CreateClient(cfg *config.Config) (*MinioClient, error) {
+func CreateClient(cfg *config.Config) *MinioClient {
 	c, err := minio.New(
 		fmt.Sprintf("%s:%d", cfg.Minio.Host, cfg.Minio.Port),
 		&minio.Options{
@@ -24,10 +24,20 @@ func CreateClient(cfg *config.Config) (*MinioClient, error) {
 			Secure: false,
 		})
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
-	return &MinioClient{Client: c}, nil
+	minioClient := MinioClient{Client: c}
+
+	if err = minioClient.MakeBucket(cfg.Minio.Bucket.Products, "us-east-1"); err != nil {
+		log.Fatalln(err)
+	}
+
+	if err = minioClient.PublicBucket(cfg.Minio.Bucket.Products); err != nil {
+		log.Fatalln(err)
+	}
+
+	return &minioClient
 }
 
 func (m *MinioClient) MakeBucket(bucketName string, region string) error {

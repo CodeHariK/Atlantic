@@ -7,7 +7,7 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	v1 "github.com/codeharik/Atlantic/orders/api/orders/v1"
 	"github.com/codeharik/Atlantic/orders/api/orders/v1/v1connect"
-	"github.com/nats-io/nats.go"
+	"github.com/codeharik/Atlantic/service/nats"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -16,10 +16,10 @@ type OrdersServiceServer struct {
 
 	cfg config.Config
 
-	natConn *nats.Conn
+	natConn *nats.NatsClient
 }
 
-func CreateOrdersServiceServer(cfg config.Config, natsConn *nats.Conn) OrdersServiceServer {
+func CreateOrdersServiceServer(cfg config.Config, natsConn *nats.NatsClient) OrdersServiceServer {
 	return OrdersServiceServer{
 		cfg:     cfg,
 		natConn: natsConn,
@@ -32,7 +32,7 @@ func (o OrdersServiceServer) PlaceOrder(ctx context.Context, req *connect.Reques
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	err = o.natConn.Publish(o.cfg.Nats.Topics.OrderPlaced, data)
+	err = o.natConn.Nc.Publish(o.cfg.Nats.Topics.OrderPlaced, data)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
 	"github.com/codeharik/Atlantic/service/authbox"
-	"github.com/nats-io/nats.go"
+	"github.com/codeharik/Atlantic/service/nats"
 
 	"github.com/codeharik/Atlantic/orders/api/orders/v1/v1connect"
 )
@@ -18,7 +18,7 @@ func CreateRoutes(
 	serviceName string,
 	router *http.ServeMux,
 	config *config.Config,
-	natsConn *nats.Conn,
+	natsConn *nats.NatsClient,
 ) {
 	//------------------
 	// Docs

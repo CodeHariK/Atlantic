@@ -7,6 +7,8 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/inventory/server"
 	"github.com/codeharik/Atlantic/service/dragon"
+	"github.com/codeharik/Atlantic/service/minio"
+	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/servemux"
 )
 
@@ -25,11 +27,18 @@ func main() {
 
 	dragon := dragon.CreateDragon(&cfg)
 
+	minioClient := minio.CreateClient(&cfg)
+
+	natsClient := nats.ConnectNats(cfg)
+
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg)
+			server.CreateRoutes(serviceName, router, &cfg, minioClient, natsClient)
 		},
-		func() error { return nil },
+		func() error {
+			natsClient.Nc.Close()
+			return nil
+		},
 		InventoryServerPortUrl(&cfg),
 		InventoryServerFullUrl(&cfg),
 		serviceName,

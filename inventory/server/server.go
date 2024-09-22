@@ -1,11 +1,10 @@
 package server
 
 import (
-	"log"
-
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/inventory/api/inventory/v1/v1connect"
 	"github.com/codeharik/Atlantic/service/minio"
+	"github.com/codeharik/Atlantic/service/nats"
 )
 
 type InventoryServiceServer struct {
@@ -14,23 +13,14 @@ type InventoryServiceServer struct {
 	cfg config.Config
 
 	client *minio.MinioClient
+
+	natConn *nats.NatsClient
 }
 
-func CreateInventoryServiceServer(cfg config.Config) InventoryServiceServer {
-	minioClient, err := minio.CreateClient(&cfg)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	if err = minioClient.MakeBucket(cfg.Minio.Bucket.Products, "us-east-1"); err != nil {
-		log.Fatalln(err)
-	}
-
-	if err = minioClient.PublicBucket(cfg.Minio.Bucket.Products); err != nil {
-		log.Fatalln(err)
-	}
-
+func CreateInventoryServiceServer(cfg config.Config, minioClient *minio.MinioClient, natsConn *nats.NatsClient) InventoryServiceServer {
 	return InventoryServiceServer{
-		cfg:    cfg,
-		client: minioClient,
+		cfg:     cfg,
+		client:  minioClient,
+		natConn: natsConn,
 	}
 }

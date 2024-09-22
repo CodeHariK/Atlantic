@@ -10,6 +10,8 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
 	"github.com/codeharik/Atlantic/service/authbox"
+	"github.com/codeharik/Atlantic/service/minio"
+	"github.com/codeharik/Atlantic/service/nats"
 
 	"github.com/codeharik/Atlantic/inventory/api/inventory/v1/v1connect"
 )
@@ -18,6 +20,8 @@ func CreateRoutes(
 	serviceName string,
 	router *http.ServeMux,
 	config *config.Config,
+	minioClient *minio.MinioClient,
+	natsConn *nats.NatsClient,
 ) {
 	//------------------
 	// Docs
@@ -27,7 +31,7 @@ func CreateRoutes(
 	//------------------
 	// CosmogService
 
-	inventoryService := CreateInventoryServiceServer(*config)
+	inventoryService := CreateInventoryServiceServer(*config, minioClient, natsConn)
 	inventoryPath, inventoryHandler := v1connect.NewInventoryServiceHandler(
 		inventoryService,
 		authbox.ConnectInterceptors(config)...,
