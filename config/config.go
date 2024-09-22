@@ -31,6 +31,10 @@ type OAuthService struct {
 	Config *oauth2.Config
 }
 
+type NatsTopic struct {
+	OrderPlaced string `json:"orderplaced"`
+}
+
 type Config struct {
 	Atlantic      string `json:"atlantic"`
 	Domain        string `json:"domain"`
@@ -89,6 +93,20 @@ type Config struct {
 		Port int    `json:"port"`
 		Key  string `json:"key"`
 	} `json:"meilisearch"`
+
+	OrdersService struct {
+		Host string `json:"host"`
+		Port int    `json:"port"`
+	} `json:"orders_service"`
+
+	Nats struct {
+		Name  string `json:"name"`
+		Host  string `json:"host"`
+		Port  int    `json:"port"`
+		Creds string `json:"creds"`
+
+		Topics NatsTopic `json:"topics"`
+	} `json:"nats"`
 
 	InventoryService struct {
 		Host string `json:"host"`

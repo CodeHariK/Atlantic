@@ -18,12 +18,6 @@ func toGetProductWithCategoryPathRow(in GetProductWithCategoryPathRow) *pb.GetPr
 	}
 	out.CategoryId1 = in.CategoryId1
 	out.CategoryId2 = in.CategoryId2
-	if in.CategoryId3.Valid {
-		out.CategoryId3 = wrapperspb.Int32(in.CategoryId3.Int32)
-	}
-	if in.CategoryId4.Valid {
-		out.CategoryId4 = wrapperspb.Int32(in.CategoryId4.Int32)
-	}
 	out.CategoryPath = in.CategoryPath
 	return out
 }
@@ -57,12 +51,6 @@ func toProduct(in Product) *pb.Product {
 	}
 	out.CategoryId1 = in.CategoryId1
 	out.CategoryId2 = in.CategoryId2
-	if in.CategoryId3.Valid {
-		out.CategoryId3 = wrapperspb.Int32(in.CategoryId3.Int32)
-	}
-	if in.CategoryId4.Valid {
-		out.CategoryId4 = wrapperspb.Int32(in.CategoryId4.Int32)
-	}
 	return out
 }
 

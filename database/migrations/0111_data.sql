@@ -79,41 +79,31 @@ INSERT INTO
         id,
         product_name,
         category_id1,
-        category_id2,
-        category_id3,
-        category_id4
+        category_id2
     )
 VALUES (
         'b0139fe4-b50a-4c7d-8f79-c124dc3038fc',
         'iPhone 13',
         1,
-        4,
-        NULL,
-        NULL
+        4
     ),
     (
         'a1a8a457-0912-4d23-8080-1f7fc42d52fb',
         'MacBook Pro',
         1,
-        5,
-        NULL,
-        NULL
+        5
     ),
     (
         'adf57d33-5d17-4e82-924d-ff3491f00399',
         'Samsung Galaxy S21',
         1,
-        4,
-        NULL,
-        NULL
+        4
     ),
     (
         'dcf84b7f-e33a-4ad8-a8ab-5b8b6e69d737',
         'Womens Dress',
         2,
-        6,
-        NULL,
-        NULL
+        6
     );
 
 -- +goose Down

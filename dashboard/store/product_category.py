@@ -6,6 +6,11 @@ import dataclasses
 from typing import Optional
 import uuid
 
+import sqlalchemy
+
+from product import models
+
+
 CREATE_PRODUCT_CATEGORY = """-- name: create_product_category \\:one
 INSERT INTO
     product_category (id, name, parent_id)
@@ -25,7 +30,7 @@ WITH RECURSIVE CategoryHierarchy AS (
     FROM product_category c
     WHERE c.id = :p1
 UNION ALL
-    SELECT pc.id, pc.name, pc.parent_id, 
+    SELECT pc.id, pc.name, pc.parent_id,
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
@@ -53,7 +58,7 @@ WITH RECURSIVE CategoryHierarchy AS (
         WHERE id = :p1  -- Use product ID to find the category_id
     )
 UNION ALL
-    SELECT pc.id, pc.name, pc.parent_id, 
+    SELECT pc.id, pc.name, pc.parent_id,
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
@@ -71,8 +76,6 @@ SELECT
     p.product_name,
     p.category_id1,
     p.category_id2,
-    p.category_id3,
-    p.category_id4,
     cp.path AS category_path
 FROM products p
     CROSS JOIN CategoryPath cp
@@ -87,8 +90,6 @@ class GetProductWithCategoryPathRow:
     product_name: Optional[str]
     category_id1: int
     category_id2: int
-    category_id3: Optional[int]
-    category_id4: Optional[int]
     category_path: str
 
 

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package orders.v1;
+
+option go_package = "github.com/codeharik/Atlantic/orders/api/orders/v1";
+
+service OrdersService {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+}
+message PlaceOrderRequest {
+  string OrderID = 1;
+  string ProductID = 2;
+  string CustomerID = 3;
+  string Quantity = 4;
+}
+
+message PlaceOrderResponse {
+  string OrderID = 1;
+}

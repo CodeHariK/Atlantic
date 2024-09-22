@@ -37,6 +37,14 @@ build:
       #     - skitty/kodata/**/*
 
 deploy:
+   # kubectl:
+   #    flags:
+   #       apply:
+   #          - --server-side
+   #    remoteManifests:
+   #       - https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.yaml
+   #       - https://github.com/envoyproxy/gateway/releases/download/v1.1.1/install.yaml
+
    helm:
       releases:
          - name: argo
@@ -71,3 +79,8 @@ manifests:
 #    #   namespace: atlantic
 #    #   port: 7800
 #    #   localPort: 7800
+
+profiles:
+   - name: cloud-build
+     build:
+        googleCloudBuild: {}

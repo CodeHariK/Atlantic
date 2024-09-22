@@ -87,8 +87,6 @@ type Product struct {
 	ProductName pgtype.Text `json:"product_name"`
 	CategoryId1 int32       `json:"category_id1"`
 	CategoryId2 int32       `json:"category_id2"`
-	CategoryId3 pgtype.Int4 `json:"category_id3"`
-	CategoryId4 pgtype.Int4 `json:"category_id4"`
 }
 
 type ProductAttribute struct {
@@ -116,15 +114,6 @@ type ProductDescription struct {
 	Description pgtype.Text `json:"description"`
 	Images      []string    `json:"images"`
 	Videos      []string    `json:"videos"`
-}
-
-type ProductPromotion struct {
-	ID            uuid.UUID   `json:"id"`
-	VariantID     uuid.UUID   `json:"variant_id"`
-	PromotionName string      `json:"promotion_name"`
-	Discount      int32       `json:"discount"`
-	StartDate     pgtype.Date `json:"start_date"`
-	EndDate       pgtype.Date `json:"end_date"`
 }
 
 type ProductReview struct {

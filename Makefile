@@ -34,6 +34,9 @@ minio:
 meilisearch:
 	meilisearch  --config-file-path="./config/meilisearch/config.toml"
 
+runnats:
+	nats-server -c config/nats/js.conf
+
 kompose:
 	rm -f k8s/gen/*
 
@@ -143,3 +146,21 @@ dev:
 	kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.yaml
 	kubectl apply --server-side -f https://github.com/envoyproxy/gateway/releases/download/v1.1.1/install.yaml
 	skaffold dev
+
+skaffoldbuild:
+	skaffold build --file-output artifacts.json
+
+skaffoldbuildrepo:
+	skaffold build --file-output artifacts.json --default-repo $(repo)
+
+skaffolddeploy:
+	skaffold deploy -a artifacts.json
+
+skaffolddeploydev:
+	skaffold deploy -a artifacts.json -p dev --kube-context=dev-cluster
+
+skaffoldrender:
+	skaffold render -a artifacts.json --output render.yaml
+
+skaffoldapply:
+	skaffold apply render.yaml

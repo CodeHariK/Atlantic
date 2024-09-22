@@ -18,11 +18,9 @@ INSERT INTO
         id,
         product_name,
         category_id1,
-        category_id2,
-        category_id3,
-        category_id4
+        category_id2
     )
-VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
+VALUES ($1, $2, $3, $4) RETURNING id
 `
 
 type CreateProductParams struct {
@@ -30,8 +28,6 @@ type CreateProductParams struct {
 	ProductName pgtype.Text `json:"product_name"`
 	CategoryId1 int32       `json:"category_id1"`
 	CategoryId2 int32       `json:"category_id2"`
-	CategoryId3 pgtype.Int4 `json:"category_id3"`
-	CategoryId4 pgtype.Int4 `json:"category_id4"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (uuid.UUID, error) {
@@ -40,8 +36,6 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (u
 		arg.ProductName,
 		arg.CategoryId1,
 		arg.CategoryId2,
-		arg.CategoryId3,
-		arg.CategoryId4,
 	)
 	var id uuid.UUID
 	err := row.Scan(&id)
@@ -58,7 +52,7 @@ func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
 }
 
 const getProductByID = `-- name: GetProductByID :one
-SELECT id, product_name, category_id1, category_id2, category_id3, category_id4 FROM products WHERE id = $1
+SELECT id, product_name, category_id1, category_id2 FROM products WHERE id = $1
 `
 
 func (q *Queries) GetProductByID(ctx context.Context, id uuid.UUID) (Product, error) {
@@ -69,14 +63,12 @@ func (q *Queries) GetProductByID(ctx context.Context, id uuid.UUID) (Product, er
 		&i.ProductName,
 		&i.CategoryId1,
 		&i.CategoryId2,
-		&i.CategoryId3,
-		&i.CategoryId4,
 	)
 	return i, err
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, product_name, category_id1, category_id2, category_id3, category_id4 FROM products ORDER BY id LIMIT $1 OFFSET $2
+SELECT id, product_name, category_id1, category_id2 FROM products ORDER BY id LIMIT $1 OFFSET $2
 `
 
 type ListProductsParams struct {
@@ -98,8 +90,6 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 			&i.ProductName,
 			&i.CategoryId1,
 			&i.CategoryId2,
-			&i.CategoryId3,
-			&i.CategoryId4,
 		); err != nil {
 			return nil, err
 		}
@@ -116,9 +106,7 @@ UPDATE products
 SET
     product_name = $2,
     category_id1 = $3,
-    category_id2 = $4,
-    category_id3 = $5,
-    category_id4 = $6
+    category_id2 = $4
 WHERE
     id = $1
 `
@@ -128,8 +116,6 @@ type UpdateProductParams struct {
 	ProductName pgtype.Text `json:"product_name"`
 	CategoryId1 int32       `json:"category_id1"`
 	CategoryId2 int32       `json:"category_id2"`
-	CategoryId3 pgtype.Int4 `json:"category_id3"`
-	CategoryId4 pgtype.Int4 `json:"category_id4"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) error {
@@ -138,8 +124,6 @@ func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) er
 		arg.ProductName,
 		arg.CategoryId1,
 		arg.CategoryId2,
-		arg.CategoryId3,
-		arg.CategoryId4,
 	)
 	return err
 }

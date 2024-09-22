@@ -47,6 +47,38 @@
           "CosmogService"
         ]
       }
+    },
+    "/cosmog.v1.CosmogService/Hello": {
+      "post": {
+        "operationId": "CosmogService_Hello",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HelloResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1HelloRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CosmogService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -90,6 +122,22 @@
       "type": "object",
       "properties": {
         "key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1HelloRequest": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1HelloResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
           "type": "string"
         }
       }

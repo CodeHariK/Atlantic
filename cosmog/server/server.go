@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"connectrpc.com/connect"
@@ -17,25 +16,20 @@ type CosmogServiceServer struct {
 
 	cfg config.Config
 
-	cosmog meilisearch.ServiceManager
+	meiliInstance meilisearch.ServiceManager
 }
 
-func CreateCosmogServiceServer(cfg config.Config) CosmogServiceServer {
-	cosmog := meilisearch.New(
-		fmt.Sprintf("%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port),
-		meilisearch.WithAPIKey(cfg.MeiliSearch.Key),
-	)
-
+func CreateCosmogServiceServer(cfg config.Config, meiliInstance *meilisearch.ServiceManager) CosmogServiceServer {
 	return CosmogServiceServer{
-		cfg:    cfg,
-		cosmog: cosmog,
+		cfg:           cfg,
+		meiliInstance: *meiliInstance,
 	}
 }
 
 func (c CosmogServiceServer) CreateSearchKey(ctx context.Context, req *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error) {
-	c.cosmog.DeleteKey(req.Msg.ID)
+	c.meiliInstance.DeleteKey(req.Msg.ID)
 
-	key, err := c.cosmog.CreateKey(
+	key, err := c.meiliInstance.CreateKey(
 		&meilisearch.Key{
 			UID:         req.Msg.ID,
 			Description: "Get products",

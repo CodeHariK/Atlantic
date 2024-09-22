@@ -6,7 +6,7 @@ option go_package = "github.com/codeharik/Atlantic/cosmog/api/cosmog/v1";
 
 service CosmogService {
   rpc CreateSearchKey(CreateSearchKeyRequest) returns (CreateSearchKeyResponse);
-  
+
   rpc Hello(HelloRequest) returns (HelloResponse);
 }
 message CreateSearchKeyRequest {
@@ -17,12 +17,10 @@ message CreateSearchKeyResponse {
   string key = 1;
 }
 
-
-
 message HelloRequest {
-    string message = 1;
+  string message = 1;
 }
 
 message HelloResponse {
-    string message = 1;
+  string message = 1;
 }

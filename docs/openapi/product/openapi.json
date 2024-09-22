@@ -842,14 +842,6 @@
         "categoryId2": {
           "type": "integer",
           "format": "int32"
-        },
-        "categoryId3": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "categoryId4": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -1050,14 +1042,6 @@
           "type": "integer",
           "format": "int32"
         },
-        "categoryId3": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "categoryId4": {
-          "type": "integer",
-          "format": "int32"
-        },
         "categoryPath": {
           "type": "string"
         }
@@ -1222,14 +1206,6 @@
         "categoryId2": {
           "type": "integer",
           "format": "int32"
-        },
-        "categoryId3": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "categoryId4": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -1336,14 +1312,6 @@
           "format": "int32"
         },
         "categoryId2": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "categoryId3": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "categoryId4": {
           "type": "integer",
           "format": "int32"
         }

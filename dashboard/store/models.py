@@ -94,8 +94,6 @@ class Product:
     product_name: Optional[str]
     category_id1: int
     category_id2: int
-    category_id3: Optional[int]
-    category_id4: Optional[int]
 
 
 @dataclasses.dataclass()
@@ -127,16 +125,6 @@ class ProductDescription:
     description: Optional[str]
     images: Optional[List[str]]
     videos: Optional[List[str]]
-
-
-@dataclasses.dataclass()
-class ProductPromotion:
-    id: uuid.UUID
-    variant_id: uuid.UUID
-    promotion_name: str
-    discount: int
-    start_date: datetime.date
-    end_date: datetime.date
 
 
 @dataclasses.dataclass()

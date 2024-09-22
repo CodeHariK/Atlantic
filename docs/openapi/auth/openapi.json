@@ -24,7 +24,6 @@
   "paths": {
     "/auth.v1.AuthService/AuthRefresh": {
       "post": {
-        "summary": "Defines the EmailLogin RPC method",
         "operationId": "AuthService_AuthRefresh",
         "responses": {
           "200": {
@@ -57,7 +56,6 @@
     },
     "/auth.v1.AuthService/EmailLogin": {
       "post": {
-        "summary": "Defines the EmailLogin RPC method",
         "operationId": "AuthService_EmailLogin",
         "responses": {
           "200": {
@@ -90,7 +88,6 @@
     },
     "/auth.v1.AuthService/InvalidateAllSessions": {
       "post": {
-        "summary": "Defines the InvalidateAllSessions RPC method",
         "operationId": "AuthService_InvalidateAllSessions",
         "responses": {
           "200": {
@@ -123,7 +120,6 @@
     },
     "/auth.v1.AuthService/RegisterUser": {
       "post": {
-        "summary": "Defines the EmailLogin RPC method",
         "operationId": "AuthService_RegisterUser",
         "responses": {
           "200": {
@@ -156,7 +152,6 @@
     },
     "/auth.v1.AuthService/RevokeSession": {
       "post": {
-        "summary": "Defines the RevokeSessions RPC method",
         "operationId": "AuthService_RevokeSession",
         "responses": {
           "200": {
@@ -914,6 +909,10 @@
     "v1UserSession": {
       "type": "object",
       "properties": {
+        "tokenId": {
+          "type": "integer",
+          "format": "int32"
+        },
         "agent": {
           "type": "string",
           "title": "UserAgent"

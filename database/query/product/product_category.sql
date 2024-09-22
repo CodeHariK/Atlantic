@@ -33,7 +33,7 @@ WITH RECURSIVE CategoryHierarchy AS (
     FROM product_category c
     WHERE c.id = $1
 UNION ALL
-    SELECT pc.id, pc.name, pc.parent_id, 
+    SELECT pc.id, pc.name, pc.parent_id,
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
@@ -54,7 +54,7 @@ WITH RECURSIVE CategoryHierarchy AS (
         WHERE id = $1  -- Use product ID to find the category_id
     )
 UNION ALL
-    SELECT pc.id, pc.name, pc.parent_id, 
+    SELECT pc.id, pc.name, pc.parent_id,
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
@@ -72,8 +72,6 @@ SELECT
     p.product_name,
     p.category_id1,
     p.category_id2,
-    p.category_id3,
-    p.category_id4,
     cp.path AS category_path
 FROM products p
     CROSS JOIN CategoryPath cp

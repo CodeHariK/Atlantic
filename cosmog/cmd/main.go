@@ -8,6 +8,7 @@ import (
 	"github.com/codeharik/Atlantic/cosmog/server"
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/servemux"
+	"github.com/meilisearch/meilisearch-go"
 )
 
 const serviceName = "cosmog"
@@ -25,11 +26,19 @@ func main() {
 
 	dragon := dragon.CreateDragon(&cfg)
 
+	meiliInstance := meilisearch.New(
+		fmt.Sprintf("%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port),
+		meilisearch.WithAPIKey(cfg.MeiliSearch.Key),
+	)
+
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg)
+			server.CreateRoutes(serviceName, router, &cfg, &meiliInstance)
 		},
-		func() error { return nil },
+		func() error {
+			meiliInstance.Close()
+			return nil
+		},
 		CosmogServerPortUrl(&cfg),
 		CosmogServerFullUrl(&cfg),
 		serviceName,

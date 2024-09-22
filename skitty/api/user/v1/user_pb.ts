@@ -1167,16 +1167,6 @@ export class Product extends Message<Product> {
    */
   categoryId2 = 0;
 
-  /**
-   * @generated from field: google.protobuf.Int32Value category_id3 = 5;
-   */
-  categoryId3?: number;
-
-  /**
-   * @generated from field: google.protobuf.Int32Value category_id4 = 6;
-   */
-  categoryId4?: number;
-
   constructor(data?: PartialMessage<Product>) {
     super();
     proto3.util.initPartial(data, this);
@@ -1189,8 +1179,6 @@ export class Product extends Message<Product> {
     { no: 2, name: "product_name", kind: "message", T: StringValue },
     { no: 3, name: "category_id1", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 4, name: "category_id2", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 5, name: "category_id3", kind: "message", T: Int32Value },
-    { no: 6, name: "category_id4", kind: "message", T: Int32Value },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {
@@ -1421,73 +1409,6 @@ export class ProductDescription extends Message<ProductDescription> {
 
   static equals(a: ProductDescription | PlainMessage<ProductDescription> | undefined, b: ProductDescription | PlainMessage<ProductDescription> | undefined): boolean {
     return proto3.util.equals(ProductDescription, a, b);
-  }
-}
-
-/**
- * @generated from message user.v1.ProductPromotion
- */
-export class ProductPromotion extends Message<ProductPromotion> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string variant_id = 2;
-   */
-  variantId = "";
-
-  /**
-   * @generated from field: string promotion_name = 3;
-   */
-  promotionName = "";
-
-  /**
-   * @generated from field: int32 discount = 4;
-   */
-  discount = 0;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp start_date = 5;
-   */
-  startDate?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp end_date = 6;
-   */
-  endDate?: Timestamp;
-
-  constructor(data?: PartialMessage<ProductPromotion>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.ProductPromotion";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "variant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "promotion_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "discount", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 5, name: "start_date", kind: "message", T: Timestamp },
-    { no: 6, name: "end_date", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductPromotion {
-    return new ProductPromotion().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ProductPromotion {
-    return new ProductPromotion().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ProductPromotion {
-    return new ProductPromotion().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: ProductPromotion | PlainMessage<ProductPromotion> | undefined, b: ProductPromotion | PlainMessage<ProductPromotion> | undefined): boolean {
-    return proto3.util.equals(ProductPromotion, a, b);
   }
 }
 

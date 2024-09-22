@@ -34,12 +34,6 @@ func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.Cre
 	}
 	arg.CategoryId1 = req.Msg.GetCategoryId1()
 	arg.CategoryId2 = req.Msg.GetCategoryId2()
-	if v := req.Msg.GetCategoryId3(); v != nil {
-		arg.CategoryId3 = pgtype.Int4{Valid: true, Int32: v.Value}
-	}
-	if v := req.Msg.GetCategoryId4(); v != nil {
-		arg.CategoryId4 = pgtype.Int4{Valid: true, Int32: v.Value}
-	}
 
 	result, err := s.querier.CreateProduct(ctx, arg)
 	if err != nil {
@@ -369,12 +363,6 @@ func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.Upd
 	}
 	arg.CategoryId1 = req.Msg.GetCategoryId1()
 	arg.CategoryId2 = req.Msg.GetCategoryId2()
-	if v := req.Msg.GetCategoryId3(); v != nil {
-		arg.CategoryId3 = pgtype.Int4{Valid: true, Int32: v.Value}
-	}
-	if v := req.Msg.GetCategoryId4(); v != nil {
-		arg.CategoryId4 = pgtype.Int4{Valid: true, Int32: v.Value}
-	}
 
 	err := s.querier.UpdateProduct(ctx, arg)
 	if err != nil {

@@ -21,7 +21,6 @@ require (
 	github.com/codeharik/Atlantic/service v0.0.0-20240912180754-6128ceecdaea
 	github.com/google/uuid v1.6.0
 	github.com/meilisearch/meilisearch-go v0.28.0
-	github.com/nats-io/nats.go v1.37.0
 	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689
 )
 
@@ -46,10 +45,7 @@ require (
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/nats-io/nkeys v0.4.7 // indirect
-	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785 // indirect
 	github.com/redis/go-redis/v9 v9.6.1 // indirect
 	github.com/rs/cors v1.11.1 // indirect

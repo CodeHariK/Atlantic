@@ -7,9 +7,7 @@ CREATE TABLE IF NOT EXISTS "products" (
         CHAR_LENGTH("product_name") > 0
     ),
     "category_id1" INT NOT NULL REFERENCES "product_category" ("id"),
-    "category_id2" INT NOT NULL REFERENCES "product_category" ("id"),
-    "category_id3" INT REFERENCES "product_category" ("id"),
-    "category_id4" INT REFERENCES "product_category" ("id")
+    "category_id2" INT NOT NULL REFERENCES "product_category" ("id")
 );
 
 -- +goose Down

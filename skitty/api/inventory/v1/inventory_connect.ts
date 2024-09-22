@@ -3,12 +3,42 @@
 /* eslint-disable */
 // @ts-nocheck
 
+import { AddToInventoryRequest, AddToInventoryResponse, CheckIfQuantityExistsRequest, CheckIfQuantityExistsResponse, RemoveFromInventoryRequest, RemoveFromInventoryResponse } from "./inventory_pb.js";
+import { MethodKind } from "@bufbuild/protobuf";
+
 /**
  * @generated from service inventory.v1.InventoryService
  */
 export const InventoryService = {
   typeName: "inventory.v1.InventoryService",
   methods: {
+    /**
+     * @generated from rpc inventory.v1.InventoryService.AddToInventory
+     */
+    addToInventory: {
+      name: "AddToInventory",
+      I: AddToInventoryRequest,
+      O: AddToInventoryResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc inventory.v1.InventoryService.CheckIfQuantityExists
+     */
+    checkIfQuantityExists: {
+      name: "CheckIfQuantityExists",
+      I: CheckIfQuantityExistsRequest,
+      O: CheckIfQuantityExistsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc inventory.v1.InventoryService.RemoveFromInventory
+     */
+    removeFromInventory: {
+      name: "RemoveFromInventory",
+      I: RemoveFromInventoryRequest,
+      O: RemoveFromInventoryResponse,
+      kind: MethodKind.Unary,
+    },
   }
 } as const;
 

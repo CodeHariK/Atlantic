@@ -47,7 +47,7 @@ WITH RECURSIVE CategoryHierarchy AS (
     FROM product_category c
     WHERE c.id = $1
 UNION ALL
-    SELECT pc.id, pc.name, pc.parent_id, 
+    SELECT pc.id, pc.name, pc.parent_id,
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
@@ -87,7 +87,7 @@ WITH RECURSIVE CategoryHierarchy AS (
         WHERE id = $1  -- Use product ID to find the category_id
     )
 UNION ALL
-    SELECT pc.id, pc.name, pc.parent_id, 
+    SELECT pc.id, pc.name, pc.parent_id,
         ch.path || '.' || pc.name AS path
     FROM product_category pc
     INNER JOIN CategoryHierarchy ch ON pc.id = ch.parent_id
@@ -105,8 +105,6 @@ SELECT
     p.product_name,
     p.category_id1,
     p.category_id2,
-    p.category_id3,
-    p.category_id4,
     cp.path AS category_path
 FROM products p
     CROSS JOIN CategoryPath cp
@@ -119,8 +117,6 @@ type GetProductWithCategoryPathRow struct {
 	ProductName  pgtype.Text `json:"product_name"`
 	CategoryId1  int32       `json:"category_id1"`
 	CategoryId2  int32       `json:"category_id2"`
-	CategoryId3  pgtype.Int4 `json:"category_id3"`
-	CategoryId4  pgtype.Int4 `json:"category_id4"`
 	CategoryPath string      `json:"category_path"`
 }
 
@@ -132,8 +128,6 @@ func (q *Queries) GetProductWithCategoryPath(ctx context.Context, id uuid.UUID) 
 		&i.ProductName,
 		&i.CategoryId1,
 		&i.CategoryId2,
-		&i.CategoryId3,
-		&i.CategoryId4,
 		&i.CategoryPath,
 	)
 	return i, err

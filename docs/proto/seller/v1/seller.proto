@@ -139,8 +139,6 @@ message Product {
   google.protobuf.StringValue product_name = 2;
   int32 category_id1 = 3;
   int32 category_id2 = 4;
-  google.protobuf.Int32Value category_id3 = 5;
-  google.protobuf.Int32Value category_id4 = 6;
 }
 
 message ProductAttribute {
@@ -168,15 +166,6 @@ message ProductDescription {
   google.protobuf.StringValue description = 4;
   repeated string images = 5;
   repeated string videos = 6;
-}
-
-message ProductPromotion {
-  string id = 1;
-  string variant_id = 2;
-  string promotion_name = 3;
-  int32 discount = 4;
-  google.protobuf.Timestamp start_date = 5;
-  google.protobuf.Timestamp end_date = 6;
 }
 
 message ProductReview {
