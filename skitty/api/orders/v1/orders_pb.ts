@@ -26,9 +26,9 @@ export class PlaceOrderRequest extends Message<PlaceOrderRequest> {
   CustomerID = "";
 
   /**
-   * @generated from field: string Quantity = 4;
+   * @generated from field: int32 Quantity = 4;
    */
-  Quantity = "";
+  Quantity = 0;
 
   constructor(data?: PartialMessage<PlaceOrderRequest>) {
     super();
@@ -41,7 +41,7 @@ export class PlaceOrderRequest extends Message<PlaceOrderRequest> {
     { no: 1, name: "OrderID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "ProductID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "CustomerID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "Quantity", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "Quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PlaceOrderRequest {

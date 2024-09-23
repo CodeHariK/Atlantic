@@ -1,6 +1,7 @@
 package nats
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"time"
@@ -59,4 +60,22 @@ func ConnectNats(cfg config.Config) *NatsClient {
 		Nc: natsConn,
 		Js: js,
 	}
+}
+
+func (natsClient *NatsClient) CreateOrdersStream(cfg config.Config) {
+	_, err := natsClient.Js.CreateOrUpdateStream(context.Background(), jetstream.StreamConfig{
+		Name:             cfg.Nats.Topics.OrderStream,
+		Description:      "Order Stream",
+		Subjects:         []string{cfg.Nats.Topics.Orders},
+		MaxBytes:         1024 * 1024 * 1024,
+		MaxMsgSize:       1024 * 1024,
+		Compression:      1,
+		SubjectTransform: &jetstream.SubjectTransformConfig{},
+		ConsumerLimits:   jetstream.StreamConsumerLimits{},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Create Orders Stream")
 }

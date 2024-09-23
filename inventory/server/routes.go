@@ -21,7 +21,7 @@ func CreateRoutes(
 	router *http.ServeMux,
 	config *config.Config,
 	minioClient *minio.MinioClient,
-	natsConn *nats.NatsClient,
+	natsClient *nats.NatsClient,
 ) {
 	//------------------
 	// Docs
@@ -31,7 +31,7 @@ func CreateRoutes(
 	//------------------
 	// CosmogService
 
-	inventoryService := CreateInventoryServiceServer(*config, minioClient, natsConn)
+	inventoryService := CreateInventoryServiceServer(*config, minioClient, natsClient)
 	inventoryPath, inventoryHandler := v1connect.NewInventoryServiceHandler(
 		inventoryService,
 		authbox.ConnectInterceptors(config)...,

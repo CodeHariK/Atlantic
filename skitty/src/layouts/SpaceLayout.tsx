@@ -24,7 +24,7 @@ const SpaceLayout = (props: SpaceLayoutProps) => (
             >
                 {props.children}
             </section>
-            <Footer />
+            {props.one ? <Footer /> : <></>}
         </main>
 
     </MetaProvider>

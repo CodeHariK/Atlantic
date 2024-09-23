@@ -3,7 +3,7 @@ import { Atlantic } from "../data/Constants";
 
 import { InventoryService } from "../../api/inventory/v1/inventory_connect";
 
-export function AddProduct() {
+export function UploadProduct() {
     return (
         <>
             <form>

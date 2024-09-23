@@ -14,13 +14,17 @@ type InventoryServiceServer struct {
 
 	client *minio.MinioClient
 
-	natConn *nats.NatsClient
+	natClient *nats.NatsClient
 }
 
 func CreateInventoryServiceServer(cfg config.Config, minioClient *minio.MinioClient, natsConn *nats.NatsClient) InventoryServiceServer {
-	return InventoryServiceServer{
-		cfg:     cfg,
-		client:  minioClient,
-		natConn: natsConn,
+	inventoryService := InventoryServiceServer{
+		cfg:       cfg,
+		client:    minioClient,
+		natClient: natsConn,
 	}
+
+	inventoryService.Subscribe()
+
+	return inventoryService
 }

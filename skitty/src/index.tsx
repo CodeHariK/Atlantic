@@ -22,7 +22,9 @@ import Register from "./pages/register";
 import SearchGames from "./pages/searchgames";
 import { MyOrders } from "./pages/myorders";
 import { Account, AccountModal, DeleteOrderModal } from "./pages/account";
-import { AddProduct } from "./pages/addproduct";
+import { UploadProduct } from "./pages/uploadproduct";
+import { Cart } from "./pages/cart";
+import { Product } from "./pages/product";
 
 export const routes: RouteDefinition[] = [
 	{
@@ -86,8 +88,12 @@ export const routes: RouteDefinition[] = [
 		component: SearchProducts,
 	},
 	{
-		path: "/product/:productId",
+		path: "/products",
 		component: Products,
+	},
+	{
+		path: "/product/:productId",
+		component: Product,
 	},
 	{
 		path: "/productmodal",
@@ -98,12 +104,16 @@ export const routes: RouteDefinition[] = [
 		component: OrderDetails,
 	},
 	{
+		path: "/cart",
+		component: Cart,
+	},
+	{
 		path: "/myorders",
 		component: MyOrders,
 	},
 	{
-		path: "/addproduct",
-		component: AddProduct,
+		path: "/uploadproduct",
+		component: UploadProduct,
 	},
 	{
 		path: "/account",
@@ -136,7 +146,7 @@ export const routes: RouteDefinition[] = [
 ];
 
 function RouteList() {
-	const [iframeSrc, setIframeSrc] = createSignal("/addproduct");
+	const [iframeSrc, setIframeSrc] = createSignal("/product/:id");
 
 	return (
 		<div class="w-full flex flex-row h-screen">

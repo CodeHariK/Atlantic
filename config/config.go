@@ -32,6 +32,8 @@ type OAuthService struct {
 }
 
 type NatsTopic struct {
+	OrderStream string `json:"orderstream"`
+	Orders      string `json:"orders"`
 	OrderPlaced string `json:"orderplaced"`
 }
 

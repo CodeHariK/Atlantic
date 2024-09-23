@@ -26,14 +26,16 @@ func main() {
 
 	dragon := dragon.CreateDragon(&cfg)
 
-	natsConn := nats.ConnectNats(cfg)
+	natsClient := nats.ConnectNats(cfg)
+
+	natsClient.CreateOrdersStream(cfg)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg, natsConn)
+			server.CreateRoutes(serviceName, router, &cfg, natsClient)
 		},
 		func() error {
-			natsConn.Nc.Close()
+			natsClient.Nc.Close()
 			return nil
 		},
 		OrdersServerPortUrl(&cfg),

@@ -1,4 +1,4 @@
-.PHONY: start local atlantic auth inventory skitty overtools
+.PHONY: start local atlantic auth inventory orders skitty overtools
 
 start:
 	@VITE_DOMAIN=$(VITE_DOMAIN) ./run.sh \
@@ -34,7 +34,7 @@ minio:
 meilisearch:
 	meilisearch  --config-file-path="./config/meilisearch/config.toml"
 
-runnats:
+natsrun:
 	nats-server -c config/nats/js.conf
 
 kompose:
@@ -73,6 +73,13 @@ inventorybuild:
 	make img img=inventory
 inventoryrun:
 	docker run -p 9100:9100 --name inventory inventory
+
+orders:
+	go run orders/cmd/main.go
+ordersbuild:
+	make img img=orders
+ordersrun:
+	docker run -p 9100:9100 --name orders orders
 
 skitty:
 	cd skitty && bun run dev

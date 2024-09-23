@@ -15,34 +15,13 @@ export const Header = () => (
                         </div>
 
                         <ul class="hidden lg:flex items-center justify-start gap-6 md:gap-8 py-3 sm:justify-center">
-                            <li>
-                                <a href="#" title="" class="flex text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-                                    Home
-                                </a>
-                            </li>
-                            <li class="shrink-0">
-                                <a href="#" title="" class="flex text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-                                    Best Sellers
-                                </a>
-                            </li>
-                            <li class="shrink-0">
-                                <a href="#" title="" class="flex text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-                                    Gift Ideas
-                                </a>
-                            </li>
-                            <li class="shrink-0">
-                                <a href="#" title="" class="text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-                                    Today's Deals
-                                </a>
-                            </li>
-                            <li class="shrink-0">
-                                <a href="#" title="" class="text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
-                                    Sell
-                                </a>
-                            </li>
+                            {HeaderLinks("/", "Home")}
+                            {HeaderLinks("/", "Best Sellers")}
+                            {HeaderLinks("/", "Gift Ideas")}
+                            {HeaderLinks("/", "Today's Deals")}
+                            {HeaderLinks("/", "Home")}
                         </ul>
                     </div>
-
 
                     <div class="flex items-center lg:space-x-2">
 
@@ -73,28 +52,6 @@ export const Header = () => (
                     </div>
                 </div>
 
-                <div id="ecommerce-navbar-menu-1" class="bg-gray-50 dark:bg-gray-700 dark:border-gray-600 border border-gray-200 rounded-lg py-3 hidden px-4 mt-4">
-                    <ul class="text-gray-900 text-sm font-medium dark:text-white space-y-3">
-                        <li>
-                            <a href="#" class="hover:text-primary-700 dark:hover:text-primary-500">Home</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-primary-700 dark:hover:text-primary-500">Best Sellers</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-primary-700 dark:hover:text-primary-500">Gift Ideas</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-primary-700 dark:hover:text-primary-500">Games</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-primary-700 dark:hover:text-primary-500">Electronics</a>
-                        </li>
-                        <li>
-                            <a href="#" class="hover:text-primary-700 dark:hover:text-primary-500">Home & Garden</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </nav >
 
@@ -102,6 +59,14 @@ export const Header = () => (
 
 
 );
+
+function HeaderLinks(href: string, title: string) {
+    return <li>
+        <a href={href} title={title} class="flex text-sm font-medium text-gray-900 hover:text-primary-700 dark:text-white dark:hover:text-primary-500">
+            {title}
+        </a>
+    </li>;
+}
 
 export function cartModal() {
     return (
