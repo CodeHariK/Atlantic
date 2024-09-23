@@ -6,6 +6,11 @@ export default function Test() {
    return (
       <SpaceLayout two title='Page Not Found'>
          <TelTest pattern={Pattern.Tel}></TelTest>
+
+         {/* <PositionBox></PositionBox> */}
+         {/* <PositionBox2></PositionBox2> */}
+         {/* <PositionCheck></PositionCheck> */}
+
       </SpaceLayout>
    );
 }

@@ -1,5 +1,4 @@
 import { RatingsBar } from '../components/ratingsbar';
-import { StarIcon } from '../components/svg';
 import SpaceLayout from '../layouts/SpaceLayout';
 
 export default function Home() {
@@ -103,6 +102,7 @@ export default function Home() {
             </section>
 
             {ProductCard()}
+
 
         </SpaceLayout>
     );

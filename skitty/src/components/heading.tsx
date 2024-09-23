@@ -66,7 +66,7 @@ export function Avatar(props: AvatarProps) {
 }
 
 export type ListTileProps = {
-    start: JSX.Element;
+    start?: JSX.Element;
     title: string;
     subtitle: string;
     end?: JSX.Element;

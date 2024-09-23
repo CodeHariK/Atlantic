@@ -5,23 +5,19 @@
 @layer utilities {
     *::-webkit-scrollbar {
         height: 8px;
-        width: 8px;
+        width: 6px;
     }
 
     *::-webkit-scrollbar-track {
         border-radius: 100vh;
-        background: #f7f4ed;
     }
 
     *::-webkit-scrollbar-thumb {
-        background: #e0cbcb;
+        background: #e0cbcb22;
         border-radius: 100vh;
-        border: 2px solid #f6f7ed;
     }
 
-    *::-webkit-scrollbar-thumb:hover {
-        background: #c0a0b9;
-    }
+    *::-webkit-scrollbar-thumb:hover {}
 }
 
 .AppText {
@@ -41,7 +37,7 @@
 }
 
 .AppIcon {
-    @apply shrink-0 size-4 text-xs text-slate-500 dark:text-slate-100
+    @apply shrink-0 size-4 text-xs text-slate-500 dark:text-slate-100 inline-block
 }
 
 .AppIconButton {

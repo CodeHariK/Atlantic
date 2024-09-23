@@ -25,6 +25,7 @@ import { Account, AccountModal, DeleteOrderModal } from "./pages/account";
 import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
 import { Product } from "./pages/product";
+import { cartModal } from "./components/header";
 
 export const routes: RouteDefinition[] = [
 	{
@@ -108,6 +109,10 @@ export const routes: RouteDefinition[] = [
 		component: Cart,
 	},
 	{
+		path: "/cartmodal",
+		component: cartModal,
+	},
+	{
 		path: "/myorders",
 		component: MyOrders,
 	},
@@ -146,7 +151,7 @@ export const routes: RouteDefinition[] = [
 ];
 
 function RouteList() {
-	const [iframeSrc, setIframeSrc] = createSignal("/product/:id");
+	const [iframeSrc, setIframeSrc] = createSignal("/");
 
 	return (
 		<div class="w-full flex flex-row h-screen">

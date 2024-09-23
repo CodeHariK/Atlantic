@@ -1,39 +1,35 @@
 import { createSignal, onMount, onCleanup, createEffect } from "solid-js";
 
+import { type JSX } from 'solid-js';
 
-export function ToggleOptions() {
-    const [showOptions, setShowOptions] = createSignal(false);
+
+export type ToggleOptionsProps = {
+    name: JSX.Element;
+    children: JSX.Element;
+}
+
+export function ToggleOptions(props: ToggleOptionsProps) {
     const [hover, setHover] = createSignal(false);
 
     const handleMouseEnter = () => setHover(true);
     const handleMouseLeave = () => setHover(false);
 
-    let button, dropdown
-
-    function c(e) {
-        console.log(e)
-    }
+    let button: HTMLButtonElement | undefined;
+    let dropdown: HTMLDivElement | undefined;
 
     // Function to handle clicks outside of the dropdown
-    const handleClickOutside = (event) => {
-
-        if ((dropdown && !dropdown.contains(event.target)) &&
-            (button && !button.contains(event.target))
+    const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as Node;
+        if ((dropdown && !dropdown.contains(target)) &&
+            (button && !button.contains(target))
         ) {
-            setShowOptions(false);
+            setHover(false);
         }
     };
 
-    // Add event listener for clicks outside when dropdown is open
     createEffect(() => {
-        if (showOptions()) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
         if (hover()) {
-            setShowOptions(true);
-        } else {
-            setShowOptions(false);
+            document.addEventListener("mousedown", handleClickOutside);
         }
     });
 
@@ -42,41 +38,49 @@ export function ToggleOptions() {
     });
 
     return (
-        <div class="relative inline-flex group pb-2"
+        <div class="relative inline-flex pb-2"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}>
             <button
                 type="button"
                 ref={button}
-                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white group-hover:opacity-100 group-hover:visible text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                aria-haspopup="menu"
-                aria-expanded={showOptions()}
-                aria-label="Dropdown"
+                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg group-hover:opacity-100 group-hover:visible shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
             >
-                Actions
+                {props.name}
             </button>
 
-            {showOptions() && (
+            {hover() && (
                 <div
                     ref={dropdown}
-                    class="absolute left-1/2 transform translate-y-11 -translate-x-1/2 mt-2 min-w-[150px] bg-white shadow-md rounded-lg p-1 space-y-0.5 transition-opacity duration-300 opacity-100 visible dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="hs-dropdown-default"
+                    class="absolute left-1/2 transform translate-y-11 -translate-x-1/2 mt-2 bg-white shadow-md rounded-lg p-1 space-y-0.5 transition-opacity duration-300 opacity-100 visible dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700"
                 >
-                    {((c) => {
-                        return <div>
-                            <a class="AppDropdownOption" onClick={() => { c("Newsletter") }}>
-                                Newsletter
-                            </a>
-                            <a class="AppDropdownOption" onClick={() => { c("Purchases") }}>
-                                Purchases
-                            </a>
-                        </div>
-                    })(c)}
+                    {props.children}
                 </div>
             )}
         </div>
+    );
+}
+
+export type DropdownProps<T> = {
+    name: JSX.Element;
+    options: T[];
+    fn: (option: T) => void;
+};
+
+export function Dropdown<T>(props: DropdownProps<T>) {
+    return (
+        <ToggleOptions name={props.name}>
+            <div class="min-w-[150px]">
+                {props.options.map((option) => (
+                    <a
+                        class="AppDropdownOption"
+                        onClick={() => props.fn(option)} // Pass the clicked option to the fn callback
+                    >
+                        {option as string}
+                    </a>
+                ))}
+            </div>
+        </ToggleOptions>
     );
 }
 
@@ -96,13 +100,13 @@ export function PositionBox() {
         }
     };
 
-    const onMouseDown = (event) => {
+    const onMouseDown = (event: MouseEvent) => {
         setDragging(true);
         setStartPos({ x: event.clientX, y: event.clientY });
         event.preventDefault();
     };
 
-    const onMouseMove = (event) => {
+    const onMouseMove = (event: MouseEvent) => {
         if (dragging()) {
             const deltaX = event.clientX - startPos().x;
             const deltaY = event.clientY - startPos().y;
@@ -149,16 +153,54 @@ export function PositionBox() {
     );
 }
 
-export function PositionBox2() {
-    const [anchorPos, setAnchorPos] = createSignal({ l: 0, t: 0, r: 0, b: 0 });
-    const [overlayPos, setOverlayPos] = createSignal({ l: 0, t: 0, r: 0, b: 0 });
+
+export type PositionBox2Props = {
+    name?: JSX.Element;
+    align?: { x: number, y: number };
+    children?: JSX.Element;
+}
+
+export function PositionBox2(props: PositionBox2Props) {
+    const defaultAnchorPos = { l: 0, t: 0, r: 0, b: 0 };
+
+    const [anchorPos, setAnchorPos] = createSignal(defaultAnchorPos);
+    const [overlayPos, setOverlayPos] = createSignal(defaultAnchorPos);
     const [dragging, setDragging] = createSignal(false);
     const [startPos, setStartPos] = createSignal({ x: 0, y: 0 });
+    const [hover, setHover] = createSignal(false);
 
-    const alignment = { x: Math.random() * .8 - .4, y: Math.random() * .8 - .4 }
+    const alignment = props.align || { x: 0, y: 1 }
+    // const alignment = { x: Math.random() * .8 - .4, y: Math.random() * .8 - .4 }
 
-    let overlay: HTMLDivElement
-    let anchor: HTMLDivElement
+    let overlay: HTMLDivElement | undefined;
+    let anchor: HTMLDivElement | undefined;
+
+    const handleMouseEnter = (event: MouseEvent) => {
+        const target = event.target as Node;
+        let c = overlay!.contains(target) || anchor!.contains(target)
+        setHover(c);
+    };
+    const handleMouseLeave = (event: MouseEvent) => {
+        const target = event.target as Node;
+        let c = overlay!.contains(target) || anchor!.contains(target)
+        setHover(c);
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as Node;
+        if ((overlay && !overlay.contains(target)) &&
+            (anchor && !anchor.contains(target))
+        ) {
+            setHover(false);
+        }
+    };
+
+    createEffect(() => {
+        if (hover()) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+    });
+
 
     const updatePosition = () => {
         if (anchor) {
@@ -173,13 +215,13 @@ export function PositionBox2() {
         }
     };
 
-    const onMouseDown = (event) => {
+    const onMouseDown = (event: MouseEvent) => {
         setDragging(true);
         setStartPos({ x: event.clientX, y: event.clientY });
         event.preventDefault();
     };
 
-    const onMouseMove = (event) => {
+    const onMouseMove = (event: MouseEvent) => {
         if (dragging()) {
             const deltaX = event.clientX - startPos().x;
             const deltaY = event.clientY - startPos().y;
@@ -225,45 +267,58 @@ export function PositionBox2() {
             // document.removeEventListener("mousemove", onMouseMove);
             // document.removeEventListener("mouseup", onMouseUp);
             window.removeEventListener("scroll", onScroll);
+
+            document.removeEventListener("mousedown", handleClickOutside);
         });
     });
 
     return (
-        <div>
+        <div class="pb-2"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <div
                 ref={anchor}
-                class="bg-blue-500 text-white p-4 w-40 h-40 flex items-center justify-center cursor-move pointer-events-auto"
-                //---------
-                // dragging
-                //---------
-                // style={{ position: "absolute", left: `${anchorPos().l}px`, top: `${anchorPos().t}px`, "z-index": 1000 }}
-                onMouseDown={onMouseDown}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            // onMouseDown={onMouseDown}
+            // class="bg-blue-500 text-white p-4 w-40 h-40 flex items-center justify-center cursor-move pointer-events-auto"
+            //---------
+            // dragging
+            //---------
+            // style={{ position: "absolute", left: `${anchorPos().l}px`, top: `${anchorPos().t}px`, "z-index": 1000 }}
+            // class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg group-hover:opacity-100 group-hover:visible shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
             >
-                <div>
+                {props.name}
+                {/* <div>
                     <div>Left: {Math.round(anchorPos().l)}</div>
                     <div>Top: {Math.round(anchorPos().t)}</div>
                     <div>Right: {Math.round(anchorPos().r)}</div>
                     <div>Bottom: {Math.round(anchorPos().b)}</div>
-                </div>
-
+                </div> */}
             </div>
+
             <div class="fixed inset-0 pointer-events-none">
 
-                <div ref={overlay} class="w-80 h-80 bg-blue-800 opacity-50 flex flex-col items-end justify-end"
+                <div ref={overlay}
+                    class={`${hover() ? "opacity-100 visible" : "opacity-0 invisible"} transition-opacity duration-300 pointer-events-auto`}
+
+                    // class="w-80 h-80 bg-blue-800 opacity-50 flex flex-col items-end justify-end"
                     style={{ position: "absolute", left: `${overlayPos().l}px`, top: `${overlayPos().t}px`, "z-index": 1000 }}
                 >
-                    <div>Left: {Math.round(overlayPos().l)}</div>
+                    {props.children}
+                    {/* <div>Left: {Math.round(overlayPos().l)}</div>
                     <div>Top: {Math.round(overlayPos().t)}</div>
                     <div>Right: {Math.round(overlayPos().r)}</div>
-                    <div>Bottom: {Math.round(overlayPos().b)}</div>
+                    <div>Bottom: {Math.round(overlayPos().b)}</div> */}
                 </div>
             </div>
         </div>
     );
 
     function updateOverlayPos() {
-        const boxrect = anchor.getBoundingClientRect();
-        let overlayRect = overlay.getBoundingClientRect();
+        const boxrect = anchor!.getBoundingClientRect();
+        let overlayRect = overlay!.getBoundingClientRect();
         const vw = window.innerWidth;
         const vh = window.innerHeight;
         let ll = (overlayRect.width - boxrect.width) / 2;
@@ -303,7 +358,7 @@ export function PositionBox2() {
 
 export function PositionCheck() {
     return <div>
-        <div class="flex-grid">
+        {/* <div class="flex-grid">
             <div class="grid-item"><PositionBox2 /></div>
             <div class="grid-item"><PositionBox2 /></div>
             <div class="grid-item"><PositionBox2 /></div>
@@ -325,36 +380,36 @@ export function PositionCheck() {
             <div class="grid-item"><PositionBox2 /></div>
             <div class="grid-item"><PositionBox2 /></div>
             <div class="grid-item"><PositionBox2 /></div>
-        </div>
+        </div> */}
 
         <div style="left: 0%; top: 0%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
         <div style="left: 0%; top: 40%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
         <div style="left: 0%; top: 80%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
 
         <div style="left: 40%; top: 0%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
         <div style="left: 40%; top: 40%; position: absolute;">
             <PositionBox2 />
         </div>
         <div style="left: 40%; top: 80%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
 
         <div style="left: 80%; top: 40%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
         <div style="left: 80%; top: 80%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
         <div style="left: 80%; top: 0%; position: absolute;">
-            <PositionBox2 />
+            {/* <PositionBox2 /> */}
         </div>
     </div>
 }
