@@ -8,7 +8,7 @@ import { TextInput } from '../components/textinput.tsx';
 import { createSignal } from "solid-js";
 import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";
 
-import { useConnect } from '../components/connect.tsx';
+import { useConnect } from '../connect/connect.tsx';
 
 import * as yup from 'yup';
 import { ConnectError } from '@connectrpc/connect';

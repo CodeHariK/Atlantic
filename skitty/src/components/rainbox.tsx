@@ -1,4 +1,4 @@
-import './rainbox.css';
+import '../css/rainbox.css';
 
 export const RainboxText = () => (
     <span class="rainbow"><slot /></span>

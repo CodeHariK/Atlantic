@@ -48,7 +48,17 @@ func (profile ProfileServiceServer) GetProfile(ctx context.Context, req *connect
 	user.SessionNumber = int32(sessionNumber)
 
 	return connect.NewResponse(&v1.GetProfileResponse{
-		User: user,
+		User: &v1.ProfileUser{
+			Username:      user.Avatar,
+			PhoneNumber:   user.PhoneNumber,
+			Avatar:        user.Avatar,
+			Email:         user.Email,
+			Location:      user.Location,
+			Verified:      user.Verified,
+			Role:          user.Role,
+			Sessions:      user.Sessions,
+			SessionNumber: user.SessionNumber,
+		},
 	},
 	), nil
 }

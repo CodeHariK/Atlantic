@@ -21,7 +21,7 @@ service ProfileService {
 message GetProfileRequest {}
 
 message GetProfileResponse {
-  auth.v1.AuthUser user = 1;
+  ProfileUser user = 1;
 }
 
 // The message for updating a profile
@@ -29,4 +29,37 @@ message UpdateProfileRequest {}
 
 message UpdateProfileResponse {
   bool success = 1;
+}
+
+message ProfileUser {
+  string username = 1 [(buf.validate.field).string = {
+    min_len: 8
+    max_len: 24
+  }]; // Username must be 8-24 characters
+
+  string phone_number = 2 [(buf.validate.field) = {
+    string: {
+      // `pattern` specifies a regex pattern and validates that the string field
+      // must match it.
+      pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"
+    }
+    ignore_empty: true
+  }];
+
+  string avatar = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_DEFAULT_VALUE,
+    (buf.validate.field).string.uri = true
+  ]; // Avatar must be a valid URL
+
+  // `email` validates that a string field is a valid email.
+  string email = 4 [(buf.validate.field).string.email = true];
+
+  string location = 5;
+
+  bool verified = 6;
+
+  int64 role = 7 [(buf.validate.field).int32.gt = 0];
+
+  repeated auth.v1.UserSession sessions = 8;
+  int32 sessionNumber = 9;
 }

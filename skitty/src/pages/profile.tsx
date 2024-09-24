@@ -1,8 +1,7 @@
 import { createSignal, createEffect } from "solid-js";
-import { AuthUser, RevokeRequest, InvalidateAllSessionsRequest, RefreshRequest, Role } from "../../api/auth/v1/auth_pb.ts";
-import { GetProfileRequest } from "../../api/auth/v1/profile_pb.ts";
+import { Role } from "../../api/auth/v1/auth_pb.ts";
 
-import { useConnect } from '../components/connect';
+import { useConnect } from '../connect/connect.tsx';
 
 import { proto3 } from "@bufbuild/protobuf";
 
@@ -12,108 +11,67 @@ import { SuperTable } from "../components/table.tsx";
 import { CrossIcon, TableHeadingIcon } from "../components/svg.tsx";
 import { H3, P, SmallBadgeText } from "../components/heading.tsx";
 import { IconButton, MaterialButton, OutlinedButton } from "../components/button.tsx";
+import { handleRefresh, Revoke, RevokeAll } from "../connect/auth.tsx";
 
 export default function Profile() {
-   const [user, setUser] = createSignal<AuthUser | null>(null);
+   // const [user, setUser] = createSignal<ProfileUser | null>(null);
    const [loading, setLoading] = createSignal(false);
    const [error, setError] = createSignal("");
 
-   const { authclient, profileclient } = useConnect();
+   const connect = useConnect();
 
    // Fetch the user data (you might be fetching this from an API)
    createEffect(async () => {
       setLoading(true);
       setError("");
 
-      try {
-         const request = new GetProfileRequest();
-         const response = await profileclient.getProfile(request);
-         console.log("Get Profile successful:", response);
-
-         if (response.user) {
-            setUser(response.user)
-         }
-      } catch (err) {
-         console.error("Failed to get profile:", err);
-         setError("Failed to get profile.");
-      } finally {
-         setLoading(false);
+      if (connect.muser) {
+         setLoading(false)
+      } else {
+         setError("Not signed in")
       }
+
+      console.log("-->", connect.muser)
+
+      // try {
+      //    const request = new GetProfileRequest();
+      //    const response = await connect.profileclient.getProfile(request);
+
+      //    if (response.user) {
+      //       console.log("Get Profile successful:", response);
+      //       setUser(response.user)
+      //    }
+      // } catch (err) {
+      //    console.error("Failed to get profile:", err);
+      //    setError("Failed to get profile.");
+      // } finally {
+      //    setLoading(false);
+      // }
    });
 
-   const handleRefresh = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-         const request = new RefreshRequest();
-         // Set any necessary fields in the request
-         const response = await authclient.authRefresh(request);
-         console.log("Refresh successful:", response);
-      } catch (err) {
-         console.error("Error refreshing auth:", err);
-         setError("Failed to refresh authentication.");
-      } finally {
-         setLoading(false);
-      }
-   };
-
-   const Revoke = async (sessionNumber: number) => {
-      setLoading(true);
-      setError("");
-      try {
-         const request = new RevokeRequest({ sessionNumber: sessionNumber });
-         // Set any necessary fields in the request
-         const response = await authclient.revokeSession(request);
-         console.log("Logout successful:", response);
-      } catch (err) {
-         console.error("Error logout:", err);
-         setError("Failed to logout.");
-      } finally {
-         setLoading(false);
-      }
-   };
-
-   const RevokeAll = async () => {
-      console.log("RevokeAll")
-      setLoading(true);
-      setError("");
-      try {
-         const request = new InvalidateAllSessionsRequest({});
-         // Set any necessary fields in the request
-         const response = await authclient.invalidateAllSessions(request);
-         console.log("Revoke successful:", response);
-         window.location.href = "/login";
-      } catch (err) {
-         console.error("Error logout:", err);
-         setError("Failed to logout.");
-      } finally {
-         setLoading(false);
-      }
-   };
+   // const muser = createMemo(() => user());
 
    return (
 
       <SpaceLayout two title='Profile'>
-
-         <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+         <MaterialButton onClick={() => { handleRefresh(connect, setLoading, setError) }} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
             <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
          </MaterialButton>
 
-         {user() ? (
+         {connect.muser ? (
             <>
                <div>
                   <div class="profile-header">
                      {/* <img src={user()!.avatar} alt="Avatar" class="avatar" /> */}
-                     <h2>{user()!.username}</h2>
-                     <p>Email: {user()!.email}</p>
+                     <h2>{connect.muser!.username}</h2>
+                     <p>Email: {connect.muser!.email}</p>
 
                      {
                         (() => {
                            let a = [];
                            for (let i = 0; i < 64; i++) {
                               // Check if the i-th bit is set in the role
-                              let b = (user()!.role >> BigInt(i)) & BigInt(1)
+                              let b = (connect.muser!.role >> BigInt(i)) & BigInt(1)
                               if (b) {
                                  a.push(proto3.getEnumType(Role).findNumber(i + 1)?.name);
                               }
@@ -122,16 +80,15 @@ export default function Profile() {
                         })()
                      }
 
-
                      {/* <p>Role: {proto3.getEnumType(Role).findNumber(user()!.role.valueOf() & 1)?.name}</p> */}
-                     <p>Status: {user()!.verified ? "Verified" : "Not Verified"}</p>
-                     <p>Phone: {user()!.phoneNumber}</p>
-                     <p>Location: {user()!.location}</p>
+                     <p>Status: {connect.muser!.verified ? "Verified" : "Not Verified"}</p>
+                     <p>Phone: {connect.muser!.phoneNumber}</p>
+                     <p>Location: {connect.muser!.location}</p>
                   </div>
                </div>
 
                <SuperTable
-                  width={900}
+                  class={"max-w-[1000px]"}
 
                   table={{
                      heading: [
@@ -145,13 +102,17 @@ export default function Profile() {
                         "max-w-64",
                      ],
                      rows: [
-                        ...user()?.sessions.map((s, i) =>
+                        ...connect.muser?.sessions.map((s, i) =>
                            [
                               <P>{s.agent}</P>,
-                              <P>{s.iat.toString()}</P>,
-                              <SmallBadgeText>Active {i == user()?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
+
+                              <P>{(() => {
+                                 let d = new Date(Number(s.iat) * 1000)
+                                 return d.toLocaleDateString() + " (" + d.toLocaleTimeString() + ")"
+                              })()}</P>,
+                              <SmallBadgeText>Active {i == connect.muser?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
                               <P>{s.exp.toString()}</P>,
-                              <IconButton onClick={() => Revoke(i)}><CrossIcon /></IconButton>
+                              <IconButton onClick={() => Revoke(connect, i, setLoading, setError)}><CrossIcon /></IconButton>
                            ]
                         ) ?? []
                      ],
@@ -161,10 +122,10 @@ export default function Profile() {
                   </div>}
                   headerend={
                      <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-                        <OutlinedButton onClick={RevokeAll}>
+                        <OutlinedButton onClick={() => { RevokeAll(connect, setLoading, setError) }}>
                            Revoke All
                         </OutlinedButton>
-                        <MaterialButton onClick={() => Revoke(-1)}>
+                        <MaterialButton onClick={() => Revoke(connect, -1, setLoading, setError)}>
                            Logout
                         </MaterialButton>
                      </div>
@@ -189,4 +150,3 @@ export default function Profile() {
       </SpaceLayout >
    );
 };
-

@@ -4,12 +4,11 @@
    "version": "0.0.1",
    "type": "module",
    "scripts": {
-      "dev": "vite",
-      "ldev": "VITE_DOMAIN=http://localhost vite",
+      "dev": "VITE_DOMAIN=http://localhost vite",
       "adev": "VITE_DOMAIN=http://atlantic.shark.run vite",
-      "build": "tsc -b && vite build --outDir kodata",
       "lbuild": "VITE_DOMAIN=http://localhost vite build --outDir kodata",
       "abuild": "VITE_DOMAIN=http://atlantic.shark.run vite build --outDir kodata",
+      "build": "tsc -b && VITE_DOMAIN=http://atlantic.shark.run vite build --outDir kodata",
       "preview": "vite preview"
    },
    "dependencies": {

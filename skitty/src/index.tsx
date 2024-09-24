@@ -2,9 +2,9 @@ import { render } from "solid-js/web";
 import { Router, type RouteDefinition } from "@solidjs/router";
 import { lazy, createSignal } from "solid-js";
 
-import { ConnectProvider } from "./components/connect";
+import { ConnectProvider } from "./connect/connect";
 
-import "./app.css";
+import "./css/app.css";
 
 import Login from "./pages/login";
 import Profile from "./pages/profile";

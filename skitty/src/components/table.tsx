@@ -45,21 +45,18 @@ export type SuperTableProps = {
     headerend?: JSX.Element;
     footerstart?: JSX.Element;
     footerend?: JSX.Element;
-    width?: number;
+    class?: string;
 }
 
 export function SuperTable(props: SuperTableProps) {
-    return <div
-        class={`${props.width ? `max-w-[${props.width}px]` : "w-full"} mx-auto`}>
-        <div class="relative flex flex-col w-full h-full bg-white dark:bg-gray-800 shadow-md rounded-xl bg-clip-border">
+    return <div class={`${props.class || ''} mx-auto`}>
+        <div class="flex flex-col w-full h-full bg-white dark:bg-gray-800 shadow-md rounded-xl bg-clip-border">
             {!(props.headerstart || props.headerend) ? <></> :
-                <div class="relative mx-4 mt-4 overflow-hidden rounded-none bg-clip-border">
-                    <div class="flex items-center justify-between ">
+                <div class="flex items-center justify-between mx-4 mt-4 overflow-hidden rounded-none bg-clip-border">
 
-                        {props.headerstart}
+                    {props.headerstart}
 
-                        {props.headerend}
-                    </div>
+                    {props.headerend}
                 </div>
             }
 

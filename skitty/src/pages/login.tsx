@@ -8,7 +8,7 @@ import { TextInput } from '../components/textinput';
 import { createSignal } from "solid-js";
 import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
 
-import { useConnect } from '../components/connect';
+import { useConnect } from '../connect/connect.tsx';
 
 import * as yup from 'yup';
 import { HelloRequest } from '../../api/cosmog/v1/cosmog_pb.ts';

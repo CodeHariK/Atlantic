@@ -7,7 +7,7 @@ import { searchBox, hits, stats, clearRefinements, ratingMenu, rangeSlider, sort
 
 import { createEffect } from 'solid-js';
 
-import './searchgames.css';
+import '../css/searchgames.css';
 
 export default function SearchGames() {
 
