@@ -95,8 +95,8 @@ export default function Login() {
                      login(state as Credentials)
                   }}
                >
-                  <TextInput name="email" icon={EmailIcon()} label='Email Address' type="text" placeholder="Email Address"></TextInput>
-                  <TextInput name="password" type="password" label='Password' placeholder="Password" />
+                  <TextInput name="email" icon={EmailIcon()} label='Email Address' type="text" placeholder="alien@atlantic.io"></TextInput>
+                  <TextInput name="password" type="password" label='Password' placeholder="******" />
 
                   <P class='py-1'>
 

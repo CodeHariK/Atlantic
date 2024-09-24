@@ -165,25 +165,25 @@ export function PositionBox2(props: PositionBox2Props) {
 
     const [anchorPos, setAnchorPos] = createSignal(defaultAnchorPos);
     const [overlayPos, setOverlayPos] = createSignal(defaultAnchorPos);
-    const [dragging, setDragging] = createSignal(false);
-    const [startPos, setStartPos] = createSignal({ x: 0, y: 0 });
-    const [hover, setHover] = createSignal(false);
+    // const [dragging, setDragging] = createSignal(false);
+    // const [startPos, setStartPos] = createSignal({ x: 0, y: 0 });
+    const [show, setShow] = createSignal(false);
 
     const alignment = props.align || { x: 0, y: 1 }
     // const alignment = { x: Math.random() * .8 - .4, y: Math.random() * .8 - .4 }
 
     let overlay: HTMLDivElement | undefined;
-    let anchor: HTMLDivElement | undefined;
+    let anchor: HTMLButtonElement | undefined;
 
     const handleMouseEnter = (event: MouseEvent) => {
         const target = event.target as Node;
         let c = overlay!.contains(target) || anchor!.contains(target)
-        setHover(c);
+        setShow(c);
     };
     const handleMouseLeave = (event: MouseEvent) => {
         const target = event.target as Node;
         let c = overlay!.contains(target) || anchor!.contains(target)
-        setHover(c);
+        setShow(c);
     };
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -191,16 +191,15 @@ export function PositionBox2(props: PositionBox2Props) {
         if ((overlay && !overlay.contains(target)) &&
             (anchor && !anchor.contains(target))
         ) {
-            setHover(false);
+            setShow(false);
         }
     };
 
     createEffect(() => {
-        if (hover()) {
+        if (show()) {
             document.addEventListener("mousedown", handleClickOutside);
         }
     });
-
 
     const updatePosition = () => {
         if (anchor) {
@@ -215,35 +214,35 @@ export function PositionBox2(props: PositionBox2Props) {
         }
     };
 
-    const onMouseDown = (event: MouseEvent) => {
-        setDragging(true);
-        setStartPos({ x: event.clientX, y: event.clientY });
-        event.preventDefault();
-    };
+    // const onMouseDown = (event: MouseEvent) => {
+    //     setDragging(true);
+    //     setStartPos({ x: event.clientX, y: event.clientY });
+    //     event.preventDefault();
+    // };
 
-    const onMouseMove = (event: MouseEvent) => {
-        if (dragging()) {
-            const deltaX = event.clientX - startPos().x;
-            const deltaY = event.clientY - startPos().y;
+    // const onMouseMove = (event: MouseEvent) => {
+    //     if (dragging()) {
+    //         const deltaX = event.clientX - startPos().x;
+    //         const deltaY = event.clientY - startPos().y;
 
-            if (anchor) {
-                setAnchorPos({
-                    l: anchorPos().l + deltaX,
-                    t: anchorPos().t + deltaY,
-                    r: anchorPos().r + deltaX,
-                    b: anchorPos().b + deltaY,
-                });
+    //         if (anchor) {
+    //             setAnchorPos({
+    //                 l: anchorPos().l + deltaX,
+    //                 t: anchorPos().t + deltaY,
+    //                 r: anchorPos().r + deltaX,
+    //                 b: anchorPos().b + deltaY,
+    //             });
 
-                updateOverlayPos();
+    //             updateOverlayPos();
 
-                setStartPos({ x: event.clientX, y: event.clientY });
-            }
-        }
-    };
+    //             setStartPos({ x: event.clientX, y: event.clientY });
+    //         }
+    //     }
+    // };
 
-    const onMouseUp = () => {
-        setDragging(false);
-    };
+    // const onMouseUp = () => {
+    //     setDragging(false);
+    // };
 
     onMount(() => {
         updatePosition();
@@ -254,11 +253,8 @@ export function PositionBox2(props: PositionBox2Props) {
         // document.addEventListener("mousemove", onMouseMove);
         // document.addEventListener("mouseup", onMouseUp);
 
-        const onScroll = () => {
-            updatePosition();
-        };
-
-        window.addEventListener("scroll", onScroll);
+        window.addEventListener("scroll", updatePosition);
+        window.addEventListener("resize", updatePosition);
 
         onCleanup(() => {
             //---------
@@ -266,9 +262,9 @@ export function PositionBox2(props: PositionBox2Props) {
             //---------
             // document.removeEventListener("mousemove", onMouseMove);
             // document.removeEventListener("mouseup", onMouseUp);
-            window.removeEventListener("scroll", onScroll);
-
-            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("scroll", updatePosition);
+            window.removeEventListener("resize", updatePosition);
+            // document.removeEventListener("mousedown", handleClickOutside);
         });
     });
 
@@ -277,40 +273,24 @@ export function PositionBox2(props: PositionBox2Props) {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div
+            <button
                 ref={anchor}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-            // onMouseDown={onMouseDown}
-            // class="bg-blue-500 text-white p-4 w-40 h-40 flex items-center justify-center cursor-move pointer-events-auto"
-            //---------
-            // dragging
-            //---------
-            // style={{ position: "absolute", left: `${anchorPos().l}px`, top: `${anchorPos().t}px`, "z-index": 1000 }}
-            // class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg group-hover:opacity-100 group-hover:visible shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                // onMouseDown={onMouseDown}
+                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg group-hover:opacity-100 group-hover:visible hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
             >
                 {props.name}
-                {/* <div>
-                    <div>Left: {Math.round(anchorPos().l)}</div>
-                    <div>Top: {Math.round(anchorPos().t)}</div>
-                    <div>Right: {Math.round(anchorPos().r)}</div>
-                    <div>Bottom: {Math.round(anchorPos().b)}</div>
-                </div> */}
-            </div>
+            </button>
 
             <div class="fixed inset-0 pointer-events-none">
 
                 <div ref={overlay}
-                    class={`${hover() ? "opacity-100 visible" : "opacity-0 invisible"} transition-opacity duration-300 pointer-events-auto`}
+                    class={`${show() ? "opacity-100 visible" : "opacity-0 invisible"} transition-opacity duration-300 pointer-events-auto shadow-sm`}
 
-                    // class="w-80 h-80 bg-blue-800 opacity-50 flex flex-col items-end justify-end"
                     style={{ position: "absolute", left: `${overlayPos().l}px`, top: `${overlayPos().t}px`, "z-index": 1000 }}
                 >
                     {props.children}
-                    {/* <div>Left: {Math.round(overlayPos().l)}</div>
-                    <div>Top: {Math.round(overlayPos().t)}</div>
-                    <div>Right: {Math.round(overlayPos().r)}</div>
-                    <div>Bottom: {Math.round(overlayPos().b)}</div> */}
                 </div>
             </div>
         </div>
@@ -354,62 +334,4 @@ export function PositionBox2(props: PositionBox2Props) {
 
         setOverlayPos(n);
     }
-}
-
-export function PositionCheck() {
-    return <div>
-        {/* <div class="flex-grid">
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-            <div class="grid-item"><PositionBox2 /></div>
-        </div> */}
-
-        <div style="left: 0%; top: 0%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-        <div style="left: 0%; top: 40%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-        <div style="left: 0%; top: 80%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-
-        <div style="left: 40%; top: 0%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-        <div style="left: 40%; top: 40%; position: absolute;">
-            <PositionBox2 />
-        </div>
-        <div style="left: 40%; top: 80%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-
-        <div style="left: 80%; top: 40%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-        <div style="left: 80%; top: 80%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-        <div style="left: 80%; top: 0%; position: absolute;">
-            {/* <PositionBox2 /> */}
-        </div>
-    </div>
 }

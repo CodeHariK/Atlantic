@@ -9,32 +9,26 @@ import "./app.css";
 import Login from "./pages/login";
 import Profile from "./pages/profile";
 import Docs from "./pages/docs";
-import { OrderDetails, OrderModal, QuestionModal } from "./pages/orderdetails";
 import Test from "./pages/test";
 import Home from "./pages/home";
 import SearchProducts from "./pages/searchproducts";
-import { ReviewsModal, Reviews } from "./pages/reviews";
+import { Reviews } from "./pages/reviews";
 import SearchDrawer from "./components/searchdrawer";
 import Payment from "./pages/payment";
 import { Checkout } from "./pages/checkout";
-import { ProductModal, Products } from "./pages/products";
+import { Products } from "./pages/products";
 import Register from "./pages/register";
 import SearchGames from "./pages/searchgames";
 import { MyOrders } from "./pages/myorders";
-import { Account, AccountModal, DeleteOrderModal } from "./pages/account";
+import { Account } from "./pages/account";
 import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
 import { Product } from "./pages/product";
-import { cartModal } from "./components/header";
 
 export const routes: RouteDefinition[] = [
 	{
 		path: "/",
 		component: Home,
-	},
-	{
-		path: "/form",
-		component: lazy(() => import("./pages/form")),
 	},
 	{
 		path: "/login",
@@ -81,10 +75,6 @@ export const routes: RouteDefinition[] = [
 		component: Reviews,
 	},
 	{
-		path: "/reviewsmodal",
-		component: ReviewsModal,
-	},
-	{
 		path: "/search/:productId",
 		component: SearchProducts,
 	},
@@ -97,20 +87,8 @@ export const routes: RouteDefinition[] = [
 		component: Product,
 	},
 	{
-		path: "/productmodal",
-		component: ProductModal,
-	},
-	{
-		path: "/order/:orderId",
-		component: OrderDetails,
-	},
-	{
 		path: "/cart",
 		component: Cart,
-	},
-	{
-		path: "/cartmodal",
-		component: cartModal,
 	},
 	{
 		path: "/myorders",
@@ -125,22 +103,6 @@ export const routes: RouteDefinition[] = [
 		component: Account,
 	},
 	{
-		path: "/accountmodal",
-		component: AccountModal,
-	},
-	{
-		path: "/deleteOrderModal",
-		component: DeleteOrderModal,
-	},
-	{
-		path: "/ordermodal",
-		component: OrderModal,
-	},
-	{
-		path: "/questionmodal",
-		component: QuestionModal,
-	},
-	{
 		path: "**",
 		component: lazy(() => import("./pages/404")),
 	},
@@ -151,7 +113,7 @@ export const routes: RouteDefinition[] = [
 ];
 
 function RouteList() {
-	const [iframeSrc, setIframeSrc] = createSignal("/");
+	const [iframeSrc, setIframeSrc] = createSignal("/test");
 
 	return (
 		<div class="w-full flex flex-row h-screen">

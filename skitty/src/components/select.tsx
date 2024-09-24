@@ -10,6 +10,7 @@ type SelectProps = {
     id: string;
     options: Array<OptionType>;
     disabled?: boolean;
+    header?: string;
 };
 
 export function Select(props: SelectProps) {
@@ -17,8 +18,8 @@ export function Select(props: SelectProps) {
 
     return (
         <div class="mb-4">
-            <label for={props.id} class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Select an option
+            <label for={props.id} class="block mt-2 mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                {props.header}
             </label>
             <select
                 id={props.id}

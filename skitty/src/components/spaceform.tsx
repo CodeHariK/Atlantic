@@ -33,6 +33,7 @@ type SpaceFormProps = {
     schema?: ObjectSchema<any>;
     onSubmit?: (state: Record<string, any>) => void;
     children: JSX.Element;
+    class?: string;
 };
 
 export function SpaceForm(props: SpaceFormProps) {
@@ -96,7 +97,7 @@ export function SpaceForm(props: SpaceFormProps) {
 
     return (
         <SpaceContext.Provider value={{ id: props.id, state: state, handleChange }}>
-            <form onSubmit={handleSubmit} onReset={handleReset}>
+            <form onSubmit={handleSubmit} onReset={handleReset} class={props.class}>
                 <Show when={state().formerror}>
                     <p class="AppErrorText">{state().formerror}</p>
                 </Show>

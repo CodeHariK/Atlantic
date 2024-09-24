@@ -9,6 +9,7 @@ export type RadioOptionType = {
 
 type RadioGroupProps = {
     name: string;
+    vertical?: boolean;
     options: Array<RadioOptionType>;
 };
 
@@ -16,12 +17,12 @@ export function RadioGroup(props: RadioGroupProps) {
     const { state, handleChange } = useSpaceContext();
 
     return (
-        <fieldset>
+        <fieldset class={`${props.vertical ? "" : "flex"} justify-between border mb-2 rounded-lg`}>
             <legend class="sr-only">Select an option</legend>
 
             <Key each={props.options} by="value">
                 {(option) => (
-                    <div class="flex items-center mb-4">
+                    <div class={`flex flex-auto items-center p-2 ${!props.vertical && option() != props.options[props.options.length - 1] ? "border-r" : ""}`}>
                         <input
                             id={`radio-${option().value}`}
                             type="radio"

@@ -23,7 +23,7 @@ export function TelTest(props: TelTestProps) {
     ];
 
     return (
-        <div class="m-4 bg-slate-100">
+        <div class="m-4 ">
             <h6>Pattern: {props.pattern.toString()} </h6>
             <div>
                 {
