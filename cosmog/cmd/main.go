@@ -2,16 +2,22 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/cosmog/server"
+	"github.com/codeharik/Atlantic/cosmog/utils/games"
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/servemux"
 	"github.com/meilisearch/meilisearch-go"
 )
 
 const serviceName = "cosmog"
+
+func MeiliSearchUrl(cfg *config.Config) string {
+	return fmt.Sprintf("http://%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port)
+}
 
 func CosmogServerFullUrl(config *config.Config) string {
 	return fmt.Sprintf("http://%s:%d", config.CosmogService.Host, config.CosmogService.Port)
@@ -27,9 +33,17 @@ func main() {
 	dragon := dragon.CreateDragon(&cfg)
 
 	meiliInstance := meilisearch.New(
-		fmt.Sprintf("%s:%d", cfg.MeiliSearch.Host, cfg.MeiliSearch.Port),
+		MeiliSearchUrl(&cfg),
 		meilisearch.WithAPIKey(cfg.MeiliSearch.Key),
 	)
+
+	h, err := meiliInstance.Health()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(h)
+
+	games.SyncInit(meiliInstance)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {

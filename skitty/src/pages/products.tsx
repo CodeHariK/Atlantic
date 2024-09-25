@@ -67,7 +67,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
    return <div id={id} class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div class="h-56 w-full">
          <a href={"/product/" + id}>
-            <img class="mx-auto h-full" src={imgSrc} alt="" />
+            <img class="object-contain mx-auto h-full" src={imgSrc} alt="" />
          </a>
       </div>
       <div class="pt-6">

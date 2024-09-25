@@ -1,4 +1,4 @@
-.PHONY: start local atlantic auth inventory orders skitty overtools
+.PHONY: start local atlantic auth inventory orders skitty overtools cosmog
 
 start:
 	@VITE_DOMAIN=$(VITE_DOMAIN) ./run.sh \
@@ -80,6 +80,13 @@ ordersbuild:
 	make img img=orders
 ordersrun:
 	docker run -p 9100:9100 --name orders orders
+
+cosmog:
+	go run cosmog/cmd/main.go
+cosmogbuild:
+	make img img=cosmog
+cosmogrun:
+	docker run -p 7800:7800 --name cosmog cosmog
 
 skitty:
 	cd skitty && bun run dev

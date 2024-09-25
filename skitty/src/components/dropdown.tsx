@@ -38,7 +38,7 @@ export function ToggleOptions(props: ToggleOptionsProps) {
     });
 
     return (
-        <div class="relative inline-flex pb-2"
+        <div class="relative inline-flex py-2"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}>
             <button
@@ -269,7 +269,7 @@ export function PositionBox2(props: PositionBox2Props) {
     });
 
     return (
-        <div class="pb-2"
+        <div class="py-2"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >

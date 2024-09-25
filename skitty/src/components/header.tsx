@@ -1,3 +1,4 @@
+import { createEffect, JSXElement } from "solid-js";
 import { RevokeReq } from "../connect/auth";
 import { useConnect } from "../connect/connect";
 import { MaterialButton, OutlinedButton } from "./button";
@@ -9,7 +10,7 @@ import ThemeToggle from "./theme_toggle";
 export const Header = () => (
     <header>
         <nav class="bg-white dark:bg-gray-900 antialiased">
-            <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 py-4">
+            <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 py-0">
                 <div class="flex items-center justify-between">
 
                     <div class="flex items-center space-x-8">
@@ -20,9 +21,8 @@ export const Header = () => (
                             </div>
                         </a>
 
-                        <ul class="hidden lg:flex items-center justify-start gap-6 md:gap-8 py-3 sm:justify-center">
-                            {HeaderLinks("/", "Home")}
-                            {HeaderLinks("/", "Best Sellers")}
+                        <ul class="hidden lg:flex items-center justify-start gap-2 md:gap-2 py-3 sm:justify-center">
+                            {HeaderLinks("/products", "Best Sellers")}
                             {HeaderLinks("/", "Gift Ideas")}
                             {HeaderLinks("/", "Today's Deals")}
                             {HeaderLinks("/", "Home")}
@@ -52,24 +52,32 @@ export const AccountModal = () => {
 
     const connect = useConnect();
 
-    return connect.muser ?
-        <PositionBox2 name={<p>{UserIcon()}{<span>Account</span>}{DownIcon()}</p>} align={{ x: 0, y: 1 }}>
-            <div class="z-50 m-2 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
-                <div class="px-4 py-3">
-                    <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-                    <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
-                </div>
-                <ul class="py-2" aria-labelledby="user-menu-button">
-                    {HeaderLinks("/profile", "Dashboard")}
-                    {HeaderLinks("", "Settings")}
+    createEffect(async () => {
+        console.log("****", connect.muser)
+    })
 
-                    {HeaderLinks("", "Sign out", () => { RevokeReq(connect, -1) })}
-                </ul>
-            </div>
-        </PositionBox2>
-        :
-        <OutlinedButton><a href="/login">Log In</a></OutlinedButton>
-        ;
+
+    return (<>{
+
+        <TransitionWidget showFirstWidget={connect.muser != null} one={
+            <PositionBox2 name={<p>{UserIcon()}{<span>Account</span>}{DownIcon()}</p>} align={{ x: 0, y: 1 }}>
+                <div class="z-50 m-2 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+                    <div class="px-4 py-3">
+                        <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
+                        <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+                    </div>
+                    <ul class="py-2" aria-labelledby="user-menu-button">
+                        {HeaderLinks("/profile", "Profile")}
+                        {HeaderLinks("/dashboard", "Dashboard")}
+                        {HeaderLinks("/settings", "Settings")}
+                        {HeaderLinks("", "Sign out", () => { RevokeReq(connect, -1) })}
+                    </ul>
+                </div>
+            </PositionBox2>
+        } two={
+            <OutlinedButton><a href="/login">Log In</a></OutlinedButton>
+        }></TransitionWidget>
+    }</>);
 }
 
 function HeaderLinks(href: string, title: string, fn?: () => void) {
@@ -90,3 +98,29 @@ export function CartModal() {
         </div>
     );
 }
+
+const TransitionWidget = (props: { showFirstWidget: boolean, one: JSXElement, two: JSXElement }) => {
+    return (
+        <div class="relative">
+            <div
+                class={`transition-opacity duration-[10sec] ease-in-out ${props.showFirstWidget ? 'opacity-100' : 'opacity-0 hidden'
+                    }`}
+            >
+                {props.one}
+                {/* <div class="bg-blue-500 text-white p-4 rounded">
+                    <h2 class="text-lg">Widget One</h2>
+                </div> */}
+            </div>
+
+            <div
+                class={`transition-opacity duration-[10sec] ease-in-out ${props.showFirstWidget ? 'opacity-0 hidden' : 'opacity-100'
+                    }`}
+            >
+                {props.two}
+                {/* <div class="bg-green-500 text-white p-4 rounded">
+                    <h2 class="text-lg">Widget Two</h2>
+                </div> */}
+            </div>
+        </div>
+    );
+};

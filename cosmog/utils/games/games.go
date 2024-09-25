@@ -1,4 +1,4 @@
-package main
+package games
 
 import (
 	"encoding/json"
@@ -27,20 +27,21 @@ type ParseGame struct {
 }
 
 type Game struct {
-	Name             string   `json:"name"`
-	ReleaseDate      int64    `json:"date"`
-	Price            float64  `json:"price"`
-	ShortDescription string   `json:"info"`
-	Website          string   `json:"site"`
-	Screenshots      []string `json:"img"`
-	Developers       string   `json:"dev"`
-	Categories       []string `json:"cat"`
-	Genres           []string `json:"gen"`
-	Sales            int      `json:"sale"`
-	Movies           []string `json:"mov"`
+	Id               uuid.UUID `json:"id"`
+	Name             string    `json:"name"`
+	ReleaseDate      int64     `json:"date"`
+	Price            float64   `json:"price"`
+	ShortDescription string    `json:"info"`
+	Website          string    `json:"site"`
+	Screenshots      []string  `json:"img"`
+	Developers       string    `json:"dev"`
+	Categories       []string  `json:"cat"`
+	Genres           []string  `json:"gen"`
+	Sales            int       `json:"sale"`
+	Movies           []string  `json:"mov"`
 }
 
-func main() {
+func extractMain() {
 	banned := []string{}
 
 	file, err := os.Open("data/games.json")
@@ -62,7 +63,7 @@ func main() {
 	avgprice := 0
 	avgsale := 0
 
-	filteredGames := make(map[uuid.UUID]Game)
+	filteredGames := make([]Game, len(games))
 	for _, game := range games {
 		// Limit screenshots to a maximum of 3
 		if len(game.Screenshots) > 3 {
@@ -84,7 +85,11 @@ func main() {
 			!contains(string(m), banned) &&
 			len(game.Movies) > 0 &&
 			arrayContains(game.Languages, "English") {
+
+			uid, _ := uuid.NewV7()
+
 			g := Game{
+				Id:               uid,
 				Name:             game.Name,
 				ReleaseDate:      t.Unix(),
 				Price:            game.Price,
@@ -98,9 +103,7 @@ func main() {
 				Movies:           game.Movies,
 			}
 
-			uid, _ := uuid.NewV7()
-
-			filteredGames[uid] = g
+			filteredGames = append(filteredGames, g)
 			avgprice += int(g.Price) * g.Sales
 			avgsale += g.Sales
 		}
