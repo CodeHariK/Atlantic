@@ -12,7 +12,7 @@ import (
 )
 
 type ParseGame struct {
-	Name             string   `json:"name"`
+	Title            string   `json:"title"`
 	ReleaseDate      string   `json:"release_date"`
 	Price            float64  `json:"price"`
 	ShortDescription string   `json:"short_description"`
@@ -28,7 +28,7 @@ type ParseGame struct {
 
 type Game struct {
 	Id               uuid.UUID `json:"id"`
-	Name             string    `json:"name"`
+	Title            string    `json:"title"`
 	ReleaseDate      int64     `json:"date"`
 	Price            float64   `json:"price"`
 	ShortDescription string    `json:"info"`
@@ -90,7 +90,7 @@ func extractMain() {
 
 			g := Game{
 				Id:               uid,
-				Name:             game.Name,
+				Title:            game.Title,
 				ReleaseDate:      t.Unix(),
 				Price:            game.Price,
 				ShortDescription: game.ShortDescription,

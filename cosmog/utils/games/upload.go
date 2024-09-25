@@ -8,25 +8,31 @@ import (
 func SyncInit(meiliInstance meilisearch.ServiceManager) {
 	games := loadGames()
 
-	task, err := meiliInstance.Index("steam-videogames").AddDocumentsInBatches(
+	task, err := meiliInstance.Index("Games").AddDocumentsInBatches(
 		games[:100],
 		10,
 	)
 	colorlogger.Log(task, err)
 
 	meiliInstance.CreateIndex(&meilisearch.IndexConfig{
-		Uid:        "steam-videogames",
+		Uid:        "Games",
 		PrimaryKey: "id",
 	})
 
+	searchableAttributes := []string{
+		"title",
+		"info",
+	}
 	filterableAttributes := []string{
 		"gen",
 		"cat",
+		"price",
 		"sale",
 	}
 	sortableAttributes := []string{
 		"sale",
 	}
-	meiliInstance.Index("steam-videogames").UpdateFilterableAttributes(&filterableAttributes)
-	meiliInstance.Index("steam-videogames").UpdateSortableAttributes(&sortableAttributes)
+	meiliInstance.Index("Games").UpdateSearchableAttributes(&searchableAttributes)
+	meiliInstance.Index("Games").UpdateFilterableAttributes(&filterableAttributes)
+	meiliInstance.Index("Games").UpdateSortableAttributes(&sortableAttributes)
 }

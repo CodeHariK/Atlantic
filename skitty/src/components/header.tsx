@@ -1,4 +1,4 @@
-import { createEffect, JSXElement } from "solid-js";
+import { JSXElement } from "solid-js";
 import { RevokeReq } from "../connect/auth";
 import { useConnect } from "../connect/connect";
 import { MaterialButton, OutlinedButton } from "./button";
@@ -51,10 +51,6 @@ export const Header = () => (
 export const AccountModal = () => {
 
     const connect = useConnect();
-
-    createEffect(async () => {
-        console.log("****", connect.muser)
-    })
 
 
     return (<>{

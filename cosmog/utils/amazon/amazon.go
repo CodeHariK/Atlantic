@@ -1,4 +1,4 @@
-package main
+package amazon
 
 import (
 	"bytes"
@@ -15,16 +15,22 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
+type Category struct {
+	Lvl0 string `json:"lvl0,omitempty"`
+	Lvl1 string `json:"lvl1,omitempty"`
+}
+
 type Product struct {
-	ID      string  `json:"id,omitempty"`
-	Title   string  `json:"title,omitempty"`
-	Price   float64 `json:"price,omitempty"`
-	Rating  float64 `json:"rating,omitempty"`
-	Reviews int     `json:"reviews,omitempty"`
-	Brand   string  `json:"brand,omitempty"`
-	Age     string  `json:"age,omitempty"`
-	Img     string  `json:"img,omitempty"`
-	Src     string  `json:"src,omitempty"`
+	ID       string   `json:"id,omitempty"`
+	Title    string   `json:"title,omitempty"`
+	Price    float64  `json:"price,omitempty"`
+	Rating   float64  `json:"rating,omitempty"`
+	Reviews  int      `json:"reviews,omitempty"`
+	Brand    string   `json:"brand,omitempty"`
+	Age      string   `json:"age,omitempty"`
+	Img      string   `json:"img,omitempty"`
+	Src      string   `json:"src,omitempty"`
+	Category Category `json:"category,omitempty"`
 }
 
 type CategoryMap map[string][]string
