@@ -11,9 +11,11 @@ replace github.com/codeharik/Atlantic/docs => ../docs
 replace github.com/codeharik/Atlantic/auth => ../auth
 
 require (
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.2-20240717164558-a6c49f84cc0f.2
 	connectrpc.com/connect v1.16.2
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.2.0
+	github.com/bufbuild/protovalidate-go v0.6.5
 	github.com/chromedp/cdproto v0.0.0-20240801214329-3f85d328b335
 	github.com/chromedp/chromedp v0.10.0
 	github.com/codeharik/Atlantic/config v0.0.0-00010101000000-000000000000
@@ -25,8 +27,8 @@ require (
 )
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.2-20240717164558-a6c49f84cc0f.2 // indirect
 	connectrpc.com/otelconnect v0.7.1 // indirect
+	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
@@ -40,6 +42,7 @@ require (
 	github.com/gobwas/ws v1.4.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/google/cel-go v0.21.0 // indirect
 	github.com/gorilla/csrf v1.7.2 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
@@ -49,6 +52,7 @@ require (
 	github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785 // indirect
 	github.com/redis/go-redis/v9 v9.6.1 // indirect
 	github.com/rs/cors v1.11.1 // indirect
+	github.com/stoewer/go-strcase v1.3.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.55.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.53.0 // indirect
 	go.opentelemetry.io/otel v1.30.0 // indirect
@@ -67,6 +71,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.30.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect

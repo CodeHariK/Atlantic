@@ -36,21 +36,36 @@ const (
 	// CosmogServiceCreateSearchKeyProcedure is the fully-qualified name of the CosmogService's
 	// CreateSearchKey RPC.
 	CosmogServiceCreateSearchKeyProcedure = "/cosmog.v1.CosmogService/CreateSearchKey"
-	// CosmogServiceHelloProcedure is the fully-qualified name of the CosmogService's Hello RPC.
-	CosmogServiceHelloProcedure = "/cosmog.v1.CosmogService/Hello"
+	// CosmogServiceGetProductProcedure is the fully-qualified name of the CosmogService's GetProduct
+	// RPC.
+	CosmogServiceGetProductProcedure = "/cosmog.v1.CosmogService/GetProduct"
+	// CosmogServiceDeleteProductProcedure is the fully-qualified name of the CosmogService's
+	// DeleteProduct RPC.
+	CosmogServiceDeleteProductProcedure = "/cosmog.v1.CosmogService/DeleteProduct"
+	// CosmogServiceUpdateProductProcedure is the fully-qualified name of the CosmogService's
+	// UpdateProduct RPC.
+	CosmogServiceUpdateProductProcedure = "/cosmog.v1.CosmogService/UpdateProduct"
+	// CosmogServiceGetTaskProcedure is the fully-qualified name of the CosmogService's GetTask RPC.
+	CosmogServiceGetTaskProcedure = "/cosmog.v1.CosmogService/GetTask"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	cosmogServiceServiceDescriptor               = v1.File_cosmog_v1_cosmog_proto.Services().ByName("CosmogService")
 	cosmogServiceCreateSearchKeyMethodDescriptor = cosmogServiceServiceDescriptor.Methods().ByName("CreateSearchKey")
-	cosmogServiceHelloMethodDescriptor           = cosmogServiceServiceDescriptor.Methods().ByName("Hello")
+	cosmogServiceGetProductMethodDescriptor      = cosmogServiceServiceDescriptor.Methods().ByName("GetProduct")
+	cosmogServiceDeleteProductMethodDescriptor   = cosmogServiceServiceDescriptor.Methods().ByName("DeleteProduct")
+	cosmogServiceUpdateProductMethodDescriptor   = cosmogServiceServiceDescriptor.Methods().ByName("UpdateProduct")
+	cosmogServiceGetTaskMethodDescriptor         = cosmogServiceServiceDescriptor.Methods().ByName("GetTask")
 )
 
 // CosmogServiceClient is a client for the cosmog.v1.CosmogService service.
 type CosmogServiceClient interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
-	Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error)
+	GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error)
+	DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error)
+	UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error)
+	GetTask(context.Context, *connect.Request[v1.GetTaskRequest]) (*connect.Response[v1.GetTaskResponse], error)
 }
 
 // NewCosmogServiceClient constructs a client for the cosmog.v1.CosmogService service. By default,
@@ -69,10 +84,28 @@ func NewCosmogServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		hello: connect.NewClient[v1.HelloRequest, v1.HelloResponse](
+		getProduct: connect.NewClient[v1.GetProductRequest, v1.GetProductResponse](
 			httpClient,
-			baseURL+CosmogServiceHelloProcedure,
-			connect.WithSchema(cosmogServiceHelloMethodDescriptor),
+			baseURL+CosmogServiceGetProductProcedure,
+			connect.WithSchema(cosmogServiceGetProductMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteProduct: connect.NewClient[v1.DeleteProductRequest, v1.DeleteProductResponse](
+			httpClient,
+			baseURL+CosmogServiceDeleteProductProcedure,
+			connect.WithSchema(cosmogServiceDeleteProductMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateProduct: connect.NewClient[v1.UpdateProductRequest, v1.UpdateProductResponse](
+			httpClient,
+			baseURL+CosmogServiceUpdateProductProcedure,
+			connect.WithSchema(cosmogServiceUpdateProductMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		getTask: connect.NewClient[v1.GetTaskRequest, v1.GetTaskResponse](
+			httpClient,
+			baseURL+CosmogServiceGetTaskProcedure,
+			connect.WithSchema(cosmogServiceGetTaskMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -81,7 +114,10 @@ func NewCosmogServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 // cosmogServiceClient implements CosmogServiceClient.
 type cosmogServiceClient struct {
 	createSearchKey *connect.Client[v1.CreateSearchKeyRequest, v1.CreateSearchKeyResponse]
-	hello           *connect.Client[v1.HelloRequest, v1.HelloResponse]
+	getProduct      *connect.Client[v1.GetProductRequest, v1.GetProductResponse]
+	deleteProduct   *connect.Client[v1.DeleteProductRequest, v1.DeleteProductResponse]
+	updateProduct   *connect.Client[v1.UpdateProductRequest, v1.UpdateProductResponse]
+	getTask         *connect.Client[v1.GetTaskRequest, v1.GetTaskResponse]
 }
 
 // CreateSearchKey calls cosmog.v1.CosmogService.CreateSearchKey.
@@ -89,15 +125,33 @@ func (c *cosmogServiceClient) CreateSearchKey(ctx context.Context, req *connect.
 	return c.createSearchKey.CallUnary(ctx, req)
 }
 
-// Hello calls cosmog.v1.CosmogService.Hello.
-func (c *cosmogServiceClient) Hello(ctx context.Context, req *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
-	return c.hello.CallUnary(ctx, req)
+// GetProduct calls cosmog.v1.CosmogService.GetProduct.
+func (c *cosmogServiceClient) GetProduct(ctx context.Context, req *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error) {
+	return c.getProduct.CallUnary(ctx, req)
+}
+
+// DeleteProduct calls cosmog.v1.CosmogService.DeleteProduct.
+func (c *cosmogServiceClient) DeleteProduct(ctx context.Context, req *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error) {
+	return c.deleteProduct.CallUnary(ctx, req)
+}
+
+// UpdateProduct calls cosmog.v1.CosmogService.UpdateProduct.
+func (c *cosmogServiceClient) UpdateProduct(ctx context.Context, req *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error) {
+	return c.updateProduct.CallUnary(ctx, req)
+}
+
+// GetTask calls cosmog.v1.CosmogService.GetTask.
+func (c *cosmogServiceClient) GetTask(ctx context.Context, req *connect.Request[v1.GetTaskRequest]) (*connect.Response[v1.GetTaskResponse], error) {
+	return c.getTask.CallUnary(ctx, req)
 }
 
 // CosmogServiceHandler is an implementation of the cosmog.v1.CosmogService service.
 type CosmogServiceHandler interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
-	Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error)
+	GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error)
+	DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error)
+	UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error)
+	GetTask(context.Context, *connect.Request[v1.GetTaskRequest]) (*connect.Response[v1.GetTaskResponse], error)
 }
 
 // NewCosmogServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -112,18 +166,42 @@ func NewCosmogServiceHandler(svc CosmogServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	cosmogServiceHelloHandler := connect.NewUnaryHandler(
-		CosmogServiceHelloProcedure,
-		svc.Hello,
-		connect.WithSchema(cosmogServiceHelloMethodDescriptor),
+	cosmogServiceGetProductHandler := connect.NewUnaryHandler(
+		CosmogServiceGetProductProcedure,
+		svc.GetProduct,
+		connect.WithSchema(cosmogServiceGetProductMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	cosmogServiceDeleteProductHandler := connect.NewUnaryHandler(
+		CosmogServiceDeleteProductProcedure,
+		svc.DeleteProduct,
+		connect.WithSchema(cosmogServiceDeleteProductMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	cosmogServiceUpdateProductHandler := connect.NewUnaryHandler(
+		CosmogServiceUpdateProductProcedure,
+		svc.UpdateProduct,
+		connect.WithSchema(cosmogServiceUpdateProductMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	cosmogServiceGetTaskHandler := connect.NewUnaryHandler(
+		CosmogServiceGetTaskProcedure,
+		svc.GetTask,
+		connect.WithSchema(cosmogServiceGetTaskMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/cosmog.v1.CosmogService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case CosmogServiceCreateSearchKeyProcedure:
 			cosmogServiceCreateSearchKeyHandler.ServeHTTP(w, r)
-		case CosmogServiceHelloProcedure:
-			cosmogServiceHelloHandler.ServeHTTP(w, r)
+		case CosmogServiceGetProductProcedure:
+			cosmogServiceGetProductHandler.ServeHTTP(w, r)
+		case CosmogServiceDeleteProductProcedure:
+			cosmogServiceDeleteProductHandler.ServeHTTP(w, r)
+		case CosmogServiceUpdateProductProcedure:
+			cosmogServiceUpdateProductHandler.ServeHTTP(w, r)
+		case CosmogServiceGetTaskProcedure:
+			cosmogServiceGetTaskHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -137,6 +215,18 @@ func (UnimplementedCosmogServiceHandler) CreateSearchKey(context.Context, *conne
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.CreateSearchKey is not implemented"))
 }
 
-func (UnimplementedCosmogServiceHandler) Hello(context.Context, *connect.Request[v1.HelloRequest]) (*connect.Response[v1.HelloResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.Hello is not implemented"))
+func (UnimplementedCosmogServiceHandler) GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.GetProduct is not implemented"))
+}
+
+func (UnimplementedCosmogServiceHandler) DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.DeleteProduct is not implemented"))
+}
+
+func (UnimplementedCosmogServiceHandler) UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.UpdateProduct is not implemented"))
+}
+
+func (UnimplementedCosmogServiceHandler) GetTask(context.Context, *connect.Request[v1.GetTaskRequest]) (*connect.Response[v1.GetTaskResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.GetTask is not implemented"))
 }

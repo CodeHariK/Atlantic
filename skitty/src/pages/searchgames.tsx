@@ -21,7 +21,7 @@ export default function SearchGames() {
         )
 
         const search = instantsearch({
-            indexName: 'Games',
+            indexName: 'Atlantic',
             routing: true,
             searchClient,
             future: {
@@ -50,9 +50,9 @@ export default function SearchGames() {
             sortBy({
                 container: '#sort-by',
                 items: [
-                    { value: 'Games', label: 'Relevant' },
-                    { value: 'Games:rating:desc', label: 'Most Recommended' },
-                    { value: 'Games:rating:asc', label: 'Least Recommended' }
+                    { value: 'Atlantic', label: 'Relevant' },
+                    { value: 'Atlantic:rating:desc', label: 'Most Recommended' },
+                    { value: 'Atlantic:rating:asc', label: 'Least Recommended' }
                 ]
             }),
             rangeSlider({
@@ -88,6 +88,34 @@ export default function SearchGames() {
                     },
                     item(hit: any, { html, components }: any) {
 
+                        const genreTags = () => {
+                            return html``
+                            return html`
+                            <ul>${hit.gen?.map((gen: string) => html`<button onclick=${() => {
+                                search.helper?.toggleFacetRefinement('gen', gen).search();
+                            }} 
+                            class="text-sm bg-gray-100 dark:bg-gray-700 p-1 m-1 rounded-lg">${gen}</button>`)}</ul>`
+                        };
+
+                        const categoryTags = () => {
+                            return html``
+                            return html`<ul>
+                            ${hit.cat?.map((cat: string) => html`<button onclick=${() => {
+                                search.helper?.toggleFacetRefinement('cat', cat).search();
+                            }} class="text-sm bg-gray-100 dark:bg-gray-700 p-1 m-1 rounded-lg">${cat}</button>`)}
+                            </ul>`
+                        }
+
+                        const cartButton = () => {
+                            return html`<button class="rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none dark:bg-primary-600 dark:hover:bg-primary-700"
+                                onclick=${() => {
+
+                                }}
+                                >
+                                    Add to cart
+                                </button>`
+                        }
+
                         let imgmov = 0;
 
                         let id = "box" + hit.id
@@ -97,7 +125,7 @@ export default function SearchGames() {
                         return html`
                             <article class="flex flex-col h-full overflow-hidden justify-between items-start">
 
-                                <div class="rounded-lg h-48 justify-center content-center w-full object-contain overflow-hidden" id=${id}>
+                                <div class="rounded-lg h-56 ml-auto mr-auto content-center object-contain overflow-hidden" id=${id}>
 
                                 ${typeof hit.img === 'string'
                                 ? html`<img src="${hit.img}" alt="Image" />`
@@ -136,25 +164,28 @@ export default function SearchGames() {
                                 }
                                 return "/product/" + hit.id
                             })()}>
-                                        <h2 class="dark:text-blue-200 text-lg text-clip line-clamp-4 ">
+                                        <h2 class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white text-clip line-clamp-3 ">
                                             ${hit.__position}:
                                             ${components.Highlight({ attribute: 'title', hit })}
                                         </h2>
                                         <p class="dark:text-blue-300 text-clip line-clamp-4">${components.Snippet({ attribute: 'info', highlightedTagName: 'mark', hit })}</p>
                                     </a>
-                                    ${hit.date ? html`<p class="dark:text-blue-200">Date: ${(new Date(Number(hit.date) * 1000)).toLocaleDateString()}</p>` : html``}
-                                    <p class="dark:text-blue-200">Developer: ${hit.dev ?? hit.brand}</p>
-                                    <p class="dark:text-blue-200">Price: ${hit.price}</p>
-                                    <ul>
-                                        ${hit.gen?.map((gen: string) => html`<button onclick=${() => {
-                                search.helper?.toggleFacetRefinement('gen', gen).search();
-                            }} class="bg-gray-100 p-1 m-1 rounded-lg">${gen}</button>`)}
-                                    </ul>
-                                    <ul>
-                                        ${hit.cat?.map((cat: string) => html`<button onclick=${() => {
-                                search.helper?.toggleFacetRefinement('cat', cat).search();
-                            }} class="bg-gray-100 p-1 m-1 rounded-lg">${cat}</button>`)}
-                                </ul>
+                                    ${hit.date ? html`<p class="text-sm dark:text-blue-200">Date: ${(new Date(Number(hit.date) * 1000)).toLocaleDateString()}</p>` : html``}
+
+                                <div class="w-full flex items-center justify-between">
+                                    ${hit.dev ? html`<p class="text-sm dark:text-blue-200">${hit.dev}</p>` : html``}
+                                    ${hit.brand ? html`<p class="text-sm dark:text-blue-200">${hit.brand}</p>` : html``}
+                                    <p class="text-sm dark:text-blue-200">${hit.rating}</p>
+                                </div>
+                                    <div class="w-full flex items-center justify-between">
+                                        <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">${hit.price}</p>
+                                        ${cartButton()}
+                                    </div>
+                                    
+                                    ${genreTags()}
+
+                                    ${categoryTags()}
+
                             </article>
                         `;
                     },
@@ -172,7 +203,7 @@ export default function SearchGames() {
     return (
         <SpaceLayout two title='Home'>
 
-            <div class="ais-InstantSearch">
+            <div class="ais-InstantSearch bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
                 <div class="left-panel">
 
                     <h3 class='mb-2'>Categories</h3>

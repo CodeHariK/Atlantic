@@ -43,6 +43,12 @@ func CreateRoutes(
 	)
 
 	//------------------
+	//
+
+	router.HandleFunc("/live", cosmogService.live)
+	router.HandleFunc("/ready", cosmogService.ready)
+
+	//------------------
 	// Reflectors
 
 	reflector := grpcreflect.NewStaticReflector(

@@ -269,7 +269,7 @@ a[class^='ais-'] {
     margin-left: 1rem;
     padding: 1rem;
     width: calc(25% - 1rem);
-    border: 1px solid #c4c8d8;
+    border: 1px solid #e5e7eb;
     -webkit-box-shadow: 0 2px 5px 0px #e3e5ec;
     box-shadow: 0 2px 5px 0px #e3e5ec;
 }
@@ -342,10 +342,6 @@ a[class^='ais-'] {
 }
 
 
-.ais-RangeInput-submit:hover,
-.ais-RangeInput-submit:focus {
-    background-color: #0073a8;
-}
 
 .ais-RatingMenu-count {
     color: #3a4570;
@@ -390,17 +386,18 @@ a[class^='ais-'] {
 
 .ais-SearchBox-form {
     display: block;
-    position: relative;
+    position: unset;
 }
 
 .ais-SearchBox-input {
     appearance: none;
-    padding: 0.3rem 1.7rem;
+    padding: 0.8rem 1.7rem;
     width: 100%;
-    position: relative;
-    background-color: #fff;
+    position: unset;
+    background-color: transparent;
     border: 1px solid #c4c8d8;
     border-radius: 5px;
+    outline: none;
 }
 
 .ais-SearchBox-submitIcon,
@@ -408,19 +405,21 @@ a[class^='ais-'] {
 .ais-SearchBox-loadingIcon {
     position: absolute;
     top: 50%;
-    left: 50%;
+    right: .2em;
     transform: translateX(-50%) translateY(-50%);
 }
 
 .ais-SearchBox-submitIcon {
-    fill: #bc6af6;
-    width: 14px;
-    height: 14px;
-
-    left: 15px;
+    display: none;
 }
 
 
+.ais-SearchBox-input::-webkit-search-decoration,
+.ais-SearchBox-input::-webkit-search-cancel-button,
+.ais-SearchBox-input::-webkit-search-results-button,
+.ais-SearchBox-input::-webkit-search-results-decoration {
+    display: none;
+}
 
 .ais-Breadcrumb-list,
 .ais-Breadcrumb-item,
@@ -466,6 +465,7 @@ body {
 
 .ais-SearchBox {
     margin: 1em 0;
+    position: unset;
 }
 
 .ais-Pagination {
@@ -508,18 +508,19 @@ body {
 .ais-Hits-list {
     display: flex;
     /* justify-content: space-between; */
-    gap: 16px;
+    /* gap: 16px; */
     margin: 0;
     padding: 0;
 }
 
 .dark .ais-Hits-item {
-    background: #2d2d2dbd;
+    background: #1f2937;
     border: none;
 }
 
 .ais-Hits-item {
-    margin: 0;
+    background: white;
+    margin: 8px;
     width: calc(25% - 1rem);
     padding: 16px;
     box-shadow: none;

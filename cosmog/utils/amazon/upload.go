@@ -30,14 +30,14 @@ func SyncInit(meiliInstance meilisearch.ServiceManager) {
 
 				products := loadProducts(category, subcat)
 
-				task, err := meiliInstance.Index("Games").AddDocumentsInBatches(
-					products[:100],
-					10,
+				task, err := meiliInstance.Index("Atlantic").AddDocumentsInBatches(
+					products,
+					1000,
 				)
 				colorlogger.Log(task, err)
 
 				meiliInstance.CreateIndex(&meilisearch.IndexConfig{
-					Uid:        "Games",
+					Uid:        "Atlantic",
 					PrimaryKey: "id",
 				})
 
@@ -58,9 +58,9 @@ func SyncInit(meiliInstance meilisearch.ServiceManager) {
 					"categroy",
 					"rating",
 				}
-				meiliInstance.Index("Games").UpdateSearchableAttributes(&searchableAttributes)
-				meiliInstance.Index("Games").UpdateFilterableAttributes(&filterableAttributes)
-				meiliInstance.Index("Games").UpdateSortableAttributes(&sortableAttributes)
+				meiliInstance.Index("Atlantic").UpdateSearchableAttributes(&searchableAttributes)
+				meiliInstance.Index("Atlantic").UpdateFilterableAttributes(&filterableAttributes)
+				meiliInstance.Index("Atlantic").UpdateSortableAttributes(&sortableAttributes)
 			}
 		}
 	}

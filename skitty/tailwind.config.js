@@ -50,6 +50,7 @@ export default {
         'Noto Color Emoji'
       ],
       'sans': [
+        'monospace',
         'Inter',
         'ui-sans-serif',
         'system-ui',

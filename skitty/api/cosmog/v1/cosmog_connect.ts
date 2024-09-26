@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateSearchKeyRequest, CreateSearchKeyResponse, HelloRequest, HelloResponse } from "./cosmog_pb.js";
+import { CreateSearchKeyRequest, CreateSearchKeyResponse, DeleteProductRequest, DeleteProductResponse, GetProductRequest, GetProductResponse, GetTaskRequest, GetTaskResponse, UpdateProductRequest, UpdateProductResponse } from "./cosmog_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -22,12 +22,39 @@ export const CosmogService = {
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc cosmog.v1.CosmogService.Hello
+     * @generated from rpc cosmog.v1.CosmogService.GetProduct
      */
-    hello: {
-      name: "Hello",
-      I: HelloRequest,
-      O: HelloResponse,
+    getProduct: {
+      name: "GetProduct",
+      I: GetProductRequest,
+      O: GetProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc cosmog.v1.CosmogService.DeleteProduct
+     */
+    deleteProduct: {
+      name: "DeleteProduct",
+      I: DeleteProductRequest,
+      O: DeleteProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc cosmog.v1.CosmogService.UpdateProduct
+     */
+    updateProduct: {
+      name: "UpdateProduct",
+      I: UpdateProductRequest,
+      O: UpdateProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc cosmog.v1.CosmogService.GetTask
+     */
+    getTask: {
+      name: "GetTask",
+      I: GetTaskRequest,
+      O: GetTaskResponse,
       kind: MethodKind.Unary,
     },
   }

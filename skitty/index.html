@@ -53,21 +53,18 @@
    </script>
 </head>
 
-<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white p-0">
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white p-0 font-sans">
    <script type="module" src="/src/index.tsx"></script>
    <script>
-      function colorMode() {
-         if (
-            localStorage.getItem("theme") === "dark" ||
-            (!("theme" in localStorage) &&
-               window.matchMedia("(prefers-color-scheme: dark)").matches)
-         ) {
-            document.documentElement.classList.add("dark");
-         } else {
-            document.documentElement.classList.remove("dark");
-         }
+      if (
+         localStorage.getItem("theme") === "dark" ||
+         (!("theme" in localStorage) &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+         document.documentElement.classList.add("dark");
+      } else {
+         document.documentElement.classList.remove("dark");
       }
-      colorMode();
    </script>
 </body>
 

@@ -2,25 +2,80 @@ syntax = "proto3";
 
 package cosmog.v1;
 
+import "buf/validate/validate.proto";
+
 option go_package = "github.com/codeharik/Atlantic/cosmog/api/cosmog/v1";
 
 service CosmogService {
   rpc CreateSearchKey(CreateSearchKeyRequest) returns (CreateSearchKeyResponse);
 
-  rpc Hello(HelloRequest) returns (HelloResponse);
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
+  rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
 }
+
 message CreateSearchKeyRequest {
-  string ID = 1;
+  string id = 1 [(buf.validate.field).string.uuid = true];
 }
 
 message CreateSearchKeyResponse {
   string key = 1;
 }
 
-message HelloRequest {
-  string message = 1;
+message GetProductRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
 }
 
-message HelloResponse {
-  string message = 1;
+message Category {
+  string lvl0 = 1;
+  string lvl1 = 2;
+}
+
+message GetProductResponse {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+  string title = 2;
+  string info = 3;
+  Category category = 4;
+  int32 price = 5;
+  float rating = 6;
+  string dev = 7;
+  string brand = 8;
+  repeated string img = 9;
+  repeated string mov = 10;
+}
+
+message DeleteProductRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+}
+
+message DeleteProductResponse {
+  int32 taskid = 1;
+}
+
+message UpdateProductRequest {
+  string id = 1 [(buf.validate.field).string.uuid = true];
+  string title = 2;
+  string info = 3;
+  Category category = 4;
+  int32 price = 5;
+  float rating = 6;
+  string dev = 7;
+  string brand = 8;
+  repeated string img = 9;
+  repeated string mov = 10;
+}
+
+message UpdateProductResponse {
+  int32 taskid = 1;
+}
+
+message GetTaskRequest {
+  int32 taskid = 1;
+}
+
+message GetTaskResponse {
+  string error = 1;
+  string errorCode = 2;
+  string status = 3;
 }

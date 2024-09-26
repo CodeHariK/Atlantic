@@ -11,9 +11,9 @@ import { Message, proto3 } from "@bufbuild/protobuf";
  */
 export class CreateSearchKeyRequest extends Message<CreateSearchKeyRequest> {
   /**
-   * @generated from field: string ID = 1;
+   * @generated from field: string id = 1;
    */
-  ID = "";
+  id = "";
 
   constructor(data?: PartialMessage<CreateSearchKeyRequest>) {
     super();
@@ -23,7 +23,7 @@ export class CreateSearchKeyRequest extends Message<CreateSearchKeyRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "cosmog.v1.CreateSearchKeyRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "ID", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateSearchKeyRequest {
@@ -81,76 +81,461 @@ export class CreateSearchKeyResponse extends Message<CreateSearchKeyResponse> {
 }
 
 /**
- * @generated from message cosmog.v1.HelloRequest
+ * @generated from message cosmog.v1.GetProductRequest
  */
-export class HelloRequest extends Message<HelloRequest> {
+export class GetProductRequest extends Message<GetProductRequest> {
   /**
-   * @generated from field: string message = 1;
+   * @generated from field: string id = 1;
    */
-  message = "";
+  id = "";
 
-  constructor(data?: PartialMessage<HelloRequest>) {
+  constructor(data?: PartialMessage<GetProductRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cosmog.v1.HelloRequest";
+  static readonly typeName = "cosmog.v1.GetProductRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HelloRequest {
-    return new HelloRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProductRequest {
+    return new GetProductRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HelloRequest {
-    return new HelloRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProductRequest {
+    return new GetProductRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HelloRequest {
-    return new HelloRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProductRequest {
+    return new GetProductRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: HelloRequest | PlainMessage<HelloRequest> | undefined, b: HelloRequest | PlainMessage<HelloRequest> | undefined): boolean {
-    return proto3.util.equals(HelloRequest, a, b);
+  static equals(a: GetProductRequest | PlainMessage<GetProductRequest> | undefined, b: GetProductRequest | PlainMessage<GetProductRequest> | undefined): boolean {
+    return proto3.util.equals(GetProductRequest, a, b);
   }
 }
 
 /**
- * @generated from message cosmog.v1.HelloResponse
+ * @generated from message cosmog.v1.Category
  */
-export class HelloResponse extends Message<HelloResponse> {
+export class Category extends Message<Category> {
   /**
-   * @generated from field: string message = 1;
+   * @generated from field: string lvl0 = 1;
    */
-  message = "";
+  lvl0 = "";
 
-  constructor(data?: PartialMessage<HelloResponse>) {
+  /**
+   * @generated from field: string lvl1 = 2;
+   */
+  lvl1 = "";
+
+  constructor(data?: PartialMessage<Category>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cosmog.v1.HelloResponse";
+  static readonly typeName = "cosmog.v1.Category";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "lvl0", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "lvl1", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HelloResponse {
-    return new HelloResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Category {
+    return new Category().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HelloResponse {
-    return new HelloResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Category {
+    return new Category().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HelloResponse {
-    return new HelloResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Category {
+    return new Category().fromJsonString(jsonString, options);
   }
 
-  static equals(a: HelloResponse | PlainMessage<HelloResponse> | undefined, b: HelloResponse | PlainMessage<HelloResponse> | undefined): boolean {
-    return proto3.util.equals(HelloResponse, a, b);
+  static equals(a: Category | PlainMessage<Category> | undefined, b: Category | PlainMessage<Category> | undefined): boolean {
+    return proto3.util.equals(Category, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.GetProductResponse
+ */
+export class GetProductResponse extends Message<GetProductResponse> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string title = 2;
+   */
+  title = "";
+
+  /**
+   * @generated from field: string info = 3;
+   */
+  info = "";
+
+  /**
+   * @generated from field: cosmog.v1.Category category = 4;
+   */
+  category?: Category;
+
+  /**
+   * @generated from field: int32 price = 5;
+   */
+  price = 0;
+
+  /**
+   * @generated from field: float rating = 6;
+   */
+  rating = 0;
+
+  /**
+   * @generated from field: string dev = 7;
+   */
+  dev = "";
+
+  /**
+   * @generated from field: string brand = 8;
+   */
+  brand = "";
+
+  /**
+   * @generated from field: repeated string img = 9;
+   */
+  img: string[] = [];
+
+  /**
+   * @generated from field: repeated string mov = 10;
+   */
+  mov: string[] = [];
+
+  constructor(data?: PartialMessage<GetProductResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.GetProductResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "title", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "info", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "category", kind: "message", T: Category },
+    { no: 5, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 6, name: "rating", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
+    { no: 7, name: "dev", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 8, name: "brand", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 9, name: "img", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 10, name: "mov", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProductResponse {
+    return new GetProductResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProductResponse {
+    return new GetProductResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProductResponse {
+    return new GetProductResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetProductResponse | PlainMessage<GetProductResponse> | undefined, b: GetProductResponse | PlainMessage<GetProductResponse> | undefined): boolean {
+    return proto3.util.equals(GetProductResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.DeleteProductRequest
+ */
+export class DeleteProductRequest extends Message<DeleteProductRequest> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  constructor(data?: PartialMessage<DeleteProductRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.DeleteProductRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteProductRequest {
+    return new DeleteProductRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteProductRequest {
+    return new DeleteProductRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteProductRequest {
+    return new DeleteProductRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: DeleteProductRequest | PlainMessage<DeleteProductRequest> | undefined, b: DeleteProductRequest | PlainMessage<DeleteProductRequest> | undefined): boolean {
+    return proto3.util.equals(DeleteProductRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.DeleteProductResponse
+ */
+export class DeleteProductResponse extends Message<DeleteProductResponse> {
+  /**
+   * @generated from field: int32 taskid = 1;
+   */
+  taskid = 0;
+
+  constructor(data?: PartialMessage<DeleteProductResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.DeleteProductResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "taskid", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteProductResponse {
+    return new DeleteProductResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteProductResponse {
+    return new DeleteProductResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteProductResponse {
+    return new DeleteProductResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: DeleteProductResponse | PlainMessage<DeleteProductResponse> | undefined, b: DeleteProductResponse | PlainMessage<DeleteProductResponse> | undefined): boolean {
+    return proto3.util.equals(DeleteProductResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.UpdateProductRequest
+ */
+export class UpdateProductRequest extends Message<UpdateProductRequest> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: string title = 2;
+   */
+  title = "";
+
+  /**
+   * @generated from field: string info = 3;
+   */
+  info = "";
+
+  /**
+   * @generated from field: cosmog.v1.Category category = 4;
+   */
+  category?: Category;
+
+  /**
+   * @generated from field: int32 price = 5;
+   */
+  price = 0;
+
+  /**
+   * @generated from field: float rating = 6;
+   */
+  rating = 0;
+
+  /**
+   * @generated from field: string dev = 7;
+   */
+  dev = "";
+
+  /**
+   * @generated from field: string brand = 8;
+   */
+  brand = "";
+
+  /**
+   * @generated from field: repeated string img = 9;
+   */
+  img: string[] = [];
+
+  /**
+   * @generated from field: repeated string mov = 10;
+   */
+  mov: string[] = [];
+
+  constructor(data?: PartialMessage<UpdateProductRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.UpdateProductRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "title", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "info", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "category", kind: "message", T: Category },
+    { no: 5, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 6, name: "rating", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
+    { no: 7, name: "dev", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 8, name: "brand", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 9, name: "img", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 10, name: "mov", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateProductRequest {
+    return new UpdateProductRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateProductRequest {
+    return new UpdateProductRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateProductRequest {
+    return new UpdateProductRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateProductRequest | PlainMessage<UpdateProductRequest> | undefined, b: UpdateProductRequest | PlainMessage<UpdateProductRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateProductRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.UpdateProductResponse
+ */
+export class UpdateProductResponse extends Message<UpdateProductResponse> {
+  /**
+   * @generated from field: int32 taskid = 1;
+   */
+  taskid = 0;
+
+  constructor(data?: PartialMessage<UpdateProductResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.UpdateProductResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "taskid", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateProductResponse {
+    return new UpdateProductResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateProductResponse {
+    return new UpdateProductResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateProductResponse {
+    return new UpdateProductResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateProductResponse | PlainMessage<UpdateProductResponse> | undefined, b: UpdateProductResponse | PlainMessage<UpdateProductResponse> | undefined): boolean {
+    return proto3.util.equals(UpdateProductResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.GetTaskRequest
+ */
+export class GetTaskRequest extends Message<GetTaskRequest> {
+  /**
+   * @generated from field: int32 taskid = 1;
+   */
+  taskid = 0;
+
+  constructor(data?: PartialMessage<GetTaskRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.GetTaskRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "taskid", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTaskRequest {
+    return new GetTaskRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetTaskRequest {
+    return new GetTaskRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetTaskRequest {
+    return new GetTaskRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetTaskRequest | PlainMessage<GetTaskRequest> | undefined, b: GetTaskRequest | PlainMessage<GetTaskRequest> | undefined): boolean {
+    return proto3.util.equals(GetTaskRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message cosmog.v1.GetTaskResponse
+ */
+export class GetTaskResponse extends Message<GetTaskResponse> {
+  /**
+   * @generated from field: string error = 1;
+   */
+  error = "";
+
+  /**
+   * @generated from field: string errorCode = 2;
+   */
+  errorCode = "";
+
+  /**
+   * @generated from field: string status = 3;
+   */
+  status = "";
+
+  constructor(data?: PartialMessage<GetTaskResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "cosmog.v1.GetTaskResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "error", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "errorCode", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetTaskResponse {
+    return new GetTaskResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetTaskResponse {
+    return new GetTaskResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetTaskResponse {
+    return new GetTaskResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetTaskResponse | PlainMessage<GetTaskResponse> | undefined, b: GetTaskResponse | PlainMessage<GetTaskResponse> | undefined): boolean {
+    return proto3.util.equals(GetTaskResponse, a, b);
   }
 }
 

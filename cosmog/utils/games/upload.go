@@ -17,14 +17,14 @@ func SyncInit(meiliInstance meilisearch.ServiceManager) {
 		}
 	}
 
-	task, err := meiliInstance.Index("Games").AddDocumentsInBatches(
-		games[:100],
-		10,
+	task, err := meiliInstance.Index("Atlantic").AddDocumentsInBatches(
+		games,
+		1000,
 	)
 	colorlogger.Log(task, err)
 
 	meiliInstance.CreateIndex(&meilisearch.IndexConfig{
-		Uid:        "Games",
+		Uid:        "Atlantic",
 		PrimaryKey: "id",
 	})
 
@@ -41,7 +41,7 @@ func SyncInit(meiliInstance meilisearch.ServiceManager) {
 	sortableAttributes := []string{
 		"sale",
 	}
-	meiliInstance.Index("Games").UpdateSearchableAttributes(&searchableAttributes)
-	meiliInstance.Index("Games").UpdateFilterableAttributes(&filterableAttributes)
-	meiliInstance.Index("Games").UpdateSortableAttributes(&sortableAttributes)
+	meiliInstance.Index("Atlantic").UpdateSearchableAttributes(&searchableAttributes)
+	meiliInstance.Index("Atlantic").UpdateFilterableAttributes(&filterableAttributes)
+	meiliInstance.Index("Atlantic").UpdateSortableAttributes(&sortableAttributes)
 }
