@@ -3,7 +3,7 @@ import SpaceLayout from '../layouts/SpaceLayout';
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
 
 import instantsearch from "instantsearch.js";
-import { hierarchicalMenu, searchBox, hits, stats, clearRefinements, rangeSlider, sortBy, refinementList, pagination } from "instantsearch.js/es/widgets";
+import { hierarchicalMenu, searchBox, hits, stats, clearRefinements, rangeSlider, sortBy, refinementList, pagination, ratingMenu } from "instantsearch.js/es/widgets";
 
 import { createEffect } from 'solid-js';
 
@@ -51,17 +51,17 @@ export default function SearchGames() {
                 container: '#sort-by',
                 items: [
                     { value: 'Games', label: 'Relevant' },
-                    { value: 'Games:sale:desc', label: 'Most Recommended' },
-                    { value: 'Games:sale:asc', label: 'Least Recommended' }
+                    { value: 'Games:rating:desc', label: 'Most Recommended' },
+                    { value: 'Games:rating:asc', label: 'Least Recommended' }
                 ]
             }),
             rangeSlider({
                 container: '#price-slider',
                 attribute: 'price',
             }),
-            rangeSlider({
-                container: '#rating-slider',
-                attribute: 'sale',
+            ratingMenu({
+                container: '#rating-menu',
+                attribute: 'rating',
             }),
             refinementList({
                 container: "#genres-list",
@@ -97,36 +97,38 @@ export default function SearchGames() {
                         return html`
                             <article class="flex flex-col h-full overflow-hidden justify-between items-start">
 
-                                <div class="rounded-lg h-48 content-center w-full object-contain overflow-hidden bg-black" id=${id}>
+                                <div class="rounded-lg h-48 justify-center content-center w-full object-contain overflow-hidden" id=${id}>
 
                                 ${typeof hit.img === 'string'
                                 ? html`<img src="${hit.img}" alt="Image" />`
                                 : html`<img src="${hit.img[imgmov]}" alt="Image" />`}
                                 </div>
 
-                                <div class="flex gap-4 w-full justify-center">
+                                ${(typeof hit.img === 'string' || ((hit.img.length + hit.mov?.length == 1))) ? html`` : html`
+                                                                <div class="flex gap-4 w-full justify-center">
                                     <button onclick=${() => {
-                                imgmov = (imgmov - 1) % total;
-                                if (imgmov < 0) { imgmov += total }
-                                if (imgmov >= hit.img.length) {
-                                    document.getElementById(id)!.innerHTML = `<video controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
-                                } else {
-                                    document.getElementById(id)!.innerHTML = `<img src="${hit.img[imgmov]}" />`;
-                                }
-                            }}>
+                                    imgmov = (imgmov - 1) % total;
+                                    if (imgmov < 0) { imgmov += total }
+                                    if (imgmov >= hit.img.length) {
+                                        document.getElementById(id)!.innerHTML = `<video controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
+                                    } else {
+                                        document.getElementById(id)!.innerHTML = `<img src="${hit.img[imgmov]}" />`;
+                                    }
+                                }}>
                                         prev
                                     </button>
                                     <button onclick=${() => {
-                                imgmov = (imgmov + 1) % total;
-                                if (imgmov >= hit.img.length) {
-                                    document.getElementById(id)!.innerHTML = `<video class="h-full" controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
-                                } else {
-                                    document.getElementById(id)!.innerHTML = `<img src="${hit.img[imgmov]}" />`;
-                                }
-                            }}>
+                                    imgmov = (imgmov + 1) % total;
+                                    if (imgmov >= hit.img.length) {
+                                        document.getElementById(id)!.innerHTML = `<video class="h-full" controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
+                                    } else {
+                                        document.getElementById(id)!.innerHTML = `<img src="${hit.img[imgmov]}" />`;
+                                    }
+                                }}>
                                         next
                                     </button>
                                 </div>
+                                ` }
                                     
                                     <a id=${hit.id} href=${(() => {
                                 if (hit.src) {
@@ -140,9 +142,9 @@ export default function SearchGames() {
                                         </h2>
                                         <p class="dark:text-blue-300 text-clip line-clamp-4">${components.Snippet({ attribute: 'info', highlightedTagName: 'mark', hit })}</p>
                                     </a>
-                                    <p class="dark:text-blue-200">Date: ${(new Date(Number(hit.date) * 1000)).toLocaleDateString()}</p>
+                                    ${hit.date ? html`<p class="dark:text-blue-200">Date: ${(new Date(Number(hit.date) * 1000)).toLocaleDateString()}</p>` : html``}
                                     <p class="dark:text-blue-200">Developer: ${hit.dev ?? hit.brand}</p>
-                                    <p class="dark:text-blue-200">Price: ${hit.price}$</p>
+                                    <p class="dark:text-blue-200">Price: ${hit.price}</p>
                                     <ul>
                                         ${hit.gen?.map((gen: string) => html`<button onclick=${() => {
                                 search.helper?.toggleFacetRefinement('gen', gen).search();
@@ -172,22 +174,24 @@ export default function SearchGames() {
 
             <div class="ais-InstantSearch">
                 <div class="left-panel">
+
+                    <h3 class='mb-2'>Categories</h3>
+                    <div class='mb-4' id="hierarchical-menu"></div>
+
+                    <div class='mb-4' id="sort-by"></div>
+
                     <div id="clear-refinements"></div>
 
-                    <div id="hierarchical-menu"></div>
-                    <div id="sort-by"></div>
-
                     <h3>Price</h3>
-                    <div id="price-slider"></div>
+                    <div class='mb-4' id="price-slider"></div>
 
                     <h3>Ratings</h3>
-                    <div id="rating-slider"></div>
-                    <div id="rating-menu"></div>
+                    <div class='mb-4' id="rating-menu"></div>
 
-                    <h2>Genres</h2>
+                    <h2 class='my-2'>Genres</h2>
                     <div id="configure"></div>
                     <div id="genres-list"></div>
-                    <h2>Categories</h2>
+                    <h2 class='my-2'>Categories</h2>
                     <div id="categories-list"></div>
                 </div>
 

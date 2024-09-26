@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"os"
 )
 
-func validateMain() {
+func ValidateMain() {
 	// Read the file content
 	// Unmarshal JSON into Config struct
 	games := loadGames()
 
 	fmt.Println(len(games))
 
-	gameArr := make([]Game, len(games))
 	CategoriesMap := make(map[string]bool)
 	GenreMap := make(map[string]bool)
 	DevMap := make(map[string]bool)
@@ -34,11 +34,30 @@ func validateMain() {
 		DevMap[g.Developers] = true
 	}
 
-	fmt.Printf("cat:%d gen:%d dev:%d len:%d\n", len(CategoriesMap), len(GenreMap), len(DevMap), len(gameArr))
+	for uid := range games {
+		games[uid].Rating = float32(math.Log10(float64(float32(games[uid].Sales) / float32(2000))))
+		games[uid].Sales = 0
+		games[uid].Price *= 100
+	}
+
+	fmt.Printf("cat:%d gen:%d dev:%d len:%d\n", len(CategoriesMap), len(GenreMap), len(DevMap), len(games))
+
+	newData, err := json.MarshalIndent(games, "", "  ")
+	if err != nil {
+		fmt.Println("Error encoding JSON:", err)
+		return
+	}
+
+	// Step 5: Save the JSON data back to a file
+	err = os.WriteFile("../data/games_updated.json", newData, 0o644)
+	if err != nil {
+		fmt.Println("Error saving file:", err)
+		return
+	}
 }
 
 func loadGames() []Game {
-	file, err := os.Open("data/media+games.json")
+	file, err := os.Open("./data/media+games.json")
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}

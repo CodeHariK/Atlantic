@@ -23,6 +23,7 @@ type Category struct {
 type Product struct {
 	ID       string   `json:"id,omitempty"`
 	Title    string   `json:"title,omitempty"`
+	Info     string   `json:"info,omitempty"`
 	Price    float64  `json:"price,omitempty"`
 	Rating   float64  `json:"rating,omitempty"`
 	Reviews  int      `json:"reviews,omitempty"`

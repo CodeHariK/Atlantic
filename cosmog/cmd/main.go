@@ -8,6 +8,7 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/cosmog/server"
 	"github.com/codeharik/Atlantic/cosmog/utils/amazon"
+	"github.com/codeharik/Atlantic/cosmog/utils/electronics"
 	"github.com/codeharik/Atlantic/cosmog/utils/games"
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/servemux"
@@ -46,6 +47,7 @@ func main() {
 
 	games.SyncInit(meiliInstance)
 	amazon.SyncInit(meiliInstance)
+	electronics.SyncInit(meiliInstance)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {

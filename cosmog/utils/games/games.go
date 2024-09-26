@@ -11,6 +11,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type Category struct {
+	Lvl0 string `json:"lvl0,omitempty"`
+	Lvl1 string `json:"lvl1,omitempty"`
+}
+
 type ParseGame struct {
 	Title            string   `json:"title"`
 	ReleaseDate      string   `json:"release_date"`
@@ -37,8 +42,10 @@ type Game struct {
 	Developers       string    `json:"dev"`
 	Categories       []string  `json:"cat"`
 	Genres           []string  `json:"gen"`
-	Sales            int       `json:"sale"`
+	Sales            int       `json:"sale,omitempty"`
+	Rating           float32   `json:"rating,omitempty"`
 	Movies           []string  `json:"mov"`
+	Category         Category  `json:"category,omitempty"`
 }
 
 func extractMain() {
