@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS "cart_items" (
     "id" UUID PRIMARY KEY,
     "cart_id" UUID NOT NULL REFERENCES "carts" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "product_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "product_id" UUID NOT NULL REFERENCES "products" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "quantity" INTEGER NOT NULL
 );
 

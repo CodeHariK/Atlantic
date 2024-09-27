@@ -4,8 +4,7 @@
 CREATE TABLE IF NOT EXISTS "order_items" (
     "id" UUID PRIMARY KEY,
     "order_id" UUID NOT NULL REFERENCES "orders" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "product_id" UUID NOT NULL REFERENCES "product_variants" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "seller_id" UUID NOT NULL REFERENCES "seller" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "product_id" UUID NOT NULL REFERENCES "products" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "quantity" INTEGER NOT NULL,
     "amount_units" BIGINT NOT NULL,
     "amount_nanos" INTEGER NOT NULL,

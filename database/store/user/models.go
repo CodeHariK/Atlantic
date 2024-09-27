@@ -9,12 +9,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Attribute struct {
-	ID             int64  `json:"id"`
-	AttributeName  string `json:"attribute_name"`
-	AttributeValue string `json:"attribute_value"`
-}
-
 type Cart struct {
 	ID        uuid.UUID        `json:"id"`
 	UserID    uuid.UUID        `json:"user_id"`
@@ -34,16 +28,6 @@ type GooseDbVersion struct {
 	VersionID int64            `json:"version_id"`
 	IsApplied bool             `json:"is_applied"`
 	Tstamp    pgtype.Timestamp `json:"tstamp"`
-}
-
-type Inventory struct {
-	ID             uuid.UUID `json:"id"`
-	VariantID      uuid.UUID `json:"variant_id"`
-	SellerID       uuid.UUID `json:"seller_id"`
-	Quantity       int32     `json:"quantity"`
-	AmountUnits    int64     `json:"amount_units"`
-	AmountNanos    int32     `json:"amount_nanos"`
-	AmountCurrency string    `json:"amount_currency"`
 }
 
 type Location struct {
@@ -73,7 +57,6 @@ type OrderItem struct {
 	ID             uuid.UUID `json:"id"`
 	OrderID        uuid.UUID `json:"order_id"`
 	ProductID      uuid.UUID `json:"product_id"`
-	SellerID       uuid.UUID `json:"seller_id"`
 	Quantity       int32     `json:"quantity"`
 	AmountUnits    int64     `json:"amount_units"`
 	AmountNanos    int32     `json:"amount_nanos"`
@@ -83,23 +66,11 @@ type OrderItem struct {
 }
 
 type Product struct {
-	ID          uuid.UUID   `json:"id"`
-	ProductName pgtype.Text `json:"product_name"`
-	CategoryId1 int32       `json:"category_id1"`
-	CategoryId2 int32       `json:"category_id2"`
-}
-
-type ProductAttribute struct {
-	ID          uuid.UUID   `json:"id"`
-	ProductID   uuid.UUID   `json:"product_id"`
-	VariantID   pgtype.UUID `json:"variant_id"`
-	AttributeID int32       `json:"attribute_id"`
-}
-
-type ProductCategory struct {
-	ID       int32       `json:"id"`
-	Name     string      `json:"name"`
-	ParentID pgtype.Int4 `json:"parent_id"`
+	ID             uuid.UUID `json:"id"`
+	Quantity       int32     `json:"quantity"`
+	AmountUnits    int64     `json:"amount_units"`
+	AmountNanos    int32     `json:"amount_nanos"`
+	AmountCurrency string    `json:"amount_currency"`
 }
 
 type ProductComment struct {
@@ -107,35 +78,11 @@ type ProductComment struct {
 	Comment pgtype.Text `json:"comment"`
 }
 
-type ProductDescription struct {
-	ID          uuid.UUID   `json:"id"`
-	ProductID   uuid.UUID   `json:"product_id"`
-	VariantID   pgtype.UUID `json:"variant_id"`
-	Description pgtype.Text `json:"description"`
-	Images      []string    `json:"images"`
-	Videos      []string    `json:"videos"`
-}
-
 type ProductReview struct {
 	ID        uuid.UUID        `json:"id"`
 	UserID    uuid.UUID        `json:"user_id"`
 	ProductID uuid.UUID        `json:"product_id"`
-	SellerID  uuid.UUID        `json:"seller_id"`
 	Rating    int32            `json:"rating"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-}
-
-type ProductVariant struct {
-	ID          uuid.UUID `json:"id"`
-	ProductID   uuid.UUID `json:"product_id"`
-	VariantName string    `json:"variant_name"`
-}
-
-type Seller struct {
-	ID        uuid.UUID        `json:"id"`
-	Name      string           `json:"name"`
-	Location  pgtype.UUID      `json:"location"`
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }

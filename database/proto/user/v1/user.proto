@@ -23,12 +23,6 @@ service UserService {
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
 }
 
-message Attribute {
-  int64 id = 1;
-  string attribute_name = 2;
-  string attribute_value = 3;
-}
-
 message Cart {
   string id = 1;
   string user_id = 2;
@@ -98,16 +92,6 @@ message GooseDbVersion {
   google.protobuf.Timestamp tstamp = 4;
 }
 
-message Inventory {
-  string id = 1;
-  string variant_id = 2;
-  string seller_id = 3;
-  int32 quantity = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
-}
-
 message ListUsersRequest {
   int32 limit = 1;
   int32 offset = 2;
@@ -157,33 +141,20 @@ message OrderItem {
   string id = 1;
   string order_id = 2;
   string product_id = 3;
-  string seller_id = 4;
-  int32 quantity = 5;
-  int64 amount_units = 6;
-  int32 amount_nanos = 7;
-  string amount_currency = 8;
-  string status = 9;
-  string payment_status = 10;
+  int32 quantity = 4;
+  int64 amount_units = 5;
+  int32 amount_nanos = 6;
+  string amount_currency = 7;
+  string status = 8;
+  string payment_status = 9;
 }
 
 message Product {
   string id = 1;
-  google.protobuf.StringValue product_name = 2;
-  int32 category_id1 = 3;
-  int32 category_id2 = 4;
-}
-
-message ProductAttribute {
-  string id = 1;
-  string product_id = 2;
-  google.protobuf.StringValue variant_id = 3;
-  int32 attribute_id = 4;
-}
-
-message ProductCategory {
-  int32 id = 1;
-  string name = 2;
-  google.protobuf.Int32Value parent_id = 3;
+  int32 quantity = 2;
+  int64 amount_units = 3;
+  int32 amount_nanos = 4;
+  string amount_currency = 5;
 }
 
 message ProductComment {
@@ -191,37 +162,13 @@ message ProductComment {
   google.protobuf.StringValue comment = 2;
 }
 
-message ProductDescription {
-  string id = 1;
-  string product_id = 2;
-  google.protobuf.StringValue variant_id = 3;
-  google.protobuf.StringValue description = 4;
-  repeated string images = 5;
-  repeated string videos = 6;
-}
-
 message ProductReview {
   string id = 1;
   string user_id = 2;
   string product_id = 3;
-  string seller_id = 4;
-  int32 rating = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-}
-
-message ProductVariant {
-  string id = 1;
-  string product_id = 2;
-  string variant_name = 3;
-}
-
-message Seller {
-  string id = 1;
-  string name = 2;
-  google.protobuf.StringValue location = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
+  int32 rating = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
 }
 
 message UpdateUserRequest {
