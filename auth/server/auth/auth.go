@@ -12,7 +12,6 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/database/store/user"
 	"github.com/codeharik/Atlantic/service/pgservice"
-	"github.com/codeharik/Atlantic/service/uuidservice"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 
@@ -73,8 +72,6 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		return nil, authbox.InvalidEmailPassword
 	}
 
-	avatarUUid, _ := uuidservice.ToUUIDstring(dbuser.Avatar)
-
 	user := &v1.AuthUser{
 		ID:          dbuser.ID.String(),
 		Username:    dbuser.Username.String,
@@ -83,7 +80,6 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		Role:        dbuser.Role,
 		Verified:    dbuser.Verified,
 		Location:    "Location",
-		Avatar:      avatarUUid,
 	}
 
 	session := &v1.JwtObj{
@@ -156,7 +152,7 @@ func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Reques
 		return nil, authbox.InternalServerError
 	}
 
-	_, err = s.userStore.CreateUser(
+	err = s.userStore.CreateUser(
 		context.Background(),
 		user.CreateUserParams{
 			ID:           uid,

@@ -141,39 +141,39 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
   email?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue phone_number = 5;
-   */
-  phoneNumber?: string;
-
-  /**
-   * @generated from field: bool verified = 6;
+   * @generated from field: bool verified = 5;
    */
   verified = false;
 
   /**
-   * @generated from field: google.protobuf.StringValue avatar = 7;
+   * @generated from field: google.protobuf.StringValue phone_number = 6;
    */
-  avatar?: string;
+  phoneNumber?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue gender = 8;
+   * @generated from field: google.protobuf.StringValue gender = 7;
    */
   gender?: string;
 
   /**
-   * @generated from field: int64 role = 9;
+   * @generated from field: int64 role = 8;
    */
   role = protoInt64.zero;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 9;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 11;
+   * @generated from field: string address = 10;
    */
-  location?: string;
+  address = "";
+
+  /**
+   * @generated from field: int32 balance = 11;
+   */
+  balance = 0;
 
   constructor(data?: PartialMessage<CreateUserRequest>) {
     super();
@@ -187,13 +187,13 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
     { no: 2, name: "username", kind: "message", T: StringValue },
     { no: 3, name: "password_hash", kind: "message", T: StringValue },
     { no: 4, name: "email", kind: "message", T: StringValue },
-    { no: 5, name: "phone_number", kind: "message", T: StringValue },
-    { no: 6, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 7, name: "avatar", kind: "message", T: StringValue },
-    { no: 8, name: "gender", kind: "message", T: StringValue },
-    { no: 9, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 11, name: "location", kind: "message", T: StringValue },
+    { no: 5, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 6, name: "phone_number", kind: "message", T: StringValue },
+    { no: 7, name: "gender", kind: "message", T: StringValue },
+    { no: 8, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 9, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 10, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 11, name: "balance", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUserRequest {
@@ -217,11 +217,6 @@ export class CreateUserRequest extends Message<CreateUserRequest> {
  * @generated from message user.v1.CreateUserResponse
  */
 export class CreateUserResponse extends Message<CreateUserResponse> {
-  /**
-   * @generated from field: string value = 1;
-   */
-  value = "";
-
   constructor(data?: PartialMessage<CreateUserResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -230,7 +225,6 @@ export class CreateUserResponse extends Message<CreateUserResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "user.v1.CreateUserResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "value", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateUserResponse {
@@ -724,11 +718,6 @@ export class ListUsersRow extends Message<ListUsersRow> {
    */
   updatedAt?: Timestamp;
 
-  /**
-   * @generated from field: google.protobuf.StringValue location = 10;
-   */
-  location?: string;
-
   constructor(data?: PartialMessage<ListUsersRow>) {
     super();
     proto3.util.initPartial(data, this);
@@ -746,7 +735,6 @@ export class ListUsersRow extends Message<ListUsersRow> {
     { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
     { no: 8, name: "created_at", kind: "message", T: Timestamp },
     { no: 9, name: "updated_at", kind: "message", T: Timestamp },
-    { no: 10, name: "location", kind: "message", T: StringValue },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListUsersRow {
@@ -763,85 +751,6 @@ export class ListUsersRow extends Message<ListUsersRow> {
 
   static equals(a: ListUsersRow | PlainMessage<ListUsersRow> | undefined, b: ListUsersRow | PlainMessage<ListUsersRow> | undefined): boolean {
     return proto3.util.equals(ListUsersRow, a, b);
-  }
-}
-
-/**
- * @generated from message user.v1.Location
- */
-export class Location extends Message<Location> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string address = 2;
-   */
-  address = "";
-
-  /**
-   * @generated from field: string city = 3;
-   */
-  city = "";
-
-  /**
-   * @generated from field: string state = 4;
-   */
-  state = "";
-
-  /**
-   * @generated from field: string country = 5;
-   */
-  country = "";
-
-  /**
-   * @generated from field: string postal_code = 6;
-   */
-  postalCode = "";
-
-  /**
-   * @generated from field: double latitude = 7;
-   */
-  latitude = 0;
-
-  /**
-   * @generated from field: double longitude = 8;
-   */
-  longitude = 0;
-
-  constructor(data?: PartialMessage<Location>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "user.v1.Location";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "city", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "state", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "country", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "postal_code", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "latitude", kind: "scalar", T: 1 /* ScalarType.DOUBLE */ },
-    { no: 8, name: "longitude", kind: "scalar", T: 1 /* ScalarType.DOUBLE */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Location {
-    return new Location().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Location {
-    return new Location().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Location {
-    return new Location().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Location | PlainMessage<Location> | undefined, b: Location | PlainMessage<Location> | undefined): boolean {
-    return proto3.util.equals(Location, a, b);
   }
 }
 
@@ -969,16 +878,6 @@ export class OrderItem extends Message<OrderItem> {
    */
   amountCurrency = "";
 
-  /**
-   * @generated from field: string status = 8;
-   */
-  status = "";
-
-  /**
-   * @generated from field: string payment_status = 9;
-   */
-  paymentStatus = "";
-
   constructor(data?: PartialMessage<OrderItem>) {
     super();
     proto3.util.initPartial(data, this);
@@ -994,8 +893,6 @@ export class OrderItem extends Message<OrderItem> {
     { no: 5, name: "amount_units", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
     { no: 6, name: "amount_nanos", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 7, name: "amount_currency", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 8, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 9, name: "payment_status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OrderItem {
@@ -1187,6 +1084,80 @@ export class ProductReview extends Message<ProductReview> {
 }
 
 /**
+ * @generated from message user.v1.UpdateUserBalanceRequest
+ */
+export class UpdateUserBalanceRequest extends Message<UpdateUserBalanceRequest> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: int32 balance = 2;
+   */
+  balance = 0;
+
+  constructor(data?: PartialMessage<UpdateUserBalanceRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.UpdateUserBalanceRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "balance", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserBalanceRequest {
+    return new UpdateUserBalanceRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateUserBalanceRequest {
+    return new UpdateUserBalanceRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateUserBalanceRequest {
+    return new UpdateUserBalanceRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateUserBalanceRequest | PlainMessage<UpdateUserBalanceRequest> | undefined, b: UpdateUserBalanceRequest | PlainMessage<UpdateUserBalanceRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateUserBalanceRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.UpdateUserBalanceResponse
+ */
+export class UpdateUserBalanceResponse extends Message<UpdateUserBalanceResponse> {
+  constructor(data?: PartialMessage<UpdateUserBalanceResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.UpdateUserBalanceResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserBalanceResponse {
+    return new UpdateUserBalanceResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateUserBalanceResponse {
+    return new UpdateUserBalanceResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateUserBalanceResponse {
+    return new UpdateUserBalanceResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateUserBalanceResponse | PlainMessage<UpdateUserBalanceResponse> | undefined, b: UpdateUserBalanceResponse | PlainMessage<UpdateUserBalanceResponse> | undefined): boolean {
+    return proto3.util.equals(UpdateUserBalanceResponse, a, b);
+  }
+}
+
+/**
  * @generated from message user.v1.UpdateUserRequest
  */
 export class UpdateUserRequest extends Message<UpdateUserRequest> {
@@ -1211,29 +1182,24 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
   verified = false;
 
   /**
-   * @generated from field: google.protobuf.StringValue avatar = 5;
-   */
-  avatar?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue gender = 6;
+   * @generated from field: google.protobuf.StringValue gender = 5;
    */
   gender?: string;
 
   /**
-   * @generated from field: int64 role = 7;
+   * @generated from field: int64 role = 6;
    */
   role = protoInt64.zero;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 8;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 7;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 9;
+   * @generated from field: string id = 8;
    */
-  location?: string;
+  id = "";
 
   constructor(data?: PartialMessage<UpdateUserRequest>) {
     super();
@@ -1247,11 +1213,10 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
     { no: 2, name: "email", kind: "message", T: StringValue },
     { no: 3, name: "phone_number", kind: "message", T: StringValue },
     { no: 4, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 5, name: "avatar", kind: "message", T: StringValue },
-    { no: 6, name: "gender", kind: "message", T: StringValue },
-    { no: 7, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 8, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 9, name: "location", kind: "message", T: StringValue },
+    { no: 5, name: "gender", kind: "message", T: StringValue },
+    { no: 6, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 7, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 8, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserRequest {
@@ -1268,6 +1233,80 @@ export class UpdateUserRequest extends Message<UpdateUserRequest> {
 
   static equals(a: UpdateUserRequest | PlainMessage<UpdateUserRequest> | undefined, b: UpdateUserRequest | PlainMessage<UpdateUserRequest> | undefined): boolean {
     return proto3.util.equals(UpdateUserRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.UpdateUserPasswordRequest
+ */
+export class UpdateUserPasswordRequest extends Message<UpdateUserPasswordRequest> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: google.protobuf.StringValue password_hash = 2;
+   */
+  passwordHash?: string;
+
+  constructor(data?: PartialMessage<UpdateUserPasswordRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.UpdateUserPasswordRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "password_hash", kind: "message", T: StringValue },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserPasswordRequest {
+    return new UpdateUserPasswordRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateUserPasswordRequest {
+    return new UpdateUserPasswordRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateUserPasswordRequest {
+    return new UpdateUserPasswordRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateUserPasswordRequest | PlainMessage<UpdateUserPasswordRequest> | undefined, b: UpdateUserPasswordRequest | PlainMessage<UpdateUserPasswordRequest> | undefined): boolean {
+    return proto3.util.equals(UpdateUserPasswordRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message user.v1.UpdateUserPasswordResponse
+ */
+export class UpdateUserPasswordResponse extends Message<UpdateUserPasswordResponse> {
+  constructor(data?: PartialMessage<UpdateUserPasswordResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "user.v1.UpdateUserPasswordResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateUserPasswordResponse {
+    return new UpdateUserPasswordResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateUserPasswordResponse {
+    return new UpdateUserPasswordResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateUserPasswordResponse {
+    return new UpdateUserPasswordResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpdateUserPasswordResponse | PlainMessage<UpdateUserPasswordResponse> | undefined, b: UpdateUserPasswordResponse | PlainMessage<UpdateUserPasswordResponse> | undefined): boolean {
+    return proto3.util.equals(UpdateUserPasswordResponse, a, b);
   }
 }
 
@@ -1337,29 +1376,29 @@ export class User extends Message<User> {
   phoneNumber?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue avatar = 7;
-   */
-  avatar?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue gender = 8;
+   * @generated from field: google.protobuf.StringValue gender = 7;
    */
   gender?: string;
 
   /**
-   * @generated from field: int64 role = 9;
+   * @generated from field: int64 role = 8;
    */
   role = protoInt64.zero;
 
   /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 10;
+   * @generated from field: google.protobuf.Timestamp date_of_birth = 9;
    */
   dateOfBirth?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 11;
+   * @generated from field: string address = 10;
    */
-  location?: string;
+  address = "";
+
+  /**
+   * @generated from field: int32 balance = 11;
+   */
+  balance = 0;
 
   /**
    * @generated from field: google.protobuf.Timestamp created_at = 12;
@@ -1385,11 +1424,11 @@ export class User extends Message<User> {
     { no: 4, name: "email", kind: "message", T: StringValue },
     { no: 5, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
     { no: 6, name: "phone_number", kind: "message", T: StringValue },
-    { no: 7, name: "avatar", kind: "message", T: StringValue },
-    { no: 8, name: "gender", kind: "message", T: StringValue },
-    { no: 9, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 10, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 11, name: "location", kind: "message", T: StringValue },
+    { no: 7, name: "gender", kind: "message", T: StringValue },
+    { no: 8, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
+    { no: 9, name: "date_of_birth", kind: "message", T: Timestamp },
+    { no: 10, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 11, name: "balance", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 12, name: "created_at", kind: "message", T: Timestamp },
     { no: 13, name: "updated_at", kind: "message", T: Timestamp },
   ]);

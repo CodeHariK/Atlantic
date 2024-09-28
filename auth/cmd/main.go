@@ -6,13 +6,13 @@ import (
 	"net/http"
 
 	"github.com/codeharik/Atlantic/auth/server"
-	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	db "github.com/codeharik/Atlantic/database/migrations"
 	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/process"
 	"github.com/codeharik/Atlantic/service/servemux"
+	"github.com/codeharik/Atlantic/service/store"
 )
 
 const serviceName = "auth"

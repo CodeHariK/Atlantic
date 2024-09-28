@@ -28,8 +28,6 @@ func main() {
 
 	natsClient := nats.ConnectNats(cfg)
 
-	natsClient.CreateOrdersStream(cfg)
-
 	servemux.Serve(
 		func(router *http.ServeMux) {
 			server.CreateRoutes(serviceName, router, &cfg, natsClient)

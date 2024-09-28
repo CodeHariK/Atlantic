@@ -12,20 +12,20 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :one
+const createUser = `-- name: CreateUser :exec
 INSERT INTO
     users (
         id,
         username,
         password_hash,
         email,
-        phone_number,
         verified,
-        avatar,
+        phone_number,
         gender,
         role,
         date_of_birth,
-        location
+        address,
+        balance
     )
 VALUES (
         $1,
@@ -39,7 +39,7 @@ VALUES (
         $9,
         $10,
         $11
-    ) RETURNING id
+    )
 `
 
 type CreateUserParams struct {
@@ -47,32 +47,30 @@ type CreateUserParams struct {
 	Username     pgtype.Text `json:"username"`
 	PasswordHash pgtype.Text `json:"password_hash"`
 	Email        pgtype.Text `json:"email"`
-	PhoneNumber  pgtype.Text `json:"phone_number"`
 	Verified     bool        `json:"verified"`
-	Avatar       pgtype.UUID `json:"avatar"`
+	PhoneNumber  pgtype.Text `json:"phone_number"`
 	Gender       pgtype.Text `json:"gender"`
 	Role         int64       `json:"role"`
 	DateOfBirth  pgtype.Date `json:"date_of_birth"`
-	Location     pgtype.UUID `json:"location"`
+	Address      string      `json:"address"`
+	Balance      int32       `json:"balance"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error) {
-	row := q.db.QueryRow(ctx, createUser,
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.Exec(ctx, createUser,
 		arg.ID,
 		arg.Username,
 		arg.PasswordHash,
 		arg.Email,
-		arg.PhoneNumber,
 		arg.Verified,
-		arg.Avatar,
+		arg.PhoneNumber,
 		arg.Gender,
 		arg.Role,
 		arg.DateOfBirth,
-		arg.Location,
+		arg.Address,
+		arg.Balance,
 	)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
+	return err
 }
 
 const deleteUser = `-- name: DeleteUser :exec
@@ -85,7 +83,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, password_hash, email, verified, phone_number, avatar, gender, role, date_of_birth, location, created_at, updated_at FROM users WHERE email = $1
+SELECT id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error) {
@@ -98,11 +96,11 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, 
 		&i.Email,
 		&i.Verified,
 		&i.PhoneNumber,
-		&i.Avatar,
 		&i.Gender,
 		&i.Role,
 		&i.DateOfBirth,
-		&i.Location,
+		&i.Address,
+		&i.Balance,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -110,7 +108,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, 
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password_hash, email, verified, phone_number, avatar, gender, role, date_of_birth, location, created_at, updated_at FROM users WHERE id = $1
+SELECT id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
@@ -123,11 +121,11 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Email,
 		&i.Verified,
 		&i.PhoneNumber,
-		&i.Avatar,
 		&i.Gender,
 		&i.Role,
 		&i.DateOfBirth,
-		&i.Location,
+		&i.Address,
+		&i.Balance,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -135,7 +133,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password_hash, email, verified, phone_number, avatar, gender, role, date_of_birth, location, created_at, updated_at FROM users WHERE username = $1
+SELECT id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE username = $1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username pgtype.Text) (User, error) {
@@ -148,11 +146,11 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username pgtype.Text) (
 		&i.Email,
 		&i.Verified,
 		&i.PhoneNumber,
-		&i.Avatar,
 		&i.Gender,
 		&i.Role,
 		&i.DateOfBirth,
-		&i.Location,
+		&i.Address,
+		&i.Balance,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -169,8 +167,7 @@ SELECT
     role,
     date_of_birth,
     created_at,
-    updated_at,
-    location
+    updated_at
 FROM users
 LIMIT $1
 OFFSET
@@ -192,7 +189,6 @@ type ListUsersRow struct {
 	DateOfBirth pgtype.Date      `json:"date_of_birth"`
 	CreatedAt   pgtype.Timestamp `json:"created_at"`
 	UpdatedAt   pgtype.Timestamp `json:"updated_at"`
-	Location    pgtype.UUID      `json:"location"`
 }
 
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
@@ -214,7 +210,6 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUse
 			&i.DateOfBirth,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.Location,
 		); err != nil {
 			return nil, err
 		}
@@ -233,14 +228,12 @@ SET
     email = $2,
     phone_number = $3,
     verified = $4,
-    avatar = $5,
-    gender = $6,
-    role = $7,
-    date_of_birth = $8,
-    location = $9,
+    gender = $5,
+    role = $6,
+    date_of_birth = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $9
+    id = $8
 `
 
 type UpdateUserParams struct {
@@ -248,11 +241,10 @@ type UpdateUserParams struct {
 	Email       pgtype.Text `json:"email"`
 	PhoneNumber pgtype.Text `json:"phone_number"`
 	Verified    bool        `json:"verified"`
-	Avatar      pgtype.UUID `json:"avatar"`
 	Gender      pgtype.Text `json:"gender"`
 	Role        int64       `json:"role"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
-	Location    pgtype.UUID `json:"location"`
+	ID          uuid.UUID   `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
@@ -261,11 +253,48 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.Email,
 		arg.PhoneNumber,
 		arg.Verified,
-		arg.Avatar,
 		arg.Gender,
 		arg.Role,
 		arg.DateOfBirth,
-		arg.Location,
+		arg.ID,
 	)
+	return err
+}
+
+const updateUserBalance = `-- name: UpdateUserBalance :exec
+UPDATE users
+SET
+    balance = $2,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = $1
+`
+
+type UpdateUserBalanceParams struct {
+	ID      uuid.UUID `json:"id"`
+	Balance int32     `json:"balance"`
+}
+
+func (q *Queries) UpdateUserBalance(ctx context.Context, arg UpdateUserBalanceParams) error {
+	_, err := q.db.Exec(ctx, updateUserBalance, arg.ID, arg.Balance)
+	return err
+}
+
+const updateUserPassword = `-- name: UpdateUserPassword :exec
+UPDATE users
+SET
+    password_hash = $2,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = $1
+`
+
+type UpdateUserPasswordParams struct {
+	ID           uuid.UUID   `json:"id"`
+	PasswordHash pgtype.Text `json:"password_hash"`
+}
+
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
+	_, err := q.db.Exec(ctx, updateUserPassword, arg.ID, arg.PasswordHash)
 	return err
 }

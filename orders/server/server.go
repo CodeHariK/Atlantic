@@ -21,21 +21,23 @@ type OrdersServiceServer struct {
 
 	validator *protovalidate.Validator
 
-	natClient *nats.NatsClient
+	natsClient *nats.NatsClient
 }
 
-func CreateOrdersServiceServer(cfg config.Config, natsConn *nats.NatsClient) OrdersServiceServer {
+func CreateOrdersServiceServer(cfg config.Config, natsClient *nats.NatsClient) OrdersServiceServer {
 	validator, err := protovalidate.New()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	natsClient.CreateOrdersStream(cfg)
 
 	return OrdersServiceServer{
 		cfg: cfg,
 
 		validator: validator,
 
-		natClient: natsConn,
+		natsClient: natsClient,
 	}
 }
 
@@ -51,7 +53,7 @@ func (o OrdersServiceServer) PlaceOrder(ctx context.Context, req *connect.Reques
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	_, err = o.natClient.Js.Publish(context.Background(), o.cfg.Nats.Topics.OrderPlaced, data)
+	_, err = o.natsClient.Js.Publish(context.Background(), o.cfg.Nats.Topics.OrderPlaced, data)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}

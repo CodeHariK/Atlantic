@@ -10,6 +10,9 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	v1 "github.com/codeharik/Atlantic/cosmog/api/cosmog/v1"
 	"github.com/codeharik/Atlantic/cosmog/api/cosmog/v1/v1connect"
+	"github.com/codeharik/Atlantic/database/store/product"
+	"github.com/codeharik/Atlantic/service/pgservice"
+	"github.com/google/uuid"
 	"github.com/meilisearch/meilisearch-go"
 )
 
@@ -19,6 +22,8 @@ type CosmogServiceServer struct {
 	cfg config.Config
 
 	validator *protovalidate.Validator
+
+	productStore *product.Queries
 
 	meiliInstance meilisearch.ServiceManager
 }
@@ -87,6 +92,12 @@ func (c CosmogServiceServer) DeleteProduct(ctx context.Context, req *connect.Req
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
+	uid, _ := uuid.Parse(req.Msg.Id)
+	err = c.productStore.DeleteProduct(context.Background(), uid)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, pgservice.PgCheck(err))
+	}
+
 	return connect.NewResponse(&v1.DeleteProductResponse{
 		Taskid: int32(task.TaskUID),
 	}), nil
@@ -100,6 +111,14 @@ func (c CosmogServiceServer) UpdateProduct(ctx context.Context, req *connect.Req
 	task, err := c.meiliInstance.Index("Atlantic").UpdateDocuments(req.Msg)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	uid, _ := uuid.Parse(req.Msg.Id)
+	err = c.productStore.UpdateProduct(context.Background(), product.UpdateProductParams{
+		ID: uid,
+	})
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, pgservice.PgCheck(err))
 	}
 
 	return connect.NewResponse(&v1.UpdateProductResponse{

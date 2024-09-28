@@ -1,17 +1,17 @@
--- name: CreateUser :one
+-- name: CreateUser :exec
 INSERT INTO
     users (
         id,
         username,
         password_hash,
         email,
-        phone_number,
         verified,
-        avatar,
+        phone_number,
         gender,
         role,
         date_of_birth,
-        location
+        address,
+        balance
     )
 VALUES (
         $1,
@@ -25,7 +25,7 @@ VALUES (
         $9,
         $10,
         $11
-    ) RETURNING id;
+    );
 
 -- name: GetUserByID :one
 SELECT * FROM users WHERE id = $1;
@@ -43,14 +43,12 @@ SET
     email = $2,
     phone_number = $3,
     verified = $4,
-    avatar = $5,
-    gender = $6,
-    role = $7,
-    date_of_birth = $8,
-    location = $9,
+    gender = $5,
+    role = $6,
+    date_of_birth = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $9;
+    id = $8;
 
 -- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1;
@@ -65,9 +63,24 @@ SELECT
     role,
     date_of_birth,
     created_at,
-    updated_at,
-    location
+    updated_at
 FROM users
 LIMIT $1
 OFFSET
     $2;
+
+-- name: UpdateUserBalance :exec
+UPDATE users
+SET
+    balance = $2,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = $1;
+
+-- name: UpdateUserPassword :exec
+UPDATE users
+SET
+    password_hash = $2,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = $1;

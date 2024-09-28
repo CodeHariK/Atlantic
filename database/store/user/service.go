@@ -4,7 +4,6 @@ package user
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log/slog"
 
@@ -39,15 +38,9 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 	if v := req.Msg.GetEmail(); v != nil {
 		arg.Email = pgtype.Text{Valid: true, String: v.Value}
 	}
+	arg.Verified = req.Msg.GetVerified()
 	if v := req.Msg.GetPhoneNumber(); v != nil {
 		arg.PhoneNumber = pgtype.Text{Valid: true, String: v.Value}
-	}
-	arg.Verified = req.Msg.GetVerified()
-	if v := req.Msg.GetAvatar(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Avatar); err != nil {
-			err = fmt.Errorf("invalid Avatar: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
 	}
 	if v := req.Msg.GetGender(); v != nil {
 		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
@@ -63,19 +56,15 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 			arg.DateOfBirth.Time = t
 		}
 	}
-	if v := req.Msg.GetLocation(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
-			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
-	}
+	arg.Address = req.Msg.GetAddress()
+	arg.Balance = req.Msg.GetBalance()
 
-	result, err := s.querier.CreateUser(ctx, arg)
+	err := s.querier.CreateUser(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "CreateUser")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.CreateUserResponse{Value: result.String()}), nil
+	return connect.NewResponse(&pb.CreateUserResponse{}), nil
 }
 
 func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[pb.DeleteUserResponse], error) {
@@ -169,12 +158,6 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 		arg.PhoneNumber = pgtype.Text{Valid: true, String: v.Value}
 	}
 	arg.Verified = req.Msg.GetVerified()
-	if v := req.Msg.GetAvatar(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Avatar); err != nil {
-			err = fmt.Errorf("invalid Avatar: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
-	}
 	if v := req.Msg.GetGender(); v != nil {
 		arg.Gender = pgtype.Text{Valid: true, String: v.Value}
 	}
@@ -189,11 +172,11 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 			arg.DateOfBirth.Time = t
 		}
 	}
-	if v := req.Msg.GetLocation(); v != nil {
-		if err := json.Unmarshal([]byte(v.GetValue()), &arg.Location); err != nil {
-			err = fmt.Errorf("invalid Location: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
 	}
 
 	err := s.querier.UpdateUser(ctx, arg)
@@ -202,4 +185,42 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 		return nil, err
 	}
 	return connect.NewResponse(&pb.UpdateUserResponse{}), nil
+}
+
+func (s *Service) UpdateUserBalance(ctx context.Context, req *connect.Request[pb.UpdateUserBalanceRequest]) (*connect.Response[pb.UpdateUserBalanceResponse], error) {
+	var arg UpdateUserBalanceParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	arg.Balance = req.Msg.GetBalance()
+
+	err := s.querier.UpdateUserBalance(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateUserBalance")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateUserBalanceResponse{}), nil
+}
+
+func (s *Service) UpdateUserPassword(ctx context.Context, req *connect.Request[pb.UpdateUserPasswordRequest]) (*connect.Response[pb.UpdateUserPasswordResponse], error) {
+	var arg UpdateUserPasswordParams
+	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
+		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ID = v
+	}
+	if v := req.Msg.GetPasswordHash(); v != nil {
+		arg.PasswordHash = pgtype.Text{Valid: true, String: v.Value}
+	}
+
+	err := s.querier.UpdateUserPassword(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateUserPassword")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateUserPasswordResponse{}), nil
 }

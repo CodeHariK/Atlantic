@@ -13,3 +13,6 @@ CREATE INDEX IF NOT EXISTS idx_carts_user_id ON "carts" ("user_id");
 -- +goose Down
 
 DROP TABLE IF EXISTS "carts";
+
+-- name: UpdateCartTimestamp :one
+UPDATE carts SET updated_at = $2 WHERE id = $1 RETURNING *;

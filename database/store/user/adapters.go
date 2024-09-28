@@ -3,8 +3,6 @@
 package user
 
 import (
-	"encoding/json"
-
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
@@ -37,9 +35,6 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 	if in.UpdatedAt.Valid {
 		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
-	if v, err := json.Marshal(in.Location); err == nil {
-		out.Location = wrapperspb.String(string(v))
-	}
 	return out
 }
 
@@ -60,9 +55,6 @@ func toUser(in User) *pb.User {
 	if in.PhoneNumber.Valid {
 		out.PhoneNumber = wrapperspb.String(in.PhoneNumber.String)
 	}
-	if v, err := json.Marshal(in.Avatar); err == nil {
-		out.Avatar = wrapperspb.String(string(v))
-	}
 	if in.Gender.Valid {
 		out.Gender = wrapperspb.String(in.Gender.String)
 	}
@@ -70,9 +62,8 @@ func toUser(in User) *pb.User {
 	if in.DateOfBirth.Valid {
 		out.DateOfBirth = timestamppb.New(in.DateOfBirth.Time)
 	}
-	if v, err := json.Marshal(in.Location); err == nil {
-		out.Location = wrapperspb.String(string(v))
-	}
+	out.Address = in.Address
+	out.Balance = in.Balance
 	if in.CreatedAt.Valid {
 		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
 	}

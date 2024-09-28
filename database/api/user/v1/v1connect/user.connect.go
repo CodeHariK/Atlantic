@@ -49,18 +49,26 @@ const (
 	UserServiceListUsersProcedure = "/user.v1.UserService/ListUsers"
 	// UserServiceUpdateUserProcedure is the fully-qualified name of the UserService's UpdateUser RPC.
 	UserServiceUpdateUserProcedure = "/user.v1.UserService/UpdateUser"
+	// UserServiceUpdateUserBalanceProcedure is the fully-qualified name of the UserService's
+	// UpdateUserBalance RPC.
+	UserServiceUpdateUserBalanceProcedure = "/user.v1.UserService/UpdateUserBalance"
+	// UserServiceUpdateUserPasswordProcedure is the fully-qualified name of the UserService's
+	// UpdateUserPassword RPC.
+	UserServiceUpdateUserPasswordProcedure = "/user.v1.UserService/UpdateUserPassword"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	userServiceServiceDescriptor                 = v1.File_user_v1_user_proto.Services().ByName("UserService")
-	userServiceCreateUserMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("CreateUser")
-	userServiceDeleteUserMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("DeleteUser")
-	userServiceGetUserByEmailMethodDescriptor    = userServiceServiceDescriptor.Methods().ByName("GetUserByEmail")
-	userServiceGetUserByIDMethodDescriptor       = userServiceServiceDescriptor.Methods().ByName("GetUserByID")
-	userServiceGetUserByUsernameMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("GetUserByUsername")
-	userServiceListUsersMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("ListUsers")
-	userServiceUpdateUserMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	userServiceServiceDescriptor                  = v1.File_user_v1_user_proto.Services().ByName("UserService")
+	userServiceCreateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("CreateUser")
+	userServiceDeleteUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("DeleteUser")
+	userServiceGetUserByEmailMethodDescriptor     = userServiceServiceDescriptor.Methods().ByName("GetUserByEmail")
+	userServiceGetUserByIDMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("GetUserByID")
+	userServiceGetUserByUsernameMethodDescriptor  = userServiceServiceDescriptor.Methods().ByName("GetUserByUsername")
+	userServiceListUsersMethodDescriptor          = userServiceServiceDescriptor.Methods().ByName("ListUsers")
+	userServiceUpdateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("UpdateUser")
+	userServiceUpdateUserBalanceMethodDescriptor  = userServiceServiceDescriptor.Methods().ByName("UpdateUserBalance")
+	userServiceUpdateUserPasswordMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
 )
 
 // UserServiceClient is a client for the user.v1.UserService service.
@@ -72,6 +80,8 @@ type UserServiceClient interface {
 	GetUserByUsername(context.Context, *connect.Request[v1.GetUserByUsernameRequest]) (*connect.Response[v1.GetUserByUsernameResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	UpdateUserBalance(context.Context, *connect.Request[v1.UpdateUserBalanceRequest]) (*connect.Response[v1.UpdateUserBalanceResponse], error)
+	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.UpdateUserPasswordResponse], error)
 }
 
 // NewUserServiceClient constructs a client for the user.v1.UserService service. By default, it uses
@@ -126,18 +136,32 @@ func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(userServiceUpdateUserMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		updateUserBalance: connect.NewClient[v1.UpdateUserBalanceRequest, v1.UpdateUserBalanceResponse](
+			httpClient,
+			baseURL+UserServiceUpdateUserBalanceProcedure,
+			connect.WithSchema(userServiceUpdateUserBalanceMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateUserPassword: connect.NewClient[v1.UpdateUserPasswordRequest, v1.UpdateUserPasswordResponse](
+			httpClient,
+			baseURL+UserServiceUpdateUserPasswordProcedure,
+			connect.WithSchema(userServiceUpdateUserPasswordMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // userServiceClient implements UserServiceClient.
 type userServiceClient struct {
-	createUser        *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
-	deleteUser        *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
-	getUserByEmail    *connect.Client[v1.GetUserByEmailRequest, v1.GetUserByEmailResponse]
-	getUserByID       *connect.Client[v1.GetUserByIDRequest, v1.GetUserByIDResponse]
-	getUserByUsername *connect.Client[v1.GetUserByUsernameRequest, v1.GetUserByUsernameResponse]
-	listUsers         *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
-	updateUser        *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	createUser         *connect.Client[v1.CreateUserRequest, v1.CreateUserResponse]
+	deleteUser         *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
+	getUserByEmail     *connect.Client[v1.GetUserByEmailRequest, v1.GetUserByEmailResponse]
+	getUserByID        *connect.Client[v1.GetUserByIDRequest, v1.GetUserByIDResponse]
+	getUserByUsername  *connect.Client[v1.GetUserByUsernameRequest, v1.GetUserByUsernameResponse]
+	listUsers          *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	updateUser         *connect.Client[v1.UpdateUserRequest, v1.UpdateUserResponse]
+	updateUserBalance  *connect.Client[v1.UpdateUserBalanceRequest, v1.UpdateUserBalanceResponse]
+	updateUserPassword *connect.Client[v1.UpdateUserPasswordRequest, v1.UpdateUserPasswordResponse]
 }
 
 // CreateUser calls user.v1.UserService.CreateUser.
@@ -175,6 +199,16 @@ func (c *userServiceClient) UpdateUser(ctx context.Context, req *connect.Request
 	return c.updateUser.CallUnary(ctx, req)
 }
 
+// UpdateUserBalance calls user.v1.UserService.UpdateUserBalance.
+func (c *userServiceClient) UpdateUserBalance(ctx context.Context, req *connect.Request[v1.UpdateUserBalanceRequest]) (*connect.Response[v1.UpdateUserBalanceResponse], error) {
+	return c.updateUserBalance.CallUnary(ctx, req)
+}
+
+// UpdateUserPassword calls user.v1.UserService.UpdateUserPassword.
+func (c *userServiceClient) UpdateUserPassword(ctx context.Context, req *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.UpdateUserPasswordResponse], error) {
+	return c.updateUserPassword.CallUnary(ctx, req)
+}
+
 // UserServiceHandler is an implementation of the user.v1.UserService service.
 type UserServiceHandler interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
@@ -184,6 +218,8 @@ type UserServiceHandler interface {
 	GetUserByUsername(context.Context, *connect.Request[v1.GetUserByUsernameRequest]) (*connect.Response[v1.GetUserByUsernameResponse], error)
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error)
+	UpdateUserBalance(context.Context, *connect.Request[v1.UpdateUserBalanceRequest]) (*connect.Response[v1.UpdateUserBalanceResponse], error)
+	UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.UpdateUserPasswordResponse], error)
 }
 
 // NewUserServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -234,6 +270,18 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(userServiceUpdateUserMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	userServiceUpdateUserBalanceHandler := connect.NewUnaryHandler(
+		UserServiceUpdateUserBalanceProcedure,
+		svc.UpdateUserBalance,
+		connect.WithSchema(userServiceUpdateUserBalanceMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	userServiceUpdateUserPasswordHandler := connect.NewUnaryHandler(
+		UserServiceUpdateUserPasswordProcedure,
+		svc.UpdateUserPassword,
+		connect.WithSchema(userServiceUpdateUserPasswordMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/user.v1.UserService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserServiceCreateUserProcedure:
@@ -250,6 +298,10 @@ func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption
 			userServiceListUsersHandler.ServeHTTP(w, r)
 		case UserServiceUpdateUserProcedure:
 			userServiceUpdateUserHandler.ServeHTTP(w, r)
+		case UserServiceUpdateUserBalanceProcedure:
+			userServiceUpdateUserBalanceHandler.ServeHTTP(w, r)
+		case UserServiceUpdateUserPasswordProcedure:
+			userServiceUpdateUserPasswordHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -285,4 +337,12 @@ func (UnimplementedUserServiceHandler) ListUsers(context.Context, *connect.Reque
 
 func (UnimplementedUserServiceHandler) UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.UpdateUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.UpdateUser is not implemented"))
+}
+
+func (UnimplementedUserServiceHandler) UpdateUserBalance(context.Context, *connect.Request[v1.UpdateUserBalanceRequest]) (*connect.Response[v1.UpdateUserBalanceResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.UpdateUserBalance is not implemented"))
+}
+
+func (UnimplementedUserServiceHandler) UpdateUserPassword(context.Context, *connect.Request[v1.UpdateUserPasswordRequest]) (*connect.Response[v1.UpdateUserPasswordResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.UserService.UpdateUserPassword is not implemented"))
 }

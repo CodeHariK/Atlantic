@@ -20,7 +20,6 @@ require (
 	github.com/codeharik/Atlantic/database v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/docs v0.0.0-00010101000000-000000000000
 	github.com/codeharik/Atlantic/service v0.0.0-00010101000000-000000000000
-	github.com/exaring/otelpgx v0.6.2
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
 	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689
@@ -32,6 +31,7 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/exaring/otelpgx v0.6.2 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

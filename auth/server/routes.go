@@ -8,11 +8,11 @@ import (
 	"connectrpc.com/grpcreflect"
 	"github.com/codeharik/Atlantic/auth/server/auth"
 	"github.com/codeharik/Atlantic/auth/server/profile"
-	"github.com/codeharik/Atlantic/auth/store"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
 	"github.com/codeharik/Atlantic/service/authbox"
 	"github.com/codeharik/Atlantic/service/dragon"
+	"github.com/codeharik/Atlantic/service/store"
 
 	user_v1connect "github.com/codeharik/Atlantic/database/api/user/v1/v1connect"
 	user_app "github.com/codeharik/Atlantic/database/store/user"

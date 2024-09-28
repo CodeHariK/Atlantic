@@ -48,14 +48,14 @@
         ]
       }
     },
-    "/cosmog.v1.CosmogService/Hello": {
+    "/cosmog.v1.CosmogService/DeleteProduct": {
       "post": {
-        "operationId": "CosmogService_Hello",
+        "operationId": "CosmogService_DeleteProduct",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1HelloResponse"
+              "$ref": "#/definitions/v1DeleteProductResponse"
             }
           },
           "default": {
@@ -71,7 +71,103 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1HelloRequest"
+              "$ref": "#/definitions/v1DeleteProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CosmogService"
+        ]
+      }
+    },
+    "/cosmog.v1.CosmogService/GetProduct": {
+      "post": {
+        "operationId": "CosmogService_GetProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CosmogService"
+        ]
+      }
+    },
+    "/cosmog.v1.CosmogService/GetTask": {
+      "post": {
+        "operationId": "CosmogService_GetTask",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetTaskResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetTaskRequest"
+            }
+          }
+        ],
+        "tags": [
+          "CosmogService"
+        ]
+      }
+    },
+    "/cosmog.v1.CosmogService/UpdateProduct": {
+      "post": {
+        "operationId": "CosmogService_UpdateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductRequest"
             }
           }
         ],
@@ -110,10 +206,21 @@
         }
       }
     },
+    "v1Category": {
+      "type": "object",
+      "properties": {
+        "lvl0": {
+          "type": "string"
+        },
+        "lvl1": {
+          "type": "string"
+        }
+      }
+    },
     "v1CreateSearchKeyRequest": {
       "type": "object",
       "properties": {
-        "ID": {
+        "id": {
           "type": "string"
         }
       }
@@ -126,19 +233,146 @@
         }
       }
     },
-    "v1HelloRequest": {
+    "v1DeleteProductRequest": {
       "type": "object",
       "properties": {
-        "message": {
+        "id": {
           "type": "string"
         }
       }
     },
-    "v1HelloResponse": {
+    "v1DeleteProductResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "taskid": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1GetProductRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
           "type": "string"
+        }
+      }
+    },
+    "v1GetProductResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "info": {
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/definitions/v1Category"
+        },
+        "price": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rating": {
+          "type": "number",
+          "format": "float"
+        },
+        "dev": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "img": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mov": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1GetTaskRequest": {
+      "type": "object",
+      "properties": {
+        "taskid": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1GetTaskResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "errorCode": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateProductRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "info": {
+          "type": "string"
+        },
+        "category": {
+          "$ref": "#/definitions/v1Category"
+        },
+        "price": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rating": {
+          "type": "number",
+          "format": "float"
+        },
+        "dev": {
+          "type": "string"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "img": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mov": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1UpdateProductResponse": {
+      "type": "object",
+      "properties": {
+        "taskid": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     }

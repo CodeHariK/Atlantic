@@ -8,27 +8,7 @@ CREATE TABLE IF NOT EXISTS "order_items" (
     "quantity" INTEGER NOT NULL,
     "amount_units" BIGINT NOT NULL,
     "amount_nanos" INTEGER NOT NULL,
-    "amount_currency" VARCHAR(4) NOT NULL,
-
-
-    "status" VARCHAR(12) NOT NULL DEFAULT 'PENDING' CHECK (
-        "status" IN (
-            'RETURNED',
-            'CANCELED',
-            'PENDING',
-            'CONFIRMED',
-            'PROCESSING',
-            'SHIPPED',
-            'DELIVERED'
-        )
-    ),
-    "payment_status" VARCHAR(12) NOT NULL CHECK (
-        "status" IN (
-            'REFUNDED',
-            'CASH_ON_DELIVERY',
-            'PAID'
-        )
-    )
+    "amount_currency" VARCHAR(4) NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON "order_items" ("order_id");

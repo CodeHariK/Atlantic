@@ -7,7 +7,7 @@
       "dev": "VITE_DOMAIN=http://localhost vite",
       "adev": "VITE_DOMAIN=http://atlantic.shark.run vite",
       "lbuild": "VITE_DOMAIN=http://localhost vite build --outDir kodata",
-      "abuild": "VITE_DOMAIN=http://atlantic.shark.run vite build --outDir kodata",
+      "abuild": "VITE_DOMAIN=http://atlantic.shark.run vite build",
       "build": "tsc -b && VITE_DOMAIN=http://atlantic.shark.run vite build --outDir kodata",
       "preview": "vite preview"
    },

@@ -10,13 +10,14 @@ CREATE TABLE IF NOT EXISTS "users" (
     "phone_number" VARCHAR(15) UNIQUE CHECK (
         CHAR_LENGTH("phone_number") > 0
     ),
-    "avatar" UUID,
     "gender" CHAR(1) CHECK ("gender" IN ('M', 'F')),
     "role" BIGINT NOT NULL DEFAULT 1 CHECK (role > 0),
 
 
     "date_of_birth" DATE,
-    "location" UUID REFERENCES "locations" ("id") ON UPDATE NO ACTION ON DELETE SET NULL,
+    
+    "address" VARCHAR(255) NOT NULL CHECK (CHAR_LENGTH("address") > 0),
+    "balance" INTEGER NOT NULL,
     CHECK (
         (
             "email" IS NOT NULL

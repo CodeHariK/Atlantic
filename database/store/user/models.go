@@ -30,17 +30,6 @@ type GooseDbVersion struct {
 	Tstamp    pgtype.Timestamp `json:"tstamp"`
 }
 
-type Location struct {
-	ID         uuid.UUID `json:"id"`
-	Address    string    `json:"address"`
-	City       string    `json:"city"`
-	State      string    `json:"state"`
-	Country    string    `json:"country"`
-	PostalCode string    `json:"postal_code"`
-	Latitude   float64   `json:"latitude"`
-	Longitude  float64   `json:"longitude"`
-}
-
 type Order struct {
 	ID             uuid.UUID        `json:"id"`
 	UserID         uuid.UUID        `json:"user_id"`
@@ -61,8 +50,6 @@ type OrderItem struct {
 	AmountUnits    int64     `json:"amount_units"`
 	AmountNanos    int32     `json:"amount_nanos"`
 	AmountCurrency string    `json:"amount_currency"`
-	Status         string    `json:"status"`
-	PaymentStatus  string    `json:"payment_status"`
 }
 
 type Product struct {
@@ -94,11 +81,11 @@ type User struct {
 	Email        pgtype.Text      `json:"email"`
 	Verified     bool             `json:"verified"`
 	PhoneNumber  pgtype.Text      `json:"phone_number"`
-	Avatar       pgtype.UUID      `json:"avatar"`
 	Gender       pgtype.Text      `json:"gender"`
 	Role         int64            `json:"role"`
 	DateOfBirth  pgtype.Date      `json:"date_of_birth"`
-	Location     pgtype.UUID      `json:"location"`
+	Address      string           `json:"address"`
+	Balance      int32            `json:"balance"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`
 	UpdatedAt    pgtype.Timestamp `json:"updated_at"`
 }

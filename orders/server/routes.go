@@ -18,7 +18,7 @@ func CreateRoutes(
 	serviceName string,
 	router *http.ServeMux,
 	config *config.Config,
-	natsConn *nats.NatsClient,
+	natsClient *nats.NatsClient,
 ) {
 	//------------------
 	// Docs
@@ -28,7 +28,7 @@ func CreateRoutes(
 	//------------------
 	// OrdersService
 
-	ordersService := CreateOrdersServiceServer(*config, natsConn)
+	ordersService := CreateOrdersServiceServer(*config, natsClient)
 	ordersPath, ordersHandler := v1connect.NewOrdersServiceHandler(
 		ordersService,
 		authbox.ConnectInterceptors(config)...,

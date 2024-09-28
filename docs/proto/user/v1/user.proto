@@ -21,6 +21,10 @@ service UserService {
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
 
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+
+  rpc UpdateUserBalance(UpdateUserBalanceRequest) returns (UpdateUserBalanceResponse) {}
+
+  rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (UpdateUserPasswordResponse) {}
 }
 
 message Cart {
@@ -42,18 +46,16 @@ message CreateUserRequest {
   google.protobuf.StringValue username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;
-  google.protobuf.StringValue phone_number = 5;
-  bool verified = 6;
-  google.protobuf.StringValue avatar = 7;
-  google.protobuf.StringValue gender = 8;
-  int64 role = 9;
-  google.protobuf.Timestamp date_of_birth = 10;
-  google.protobuf.StringValue location = 11;
+  bool verified = 5;
+  google.protobuf.StringValue phone_number = 6;
+  google.protobuf.StringValue gender = 7;
+  int64 role = 8;
+  google.protobuf.Timestamp date_of_birth = 9;
+  string address = 10;
+  int32 balance = 11;
 }
 
-message CreateUserResponse {
-  string value = 1;
-}
+message CreateUserResponse {}
 
 message DeleteUserRequest {
   string id = 1;
@@ -111,18 +113,6 @@ message ListUsersRow {
   google.protobuf.Timestamp date_of_birth = 7;
   google.protobuf.Timestamp created_at = 8;
   google.protobuf.Timestamp updated_at = 9;
-  google.protobuf.StringValue location = 10;
-}
-
-message Location {
-  string id = 1;
-  string address = 2;
-  string city = 3;
-  string state = 4;
-  string country = 5;
-  string postal_code = 6;
-  double latitude = 7;
-  double longitude = 8;
 }
 
 message Order {
@@ -145,8 +135,6 @@ message OrderItem {
   int64 amount_units = 5;
   int32 amount_nanos = 6;
   string amount_currency = 7;
-  string status = 8;
-  string payment_status = 9;
 }
 
 message Product {
@@ -171,17 +159,30 @@ message ProductReview {
   google.protobuf.Timestamp updated_at = 6;
 }
 
+message UpdateUserBalanceRequest {
+  string id = 1;
+  int32 balance = 2;
+}
+
+message UpdateUserBalanceResponse {}
+
 message UpdateUserRequest {
   google.protobuf.StringValue username = 1;
   google.protobuf.StringValue email = 2;
   google.protobuf.StringValue phone_number = 3;
   bool verified = 4;
-  google.protobuf.StringValue avatar = 5;
-  google.protobuf.StringValue gender = 6;
-  int64 role = 7;
-  google.protobuf.Timestamp date_of_birth = 8;
-  google.protobuf.StringValue location = 9;
+  google.protobuf.StringValue gender = 5;
+  int64 role = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  string id = 8;
 }
+
+message UpdateUserPasswordRequest {
+  string id = 1;
+  google.protobuf.StringValue password_hash = 2;
+}
+
+message UpdateUserPasswordResponse {}
 
 message UpdateUserResponse {}
 
@@ -192,11 +193,11 @@ message User {
   google.protobuf.StringValue email = 4;
   bool verified = 5;
   google.protobuf.StringValue phone_number = 6;
-  google.protobuf.StringValue avatar = 7;
-  google.protobuf.StringValue gender = 8;
-  int64 role = 9;
-  google.protobuf.Timestamp date_of_birth = 10;
-  google.protobuf.StringValue location = 11;
+  google.protobuf.StringValue gender = 7;
+  int64 role = 8;
+  google.protobuf.Timestamp date_of_birth = 9;
+  string address = 10;
+  int32 balance = 11;
   google.protobuf.Timestamp created_at = 12;
   google.protobuf.Timestamp updated_at = 13;
 }

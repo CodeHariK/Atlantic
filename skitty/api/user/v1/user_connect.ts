@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, GetUserByEmailRequest, GetUserByEmailResponse, GetUserByIDRequest, GetUserByIDResponse, GetUserByUsernameRequest, GetUserByUsernameResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse } from "./user_pb.js";
+import { CreateUserRequest, CreateUserResponse, DeleteUserRequest, DeleteUserResponse, GetUserByEmailRequest, GetUserByEmailResponse, GetUserByIDRequest, GetUserByIDResponse, GetUserByUsernameRequest, GetUserByUsernameResponse, ListUsersRequest, ListUsersResponse, UpdateUserBalanceRequest, UpdateUserBalanceResponse, UpdateUserPasswordRequest, UpdateUserPasswordResponse, UpdateUserRequest, UpdateUserResponse } from "./user_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -73,6 +73,24 @@ export const UserService = {
       name: "UpdateUser",
       I: UpdateUserRequest,
       O: UpdateUserResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc user.v1.UserService.UpdateUserBalance
+     */
+    updateUserBalance: {
+      name: "UpdateUserBalance",
+      I: UpdateUserBalanceRequest,
+      O: UpdateUserBalanceResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc user.v1.UserService.UpdateUserPassword
+     */
+    updateUserPassword: {
+      name: "UpdateUserPassword",
+      I: UpdateUserPasswordRequest,
+      O: UpdateUserPasswordResponse,
       kind: MethodKind.Unary,
     },
   }
