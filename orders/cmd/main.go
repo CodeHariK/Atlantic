@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/codeharik/Atlantic/config"
@@ -9,6 +10,7 @@ import (
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/servemux"
+	"github.com/codeharik/Atlantic/service/store"
 )
 
 const serviceName = "orders"
@@ -26,14 +28,20 @@ func main() {
 
 	dragon := dragon.CreateDragon(&cfg)
 
+	storeInstance, err := store.ConnectDatabase(cfg)
+	if err != nil {
+		log.Fatalf("Cannot connect to database : %v", err.Error())
+	}
+
 	natsClient := nats.ConnectNats(cfg)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg, natsClient)
+			server.CreateRoutes(serviceName, router, &cfg, natsClient, storeInstance)
 		},
 		func() error {
 			natsClient.Nc.Close()
+			storeInstance.Db.Close()
 			return nil
 		},
 		OrdersServerPortUrl(&cfg),

@@ -30,10 +30,56 @@ VALUES (
         1000
     );
 
+-------------Product-------------
+
+INSERT INTO
+    products (id, quantity, price)
+VALUES (
+        '123e4567-e89b-12d3-a456-426614174000',
+        100,
+        50
+    );
+
+-------------Order-------------
+
+INSERT INTO
+    orders (
+        id,
+        user_id,
+        price,
+        status,
+        payment_status
+    )
+VALUES (
+        '443e4267-e89b-12d3-a456-426614174020',
+        '66173097-653b-400b-9e98-78830fdd630e',
+        40,
+        'CONFIRMED',
+        'PAID'
+    ) RETURNING *;
+
+INSERT INTO
+    order_items (
+        id,
+        order_id,
+        product_id,
+        quantity,
+        price
+    )
+VALUES (
+        '443e4262-e89b-12d3-a456-426614174020',
+        '443e4267-e89b-12d3-a456-426614174020',
+        '123e4567-e89b-12d3-a456-426614174000',
+        2,
+        20
+    ) RETURNING *;
+
 -- +goose Down
 
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
 
 TRUNCATE TABLE products RESTART IDENTITY CASCADE;
 
-TRUNCATE TABLE locations RESTART IDENTITY CASCADE;
+TRUNCATE TABLE orders RESTART IDENTITY CASCADE;
+
+TRUNCATE TABLE order_items RESTART IDENTITY CASCADE;

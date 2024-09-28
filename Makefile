@@ -1,20 +1,24 @@
-.PHONY: start local atlantic auth inventory orders skitty overtools cosmog
+.PHONY: run local atlantic auth inventory orders skitty overtools cosmog account
 
-start:
+run:
 	@VITE_DOMAIN=$(VITE_DOMAIN) ./run.sh \
    	ATLANTIC "echo Welcome to Atlantic ~> \$$VITE_DOMAIN" \
    	web "open -a 'Google chrome' \$$VITE_DOMAIN" \
+      minio "make minio" \
+      nats "make nats" \
+      meilisearch "make meilisearch" \
       skitty "make skitty" \
       auth "make auth" \
+      account "make account" \
+      orders "make orders" \
       inventory "make inventory" \
-      minio "make minio" \
       caddy "make caddy"
 
 local:
-	@VITE_DOMAIN=http://localhost make start
+	@VITE_DOMAIN=http://localhost make run
 
 atlantic:
-	@VITE_DOMAIN=http://atlantic.shark.run make start
+	@VITE_DOMAIN=http://atlantic.shark.run make run
 
 atlantic:
    @make local VITE_DOMAIN=atlantic.shark.run
@@ -34,7 +38,7 @@ minio:
 meilisearch:
 	meilisearch  --config-file-path="./config/meilisearch/config.toml"
 
-natsrun:
+nats:
 	nats-server -c config/nats/js.conf
 
 kompose:
@@ -74,12 +78,19 @@ inventorybuild:
 inventoryrun:
 	docker run -p 9100:9100 --name inventory inventory
 
+account:
+	go run account/cmd/main.go
+accountbuild:
+	make img img=account
+accountrun:
+	docker run -p 8765:8765 --name account account
+
 orders:
 	go run orders/cmd/main.go
 ordersbuild:
 	make img img=orders
 ordersrun:
-	docker run -p 9100:9100 --name orders orders
+	docker run -p 4400:4400 --name orders orders
 
 cosmog:
 	go run cosmog/cmd/main.go

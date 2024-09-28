@@ -8,22 +8,6 @@ import uuid
 
 
 @dataclasses.dataclass()
-class Cart:
-    id: uuid.UUID
-    user_id: uuid.UUID
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
-
-
-@dataclasses.dataclass()
-class CartItem:
-    id: uuid.UUID
-    cart_id: uuid.UUID
-    product_id: uuid.UUID
-    quantity: int
-
-
-@dataclasses.dataclass()
 class GooseDbVersion:
     id: int
     version_id: int
@@ -37,9 +21,7 @@ class Order:
     user_id: uuid.UUID
     created_at: datetime.datetime
     updated_at: datetime.datetime
-    amount_units: int
-    amount_nanos: int
-    amount_currency: str
+    price: int
     status: str
     payment_status: str
 
@@ -50,24 +32,14 @@ class OrderItem:
     order_id: uuid.UUID
     product_id: uuid.UUID
     quantity: int
-    amount_units: int
-    amount_nanos: int
-    amount_currency: str
+    price: int
 
 
 @dataclasses.dataclass()
 class Product:
     id: uuid.UUID
     quantity: int
-    amount_units: int
-    amount_nanos: int
-    amount_currency: str
-
-
-@dataclasses.dataclass()
-class ProductComment:
-    id: uuid.UUID
-    comment: Optional[str]
+    price: int
 
 
 @dataclasses.dataclass()
@@ -75,6 +47,7 @@ class ProductReview:
     id: uuid.UUID
     user_id: uuid.UUID
     product_id: uuid.UUID
+    comment: Optional[str]
     rating: int
     created_at: datetime.datetime
     updated_at: datetime.datetime

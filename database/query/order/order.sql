@@ -3,33 +3,14 @@ INSERT INTO
     orders (
         id,
         user_id,
-        created_at,
-        updated_at,
-        amount_units,
-        amount_nanos,
-        amount_currency,
+        price,
         status,
         payment_status
     )
-VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6,
-        $7,
-        $8,
-        $9
-    ) RETURNING *;
+VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
 -- name: UpdateOrderStatus :one
-UPDATE orders
-SET
-    status = $2,
-    updated_at = $3
-WHERE
-    id = $1 RETURNING *;
+UPDATE orders SET status = $2 WHERE id = $1 RETURNING *;
 
 -- name: UpdateOrderPaymentStatus :one
 UPDATE orders

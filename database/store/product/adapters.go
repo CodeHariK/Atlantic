@@ -11,8 +11,6 @@ func toProduct(in Product) *pb.Product {
 	out := new(pb.Product)
 	out.Id = in.ID.String()
 	out.Quantity = in.Quantity
-	out.AmountUnits = in.AmountUnits
-	out.AmountNanos = in.AmountNanos
-	out.AmountCurrency = in.AmountCurrency
+	out.Price = in.Price
 	return out
 }

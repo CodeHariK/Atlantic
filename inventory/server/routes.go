@@ -12,8 +12,12 @@ import (
 	"github.com/codeharik/Atlantic/service/authbox"
 	"github.com/codeharik/Atlantic/service/minio"
 	"github.com/codeharik/Atlantic/service/nats"
+	"github.com/codeharik/Atlantic/service/store"
 
 	"github.com/codeharik/Atlantic/inventory/api/inventory/v1/v1connect"
+
+	product_v1connect "github.com/codeharik/Atlantic/database/api/product/v1/v1connect"
+	product_app "github.com/codeharik/Atlantic/database/store/product"
 )
 
 func CreateRoutes(
@@ -22,6 +26,7 @@ func CreateRoutes(
 	config *config.Config,
 	minioClient *minio.MinioClient,
 	natsClient *nats.NatsClient,
+	storeInstance store.Store,
 ) {
 	//------------------
 	// Docs
@@ -29,12 +34,17 @@ func CreateRoutes(
 	docs.OpenapiHandler(router, serviceName)
 
 	//------------------
+	// Interceptors
+
+	interceptors := authbox.ConnectInterceptors(config)
+
+	//------------------
 	// CosmogService
 
 	inventoryService := CreateInventoryServiceServer(*config, minioClient, natsClient)
 	inventoryPath, inventoryHandler := v1connect.NewInventoryServiceHandler(
 		inventoryService,
-		authbox.ConnectInterceptors(config)...,
+		interceptors...,
 	)
 
 	shield := authbox.ConnectShield(config)
@@ -42,6 +52,22 @@ func CreateRoutes(
 	router.Handle(
 		inventoryPath,
 		shield.Wrap(inventoryHandler),
+	)
+
+	//------------------
+	// OrdersService
+
+	productService := product_app.NewService(
+		product_app.New(storeInstance.Db),
+	)
+	productPath, productHandler := product_v1connect.NewProductServiceHandler(
+		productService,
+		interceptors...,
+	)
+	router.Handle(
+		productPath,
+		// shield.Wrap(userHandler),
+		productHandler,
 	)
 
 	//------------------

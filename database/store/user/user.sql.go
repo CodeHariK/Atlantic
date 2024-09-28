@@ -261,13 +261,13 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 	return err
 }
 
-const updateUserBalance = `-- name: UpdateUserBalance :exec
+const updateUserBalance = `-- name: UpdateUserBalance :one
 UPDATE users
 SET
-    balance = $2,
+    balance = balance + $2,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $1
+    id = $1 RETURNING balance
 `
 
 type UpdateUserBalanceParams struct {
@@ -275,9 +275,11 @@ type UpdateUserBalanceParams struct {
 	Balance int32     `json:"balance"`
 }
 
-func (q *Queries) UpdateUserBalance(ctx context.Context, arg UpdateUserBalanceParams) error {
-	_, err := q.db.Exec(ctx, updateUserBalance, arg.ID, arg.Balance)
-	return err
+func (q *Queries) UpdateUserBalance(ctx context.Context, arg UpdateUserBalanceParams) (int32, error) {
+	row := q.db.QueryRow(ctx, updateUserBalance, arg.ID, arg.Balance)
+	var balance int32
+	err := row.Scan(&balance)
+	return balance, err
 }
 
 const updateUserPassword = `-- name: UpdateUserPassword :exec

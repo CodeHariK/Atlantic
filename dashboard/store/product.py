@@ -17,14 +17,8 @@ SELECT quantity FROM products WHERE id = :p1
 
 CREATE_PRODUCT = """-- name: create_product \\:one
 INSERT INTO
-    products (
-        id,
-        quantity,
-        amount_units,
-        amount_nanos,
-        amount_currency
-    )
-VALUES (:p1, :p2, :p3, :p4, :p5) RETURNING id, quantity, amount_units, amount_nanos, amount_currency
+    products (id, quantity, price)
+VALUES (:p1, :p2, :p3) RETURNING id, quantity, price
 """
 
 
@@ -34,27 +28,12 @@ DELETE FROM products WHERE id = :p1
 
 
 GET_PRODUCT_BY_ID = """-- name: get_product_by_id \\:one
-SELECT
-    id,
-    quantity,
-    amount_units,
-    amount_nanos,
-    amount_currency
-FROM products
-WHERE
-    id = :p1
+SELECT id, quantity, price FROM products WHERE id = :p1
 """
 
 
 LIST_PRODUCTS = """-- name: list_products \\:many
-SELECT
-    id,
-    quantity,
-    amount_units,
-    amount_nanos,
-    amount_currency
-FROM products
-ORDER BY id
+SELECT id, quantity, price FROM products ORDER BY id
 """
 
 
@@ -62,9 +41,7 @@ UPDATE_PRODUCT = """-- name: update_product \\:exec
 UPDATE products
 SET
     quantity = :p2,
-    amount_units = :p3,
-    amount_nanos = :p4,
-    amount_currency = :p5
+    price = :p3
 WHERE
     id = :p1
 """

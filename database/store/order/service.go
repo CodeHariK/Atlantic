@@ -34,29 +34,7 @@ func (s *Service) CreateOrder(ctx context.Context, req *connect.Request[pb.Creat
 	} else {
 		arg.UserID = v
 	}
-	if v := req.Msg.GetCreatedAt(); v != nil {
-		if err := v.CheckValid(); err != nil {
-			err = fmt.Errorf("invalid CreatedAt: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
-		if t := v.AsTime(); !t.IsZero() {
-			arg.CreatedAt.Valid = true
-			arg.CreatedAt.Time = t
-		}
-	}
-	if v := req.Msg.GetUpdatedAt(); v != nil {
-		if err := v.CheckValid(); err != nil {
-			err = fmt.Errorf("invalid UpdatedAt: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
-		if t := v.AsTime(); !t.IsZero() {
-			arg.UpdatedAt.Valid = true
-			arg.UpdatedAt.Time = t
-		}
-	}
-	arg.AmountUnits = req.Msg.GetAmountUnits()
-	arg.AmountNanos = req.Msg.GetAmountNanos()
-	arg.AmountCurrency = req.Msg.GetAmountCurrency()
+	arg.Price = req.Msg.GetPrice()
 	arg.Status = req.Msg.GetStatus()
 	arg.PaymentStatus = req.Msg.GetPaymentStatus()
 
@@ -89,9 +67,7 @@ func (s *Service) CreateOrderItem(ctx context.Context, req *connect.Request[pb.C
 		arg.ProductID = v
 	}
 	arg.Quantity = req.Msg.GetQuantity()
-	arg.AmountUnits = req.Msg.GetAmountUnits()
-	arg.AmountNanos = req.Msg.GetAmountNanos()
-	arg.AmountCurrency = req.Msg.GetAmountCurrency()
+	arg.Price = req.Msg.GetPrice()
 
 	result, err := s.querier.CreateOrderItem(ctx, arg)
 	if err != nil {
@@ -248,16 +224,6 @@ func (s *Service) UpdateOrderStatus(ctx context.Context, req *connect.Request[pb
 		arg.ID = v
 	}
 	arg.Status = req.Msg.GetStatus()
-	if v := req.Msg.GetUpdatedAt(); v != nil {
-		if err := v.CheckValid(); err != nil {
-			err = fmt.Errorf("invalid UpdatedAt: %s%w", err.Error(), validation.ErrUserInput)
-			return nil, err
-		}
-		if t := v.AsTime(); !t.IsZero() {
-			arg.UpdatedAt.Valid = true
-			arg.UpdatedAt.Time = t
-		}
-	}
 
 	result, err := s.querier.UpdateOrderStatus(ctx, arg)
 	if err != nil {

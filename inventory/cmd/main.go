@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/codeharik/Atlantic/config"
@@ -10,6 +11,7 @@ import (
 	"github.com/codeharik/Atlantic/service/minio"
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/servemux"
+	"github.com/codeharik/Atlantic/service/store"
 )
 
 const serviceName = "inventory"
@@ -29,14 +31,20 @@ func main() {
 
 	minioClient := minio.CreateClient(&cfg)
 
+	storeInstance, err := store.ConnectDatabase(cfg)
+	if err != nil {
+		log.Fatalf("Cannot connect to database : %v", err.Error())
+	}
+
 	natsClient := nats.ConnectNats(cfg)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg, minioClient, natsClient)
+			server.CreateRoutes(serviceName, router, &cfg, minioClient, natsClient, storeInstance)
 		},
 		func() error {
 			natsClient.Nc.Close()
+			storeInstance.Db.Close()
 			return nil
 		},
 		InventoryServerPortUrl(&cfg),

@@ -69,13 +69,13 @@ LIMIT $1
 OFFSET
     $2;
 
--- name: UpdateUserBalance :exec
+-- name: UpdateUserBalance :one
 UPDATE users
 SET
-    balance = $2,
+    balance = balance + $2,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $1;
+    id = $1 RETURNING balance;
 
 -- name: UpdateUserPassword :exec
 UPDATE users

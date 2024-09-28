@@ -9,20 +9,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Cart struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    uuid.UUID        `json:"user_id"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-}
-
-type CartItem struct {
-	ID        uuid.UUID `json:"id"`
-	CartID    uuid.UUID `json:"cart_id"`
-	ProductID uuid.UUID `json:"product_id"`
-	Quantity  int32     `json:"quantity"`
-}
-
 type GooseDbVersion struct {
 	ID        int32            `json:"id"`
 	VersionID int64            `json:"version_id"`
@@ -31,44 +17,34 @@ type GooseDbVersion struct {
 }
 
 type Order struct {
-	ID             uuid.UUID        `json:"id"`
-	UserID         uuid.UUID        `json:"user_id"`
-	CreatedAt      pgtype.Timestamp `json:"created_at"`
-	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
-	AmountUnits    int64            `json:"amount_units"`
-	AmountNanos    int32            `json:"amount_nanos"`
-	AmountCurrency string           `json:"amount_currency"`
-	Status         string           `json:"status"`
-	PaymentStatus  string           `json:"payment_status"`
+	ID            uuid.UUID        `json:"id"`
+	UserID        uuid.UUID        `json:"user_id"`
+	CreatedAt     pgtype.Timestamp `json:"created_at"`
+	UpdatedAt     pgtype.Timestamp `json:"updated_at"`
+	Price         int32            `json:"price"`
+	Status        string           `json:"status"`
+	PaymentStatus string           `json:"payment_status"`
 }
 
 type OrderItem struct {
-	ID             uuid.UUID `json:"id"`
-	OrderID        uuid.UUID `json:"order_id"`
-	ProductID      uuid.UUID `json:"product_id"`
-	Quantity       int32     `json:"quantity"`
-	AmountUnits    int64     `json:"amount_units"`
-	AmountNanos    int32     `json:"amount_nanos"`
-	AmountCurrency string    `json:"amount_currency"`
+	ID        uuid.UUID `json:"id"`
+	OrderID   uuid.UUID `json:"order_id"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int32     `json:"quantity"`
+	Price     int32     `json:"price"`
 }
 
 type Product struct {
-	ID             uuid.UUID `json:"id"`
-	Quantity       int32     `json:"quantity"`
-	AmountUnits    int64     `json:"amount_units"`
-	AmountNanos    int32     `json:"amount_nanos"`
-	AmountCurrency string    `json:"amount_currency"`
-}
-
-type ProductComment struct {
-	ID      uuid.UUID   `json:"id"`
-	Comment pgtype.Text `json:"comment"`
+	ID       uuid.UUID `json:"id"`
+	Quantity int32     `json:"quantity"`
+	Price    int32     `json:"price"`
 }
 
 type ProductReview struct {
 	ID        uuid.UUID        `json:"id"`
 	UserID    uuid.UUID        `json:"user_id"`
 	ProductID uuid.UUID        `json:"product_id"`
+	Comment   pgtype.Text      `json:"comment"`
 	Rating    int32            `json:"rating"`
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`

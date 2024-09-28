@@ -1,9 +1,7 @@
-h1:HWhnpEjYaEGpEUnYSn8KHN1NDBBOPoHgSpY1UeHSc8k=
-0020_user.sql h1:TR/tyYRiZxMLDB/FRPxcnXxE2MucIAiSrDA5KTllr0U=
-0031_products.sql h1:HIVvF8NwirCNQ7yjqi97u16BVZP21tHmjMhBAcbwhVA=
-0032_product_reviews.sql h1:5p7rVrImVAKegn1YMCRzUoSCGDTEcThqltwHPYkuuVQ=
-0040_order.sql h1:KZT0wf7CdKImAaOwt3xSsqbPXhe102caUzosUh5QFTM=
-0041_order_items.sql h1:oeBT+R391KCHjKz8RvxXUzc4FhOlB5fyhqVhezyYRoQ=
-0050_cart.sql h1:ncuw3+oAo01sBadV1jmpfDLWzV4OfXSdiEN2y/oFvbU=
-0051_cart_items.sql h1:KB6MwoAWTho/x4+500nHrH1f2/6hx04QTs+qnZdVFto=
-0111_data.sql h1:3EF/JjfYM3AXbAiBJb1YwwMtXBLOoQMKGORvnvREiYo=
+h1:nWsJ7jpTBPHRZBnyUsd5C7Z0LcN9VVTzDBditIAwv6g=
+0010_user.sql h1:B/V1EI2QNluB0H+bZcZjIyqImnrYua2AAoZN3EV63oQ=
+0020_products.sql h1:JrmqJgizFo8F6pQNyesQd23UBTlnV1/FXd6T5umsg2E=
+0021_product_reviews.sql h1:MJspoOy6KArEL5dVV+IZxek3+d4oBzX3hyRwZMIOA3E=
+0030_order.sql h1:o7e61YKGtBYWzPKafwwW9Scz4Gc7QWb127am1OD3cYw=
+0031_order_items.sql h1:XGa5TRZp5dctl4suMxETJGhEw7gkhRWMEsoN2MFXTMo=
+0111_data.sql h1:nwrtkTQlMVEqt4Vc8d2z7vcWqXHrXIIjxcGpBruhrik=

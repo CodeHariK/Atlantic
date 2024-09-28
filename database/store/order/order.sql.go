@@ -17,48 +17,26 @@ INSERT INTO
     orders (
         id,
         user_id,
-        created_at,
-        updated_at,
-        amount_units,
-        amount_nanos,
-        amount_currency,
+        price,
         status,
         payment_status
     )
-VALUES (
-        $1,
-        $2,
-        $3,
-        $4,
-        $5,
-        $6,
-        $7,
-        $8,
-        $9
-    ) RETURNING id, user_id, created_at, updated_at, amount_units, amount_nanos, amount_currency, status, payment_status
+VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id, created_at, updated_at, price, status, payment_status
 `
 
 type CreateOrderParams struct {
-	ID             uuid.UUID        `json:"id"`
-	UserID         uuid.UUID        `json:"user_id"`
-	CreatedAt      pgtype.Timestamp `json:"created_at"`
-	UpdatedAt      pgtype.Timestamp `json:"updated_at"`
-	AmountUnits    int64            `json:"amount_units"`
-	AmountNanos    int32            `json:"amount_nanos"`
-	AmountCurrency string           `json:"amount_currency"`
-	Status         string           `json:"status"`
-	PaymentStatus  string           `json:"payment_status"`
+	ID            uuid.UUID `json:"id"`
+	UserID        uuid.UUID `json:"user_id"`
+	Price         int32     `json:"price"`
+	Status        string    `json:"status"`
+	PaymentStatus string    `json:"payment_status"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
 	row := q.db.QueryRow(ctx, createOrder,
 		arg.ID,
 		arg.UserID,
-		arg.CreatedAt,
-		arg.UpdatedAt,
-		arg.AmountUnits,
-		arg.AmountNanos,
-		arg.AmountCurrency,
+		arg.Price,
 		arg.Status,
 		arg.PaymentStatus,
 	)
@@ -68,9 +46,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.AmountUnits,
-		&i.AmountNanos,
-		&i.AmountCurrency,
+		&i.Price,
 		&i.Status,
 		&i.PaymentStatus,
 	)
@@ -87,7 +63,7 @@ func (q *Queries) DeleteOrderByID(ctx context.Context, id uuid.UUID) error {
 }
 
 const getOrderByID = `-- name: GetOrderByID :one
-SELECT id, user_id, created_at, updated_at, amount_units, amount_nanos, amount_currency, status, payment_status FROM orders WHERE id = $1
+SELECT id, user_id, created_at, updated_at, price, status, payment_status FROM orders WHERE id = $1
 `
 
 func (q *Queries) GetOrderByID(ctx context.Context, id uuid.UUID) (Order, error) {
@@ -98,9 +74,7 @@ func (q *Queries) GetOrderByID(ctx context.Context, id uuid.UUID) (Order, error)
 		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.AmountUnits,
-		&i.AmountNanos,
-		&i.AmountCurrency,
+		&i.Price,
 		&i.Status,
 		&i.PaymentStatus,
 	)
@@ -108,7 +82,7 @@ func (q *Queries) GetOrderByID(ctx context.Context, id uuid.UUID) (Order, error)
 }
 
 const getOrdersByUserID = `-- name: GetOrdersByUserID :many
-SELECT id, user_id, created_at, updated_at, amount_units, amount_nanos, amount_currency, status, payment_status FROM orders WHERE user_id = $1
+SELECT id, user_id, created_at, updated_at, price, status, payment_status FROM orders WHERE user_id = $1
 `
 
 func (q *Queries) GetOrdersByUserID(ctx context.Context, userID uuid.UUID) ([]Order, error) {
@@ -125,9 +99,7 @@ func (q *Queries) GetOrdersByUserID(ctx context.Context, userID uuid.UUID) ([]Or
 			&i.UserID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.AmountUnits,
-			&i.AmountNanos,
-			&i.AmountCurrency,
+			&i.Price,
 			&i.Status,
 			&i.PaymentStatus,
 		); err != nil {
@@ -147,7 +119,7 @@ SET
     payment_status = $2,
     updated_at = $3
 WHERE
-    id = $1 RETURNING id, user_id, created_at, updated_at, amount_units, amount_nanos, amount_currency, status, payment_status
+    id = $1 RETURNING id, user_id, created_at, updated_at, price, status, payment_status
 `
 
 type UpdateOrderPaymentStatusParams struct {
@@ -164,9 +136,7 @@ func (q *Queries) UpdateOrderPaymentStatus(ctx context.Context, arg UpdateOrderP
 		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.AmountUnits,
-		&i.AmountNanos,
-		&i.AmountCurrency,
+		&i.Price,
 		&i.Status,
 		&i.PaymentStatus,
 	)
@@ -174,31 +144,23 @@ func (q *Queries) UpdateOrderPaymentStatus(ctx context.Context, arg UpdateOrderP
 }
 
 const updateOrderStatus = `-- name: UpdateOrderStatus :one
-UPDATE orders
-SET
-    status = $2,
-    updated_at = $3
-WHERE
-    id = $1 RETURNING id, user_id, created_at, updated_at, amount_units, amount_nanos, amount_currency, status, payment_status
+UPDATE orders SET status = $2 WHERE id = $1 RETURNING id, user_id, created_at, updated_at, price, status, payment_status
 `
 
 type UpdateOrderStatusParams struct {
-	ID        uuid.UUID        `json:"id"`
-	Status    string           `json:"status"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	ID     uuid.UUID `json:"id"`
+	Status string    `json:"status"`
 }
 
 func (q *Queries) UpdateOrderStatus(ctx context.Context, arg UpdateOrderStatusParams) (Order, error) {
-	row := q.db.QueryRow(ctx, updateOrderStatus, arg.ID, arg.Status, arg.UpdatedAt)
+	row := q.db.QueryRow(ctx, updateOrderStatus, arg.ID, arg.Status)
 	var i Order
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.AmountUnits,
-		&i.AmountNanos,
-		&i.AmountCurrency,
+		&i.Price,
 		&i.Status,
 		&i.PaymentStatus,
 	)

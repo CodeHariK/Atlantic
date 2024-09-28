@@ -18,21 +18,17 @@ INSERT INTO
         order_id,
         product_id,
         quantity,
-        amount_units,
-        amount_nanos,
-        amount_currency
+        price
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, order_id, product_id, quantity, amount_units, amount_nanos, amount_currency
+VALUES ($1, $2, $3, $4, $5) RETURNING id, order_id, product_id, quantity, price
 `
 
 type CreateOrderItemParams struct {
-	ID             uuid.UUID `json:"id"`
-	OrderID        uuid.UUID `json:"order_id"`
-	ProductID      uuid.UUID `json:"product_id"`
-	Quantity       int32     `json:"quantity"`
-	AmountUnits    int64     `json:"amount_units"`
-	AmountNanos    int32     `json:"amount_nanos"`
-	AmountCurrency string    `json:"amount_currency"`
+	ID        uuid.UUID `json:"id"`
+	OrderID   uuid.UUID `json:"order_id"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int32     `json:"quantity"`
+	Price     int32     `json:"price"`
 }
 
 func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams) (OrderItem, error) {
@@ -41,9 +37,7 @@ func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams
 		arg.OrderID,
 		arg.ProductID,
 		arg.Quantity,
-		arg.AmountUnits,
-		arg.AmountNanos,
-		arg.AmountCurrency,
+		arg.Price,
 	)
 	var i OrderItem
 	err := row.Scan(
@@ -51,9 +45,7 @@ func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams
 		&i.OrderID,
 		&i.ProductID,
 		&i.Quantity,
-		&i.AmountUnits,
-		&i.AmountNanos,
-		&i.AmountCurrency,
+		&i.Price,
 	)
 	return i, err
 }
@@ -68,7 +60,7 @@ func (q *Queries) DeleteOrderItemByID(ctx context.Context, id uuid.UUID) error {
 }
 
 const getOrderItemByID = `-- name: GetOrderItemByID :one
-SELECT id, order_id, product_id, quantity, amount_units, amount_nanos, amount_currency FROM order_items WHERE id = $1
+SELECT id, order_id, product_id, quantity, price FROM order_items WHERE id = $1
 `
 
 func (q *Queries) GetOrderItemByID(ctx context.Context, id uuid.UUID) (OrderItem, error) {
@@ -79,15 +71,13 @@ func (q *Queries) GetOrderItemByID(ctx context.Context, id uuid.UUID) (OrderItem
 		&i.OrderID,
 		&i.ProductID,
 		&i.Quantity,
-		&i.AmountUnits,
-		&i.AmountNanos,
-		&i.AmountCurrency,
+		&i.Price,
 	)
 	return i, err
 }
 
 const getOrderItemsByOrderID = `-- name: GetOrderItemsByOrderID :many
-SELECT id, order_id, product_id, quantity, amount_units, amount_nanos, amount_currency FROM order_items WHERE order_id = $1
+SELECT id, order_id, product_id, quantity, price FROM order_items WHERE order_id = $1
 `
 
 func (q *Queries) GetOrderItemsByOrderID(ctx context.Context, orderID uuid.UUID) ([]OrderItem, error) {
@@ -104,9 +94,7 @@ func (q *Queries) GetOrderItemsByOrderID(ctx context.Context, orderID uuid.UUID)
 			&i.OrderID,
 			&i.ProductID,
 			&i.Quantity,
-			&i.AmountUnits,
-			&i.AmountNanos,
-			&i.AmountCurrency,
+			&i.Price,
 		); err != nil {
 			return nil, err
 		}

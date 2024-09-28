@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package account.v1;
+
+import "buf/validate/validate.proto";
+
+option go_package = "github.com/codeharik/Atlantic/account/api/account/v1";
+
+service AccountService {
+  rpc AddBalance(AddBalanceRequest) returns (AddBalanceResponse);
+}
+message AddBalanceRequest {
+  string UserID = 1 [(buf.validate.field).string.uuid = true];
+  int32 Amount = 2 [(buf.validate.field).int32.gt = 0];
+}
+
+message AddBalanceResponse {
+  string UserID = 1 [(buf.validate.field).string.uuid = true];
+  int32 Balance = 2 [(buf.validate.field).int32.gt = 0];
+}

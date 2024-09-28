@@ -19,9 +19,7 @@ func toOrder(in Order) *pb.Order {
 	if in.UpdatedAt.Valid {
 		out.UpdatedAt = timestamppb.New(in.UpdatedAt.Time)
 	}
-	out.AmountUnits = in.AmountUnits
-	out.AmountNanos = in.AmountNanos
-	out.AmountCurrency = in.AmountCurrency
+	out.Price = in.Price
 	out.Status = in.Status
 	out.PaymentStatus = in.PaymentStatus
 	return out
@@ -34,8 +32,6 @@ func toOrderItem(in OrderItem) *pb.OrderItem {
 	out.OrderId = in.OrderID.String()
 	out.ProductId = in.ProductID.String()
 	out.Quantity = in.Quantity
-	out.AmountUnits = in.AmountUnits
-	out.AmountNanos = in.AmountNanos
-	out.AmountCurrency = in.AmountCurrency
+	out.Price = in.Price
 	return out
 }

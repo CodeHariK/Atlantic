@@ -29,28 +29,12 @@ service OrderService {
   rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (UpdateOrderStatusResponse) {}
 }
 
-message Cart {
-  string id = 1;
-  string user_id = 2;
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp updated_at = 4;
-}
-
-message CartItem {
-  string id = 1;
-  string cart_id = 2;
-  string product_id = 3;
-  int32 quantity = 4;
-}
-
 message CreateOrderItemRequest {
   string id = 1;
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
+  int32 price = 5;
 }
 
 message CreateOrderItemResponse {
@@ -60,13 +44,9 @@ message CreateOrderItemResponse {
 message CreateOrderRequest {
   string id = 1;
   string user_id = 2;
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp updated_at = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
-  string status = 8;
-  string payment_status = 9;
+  int32 price = 3;
+  string status = 4;
+  string payment_status = 5;
 }
 
 message CreateOrderResponse {
@@ -129,11 +109,9 @@ message Order {
   string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
-  string status = 8;
-  string payment_status = 9;
+  int32 price = 5;
+  string status = 6;
+  string payment_status = 7;
 }
 
 message OrderItem {
@@ -141,31 +119,23 @@ message OrderItem {
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
+  int32 price = 5;
 }
 
 message Product {
   string id = 1;
   int32 quantity = 2;
-  int64 amount_units = 3;
-  int32 amount_nanos = 4;
-  string amount_currency = 5;
-}
-
-message ProductComment {
-  string id = 1;
-  google.protobuf.StringValue comment = 2;
+  int32 price = 3;
 }
 
 message ProductReview {
   string id = 1;
   string user_id = 2;
   string product_id = 3;
-  int32 rating = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.StringValue comment = 4;
+  int32 rating = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message UpdateOrderPaymentStatusRequest {
@@ -181,7 +151,6 @@ message UpdateOrderPaymentStatusResponse {
 message UpdateOrderStatusRequest {
   string id = 1;
   string status = 2;
-  google.protobuf.Timestamp updated_at = 3;
 }
 
 message UpdateOrderStatusResponse {

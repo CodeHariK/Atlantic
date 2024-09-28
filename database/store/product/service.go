@@ -46,9 +46,7 @@ func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.Cre
 		arg.ID = v
 	}
 	arg.Quantity = req.Msg.GetQuantity()
-	arg.AmountUnits = req.Msg.GetAmountUnits()
-	arg.AmountNanos = req.Msg.GetAmountNanos()
-	arg.AmountCurrency = req.Msg.GetAmountCurrency()
+	arg.Price = req.Msg.GetPrice()
 
 	result, err := s.querier.CreateProduct(ctx, arg)
 	if err != nil {
@@ -115,9 +113,7 @@ func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.Upd
 		arg.ID = v
 	}
 	arg.Quantity = req.Msg.GetQuantity()
-	arg.AmountUnits = req.Msg.GetAmountUnits()
-	arg.AmountNanos = req.Msg.GetAmountNanos()
-	arg.AmountCurrency = req.Msg.GetAmountCurrency()
+	arg.Price = req.Msg.GetPrice()
 
 	err := s.querier.UpdateProduct(ctx, arg)
 	if err != nil {

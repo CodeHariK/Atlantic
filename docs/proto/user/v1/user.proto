@@ -27,20 +27,6 @@ service UserService {
   rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (UpdateUserPasswordResponse) {}
 }
 
-message Cart {
-  string id = 1;
-  string user_id = 2;
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp updated_at = 4;
-}
-
-message CartItem {
-  string id = 1;
-  string cart_id = 2;
-  string product_id = 3;
-  int32 quantity = 4;
-}
-
 message CreateUserRequest {
   string id = 1;
   google.protobuf.StringValue username = 2;
@@ -120,11 +106,9 @@ message Order {
   string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
-  string status = 8;
-  string payment_status = 9;
+  int32 price = 5;
+  string status = 6;
+  string payment_status = 7;
 }
 
 message OrderItem {
@@ -132,31 +116,23 @@ message OrderItem {
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
-  int64 amount_units = 5;
-  int32 amount_nanos = 6;
-  string amount_currency = 7;
+  int32 price = 5;
 }
 
 message Product {
   string id = 1;
   int32 quantity = 2;
-  int64 amount_units = 3;
-  int32 amount_nanos = 4;
-  string amount_currency = 5;
-}
-
-message ProductComment {
-  string id = 1;
-  google.protobuf.StringValue comment = 2;
+  int32 price = 3;
 }
 
 message ProductReview {
   string id = 1;
   string user_id = 2;
   string product_id = 3;
-  int32 rating = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.StringValue comment = 4;
+  int32 rating = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message UpdateUserBalanceRequest {
@@ -164,7 +140,9 @@ message UpdateUserBalanceRequest {
   int32 balance = 2;
 }
 
-message UpdateUserBalanceResponse {}
+message UpdateUserBalanceResponse {
+  int32 value = 1;
+}
 
 message UpdateUserRequest {
   google.protobuf.StringValue username = 1;

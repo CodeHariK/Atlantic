@@ -197,12 +197,12 @@ func (s *Service) UpdateUserBalance(ctx context.Context, req *connect.Request[pb
 	}
 	arg.Balance = req.Msg.GetBalance()
 
-	err := s.querier.UpdateUserBalance(ctx, arg)
+	result, err := s.querier.UpdateUserBalance(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "UpdateUserBalance")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.UpdateUserBalanceResponse{}), nil
+	return connect.NewResponse(&pb.UpdateUserBalanceResponse{Value: result}), nil
 }
 
 func (s *Service) UpdateUserPassword(ctx context.Context, req *connect.Request[pb.UpdateUserPasswordRequest]) (*connect.Response[pb.UpdateUserPasswordResponse], error) {
