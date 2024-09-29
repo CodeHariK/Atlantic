@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package orders.v11;
+
+import "buf/validate/validate.proto";
+
+option go_package = "github.com/codeharik/Atlantic/orders/api/orders/v11";
+
+service OrdersService {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+}
+message PlaceOrderRequest {
+  string OrderID = 1;
+  string CustomerID = 2;
+}
+
+message PlaceOrderResponse {
+  string OrderID = 1;
+}

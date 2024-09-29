@@ -11,6 +11,7 @@ import (
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/servemux"
 	"github.com/codeharik/Atlantic/service/store"
+	"go.temporal.io/sdk/client"
 )
 
 const serviceName = "orders"
@@ -35,11 +36,19 @@ func main() {
 
 	natsClient := nats.ConnectNats(cfg)
 
+	temporalClient, err := client.Dial(client.Options{
+		HostPort: fmt.Sprintf("%s:%d", cfg.Temporal.Host, cfg.Temporal.Port),
+	})
+	if err != nil {
+		log.Fatalln("Unable to create Temporal client.", err)
+	}
+
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg, natsClient, storeInstance)
+			server.CreateRoutes(serviceName, router, &cfg, natsClient, storeInstance, temporalClient)
 		},
 		func() error {
+			temporalClient.Close()
 			natsClient.Nc.Close()
 			storeInstance.Db.Close()
 			return nil

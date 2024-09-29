@@ -3,10 +3,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateCartItemRequest, CreateCartItemResponse, CreateCartRequest, CreateCartResponse, DeleteCartByIDRequest, DeleteCartByIDResponse, DeleteCartItemByIDRequest, DeleteCartItemByIDResponse, GetCartByIDRequest, GetCartByIDResponse, GetCartItemByIDRequest, GetCartItemByIDResponse, GetCartItemsByCartIDRequest, GetCartItemsByCartIDResponse, GetCartsByUserIDRequest, GetCartsByUserIDResponse, UpdateCartItemQuantityRequest, UpdateCartItemQuantityResponse } from "./cart_pb.js";
+import { Cart, CartItem, CheckoutCartRequest, CheckoutCartResponse, CreateCartRequest, GetCartRequest } from "./cart_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
+ * rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+ *
  * @generated from service cart.v1.CartService
  */
 export const CartService = {
@@ -18,79 +20,34 @@ export const CartService = {
     createCart: {
       name: "CreateCart",
       I: CreateCartRequest,
-      O: CreateCartResponse,
+      O: Cart,
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc cart.v1.CartService.CreateCartItem
+     * @generated from rpc cart.v1.CartService.GetCart
      */
-    createCartItem: {
-      name: "CreateCartItem",
-      I: CreateCartItemRequest,
-      O: CreateCartItemResponse,
+    getCart: {
+      name: "GetCart",
+      I: GetCartRequest,
+      O: Cart,
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc cart.v1.CartService.DeleteCartByID
+     * @generated from rpc cart.v1.CartService.UpdateCartItem
      */
-    deleteCartByID: {
-      name: "DeleteCartByID",
-      I: DeleteCartByIDRequest,
-      O: DeleteCartByIDResponse,
+    updateCartItem: {
+      name: "UpdateCartItem",
+      I: CartItem,
+      O: Cart,
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc cart.v1.CartService.DeleteCartItemByID
+     * @generated from rpc cart.v1.CartService.CheckoutCart
      */
-    deleteCartItemByID: {
-      name: "DeleteCartItemByID",
-      I: DeleteCartItemByIDRequest,
-      O: DeleteCartItemByIDResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc cart.v1.CartService.GetCartByID
-     */
-    getCartByID: {
-      name: "GetCartByID",
-      I: GetCartByIDRequest,
-      O: GetCartByIDResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc cart.v1.CartService.GetCartItemByID
-     */
-    getCartItemByID: {
-      name: "GetCartItemByID",
-      I: GetCartItemByIDRequest,
-      O: GetCartItemByIDResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc cart.v1.CartService.GetCartItemsByCartID
-     */
-    getCartItemsByCartID: {
-      name: "GetCartItemsByCartID",
-      I: GetCartItemsByCartIDRequest,
-      O: GetCartItemsByCartIDResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc cart.v1.CartService.GetCartsByUserID
-     */
-    getCartsByUserID: {
-      name: "GetCartsByUserID",
-      I: GetCartsByUserIDRequest,
-      O: GetCartsByUserIDResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc cart.v1.CartService.UpdateCartItemQuantity
-     */
-    updateCartItemQuantity: {
-      name: "UpdateCartItemQuantity",
-      I: UpdateCartItemQuantityRequest,
-      O: UpdateCartItemQuantityResponse,
+    checkoutCart: {
+      name: "CheckoutCart",
+      I: CheckoutCartRequest,
+      O: CheckoutCartResponse,
       kind: MethodKind.Unary,
     },
   }

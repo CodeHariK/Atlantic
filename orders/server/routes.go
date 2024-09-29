@@ -8,12 +8,14 @@ import (
 	"connectrpc.com/grpcreflect"
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
+	"github.com/codeharik/Atlantic/orders/api/cart/v1/v1connect"
 	"github.com/codeharik/Atlantic/service/authbox"
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/store"
+	"go.temporal.io/sdk/client"
 
-	order_v1connect "github.com/codeharik/Atlantic/database/api/order/v1/v1connect"
-	order_app "github.com/codeharik/Atlantic/database/store/order"
+	orders_v1connect "github.com/codeharik/Atlantic/database/api/orders/v1/v1connect"
+	orders_app "github.com/codeharik/Atlantic/database/store/orders"
 )
 
 func CreateRoutes(
@@ -22,6 +24,7 @@ func CreateRoutes(
 	config *config.Config,
 	natsClient *nats.NatsClient,
 	storeInstance store.Store,
+	temporalClient client.Client,
 ) {
 	//------------------
 	// Docs
@@ -33,30 +36,30 @@ func CreateRoutes(
 
 	interceptors := authbox.ConnectInterceptors(config)
 
-	// //------------------
-	// // OrdersService
+	//------------------
+	// OrdersService
 
-	// ordersService := CreateOrdersServiceServer(*config, natsClient)
-	// ordersPath, ordersHandler := v1connect.NewOrdersServiceHandler(
-	// 	ordersService,
-	// 	interceptors...,
-	// )
+	cartService := CreateCartServiceServer(*config, natsClient, storeInstance, temporalClient)
+	cartPath, cartHandler := v1connect.NewCartServiceHandler(
+		cartService,
+		interceptors...,
+	)
 
-	// // shield := authbox.ConnectShield(config)
+	// shield := authbox.ConnectShield(config)
 
-	// router.Handle(
-	// 	ordersPath,
-	// 	// shield.Wrap(ordersHandler),
-	// 	ordersHandler,
-	// )
+	router.Handle(
+		cartPath,
+		// shield.Wrap(ordersHandler),
+		cartHandler,
+	)
 
 	//------------------
 	// OrdersService
 
-	orderService := order_app.NewService(
-		order_app.New(storeInstance.Db),
+	orderService := orders_app.NewService(
+		orders_app.New(storeInstance.Db),
 	)
-	orderPath, orderHandler := order_v1connect.NewOrderServiceHandler(
+	orderPath, orderHandler := orders_v1connect.NewOrdersServiceHandler(
 		orderService,
 		interceptors...,
 	)
@@ -70,8 +73,8 @@ func CreateRoutes(
 	// Reflectors
 
 	reflector := grpcreflect.NewStaticReflector(
-		// v1connect.OrdersServiceName,
-		order_v1connect.OrderServiceName,
+		v1connect.CartServiceName,
+		orders_v1connect.OrdersServiceName,
 	)
 	router.Handle(grpcreflect.NewHandlerV1(reflector))
 	router.Handle(grpcreflect.NewHandlerV1Alpha(reflector))

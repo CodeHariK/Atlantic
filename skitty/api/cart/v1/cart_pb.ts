@@ -4,17 +4,12 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Message, proto3, protoInt64, StringValue, Timestamp } from "@bufbuild/protobuf";
+import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 
 /**
  * @generated from message cart.v1.Cart
  */
 export class Cart extends Message<Cart> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
   /**
    * @generated from field: string user_id = 2;
    */
@@ -30,6 +25,11 @@ export class Cart extends Message<Cart> {
    */
   updatedAt?: Timestamp;
 
+  /**
+   * @generated from field: repeated cart.v1.CartItem items = 5;
+   */
+  items: CartItem[] = [];
+
   constructor(data?: PartialMessage<Cart>) {
     super();
     proto3.util.initPartial(data, this);
@@ -38,10 +38,10 @@ export class Cart extends Message<Cart> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "cart.v1.Cart";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "created_at", kind: "message", T: Timestamp },
     { no: 4, name: "updated_at", kind: "message", T: Timestamp },
+    { no: 5, name: "items", kind: "message", T: CartItem, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Cart {
@@ -66,16 +66,6 @@ export class Cart extends Message<Cart> {
  */
 export class CartItem extends Message<CartItem> {
   /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string cart_id = 2;
-   */
-  cartId = "";
-
-  /**
    * @generated from field: string product_id = 3;
    */
   productId = "";
@@ -93,8 +83,6 @@ export class CartItem extends Message<CartItem> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "cart.v1.CartItem";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "cart_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
@@ -117,111 +105,9 @@ export class CartItem extends Message<CartItem> {
 }
 
 /**
- * @generated from message cart.v1.CreateCartItemRequest
- */
-export class CreateCartItemRequest extends Message<CreateCartItemRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string cart_id = 2;
-   */
-  cartId = "";
-
-  /**
-   * @generated from field: string product_id = 3;
-   */
-  productId = "";
-
-  /**
-   * @generated from field: int32 quantity = 4;
-   */
-  quantity = 0;
-
-  constructor(data?: PartialMessage<CreateCartItemRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.CreateCartItemRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "cart_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateCartItemRequest {
-    return new CreateCartItemRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateCartItemRequest {
-    return new CreateCartItemRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateCartItemRequest {
-    return new CreateCartItemRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: CreateCartItemRequest | PlainMessage<CreateCartItemRequest> | undefined, b: CreateCartItemRequest | PlainMessage<CreateCartItemRequest> | undefined): boolean {
-    return proto3.util.equals(CreateCartItemRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.CreateCartItemResponse
- */
-export class CreateCartItemResponse extends Message<CreateCartItemResponse> {
-  /**
-   * @generated from field: cart.v1.CartItem cart_item = 1;
-   */
-  cartItem?: CartItem;
-
-  constructor(data?: PartialMessage<CreateCartItemResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.CreateCartItemResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "cart_item", kind: "message", T: CartItem },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateCartItemResponse {
-    return new CreateCartItemResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateCartItemResponse {
-    return new CreateCartItemResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateCartItemResponse {
-    return new CreateCartItemResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: CreateCartItemResponse | PlainMessage<CreateCartItemResponse> | undefined, b: CreateCartItemResponse | PlainMessage<CreateCartItemResponse> | undefined): boolean {
-    return proto3.util.equals(CreateCartItemResponse, a, b);
-  }
-}
-
-/**
  * @generated from message cart.v1.CreateCartRequest
  */
 export class CreateCartRequest extends Message<CreateCartRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string user_id = 2;
-   */
-  userId = "";
-
   constructor(data?: PartialMessage<CreateCartRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -230,8 +116,6 @@ export class CreateCartRequest extends Message<CreateCartRequest> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "cart.v1.CreateCartRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateCartRequest {
@@ -252,971 +136,95 @@ export class CreateCartRequest extends Message<CreateCartRequest> {
 }
 
 /**
- * @generated from message cart.v1.CreateCartResponse
+ * @generated from message cart.v1.GetCartRequest
  */
-export class CreateCartResponse extends Message<CreateCartResponse> {
-  /**
-   * @generated from field: cart.v1.Cart cart = 1;
-   */
-  cart?: Cart;
-
-  constructor(data?: PartialMessage<CreateCartResponse>) {
+export class GetCartRequest extends Message<GetCartRequest> {
+  constructor(data?: PartialMessage<GetCartRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.CreateCartResponse";
+  static readonly typeName = "cart.v1.GetCartRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "cart", kind: "message", T: Cart },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CreateCartResponse {
-    return new CreateCartResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartRequest {
+    return new GetCartRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CreateCartResponse {
-    return new CreateCartResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartRequest {
+    return new GetCartRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CreateCartResponse {
-    return new CreateCartResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartRequest {
+    return new GetCartRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: CreateCartResponse | PlainMessage<CreateCartResponse> | undefined, b: CreateCartResponse | PlainMessage<CreateCartResponse> | undefined): boolean {
-    return proto3.util.equals(CreateCartResponse, a, b);
+  static equals(a: GetCartRequest | PlainMessage<GetCartRequest> | undefined, b: GetCartRequest | PlainMessage<GetCartRequest> | undefined): boolean {
+    return proto3.util.equals(GetCartRequest, a, b);
   }
 }
 
 /**
- * @generated from message cart.v1.DeleteCartByIDRequest
+ * @generated from message cart.v1.CheckoutCartRequest
  */
-export class DeleteCartByIDRequest extends Message<DeleteCartByIDRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<DeleteCartByIDRequest>) {
+export class CheckoutCartRequest extends Message<CheckoutCartRequest> {
+  constructor(data?: PartialMessage<CheckoutCartRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.DeleteCartByIDRequest";
+  static readonly typeName = "cart.v1.CheckoutCartRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteCartByIDRequest {
-    return new DeleteCartByIDRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CheckoutCartRequest {
+    return new CheckoutCartRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteCartByIDRequest {
-    return new DeleteCartByIDRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CheckoutCartRequest {
+    return new CheckoutCartRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteCartByIDRequest {
-    return new DeleteCartByIDRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CheckoutCartRequest {
+    return new CheckoutCartRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: DeleteCartByIDRequest | PlainMessage<DeleteCartByIDRequest> | undefined, b: DeleteCartByIDRequest | PlainMessage<DeleteCartByIDRequest> | undefined): boolean {
-    return proto3.util.equals(DeleteCartByIDRequest, a, b);
+  static equals(a: CheckoutCartRequest | PlainMessage<CheckoutCartRequest> | undefined, b: CheckoutCartRequest | PlainMessage<CheckoutCartRequest> | undefined): boolean {
+    return proto3.util.equals(CheckoutCartRequest, a, b);
   }
 }
 
 /**
- * @generated from message cart.v1.DeleteCartByIDResponse
+ * @generated from message cart.v1.CheckoutCartResponse
  */
-export class DeleteCartByIDResponse extends Message<DeleteCartByIDResponse> {
-  constructor(data?: PartialMessage<DeleteCartByIDResponse>) {
+export class CheckoutCartResponse extends Message<CheckoutCartResponse> {
+  constructor(data?: PartialMessage<CheckoutCartResponse>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.DeleteCartByIDResponse";
+  static readonly typeName = "cart.v1.CheckoutCartResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteCartByIDResponse {
-    return new DeleteCartByIDResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CheckoutCartResponse {
+    return new CheckoutCartResponse().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteCartByIDResponse {
-    return new DeleteCartByIDResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CheckoutCartResponse {
+    return new CheckoutCartResponse().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteCartByIDResponse {
-    return new DeleteCartByIDResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CheckoutCartResponse {
+    return new CheckoutCartResponse().fromJsonString(jsonString, options);
   }
 
-  static equals(a: DeleteCartByIDResponse | PlainMessage<DeleteCartByIDResponse> | undefined, b: DeleteCartByIDResponse | PlainMessage<DeleteCartByIDResponse> | undefined): boolean {
-    return proto3.util.equals(DeleteCartByIDResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.DeleteCartItemByIDRequest
- */
-export class DeleteCartItemByIDRequest extends Message<DeleteCartItemByIDRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<DeleteCartItemByIDRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.DeleteCartItemByIDRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteCartItemByIDRequest {
-    return new DeleteCartItemByIDRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteCartItemByIDRequest {
-    return new DeleteCartItemByIDRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteCartItemByIDRequest {
-    return new DeleteCartItemByIDRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: DeleteCartItemByIDRequest | PlainMessage<DeleteCartItemByIDRequest> | undefined, b: DeleteCartItemByIDRequest | PlainMessage<DeleteCartItemByIDRequest> | undefined): boolean {
-    return proto3.util.equals(DeleteCartItemByIDRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.DeleteCartItemByIDResponse
- */
-export class DeleteCartItemByIDResponse extends Message<DeleteCartItemByIDResponse> {
-  constructor(data?: PartialMessage<DeleteCartItemByIDResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.DeleteCartItemByIDResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteCartItemByIDResponse {
-    return new DeleteCartItemByIDResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteCartItemByIDResponse {
-    return new DeleteCartItemByIDResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteCartItemByIDResponse {
-    return new DeleteCartItemByIDResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: DeleteCartItemByIDResponse | PlainMessage<DeleteCartItemByIDResponse> | undefined, b: DeleteCartItemByIDResponse | PlainMessage<DeleteCartItemByIDResponse> | undefined): boolean {
-    return proto3.util.equals(DeleteCartItemByIDResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartByIDRequest
- */
-export class GetCartByIDRequest extends Message<GetCartByIDRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<GetCartByIDRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartByIDRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartByIDRequest {
-    return new GetCartByIDRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartByIDRequest {
-    return new GetCartByIDRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartByIDRequest {
-    return new GetCartByIDRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartByIDRequest | PlainMessage<GetCartByIDRequest> | undefined, b: GetCartByIDRequest | PlainMessage<GetCartByIDRequest> | undefined): boolean {
-    return proto3.util.equals(GetCartByIDRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartByIDResponse
- */
-export class GetCartByIDResponse extends Message<GetCartByIDResponse> {
-  /**
-   * @generated from field: cart.v1.Cart cart = 1;
-   */
-  cart?: Cart;
-
-  constructor(data?: PartialMessage<GetCartByIDResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartByIDResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "cart", kind: "message", T: Cart },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartByIDResponse {
-    return new GetCartByIDResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartByIDResponse {
-    return new GetCartByIDResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartByIDResponse {
-    return new GetCartByIDResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartByIDResponse | PlainMessage<GetCartByIDResponse> | undefined, b: GetCartByIDResponse | PlainMessage<GetCartByIDResponse> | undefined): boolean {
-    return proto3.util.equals(GetCartByIDResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartItemByIDRequest
- */
-export class GetCartItemByIDRequest extends Message<GetCartItemByIDRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  constructor(data?: PartialMessage<GetCartItemByIDRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartItemByIDRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartItemByIDRequest {
-    return new GetCartItemByIDRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartItemByIDRequest {
-    return new GetCartItemByIDRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartItemByIDRequest {
-    return new GetCartItemByIDRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartItemByIDRequest | PlainMessage<GetCartItemByIDRequest> | undefined, b: GetCartItemByIDRequest | PlainMessage<GetCartItemByIDRequest> | undefined): boolean {
-    return proto3.util.equals(GetCartItemByIDRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartItemByIDResponse
- */
-export class GetCartItemByIDResponse extends Message<GetCartItemByIDResponse> {
-  /**
-   * @generated from field: cart.v1.CartItem cart_item = 1;
-   */
-  cartItem?: CartItem;
-
-  constructor(data?: PartialMessage<GetCartItemByIDResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartItemByIDResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "cart_item", kind: "message", T: CartItem },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartItemByIDResponse {
-    return new GetCartItemByIDResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartItemByIDResponse {
-    return new GetCartItemByIDResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartItemByIDResponse {
-    return new GetCartItemByIDResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartItemByIDResponse | PlainMessage<GetCartItemByIDResponse> | undefined, b: GetCartItemByIDResponse | PlainMessage<GetCartItemByIDResponse> | undefined): boolean {
-    return proto3.util.equals(GetCartItemByIDResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartItemsByCartIDRequest
- */
-export class GetCartItemsByCartIDRequest extends Message<GetCartItemsByCartIDRequest> {
-  /**
-   * @generated from field: string cart_id = 1;
-   */
-  cartId = "";
-
-  constructor(data?: PartialMessage<GetCartItemsByCartIDRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartItemsByCartIDRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "cart_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartItemsByCartIDRequest {
-    return new GetCartItemsByCartIDRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartItemsByCartIDRequest {
-    return new GetCartItemsByCartIDRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartItemsByCartIDRequest {
-    return new GetCartItemsByCartIDRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartItemsByCartIDRequest | PlainMessage<GetCartItemsByCartIDRequest> | undefined, b: GetCartItemsByCartIDRequest | PlainMessage<GetCartItemsByCartIDRequest> | undefined): boolean {
-    return proto3.util.equals(GetCartItemsByCartIDRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartItemsByCartIDResponse
- */
-export class GetCartItemsByCartIDResponse extends Message<GetCartItemsByCartIDResponse> {
-  /**
-   * @generated from field: repeated cart.v1.CartItem list = 1;
-   */
-  list: CartItem[] = [];
-
-  constructor(data?: PartialMessage<GetCartItemsByCartIDResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartItemsByCartIDResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "list", kind: "message", T: CartItem, repeated: true },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartItemsByCartIDResponse {
-    return new GetCartItemsByCartIDResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartItemsByCartIDResponse {
-    return new GetCartItemsByCartIDResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartItemsByCartIDResponse {
-    return new GetCartItemsByCartIDResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartItemsByCartIDResponse | PlainMessage<GetCartItemsByCartIDResponse> | undefined, b: GetCartItemsByCartIDResponse | PlainMessage<GetCartItemsByCartIDResponse> | undefined): boolean {
-    return proto3.util.equals(GetCartItemsByCartIDResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartsByUserIDRequest
- */
-export class GetCartsByUserIDRequest extends Message<GetCartsByUserIDRequest> {
-  /**
-   * @generated from field: string user_id = 1;
-   */
-  userId = "";
-
-  constructor(data?: PartialMessage<GetCartsByUserIDRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartsByUserIDRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartsByUserIDRequest {
-    return new GetCartsByUserIDRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartsByUserIDRequest {
-    return new GetCartsByUserIDRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartsByUserIDRequest {
-    return new GetCartsByUserIDRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartsByUserIDRequest | PlainMessage<GetCartsByUserIDRequest> | undefined, b: GetCartsByUserIDRequest | PlainMessage<GetCartsByUserIDRequest> | undefined): boolean {
-    return proto3.util.equals(GetCartsByUserIDRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GetCartsByUserIDResponse
- */
-export class GetCartsByUserIDResponse extends Message<GetCartsByUserIDResponse> {
-  /**
-   * @generated from field: repeated cart.v1.Cart list = 1;
-   */
-  list: Cart[] = [];
-
-  constructor(data?: PartialMessage<GetCartsByUserIDResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GetCartsByUserIDResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "list", kind: "message", T: Cart, repeated: true },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCartsByUserIDResponse {
-    return new GetCartsByUserIDResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCartsByUserIDResponse {
-    return new GetCartsByUserIDResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCartsByUserIDResponse {
-    return new GetCartsByUserIDResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GetCartsByUserIDResponse | PlainMessage<GetCartsByUserIDResponse> | undefined, b: GetCartsByUserIDResponse | PlainMessage<GetCartsByUserIDResponse> | undefined): boolean {
-    return proto3.util.equals(GetCartsByUserIDResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.GooseDbVersion
- */
-export class GooseDbVersion extends Message<GooseDbVersion> {
-  /**
-   * @generated from field: int32 id = 1;
-   */
-  id = 0;
-
-  /**
-   * @generated from field: int64 version_id = 2;
-   */
-  versionId = protoInt64.zero;
-
-  /**
-   * @generated from field: bool is_applied = 3;
-   */
-  isApplied = false;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp tstamp = 4;
-   */
-  tstamp?: Timestamp;
-
-  constructor(data?: PartialMessage<GooseDbVersion>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.GooseDbVersion";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 2, name: "version_id", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 3, name: "is_applied", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 4, name: "tstamp", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GooseDbVersion {
-    return new GooseDbVersion().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GooseDbVersion {
-    return new GooseDbVersion().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GooseDbVersion {
-    return new GooseDbVersion().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: GooseDbVersion | PlainMessage<GooseDbVersion> | undefined, b: GooseDbVersion | PlainMessage<GooseDbVersion> | undefined): boolean {
-    return proto3.util.equals(GooseDbVersion, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.Order
- */
-export class Order extends Message<Order> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string user_id = 2;
-   */
-  userId = "";
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 3;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 4;
-   */
-  updatedAt?: Timestamp;
-
-  /**
-   * @generated from field: int32 price = 5;
-   */
-  price = 0;
-
-  /**
-   * @generated from field: string status = 6;
-   */
-  status = "";
-
-  /**
-   * @generated from field: string payment_status = 7;
-   */
-  paymentStatus = "";
-
-  constructor(data?: PartialMessage<Order>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.Order";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "created_at", kind: "message", T: Timestamp },
-    { no: 4, name: "updated_at", kind: "message", T: Timestamp },
-    { no: 5, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 6, name: "status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "payment_status", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Order {
-    return new Order().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Order {
-    return new Order().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Order {
-    return new Order().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Order | PlainMessage<Order> | undefined, b: Order | PlainMessage<Order> | undefined): boolean {
-    return proto3.util.equals(Order, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.OrderItem
- */
-export class OrderItem extends Message<OrderItem> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string order_id = 2;
-   */
-  orderId = "";
-
-  /**
-   * @generated from field: string product_id = 3;
-   */
-  productId = "";
-
-  /**
-   * @generated from field: int32 quantity = 4;
-   */
-  quantity = 0;
-
-  /**
-   * @generated from field: int32 price = 5;
-   */
-  price = 0;
-
-  constructor(data?: PartialMessage<OrderItem>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.OrderItem";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "order_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 5, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): OrderItem {
-    return new OrderItem().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): OrderItem {
-    return new OrderItem().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): OrderItem {
-    return new OrderItem().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: OrderItem | PlainMessage<OrderItem> | undefined, b: OrderItem | PlainMessage<OrderItem> | undefined): boolean {
-    return proto3.util.equals(OrderItem, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.Product
- */
-export class Product extends Message<Product> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: int32 quantity = 2;
-   */
-  quantity = 0;
-
-  /**
-   * @generated from field: int32 price = 3;
-   */
-  price = 0;
-
-  constructor(data?: PartialMessage<Product>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.Product";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {
-    return new Product().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Product {
-    return new Product().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Product {
-    return new Product().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: Product | PlainMessage<Product> | undefined, b: Product | PlainMessage<Product> | undefined): boolean {
-    return proto3.util.equals(Product, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.ProductReview
- */
-export class ProductReview extends Message<ProductReview> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: string user_id = 2;
-   */
-  userId = "";
-
-  /**
-   * @generated from field: string product_id = 3;
-   */
-  productId = "";
-
-  /**
-   * @generated from field: google.protobuf.StringValue comment = 4;
-   */
-  comment?: string;
-
-  /**
-   * @generated from field: int32 rating = 5;
-   */
-  rating = 0;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 6;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 7;
-   */
-  updatedAt?: Timestamp;
-
-  constructor(data?: PartialMessage<ProductReview>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.ProductReview";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "comment", kind: "message", T: StringValue },
-    { no: 5, name: "rating", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 6, name: "created_at", kind: "message", T: Timestamp },
-    { no: 7, name: "updated_at", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProductReview {
-    return new ProductReview().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ProductReview {
-    return new ProductReview().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ProductReview {
-    return new ProductReview().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: ProductReview | PlainMessage<ProductReview> | undefined, b: ProductReview | PlainMessage<ProductReview> | undefined): boolean {
-    return proto3.util.equals(ProductReview, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.UpdateCartItemQuantityRequest
- */
-export class UpdateCartItemQuantityRequest extends Message<UpdateCartItemQuantityRequest> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: int32 quantity = 2;
-   */
-  quantity = 0;
-
-  constructor(data?: PartialMessage<UpdateCartItemQuantityRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.UpdateCartItemQuantityRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateCartItemQuantityRequest {
-    return new UpdateCartItemQuantityRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateCartItemQuantityRequest {
-    return new UpdateCartItemQuantityRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateCartItemQuantityRequest {
-    return new UpdateCartItemQuantityRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: UpdateCartItemQuantityRequest | PlainMessage<UpdateCartItemQuantityRequest> | undefined, b: UpdateCartItemQuantityRequest | PlainMessage<UpdateCartItemQuantityRequest> | undefined): boolean {
-    return proto3.util.equals(UpdateCartItemQuantityRequest, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.UpdateCartItemQuantityResponse
- */
-export class UpdateCartItemQuantityResponse extends Message<UpdateCartItemQuantityResponse> {
-  /**
-   * @generated from field: cart.v1.CartItem cart_item = 1;
-   */
-  cartItem?: CartItem;
-
-  constructor(data?: PartialMessage<UpdateCartItemQuantityResponse>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.UpdateCartItemQuantityResponse";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "cart_item", kind: "message", T: CartItem },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdateCartItemQuantityResponse {
-    return new UpdateCartItemQuantityResponse().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdateCartItemQuantityResponse {
-    return new UpdateCartItemQuantityResponse().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdateCartItemQuantityResponse {
-    return new UpdateCartItemQuantityResponse().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: UpdateCartItemQuantityResponse | PlainMessage<UpdateCartItemQuantityResponse> | undefined, b: UpdateCartItemQuantityResponse | PlainMessage<UpdateCartItemQuantityResponse> | undefined): boolean {
-    return proto3.util.equals(UpdateCartItemQuantityResponse, a, b);
-  }
-}
-
-/**
- * @generated from message cart.v1.User
- */
-export class User extends Message<User> {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id = "";
-
-  /**
-   * @generated from field: google.protobuf.StringValue username = 2;
-   */
-  username?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue password_hash = 3;
-   */
-  passwordHash?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue email = 4;
-   */
-  email?: string;
-
-  /**
-   * @generated from field: bool verified = 5;
-   */
-  verified = false;
-
-  /**
-   * @generated from field: google.protobuf.StringValue phone_number = 6;
-   */
-  phoneNumber?: string;
-
-  /**
-   * @generated from field: google.protobuf.StringValue gender = 7;
-   */
-  gender?: string;
-
-  /**
-   * @generated from field: int64 role = 8;
-   */
-  role = protoInt64.zero;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp date_of_birth = 9;
-   */
-  dateOfBirth?: Timestamp;
-
-  /**
-   * @generated from field: string address = 10;
-   */
-  address = "";
-
-  /**
-   * @generated from field: int32 balance = 11;
-   */
-  balance = 0;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 12;
-   */
-  createdAt?: Timestamp;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 13;
-   */
-  updatedAt?: Timestamp;
-
-  constructor(data?: PartialMessage<User>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cart.v1.User";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "username", kind: "message", T: StringValue },
-    { no: 3, name: "password_hash", kind: "message", T: StringValue },
-    { no: 4, name: "email", kind: "message", T: StringValue },
-    { no: 5, name: "verified", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
-    { no: 6, name: "phone_number", kind: "message", T: StringValue },
-    { no: 7, name: "gender", kind: "message", T: StringValue },
-    { no: 8, name: "role", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
-    { no: 9, name: "date_of_birth", kind: "message", T: Timestamp },
-    { no: 10, name: "address", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 11, name: "balance", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 12, name: "created_at", kind: "message", T: Timestamp },
-    { no: 13, name: "updated_at", kind: "message", T: Timestamp },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): User {
-    return new User().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): User {
-    return new User().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): User {
-    return new User().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: User | PlainMessage<User> | undefined, b: User | PlainMessage<User> | undefined): boolean {
-    return proto3.util.equals(User, a, b);
+  static equals(a: CheckoutCartResponse | PlainMessage<CheckoutCartResponse> | undefined, b: CheckoutCartResponse | PlainMessage<CheckoutCartResponse> | undefined): boolean {
+    return proto3.util.equals(CheckoutCartResponse, a, b);
   }
 }
 

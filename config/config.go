@@ -110,16 +110,16 @@ type Config struct {
 		Topics NatsTopic `json:"topics"`
 	} `json:"nats"`
 
+	Temporal struct {
+		Host  string `json:"host"`
+		Port  int    `json:"port"`
+		Creds string `json:"creds"`
+	} `json:"temporal"`
+
 	InventoryService struct {
 		Host string `json:"host"`
 		Port int    `json:"port"`
 	} `json:"inventory_service"`
-
-	AccountService struct {
-		Name string `json:"name"`
-		Host string `json:"host"`
-		Port int    `json:"port"`
-	} `json:"account_service"`
 
 	FeatureFlags struct {
 		NewFeature bool `json:"new_feature"`

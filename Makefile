@@ -1,4 +1,4 @@
-.PHONY: run local atlantic auth inventory orders skitty overtools cosmog account
+.PHONY: run local atlantic auth inventory orders skitty overtools cosmog
 
 run:
 	@VITE_DOMAIN=$(VITE_DOMAIN) ./run.sh \
@@ -9,7 +9,6 @@ run:
       meilisearch "make meilisearch" \
       skitty "make skitty" \
       auth "make auth" \
-      account "make account" \
       orders "make orders" \
       inventory "make inventory" \
       caddy "make caddy"
@@ -40,6 +39,9 @@ meilisearch:
 
 nats:
 	nats-server -c config/nats/js.conf
+
+temporal:
+	temporal server start-dev
 
 kompose:
 	rm -f k8s/gen/*
@@ -77,13 +79,6 @@ inventorybuild:
 	make img img=inventory
 inventoryrun:
 	docker run -p 9100:9100 --name inventory inventory
-
-account:
-	go run account/cmd/main.go
-accountbuild:
-	make img img=account
-accountrun:
-	docker run -p 8765:8765 --name account account
 
 orders:
 	go run orders/cmd/main.go
