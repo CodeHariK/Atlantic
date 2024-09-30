@@ -46,9 +46,10 @@ func CreateCartServiceServer(cfg config.Config, natsClient *nats.NatsClient, sto
 		validator:      validator,
 		natsClient:     natsClient,
 		temporalClient: temporalClient,
-		userStore:      storeInstance.UserStore,
 
 		storeInstance: storeInstance,
+		userStore:     storeInstance.UserStore,
+		productStore:  storeInstance.ProductStore,
 	}
 
 	natsClient.CreateOrdersStream(cfg)

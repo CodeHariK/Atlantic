@@ -57,7 +57,7 @@ func ValidateMain() {
 }
 
 func loadGames() []Game {
-	file, err := os.Open("./data/media+games.json")
+	file, err := os.Open("./cosmog/data/media+games.json")
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}

@@ -28,7 +28,7 @@ type CosmogServiceServer struct {
 	meiliInstance meilisearch.ServiceManager
 }
 
-func CreateCosmogServiceServer(cfg config.Config, meiliInstance *meilisearch.ServiceManager) CosmogServiceServer {
+func CreateCosmogServiceServer(cfg config.Config, meiliInstance *meilisearch.ServiceManager, productStore *product.Queries) CosmogServiceServer {
 	validator, err := protovalidate.New()
 	if err != nil {
 		log.Fatal(err)
@@ -38,6 +38,7 @@ func CreateCosmogServiceServer(cfg config.Config, meiliInstance *meilisearch.Ser
 		cfg:           cfg,
 		validator:     validator,
 		meiliInstance: *meiliInstance,
+		productStore:  productStore,
 	}
 }
 
@@ -113,13 +114,13 @@ func (c CosmogServiceServer) UpdateProduct(ctx context.Context, req *connect.Req
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	uid, _ := uuid.Parse(req.Msg.Id)
-	err = c.productStore.UpdateProduct(context.Background(), product.UpdateProductParams{
-		ID: uid,
-	})
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, pgservice.PgCheck(err))
-	}
+	// uid, _ := uuid.Parse(req.Msg.Id)
+	// err = c.productStore.UpdateProduct(context.Background(), product.UpdateProductParams{
+	// 	ID: uid,
+	// })
+	// if err != nil {
+	// 	return nil, connect.NewError(connect.CodeInvalidArgument, pgservice.PgCheck(err))
+	// }
 
 	return connect.NewResponse(&v1.UpdateProductResponse{
 		Taskid: int32(task.TaskUID),

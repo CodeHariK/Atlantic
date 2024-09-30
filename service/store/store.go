@@ -6,6 +6,7 @@ import (
 
 	"github.com/codeharik/Atlantic/config"
 
+	"github.com/codeharik/Atlantic/database/store/product"
 	"github.com/codeharik/Atlantic/database/store/user"
 	"github.com/exaring/otelpgx"
 
@@ -13,8 +14,9 @@ import (
 )
 
 type Store struct {
-	Db        *pgxpool.Pool
-	UserStore *user.Queries
+	Db           *pgxpool.Pool
+	UserStore    *user.Queries
+	ProductStore *product.Queries
 }
 
 func ConnectDatabase(config config.Config) (store Store, err error) {
@@ -43,7 +45,8 @@ func ConnectDatabase(config config.Config) (store Store, err error) {
 	}
 
 	return Store{
-		Db:        db,
-		UserStore: user.New(db),
+		Db:           db,
+		UserStore:    user.New(db),
+		ProductStore: product.New(db),
 	}, nil
 }

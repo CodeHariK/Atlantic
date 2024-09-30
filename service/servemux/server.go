@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"time"
 
@@ -75,7 +76,7 @@ func Serve(
 
 	srvErr := make(chan error, 1)
 	go func() {
-		fmt.Printf("%s Server on %s\n", serviceName, fullUrl)
+		fmt.Printf("* * * * * * * * * * * * * * * * * * * * * * * * *\n    %s Server on %s    \n* * * * * * * * * * * * * * * * * * * * * * * * *\n", strings.ToUpper(serviceName), fullUrl)
 		srvErr <- server.ListenAndServe()
 	}()
 

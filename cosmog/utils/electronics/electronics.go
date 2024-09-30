@@ -8,7 +8,7 @@ import (
 )
 
 func loadMobiles() []Electronic {
-	file, err := os.Open("./data/electronics+mobile.json")
+	file, err := os.Open("./cosmog/data/electronics+mobile.json")
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}
@@ -29,7 +29,7 @@ func loadMobiles() []Electronic {
 }
 
 func loadLaptops() []Electronic {
-	file, err := os.Open("./data/electronics+laptop.json")
+	file, err := os.Open("./cosmog/data/electronics+laptop.json")
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
 	}

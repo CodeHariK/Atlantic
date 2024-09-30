@@ -67,7 +67,7 @@ func SyncInit(meiliInstance meilisearch.ServiceManager) {
 }
 
 func loadProducts(category, subcat string) []Product {
-	path := fmt.Sprintf("data/%s+%s.json", category, subcat)
+	path := fmt.Sprintf("./cosmog/data/%s+%s.json", category, subcat)
 	fmt.Println(path)
 
 	file, err := os.Open(path)

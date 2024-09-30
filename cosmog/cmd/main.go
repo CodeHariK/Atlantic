@@ -12,6 +12,7 @@ import (
 	"github.com/codeharik/Atlantic/cosmog/utils/games"
 	"github.com/codeharik/Atlantic/service/dragon"
 	"github.com/codeharik/Atlantic/service/servemux"
+	"github.com/codeharik/Atlantic/service/store"
 	"github.com/meilisearch/meilisearch-go"
 )
 
@@ -49,12 +50,18 @@ func main() {
 	amazon.SyncInit(meiliInstance)
 	electronics.SyncInit(meiliInstance)
 
+	storeInstance, err := store.ConnectDatabase(cfg)
+	if err != nil {
+		log.Fatalf("Cannot connect to database : %v", err.Error())
+	}
+
 	servemux.Serve(
 		func(router *http.ServeMux) {
-			server.CreateRoutes(serviceName, router, &cfg, &meiliInstance)
+			server.CreateRoutes(serviceName, router, &cfg, &meiliInstance, storeInstance)
 		},
 		func() error {
 			meiliInstance.Close()
+			storeInstance.Db.Close()
 			return nil
 		},
 		CosmogServerPortUrl(&cfg),

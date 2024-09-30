@@ -9,6 +9,7 @@ import (
 	"github.com/codeharik/Atlantic/config"
 	"github.com/codeharik/Atlantic/docs"
 	"github.com/codeharik/Atlantic/service/authbox"
+	"github.com/codeharik/Atlantic/service/store"
 	"github.com/meilisearch/meilisearch-go"
 
 	"github.com/codeharik/Atlantic/cosmog/api/cosmog/v1/v1connect"
@@ -19,6 +20,7 @@ func CreateRoutes(
 	router *http.ServeMux,
 	config *config.Config,
 	meiliInstance *meilisearch.ServiceManager,
+	storeInstance store.Store,
 ) {
 	//------------------
 	// Docs
@@ -28,7 +30,7 @@ func CreateRoutes(
 	//------------------
 	// CosmogService
 
-	cosmogService := CreateCosmogServiceServer(*config, meiliInstance)
+	cosmogService := CreateCosmogServiceServer(*config, meiliInstance, storeInstance.ProductStore)
 	cosmogPath, cosmogHandler := v1connect.NewCosmogServiceHandler(
 		cosmogService,
 		authbox.ConnectInterceptors(config)...,

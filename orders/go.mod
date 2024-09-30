@@ -23,6 +23,7 @@ require (
 	github.com/codeharik/Atlantic/docs v0.0.0-20240912180754-6128ceecdaea
 	github.com/codeharik/Atlantic/service v0.0.0-20240912180754-6128ceecdaea
 	github.com/google/uuid v1.6.0
+	github.com/jackc/pgx/v5 v5.7.1
 	go.temporal.io/sdk v1.29.1
 	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689
 )
@@ -51,7 +52,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.22.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.7.1 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/nats-io/nats.go v1.37.0 // indirect
