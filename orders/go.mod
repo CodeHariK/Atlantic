@@ -23,7 +23,6 @@ require (
 	github.com/codeharik/Atlantic/docs v0.0.0-20240912180754-6128ceecdaea
 	github.com/codeharik/Atlantic/service v0.0.0-20240912180754-6128ceecdaea
 	github.com/google/uuid v1.6.0
-	github.com/mitchellh/mapstructure v1.5.0
 	go.temporal.io/sdk v1.29.1
 	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689
 )

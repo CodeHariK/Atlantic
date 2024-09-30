@@ -20,8 +20,8 @@ func (o CartServiceServer) Moneyworker() {
 
 	// This worker hosts both Workflow and Activity functions.
 	w.RegisterWorkflow(o.MoneyTransfer)
-	w.RegisterActivity(o.Withdraw)
-	w.RegisterActivity(o.Deposit)
+	w.RegisterActivity(Withdraw)
+	w.RegisterActivity(Deposit)
 
 	// Start listening to the Task Queue.
 	err = w.Run(worker.InterruptCh())
@@ -47,7 +47,7 @@ func (o CartServiceServer) Orderworker() {
 	w.RegisterActivity(a.CreateStripeCharge)
 	w.RegisterActivity(a.SendAbandonedCartEmail)
 
-	w.RegisterWorkflow(CartWorkflow)
+	w.RegisterWorkflow(o.CartWorkflow)
 	// Start listening to the Task Queue
 	err = w.Run(worker.InterruptCh())
 	if err != nil {

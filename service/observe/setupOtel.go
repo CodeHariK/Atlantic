@@ -21,7 +21,7 @@ func SetupOTelSDK(ctx context.Context, config *config.Config) (shutdown func(con
 		}), fmt.Errorf("OpenTelemetry not running.")
 	}
 
-	fmt.Println("OpenTelemetry Collector running on http://" + config.OTLP.HTTP)
+	fmt.Println("OpenTelemetry Collector running on http://" + config.OTLP.GRPC)
 
 	var shutdownFuncs []func(context.Context) error
 

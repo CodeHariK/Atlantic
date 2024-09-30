@@ -33,18 +33,15 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// ProductServiceCheckProductQuantityProcedure is the fully-qualified name of the ProductService's
-	// CheckProductQuantity RPC.
-	ProductServiceCheckProductQuantityProcedure = "/product.v1.ProductService/CheckProductQuantity"
 	// ProductServiceCreateProductProcedure is the fully-qualified name of the ProductService's
 	// CreateProduct RPC.
 	ProductServiceCreateProductProcedure = "/product.v1.ProductService/CreateProduct"
 	// ProductServiceDeleteProductProcedure is the fully-qualified name of the ProductService's
 	// DeleteProduct RPC.
 	ProductServiceDeleteProductProcedure = "/product.v1.ProductService/DeleteProduct"
-	// ProductServiceGetProductByIDProcedure is the fully-qualified name of the ProductService's
-	// GetProductByID RPC.
-	ProductServiceGetProductByIDProcedure = "/product.v1.ProductService/GetProductByID"
+	// ProductServiceGetProductsByIdsProcedure is the fully-qualified name of the ProductService's
+	// GetProductsByIds RPC.
+	ProductServiceGetProductsByIdsProcedure = "/product.v1.ProductService/GetProductsByIds"
 	// ProductServiceListProductsProcedure is the fully-qualified name of the ProductService's
 	// ListProducts RPC.
 	ProductServiceListProductsProcedure = "/product.v1.ProductService/ListProducts"
@@ -55,21 +52,19 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	productServiceServiceDescriptor                    = v1.File_product_v1_product_proto.Services().ByName("ProductService")
-	productServiceCheckProductQuantityMethodDescriptor = productServiceServiceDescriptor.Methods().ByName("CheckProductQuantity")
-	productServiceCreateProductMethodDescriptor        = productServiceServiceDescriptor.Methods().ByName("CreateProduct")
-	productServiceDeleteProductMethodDescriptor        = productServiceServiceDescriptor.Methods().ByName("DeleteProduct")
-	productServiceGetProductByIDMethodDescriptor       = productServiceServiceDescriptor.Methods().ByName("GetProductByID")
-	productServiceListProductsMethodDescriptor         = productServiceServiceDescriptor.Methods().ByName("ListProducts")
-	productServiceUpdateProductMethodDescriptor        = productServiceServiceDescriptor.Methods().ByName("UpdateProduct")
+	productServiceServiceDescriptor                = v1.File_product_v1_product_proto.Services().ByName("ProductService")
+	productServiceCreateProductMethodDescriptor    = productServiceServiceDescriptor.Methods().ByName("CreateProduct")
+	productServiceDeleteProductMethodDescriptor    = productServiceServiceDescriptor.Methods().ByName("DeleteProduct")
+	productServiceGetProductsByIdsMethodDescriptor = productServiceServiceDescriptor.Methods().ByName("GetProductsByIds")
+	productServiceListProductsMethodDescriptor     = productServiceServiceDescriptor.Methods().ByName("ListProducts")
+	productServiceUpdateProductMethodDescriptor    = productServiceServiceDescriptor.Methods().ByName("UpdateProduct")
 )
 
 // ProductServiceClient is a client for the product.v1.ProductService service.
 type ProductServiceClient interface {
-	CheckProductQuantity(context.Context, *connect.Request[v1.CheckProductQuantityRequest]) (*connect.Response[v1.CheckProductQuantityResponse], error)
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
 	DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error)
-	GetProductByID(context.Context, *connect.Request[v1.GetProductByIDRequest]) (*connect.Response[v1.GetProductByIDResponse], error)
+	GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error)
 	ListProducts(context.Context, *connect.Request[v1.ListProductsRequest]) (*connect.Response[v1.ListProductsResponse], error)
 	UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error)
 }
@@ -84,12 +79,6 @@ type ProductServiceClient interface {
 func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ProductServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &productServiceClient{
-		checkProductQuantity: connect.NewClient[v1.CheckProductQuantityRequest, v1.CheckProductQuantityResponse](
-			httpClient,
-			baseURL+ProductServiceCheckProductQuantityProcedure,
-			connect.WithSchema(productServiceCheckProductQuantityMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 		createProduct: connect.NewClient[v1.CreateProductRequest, v1.CreateProductResponse](
 			httpClient,
 			baseURL+ProductServiceCreateProductProcedure,
@@ -102,10 +91,10 @@ func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(productServiceDeleteProductMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getProductByID: connect.NewClient[v1.GetProductByIDRequest, v1.GetProductByIDResponse](
+		getProductsByIds: connect.NewClient[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse](
 			httpClient,
-			baseURL+ProductServiceGetProductByIDProcedure,
-			connect.WithSchema(productServiceGetProductByIDMethodDescriptor),
+			baseURL+ProductServiceGetProductsByIdsProcedure,
+			connect.WithSchema(productServiceGetProductsByIdsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		listProducts: connect.NewClient[v1.ListProductsRequest, v1.ListProductsResponse](
@@ -125,17 +114,11 @@ func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // productServiceClient implements ProductServiceClient.
 type productServiceClient struct {
-	checkProductQuantity *connect.Client[v1.CheckProductQuantityRequest, v1.CheckProductQuantityResponse]
-	createProduct        *connect.Client[v1.CreateProductRequest, v1.CreateProductResponse]
-	deleteProduct        *connect.Client[v1.DeleteProductRequest, v1.DeleteProductResponse]
-	getProductByID       *connect.Client[v1.GetProductByIDRequest, v1.GetProductByIDResponse]
-	listProducts         *connect.Client[v1.ListProductsRequest, v1.ListProductsResponse]
-	updateProduct        *connect.Client[v1.UpdateProductRequest, v1.UpdateProductResponse]
-}
-
-// CheckProductQuantity calls product.v1.ProductService.CheckProductQuantity.
-func (c *productServiceClient) CheckProductQuantity(ctx context.Context, req *connect.Request[v1.CheckProductQuantityRequest]) (*connect.Response[v1.CheckProductQuantityResponse], error) {
-	return c.checkProductQuantity.CallUnary(ctx, req)
+	createProduct    *connect.Client[v1.CreateProductRequest, v1.CreateProductResponse]
+	deleteProduct    *connect.Client[v1.DeleteProductRequest, v1.DeleteProductResponse]
+	getProductsByIds *connect.Client[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse]
+	listProducts     *connect.Client[v1.ListProductsRequest, v1.ListProductsResponse]
+	updateProduct    *connect.Client[v1.UpdateProductRequest, v1.UpdateProductResponse]
 }
 
 // CreateProduct calls product.v1.ProductService.CreateProduct.
@@ -148,9 +131,9 @@ func (c *productServiceClient) DeleteProduct(ctx context.Context, req *connect.R
 	return c.deleteProduct.CallUnary(ctx, req)
 }
 
-// GetProductByID calls product.v1.ProductService.GetProductByID.
-func (c *productServiceClient) GetProductByID(ctx context.Context, req *connect.Request[v1.GetProductByIDRequest]) (*connect.Response[v1.GetProductByIDResponse], error) {
-	return c.getProductByID.CallUnary(ctx, req)
+// GetProductsByIds calls product.v1.ProductService.GetProductsByIds.
+func (c *productServiceClient) GetProductsByIds(ctx context.Context, req *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error) {
+	return c.getProductsByIds.CallUnary(ctx, req)
 }
 
 // ListProducts calls product.v1.ProductService.ListProducts.
@@ -165,10 +148,9 @@ func (c *productServiceClient) UpdateProduct(ctx context.Context, req *connect.R
 
 // ProductServiceHandler is an implementation of the product.v1.ProductService service.
 type ProductServiceHandler interface {
-	CheckProductQuantity(context.Context, *connect.Request[v1.CheckProductQuantityRequest]) (*connect.Response[v1.CheckProductQuantityResponse], error)
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
 	DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error)
-	GetProductByID(context.Context, *connect.Request[v1.GetProductByIDRequest]) (*connect.Response[v1.GetProductByIDResponse], error)
+	GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error)
 	ListProducts(context.Context, *connect.Request[v1.ListProductsRequest]) (*connect.Response[v1.ListProductsResponse], error)
 	UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error)
 }
@@ -179,12 +161,6 @@ type ProductServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	productServiceCheckProductQuantityHandler := connect.NewUnaryHandler(
-		ProductServiceCheckProductQuantityProcedure,
-		svc.CheckProductQuantity,
-		connect.WithSchema(productServiceCheckProductQuantityMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	productServiceCreateProductHandler := connect.NewUnaryHandler(
 		ProductServiceCreateProductProcedure,
 		svc.CreateProduct,
@@ -197,10 +173,10 @@ func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.Handler
 		connect.WithSchema(productServiceDeleteProductMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	productServiceGetProductByIDHandler := connect.NewUnaryHandler(
-		ProductServiceGetProductByIDProcedure,
-		svc.GetProductByID,
-		connect.WithSchema(productServiceGetProductByIDMethodDescriptor),
+	productServiceGetProductsByIdsHandler := connect.NewUnaryHandler(
+		ProductServiceGetProductsByIdsProcedure,
+		svc.GetProductsByIds,
+		connect.WithSchema(productServiceGetProductsByIdsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceListProductsHandler := connect.NewUnaryHandler(
@@ -217,14 +193,12 @@ func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.Handler
 	)
 	return "/product.v1.ProductService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case ProductServiceCheckProductQuantityProcedure:
-			productServiceCheckProductQuantityHandler.ServeHTTP(w, r)
 		case ProductServiceCreateProductProcedure:
 			productServiceCreateProductHandler.ServeHTTP(w, r)
 		case ProductServiceDeleteProductProcedure:
 			productServiceDeleteProductHandler.ServeHTTP(w, r)
-		case ProductServiceGetProductByIDProcedure:
-			productServiceGetProductByIDHandler.ServeHTTP(w, r)
+		case ProductServiceGetProductsByIdsProcedure:
+			productServiceGetProductsByIdsHandler.ServeHTTP(w, r)
 		case ProductServiceListProductsProcedure:
 			productServiceListProductsHandler.ServeHTTP(w, r)
 		case ProductServiceUpdateProductProcedure:
@@ -238,10 +212,6 @@ func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.Handler
 // UnimplementedProductServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedProductServiceHandler struct{}
 
-func (UnimplementedProductServiceHandler) CheckProductQuantity(context.Context, *connect.Request[v1.CheckProductQuantityRequest]) (*connect.Response[v1.CheckProductQuantityResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.CheckProductQuantity is not implemented"))
-}
-
 func (UnimplementedProductServiceHandler) CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.CreateProduct is not implemented"))
 }
@@ -250,8 +220,8 @@ func (UnimplementedProductServiceHandler) DeleteProduct(context.Context, *connec
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.DeleteProduct is not implemented"))
 }
 
-func (UnimplementedProductServiceHandler) GetProductByID(context.Context, *connect.Request[v1.GetProductByIDRequest]) (*connect.Response[v1.GetProductByIDResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.GetProductByID is not implemented"))
+func (UnimplementedProductServiceHandler) GetProductsByIds(context.Context, *connect.Request[v1.GetProductsByIdsRequest]) (*connect.Response[v1.GetProductsByIdsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("product.v1.ProductService.GetProductsByIds is not implemented"))
 }
 
 func (UnimplementedProductServiceHandler) ListProducts(context.Context, *connect.Request[v1.ListProductsRequest]) (*connect.Response[v1.ListProductsResponse], error) {

@@ -3,13 +3,13 @@ INSERT INTO
     products (id, quantity, price)
 VALUES ($1, $2, $3) RETURNING *;
 
--- name: GetProductByID :one
-SELECT id, quantity, price FROM products WHERE id = $1;
+-- name: GetProductsByIds :many
+SELECT * FROM products WHERE id = ANY($1::uuid[]);
 
 -- name: UpdateProduct :exec
 UPDATE products
 SET
-    quantity = $2,
+    quantity = quantity + $2,
     price = $3
 WHERE
     id = $1;
@@ -18,7 +18,4 @@ WHERE
 DELETE FROM products WHERE id = $1;
 
 -- name: ListProducts :many
-SELECT id, quantity, price FROM products ORDER BY id;
-
--- name: CheckProductQuantity :one
-SELECT quantity FROM products WHERE id = $1;
+SELECT id, quantity, price FROM products LIMIT $1;

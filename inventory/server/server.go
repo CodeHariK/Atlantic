@@ -24,7 +24,7 @@ func CreateInventoryServiceServer(cfg config.Config, minioClient *minio.MinioCli
 		natClient: natsConn,
 	}
 
-	inventoryService.Subscribe()
+	go inventoryService.Subscribe()
 
 	return inventoryService
 }

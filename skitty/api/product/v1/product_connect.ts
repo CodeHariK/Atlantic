@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CheckProductQuantityRequest, CheckProductQuantityResponse, CreateProductRequest, CreateProductResponse, DeleteProductRequest, DeleteProductResponse, GetProductByIDRequest, GetProductByIDResponse, ListProductsRequest, ListProductsResponse, UpdateProductRequest, UpdateProductResponse } from "./product_pb.js";
+import { CreateProductRequest, CreateProductResponse, DeleteProductRequest, DeleteProductResponse, GetProductsByIdsRequest, GetProductsByIdsResponse, ListProductsRequest, ListProductsResponse, UpdateProductRequest, UpdateProductResponse } from "./product_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -12,15 +12,6 @@ import { MethodKind } from "@bufbuild/protobuf";
 export const ProductService = {
   typeName: "product.v1.ProductService",
   methods: {
-    /**
-     * @generated from rpc product.v1.ProductService.CheckProductQuantity
-     */
-    checkProductQuantity: {
-      name: "CheckProductQuantity",
-      I: CheckProductQuantityRequest,
-      O: CheckProductQuantityResponse,
-      kind: MethodKind.Unary,
-    },
     /**
      * @generated from rpc product.v1.ProductService.CreateProduct
      */
@@ -40,12 +31,12 @@ export const ProductService = {
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc product.v1.ProductService.GetProductByID
+     * @generated from rpc product.v1.ProductService.GetProductsByIds
      */
-    getProductByID: {
-      name: "GetProductByID",
-      I: GetProductByIDRequest,
-      O: GetProductByIDResponse,
+    getProductsByIds: {
+      name: "GetProductsByIds",
+      I: GetProductsByIdsRequest,
+      O: GetProductsByIdsResponse,
       kind: MethodKind.Unary,
     },
     /**

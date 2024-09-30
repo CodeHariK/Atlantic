@@ -32,7 +32,7 @@ func (o CartServiceServer) MoneyTransfer(ctx workflow.Context, input PaymentDeta
 	// Withdraw money.
 	var withdrawOutput string
 
-	withdrawErr := workflow.ExecuteActivity(ctx, o.Withdraw, input).Get(ctx, &withdrawOutput)
+	withdrawErr := workflow.ExecuteActivity(ctx, Withdraw, o.userStore, input).Get(ctx, &withdrawOutput)
 
 	if withdrawErr != nil {
 		return "", withdrawErr
@@ -41,14 +41,14 @@ func (o CartServiceServer) MoneyTransfer(ctx workflow.Context, input PaymentDeta
 	// Deposit money.
 	var depositOutput string
 
-	depositErr := workflow.ExecuteActivity(ctx, o.Deposit, input).Get(ctx, &depositOutput)
+	depositErr := workflow.ExecuteActivity(ctx, Deposit, o.userStore, input).Get(ctx, &depositOutput)
 
 	if depositErr != nil {
 		// The deposit failed; put money back in original account.
 
 		var result string
 
-		refundErr := workflow.ExecuteActivity(ctx, o.Deposit, input).Get(ctx, &result)
+		refundErr := workflow.ExecuteActivity(ctx, Deposit, o.userStore, input).Get(ctx, &result)
 
 		if refundErr != nil {
 			return "",

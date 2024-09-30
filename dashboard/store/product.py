@@ -2,17 +2,12 @@
 # versions:
 #   sqlc v1.27.0
 # source: product.sql
-from typing import Optional
+from typing import List, Optional
 import uuid
 
 import sqlalchemy
 
 from product import models
-
-
-CHECK_PRODUCT_QUANTITY = """-- name: check_product_quantity \\:one
-SELECT quantity FROM products WHERE id = :p1
-"""
 
 
 CREATE_PRODUCT = """-- name: create_product \\:one
@@ -27,20 +22,20 @@ DELETE FROM products WHERE id = :p1
 """
 
 
-GET_PRODUCT_BY_ID = """-- name: get_product_by_id \\:one
-SELECT id, quantity, price FROM products WHERE id = :p1
+GET_PRODUCTS_BY_IDS = """-- name: get_products_by_ids \\:many
+SELECT id, quantity, price FROM products WHERE id = ANY(:p1\\:\\:uuid[])
 """
 
 
 LIST_PRODUCTS = """-- name: list_products \\:many
-SELECT id, quantity, price FROM products ORDER BY id
+SELECT id, quantity, price FROM products LIMIT :p1
 """
 
 
 UPDATE_PRODUCT = """-- name: update_product \\:exec
 UPDATE products
 SET
-    quantity = :p2,
+    quantity = quantity + :p2,
     price = :p3
 WHERE
     id = :p1

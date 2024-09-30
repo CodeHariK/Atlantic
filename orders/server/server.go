@@ -2,13 +2,13 @@ package server
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 
 	"connectrpc.com/connect"
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/database/store/product"
 	"github.com/codeharik/Atlantic/database/store/user"
 	v1 "github.com/codeharik/Atlantic/orders/api/cart/v1"
 	"github.com/codeharik/Atlantic/orders/api/cart/v1/v1connect"
@@ -16,6 +16,8 @@ import (
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/store"
 	"go.temporal.io/sdk/client"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type CartServiceServer struct {
@@ -23,7 +25,10 @@ type CartServiceServer struct {
 
 	cfg       config.Config
 	validator *protovalidate.Validator
-	userStore *user.Queries
+
+	userStore     *user.Queries
+	productStore  *product.Queries
+	storeInstance store.Store
 
 	natsClient *nats.NatsClient
 
@@ -42,6 +47,8 @@ func CreateCartServiceServer(cfg config.Config, natsClient *nats.NatsClient, sto
 		natsClient:     natsClient,
 		temporalClient: temporalClient,
 		userStore:      storeInstance.UserStore,
+
+		storeInstance: storeInstance,
 	}
 
 	natsClient.CreateOrdersStream(cfg)
@@ -91,8 +98,8 @@ func (o CartServiceServer) CreateCart(ctx context.Context, req *connect.Request[
 		TaskQueue: "CART_TASK_QUEUE",
 	}
 
-	cart := v1.Cart{Items: []*v1.CartItem{}}
-	we, err := o.temporalClient.ExecuteWorkflow(context.Background(), options, CartWorkflow, &cart)
+	cart := v1.Cart{Items: []*v1.CartItem{}, UpdatedAt: timestamppb.Now()}
+	we, err := o.temporalClient.ExecuteWorkflow(context.Background(), options, o.CartWorkflow, &cart)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
@@ -120,7 +127,6 @@ func (o CartServiceServer) GetCart(ctx context.Context, req *connect.Request[v1.
 	if err := response.Get(&cartState); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
-	colorlogger.Log("----query", cartState, err)
 
 	return connect.NewResponse(&cartState), err
 }
@@ -134,7 +140,9 @@ func (o CartServiceServer) UpdateCartItem(ctx context.Context, req *connect.Requ
 	// uid := cb.AccessObj.ID
 	uid := "66173097-653b-400b-9e98-78830fdd630e"
 
-	update := UpdateCartSignal{Item: req.Msg}
+	update, _ := protojson.Marshal(req.Msg)
+
+	colorlogger.Log("update", update)
 
 	err := o.temporalClient.SignalWorkflow(context.Background(), "cart-"+uid, "", SignalChannels.UPDATE_CART_CHANNEL, update)
 	if err != nil {
@@ -145,5 +153,12 @@ func (o CartServiceServer) UpdateCartItem(ctx context.Context, req *connect.Requ
 }
 
 func (o CartServiceServer) CheckoutCart(context.Context, *connect.Request[v1.CheckoutCartRequest]) (*connect.Response[v1.CheckoutCartResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cart.v1.CartService.CheckoutCart is not implemented"))
+	uid := "66173097-653b-400b-9e98-78830fdd630e"
+
+	err := o.temporalClient.SignalWorkflow(context.Background(), "cart-"+uid, "", SignalChannels.CHECKOUT_CHANNEL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return connect.NewResponse(&v1.CheckoutCartResponse{}), err
 }

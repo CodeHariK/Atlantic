@@ -37,7 +37,7 @@ func CreateRoutes(
 	interceptors := authbox.ConnectInterceptors(config)
 
 	//------------------
-	// OrdersService
+	// CartService
 
 	cartService := CreateCartServiceServer(*config, natsClient, storeInstance, temporalClient)
 	cartPath, cartHandler := v1connect.NewCartServiceHandler(

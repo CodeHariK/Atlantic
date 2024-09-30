@@ -75,7 +75,7 @@ func Serve(
 
 	srvErr := make(chan error, 1)
 	go func() {
-		fmt.Printf("Server on %s\n", fullUrl)
+		fmt.Printf("%s Server on %s\n", serviceName, fullUrl)
 		srvErr <- server.ListenAndServe()
 	}()
 

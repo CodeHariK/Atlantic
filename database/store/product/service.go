@@ -20,23 +20,6 @@ type Service struct {
 	querier *Queries
 }
 
-func (s *Service) CheckProductQuantity(ctx context.Context, req *connect.Request[pb.CheckProductQuantityRequest]) (*connect.Response[pb.CheckProductQuantityResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		id = v
-	}
-
-	result, err := s.querier.CheckProductQuantity(ctx, id)
-	if err != nil {
-		slog.Error("sql call failed", "error", err, "method", "CheckProductQuantity")
-		return nil, err
-	}
-	return connect.NewResponse(&pb.CheckProductQuantityResponse{Value: result}), nil
-}
-
 func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.CreateProductRequest]) (*connect.Response[pb.CreateProductResponse], error) {
 	var arg CreateProductParams
 	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
@@ -73,26 +56,34 @@ func (s *Service) DeleteProduct(ctx context.Context, req *connect.Request[pb.Del
 	return connect.NewResponse(&pb.DeleteProductResponse{}), nil
 }
 
-func (s *Service) GetProductByID(ctx context.Context, req *connect.Request[pb.GetProductByIDRequest]) (*connect.Response[pb.GetProductByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
-		return nil, err
-	} else {
-		id = v
+func (s *Service) GetProductsByIds(ctx context.Context, req *connect.Request[pb.GetProductsByIdsRequest]) (*connect.Response[pb.GetProductsByIdsResponse], error) {
+	var dollar_1 []uuid.UUID
+	dollar_1 = make([]uuid.UUID, len(req.Msg.GetDollar_1()))
+	for i, s := range req.Msg.GetDollar_1() {
+		if v, err := uuid.Parse(s); err != nil {
+			err = fmt.Errorf("invalid Dollar_1: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		} else {
+			dollar_1[i] = v
+		}
 	}
 
-	result, err := s.querier.GetProductByID(ctx, id)
+	result, err := s.querier.GetProductsByIds(ctx, dollar_1)
 	if err != nil {
-		slog.Error("sql call failed", "error", err, "method", "GetProductByID")
+		slog.Error("sql call failed", "error", err, "method", "GetProductsByIds")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.GetProductByIDResponse{Product: toProduct(result)}), nil
+	res := new(pb.GetProductsByIdsResponse)
+	for _, r := range result {
+		res.List = append(res.List, toProduct(r))
+	}
+	return connect.NewResponse(res), nil
 }
 
 func (s *Service) ListProducts(ctx context.Context, req *connect.Request[pb.ListProductsRequest]) (*connect.Response[pb.ListProductsResponse], error) {
+	limit := req.Msg.GetLimit()
 
-	result, err := s.querier.ListProducts(ctx)
+	result, err := s.querier.ListProducts(ctx, limit)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "ListProducts")
 		return nil, err

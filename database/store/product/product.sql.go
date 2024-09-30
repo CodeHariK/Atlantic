@@ -11,17 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const checkProductQuantity = `-- name: CheckProductQuantity :one
-SELECT quantity FROM products WHERE id = $1
-`
-
-func (q *Queries) CheckProductQuantity(ctx context.Context, id uuid.UUID) (int32, error) {
-	row := q.db.QueryRow(ctx, checkProductQuantity, id)
-	var quantity int32
-	err := row.Scan(&quantity)
-	return quantity, err
-}
-
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO
     products (id, quantity, price)
@@ -50,23 +39,36 @@ func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const getProductByID = `-- name: GetProductByID :one
-SELECT id, quantity, price FROM products WHERE id = $1
+const getProductsByIds = `-- name: GetProductsByIds :many
+SELECT id, quantity, price FROM products WHERE id = ANY($1::uuid[])
 `
 
-func (q *Queries) GetProductByID(ctx context.Context, id uuid.UUID) (Product, error) {
-	row := q.db.QueryRow(ctx, getProductByID, id)
-	var i Product
-	err := row.Scan(&i.ID, &i.Quantity, &i.Price)
-	return i, err
+func (q *Queries) GetProductsByIds(ctx context.Context, dollar_1 []uuid.UUID) ([]Product, error) {
+	rows, err := q.db.Query(ctx, getProductsByIds, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Product{}
+	for rows.Next() {
+		var i Product
+		if err := rows.Scan(&i.ID, &i.Quantity, &i.Price); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, quantity, price FROM products ORDER BY id
+SELECT id, quantity, price FROM products LIMIT $1
 `
 
-func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
-	rows, err := q.db.Query(ctx, listProducts)
+func (q *Queries) ListProducts(ctx context.Context, limit int32) ([]Product, error) {
+	rows, err := q.db.Query(ctx, listProducts, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +90,7 @@ func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
 const updateProduct = `-- name: UpdateProduct :exec
 UPDATE products
 SET
-    quantity = $2,
+    quantity = quantity + $2,
     price = $3
 WHERE
     id = $1

@@ -8,25 +8,15 @@ import "google/protobuf/wrappers.proto";
 option go_package = "github.com/codeharik/Atlantic/database/api/product/v1";
 
 service ProductService {
-  rpc CheckProductQuantity(CheckProductQuantityRequest) returns (CheckProductQuantityResponse) {}
-
   rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse) {}
 
   rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse) {}
 
-  rpc GetProductByID(GetProductByIDRequest) returns (GetProductByIDResponse) {}
+  rpc GetProductsByIds(GetProductsByIdsRequest) returns (GetProductsByIdsResponse) {}
 
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {}
 
   rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse) {}
-}
-
-message CheckProductQuantityRequest {
-  string id = 1;
-}
-
-message CheckProductQuantityResponse {
-  int32 value = 1;
 }
 
 message CreateProductRequest {
@@ -45,12 +35,12 @@ message DeleteProductRequest {
 
 message DeleteProductResponse {}
 
-message GetProductByIDRequest {
-  string id = 1;
+message GetProductsByIdsRequest {
+  repeated string dollar_1 = 1;
 }
 
-message GetProductByIDResponse {
-  Product product = 1;
+message GetProductsByIdsResponse {
+  repeated Product list = 1;
 }
 
 message GooseDbVersion {
@@ -60,7 +50,9 @@ message GooseDbVersion {
   google.protobuf.Timestamp tstamp = 4;
 }
 
-message ListProductsRequest {}
+message ListProductsRequest {
+  int32 limit = 1;
+}
 
 message ListProductsResponse {
   repeated Product list = 1;

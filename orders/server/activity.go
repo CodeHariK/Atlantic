@@ -17,8 +17,8 @@ type PaymentDetails struct {
 	ReferenceID uuid.UUID
 }
 
-func (o CartServiceServer) Withdraw(ctx context.Context, data PaymentDetails) (string, error) {
-	balance, err := o.userStore.UpdateUserBalance(context.Background(), user.UpdateUserBalanceParams{
+func Withdraw(q *user.Queries, data PaymentDetails) (string, error) {
+	balance, err := q.UpdateUserBalance(context.Background(), user.UpdateUserBalanceParams{
 		ID:      data.Account,
 		Balance: -data.Amount,
 	})
@@ -34,8 +34,8 @@ func (o CartServiceServer) Withdraw(ctx context.Context, data PaymentDetails) (s
 	return referenceID, err
 }
 
-func (o CartServiceServer) Deposit(ctx context.Context, data PaymentDetails) (string, error) {
-	balance, err := o.userStore.UpdateUserBalance(context.Background(), user.UpdateUserBalanceParams{
+func Deposit(q *user.Queries, data PaymentDetails) (string, error) {
+	balance, err := q.UpdateUserBalance(context.Background(), user.UpdateUserBalanceParams{
 		ID:      data.Account,
 		Balance: data.Amount,
 	})

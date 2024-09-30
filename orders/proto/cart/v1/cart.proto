@@ -30,8 +30,6 @@ service CartService {
 // }
 
 message Cart {
-  string user_id = 2;
-  google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
 
   repeated CartItem items = 5;

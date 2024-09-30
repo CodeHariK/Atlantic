@@ -11,16 +11,6 @@ import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
  */
 export class Cart extends Message<Cart> {
   /**
-   * @generated from field: string user_id = 2;
-   */
-  userId = "";
-
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 3;
-   */
-  createdAt?: Timestamp;
-
-  /**
    * @generated from field: google.protobuf.Timestamp updated_at = 4;
    */
   updatedAt?: Timestamp;
@@ -38,8 +28,6 @@ export class Cart extends Message<Cart> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "cart.v1.Cart";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 2, name: "user_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "created_at", kind: "message", T: Timestamp },
     { no: 4, name: "updated_at", kind: "message", T: Timestamp },
     { no: 5, name: "items", kind: "message", T: CartItem, repeated: true },
   ]);

@@ -82,6 +82,7 @@ func CreateRoutes(
 
 	reflector := grpcreflect.NewStaticReflector(
 		v1connect.InventoryServiceName,
+		product_v1connect.ProductServiceName,
 	)
 	router.Handle(grpcreflect.NewHandlerV1(reflector))
 	router.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
