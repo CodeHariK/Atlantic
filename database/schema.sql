@@ -13,7 +13,7 @@ CREATE TABLE "public"."orders" ("id" uuid NOT NULL, "user_id" uuid NOT NULL, "cr
 -- Create index "idx_orders_user_id" to table: "orders"
 CREATE INDEX "idx_orders_user_id" ON "public"."orders" ("user_id");
 -- Create "products" table
-CREATE TABLE "public"."products" ("id" uuid NOT NULL, "quantity" integer NOT NULL, "price" integer NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "products_price_check" CHECK (price > 0), CONSTRAINT "products_quantity_check" CHECK (quantity > 0));
+CREATE TABLE "public"."products" ("id" uuid NOT NULL, "title" character varying(128) NOT NULL, "quantity" integer NOT NULL, "price" integer NOT NULL, "category" character varying(128) NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "products_category_check" CHECK (char_length((category)::text) > 0), CONSTRAINT "products_price_check" CHECK (price > 0), CONSTRAINT "products_quantity_check" CHECK (quantity > 0), CONSTRAINT "products_title_check" CHECK (char_length((title)::text) > 0));
 -- Create "order_items" table
 CREATE TABLE "public"."order_items" ("id" uuid NOT NULL, "order_id" uuid NOT NULL, "product_id" uuid NOT NULL, "quantity" integer NOT NULL, "price" integer NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."orders" ("id") ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT "order_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products" ("id") ON UPDATE NO ACTION ON DELETE CASCADE);
 -- Create index "idx_order_items_order_id" to table: "order_items"

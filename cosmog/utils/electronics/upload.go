@@ -1,7 +1,13 @@
 package electronics
 
 import (
+	"math/rand/v2"
+
+	"github.com/codeharik/Atlantic/cosmog/utils"
+	"github.com/codeharik/Atlantic/database/store/product"
 	"github.com/codeharik/Atlantic/service/colorlogger"
+	"github.com/codeharik/Atlantic/service/store"
+	"github.com/google/uuid"
 	"github.com/meilisearch/meilisearch-go"
 )
 
@@ -54,10 +60,23 @@ type Electronic struct {
 // 	return electronics
 // }
 
-func SyncInit(meiliInstance meilisearch.ServiceManager) {
+func SyncInit(meiliInstance meilisearch.ServiceManager, storeInstance store.Store) {
 	emobiles := loadMobiles()
 	elaptops := loadLaptops()
 	emobiles = append(emobiles, elaptops...)
+
+	prods := make([]product.Product, len(emobiles))
+	for i := range emobiles {
+		prods[i].Title = emobiles[i].Title
+
+		uid, _ := uuid.Parse(emobiles[i].ID)
+		prods[i].ID = uid
+
+		prods[i].Price = rand.Int32N(2000) + 300
+		prods[i].Quantity = rand.Int32N(300) + 10
+		prods[i].Category = emobiles[i].Category.Lvl1
+	}
+	utils.BatchInsertProducts(storeInstance, prods)
 
 	task, err := meiliInstance.Index("Atlantic").AddDocumentsInBatches(
 		emobiles,
@@ -65,27 +84,5 @@ func SyncInit(meiliInstance meilisearch.ServiceManager) {
 	)
 	colorlogger.Log(task, err)
 
-	meiliInstance.CreateIndex(&meilisearch.IndexConfig{
-		Uid:        "Atlantic",
-		PrimaryKey: "id",
-	})
-
-	searchableAttributes := []string{
-		"title",
-	}
-	filterableAttributes := []string{
-		"gen",
-		"cat",
-		"price",
-		"age",
-		"category",
-		"rating",
-	}
-	sortableAttributes := []string{
-		"categroy",
-		"rating",
-	}
-	meiliInstance.Index("Atlantic").UpdateSearchableAttributes(&searchableAttributes)
-	meiliInstance.Index("Atlantic").UpdateFilterableAttributes(&filterableAttributes)
-	meiliInstance.Index("Atlantic").UpdateSortableAttributes(&sortableAttributes)
+	utils.Mix(meiliInstance)
 }

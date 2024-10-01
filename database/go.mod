@@ -5,12 +5,12 @@ go 1.23.1
 replace github.com/codeharik/Atlantic/config => ../config
 
 require (
-	connectrpc.com/connect v1.16.2
+	connectrpc.com/connect v1.17.0
 	github.com/codeharik/Atlantic/config v0.0.0-00010101000000-000000000000
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/pressly/goose/v3 v3.22.0
-	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689
+	google.golang.org/protobuf v1.34.3-0.20240906163944-03df6c145d96
 )
 
 require (

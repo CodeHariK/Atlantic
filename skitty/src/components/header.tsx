@@ -33,9 +33,7 @@ export const Header = () => (
 
                         <ThemeToggle />
 
-                        <ToggleOptions name={<p>{CartIcon()}{<span>My Cart</span>}{DownIcon()}</p>}>
-                            {CartModal()}
-                        </ToggleOptions>
+                        <CartModal />
 
                         <AccountModal />
 
@@ -48,32 +46,33 @@ export const Header = () => (
     </header >
 );
 
+
 export const AccountModal = () => {
 
     const connect = useConnect();
 
-
-    return (<>{
-
-        <TransitionWidget showFirstWidget={connect.muser != null} one={
-            <PositionBox2 name={<p>{UserIcon()}{<span>Account</span>}{DownIcon()}</p>} align={{ x: 0, y: 1 }}>
-                <div class="z-50 m-2 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
-                    <div class="px-4 py-3">
-                        <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-                        <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+    return (
+        <TransitionWidget showFirstWidget={connect.user != null}
+            one={
+                <PositionBox2 name={<p>{UserIcon()}{<span>Account</span>}{DownIcon()}</p>} align={{ x: 0, y: 1 }}>
+                    <div class="z-50 m-2 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+                        <div class="px-4 py-3">
+                            <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
+                            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
+                        </div>
+                        <ul class="py-2" aria-labelledby="user-menu-button">
+                            {HeaderLinks("/profile", "Profile")}
+                            {HeaderLinks("/dashboard", "Dashboard")}
+                            {HeaderLinks("/settings", "Settings")}
+                            {HeaderLinks("", "Sign out", () => { RevokeReq(connect, -1) })}
+                        </ul>
                     </div>
-                    <ul class="py-2" aria-labelledby="user-menu-button">
-                        {HeaderLinks("/profile", "Profile")}
-                        {HeaderLinks("/dashboard", "Dashboard")}
-                        {HeaderLinks("/settings", "Settings")}
-                        {HeaderLinks("", "Sign out", () => { RevokeReq(connect, -1) })}
-                    </ul>
-                </div>
-            </PositionBox2>
-        } two={
-            <OutlinedButton><a href="/login">Log In</a></OutlinedButton>
-        }></TransitionWidget>
-    }</>);
+                </PositionBox2>
+            }
+            two={<OutlinedButton><a href="/login">Log In</a></OutlinedButton>}>
+
+        </TransitionWidget>
+    );
 }
 
 function HeaderLinks(href: string, title: string, fn?: () => void) {
@@ -85,13 +84,34 @@ function HeaderLinks(href: string, title: string, fn?: () => void) {
 }
 
 export function CartModal() {
+
+    const connect = useConnect();
+
     return (
-        <div id="myCartDropdown1" class="min-w-[250px] z-10 mx-auto max-w-sm space-y-4 overflow-hidden rounded-lg bg-white p-4 antialiased shadow-lg dark:bg-gray-800">
+        <ToggleOptions name={<p>{CartIcon()}{<span>My Cart</span>}{DownIcon()}</p>}>
 
-            <ListTile end={<span>{<span>Qty: 1</span>} {CrossIconFilled()}</span>} title="title" subtitle="subtitle" ></ListTile>
+            <div id="myCartDropdown1" class="min-w-[300px] z-10 mx-auto space-y-4 overflow-hidden rounded-lg bg-white p-4 antialiased shadow-lg dark:bg-gray-800">
 
-            <MaterialButton class="w-full items-center justify-center">Proceed to Checkout</MaterialButton>
-        </div>
+                {connect.cart == null ?
+                    <>
+                        Cart is empty
+                    </>
+                    :
+                    <>
+                        {connect.cart?.items.map((c) => (
+                            <ListTile
+                                end={<CrossIconFilled />}
+                                title={c.name}
+                                subtitle={"Qty:" + c.quantity}
+                            />
+                        ))}
+
+                        <MaterialButton class="w-full items-center justify-center">Proceed to Checkout</MaterialButton>
+                    </>
+                }
+            </div>
+
+        </ToggleOptions>
     );
 }
 

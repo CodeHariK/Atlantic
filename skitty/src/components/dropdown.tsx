@@ -44,7 +44,7 @@ export function ToggleOptions(props: ToggleOptionsProps) {
             <button
                 type="button"
                 ref={button}
-                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg group-hover:opacity-100 group-hover:visible shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg group-hover:opacity-100 group-hover:visible hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
             >
                 {props.name}
             </button>
@@ -52,7 +52,7 @@ export function ToggleOptions(props: ToggleOptionsProps) {
             {hover() && (
                 <div
                     ref={dropdown}
-                    class="absolute left-1/2 transform translate-y-11 -translate-x-1/2 mt-2 bg-white shadow-md rounded-lg p-1 space-y-0.5 transition-opacity duration-300 opacity-100 visible dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700"
+                    class="absolute left-1/2 transform translate-y-11 -translate-x-1/2 mt-2 rounded-lg space-y-0.5 transition-opacity duration-300 opacity-100 visible  dark:border dark:border-neutral-700"
                 >
                     {props.children}
                 </div>

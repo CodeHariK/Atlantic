@@ -25,13 +25,13 @@ export default function Profile() {
       setLoading(true);
       setError("");
 
-      if (connect.muser) {
+      if (connect.user) {
          setLoading(false)
       } else {
          setError("Not signed in")
       }
 
-      console.log("-->", connect.muser)
+      console.log("-->", connect.user)
 
       // try {
       //    const request = new GetProfileRequest();
@@ -58,20 +58,20 @@ export default function Profile() {
             <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
          </MaterialButton>
 
-         {connect.muser ? (
+         {connect.user ? (
             <>
                <div>
                   <div class="profile-header">
                      {/* <img src={user()!.avatar} alt="Avatar" class="avatar" /> */}
-                     <h2>{connect.muser!.username}</h2>
-                     <p>Email: {connect.muser!.email}</p>
+                     <h2>{connect.user!.username}</h2>
+                     <p>Email: {connect.user!.email}</p>
 
                      {
                         (() => {
                            let a = [];
                            for (let i = 0; i < 64; i++) {
                               // Check if the i-th bit is set in the role
-                              let b = (connect.muser!.role >> BigInt(i)) & BigInt(1)
+                              let b = (connect.user!.role >> BigInt(i)) & BigInt(1)
                               if (b) {
                                  a.push(proto3.getEnumType(Role).findNumber(i + 1)?.name);
                               }
@@ -81,9 +81,9 @@ export default function Profile() {
                      }
 
                      {/* <p>Role: {proto3.getEnumType(Role).findNumber(user()!.role.valueOf() & 1)?.name}</p> */}
-                     <p>Status: {connect.muser!.verified ? "Verified" : "Not Verified"}</p>
-                     <p>Phone: {connect.muser!.phoneNumber}</p>
-                     <p>Location: {connect.muser!.location}</p>
+                     <p>Status: {connect.user!.verified ? "Verified" : "Not Verified"}</p>
+                     <p>Phone: {connect.user!.phoneNumber}</p>
+                     <p>Location: {connect.user!.location}</p>
                   </div>
                </div>
 
@@ -102,7 +102,7 @@ export default function Profile() {
                         "max-w-64",
                      ],
                      rows: [
-                        ...connect.muser?.sessions.map((s, i) =>
+                        ...connect.user?.sessions.map((s, i) =>
                            [
                               <P>{s.agent}</P>,
 
@@ -110,7 +110,7 @@ export default function Profile() {
                                  let d = new Date(Number(s.iat) * 1000)
                                  return d.toLocaleDateString() + " (" + d.toLocaleTimeString() + ")"
                               })()}</P>,
-                              <SmallBadgeText>Active {i == connect.muser?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
+                              <SmallBadgeText>Active {i == connect.user?.sessionNumber ? ", Current" : ""}</SmallBadgeText>,
                               <P>{s.exp.toString()}</P>,
                               <IconButton onClick={() => Revoke(connect, i, setLoading, setError)}><CrossIcon /></IconButton>
                            ]

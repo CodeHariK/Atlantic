@@ -140,13 +140,14 @@ export default function SearchGames() {
 						const cartButton = () => {
 							return html`<button
                         class="rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none dark:bg-primary-600 dark:hover:bg-primary-700"
-                        onclick=${() => {
+                        onclick=${async () => {
 									console.log(hit.id);
 									let cart = new CartItem({
 										productId: hit.id,
 										quantity: 1,
 									});
-									connect.cartclient.updateCartItem(cart);
+									await connect.cartclient.updateCartItem(cart);
+									await connect.getCart()
 								}}
                      >
                         Add to cart
@@ -294,7 +295,7 @@ export default function SearchGames() {
 
 	return (
 		<SpaceLayout two title="Home">
-			<div class="ais-InstantSearch bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
+			<div class="ais-InstantSearch py-8 antialiased">
 				<div class="left-panel">
 					<h3 class="mb-2">Categories</h3>
 					<div class="mb-4" id="hierarchical-menu"></div>

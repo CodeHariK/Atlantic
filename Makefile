@@ -2,8 +2,8 @@
 
 run:
 	@VITE_DOMAIN=$(VITE_DOMAIN) ./run.sh \
-   	ATLANTIC "echo Welcome to Atlantic ~> \$$VITE_DOMAIN" \
-   	web "open -a 'Google chrome' \$$VITE_DOMAIN" \
+   	  ATLANTIC "echo Welcome to Atlantic ~> \$$VITE_DOMAIN" \
+   	  web "open -a 'Google chrome' \$$VITE_DOMAIN" \
       temporal "make temporal" \
       minio "make minio" \
       nats "make nats" \

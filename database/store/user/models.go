@@ -36,8 +36,10 @@ type OrderItem struct {
 
 type Product struct {
 	ID       uuid.UUID `json:"id"`
+	Title    string    `json:"title"`
 	Quantity int32     `json:"quantity"`
 	Price    int32     `json:"price"`
+	Category string    `json:"category"`
 }
 
 type ProductReview struct {

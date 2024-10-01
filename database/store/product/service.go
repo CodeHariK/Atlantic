@@ -28,8 +28,10 @@ func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.Cre
 	} else {
 		arg.ID = v
 	}
+	arg.Title = req.Msg.GetTitle()
 	arg.Quantity = req.Msg.GetQuantity()
 	arg.Price = req.Msg.GetPrice()
+	arg.Category = req.Msg.GetCategory()
 
 	result, err := s.querier.CreateProduct(ctx, arg)
 	if err != nil {
@@ -90,7 +92,7 @@ func (s *Service) ListProducts(ctx context.Context, req *connect.Request[pb.List
 	}
 	res := new(pb.ListProductsResponse)
 	for _, r := range result {
-		res.List = append(res.List, toProduct(r))
+		res.List = append(res.List, toListProductsRow(r))
 	}
 	return connect.NewResponse(res), nil
 }
@@ -106,10 +108,10 @@ func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.Upd
 	arg.Quantity = req.Msg.GetQuantity()
 	arg.Price = req.Msg.GetPrice()
 
-	err := s.querier.UpdateProduct(ctx, arg)
+	result, err := s.querier.UpdateProduct(ctx, arg)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "UpdateProduct")
 		return nil, err
 	}
-	return connect.NewResponse(&pb.UpdateProductResponse{}), nil
+	return connect.NewResponse(&pb.UpdateProductResponse{Product: toProduct(result)}), nil
 }

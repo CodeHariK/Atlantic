@@ -14,7 +14,7 @@ replace github.com/codeharik/Atlantic/database => ../database
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.2-20240920164238-5a7b106cbb87.2
-	connectrpc.com/connect v1.16.2
+	connectrpc.com/connect v1.17.0
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.2.0
 	github.com/bufbuild/protovalidate-go v0.7.0
@@ -24,8 +24,9 @@ require (
 	github.com/codeharik/Atlantic/service v0.0.0-20240912180754-6128ceecdaea
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.1
+	go.temporal.io/api v1.38.0
 	go.temporal.io/sdk v1.29.1
-	google.golang.org/protobuf v1.34.3-0.20240816073751-94ecbc261689
+	google.golang.org/protobuf v1.34.3-0.20240906163944-03df6c145d96
 )
 
 require (
@@ -83,7 +84,6 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.29.0 // indirect
 	go.opentelemetry.io/otel/trace v1.30.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
-	go.temporal.io/api v1.38.0 // indirect
 	golang.org/x/crypto v0.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/net v0.29.0 // indirect

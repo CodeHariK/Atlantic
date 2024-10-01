@@ -49,7 +49,7 @@ fi
 logfile="logfile.html"
 
 # Start the HTML logfile with the header
-echo "<html><head><style>body {background: #262626; font-family: monospace;} p {padding: 0px;margin: 0px;}</style><script>setTimeout(function () {window.location.reload();}, 5000);</script></head><body>" > "$logfile"
+echo "<html><head><style>body {background: #262626; font-family: monospace;} p {padding: 0px;margin: 0px;}</style><script>setTimeout(function () {window.location.reload();}, 30000);</script></head><body>" > "$logfile"
 
 # Loop through arguments two at a time: name and command
 index=0

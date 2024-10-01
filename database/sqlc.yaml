@@ -56,14 +56,14 @@ sql:
                 go_type:
                    import: "github.com/google/uuid"
                    type: "UUID"
-     codegen:
-        - plugin: "py"
-          out: "../dashboard/store"
-          options:
-             package: "product"
-             # emit_sync_querier: true
-             # emit_async_querier: true
-             query_parameter_limit: 5
-             emit_json_tags: true
-             emit_prepared_queries: true
-             emit_empty_slices: true
+   #   codegen:
+   #      - plugin: "py"
+   #        out: "../dashboard/store"
+   #        options:
+   #           package: "product"
+   #           # emit_sync_querier: true
+   #           # emit_async_querier: true
+   #           query_parameter_limit: 5
+   #           emit_json_tags: true
+   #           emit_prepared_queries: true
+   #           emit_empty_slices: true

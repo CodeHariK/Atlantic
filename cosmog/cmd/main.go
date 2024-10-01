@@ -35,6 +35,11 @@ func main() {
 
 	dragon := dragon.CreateDragon(&cfg)
 
+	storeInstance, err := store.ConnectDatabase(cfg)
+	if err != nil {
+		log.Fatalf("Cannot connect to database : %v", err.Error())
+	}
+
 	meiliInstance := meilisearch.New(
 		MeiliSearchUrl(&cfg),
 		meilisearch.WithAPIKey(cfg.MeiliSearch.Key),
@@ -46,14 +51,9 @@ func main() {
 	}
 	fmt.Println(h)
 
-	games.SyncInit(meiliInstance)
-	amazon.SyncInit(meiliInstance)
-	electronics.SyncInit(meiliInstance)
-
-	storeInstance, err := store.ConnectDatabase(cfg)
-	if err != nil {
-		log.Fatalf("Cannot connect to database : %v", err.Error())
-	}
+	games.SyncInit(meiliInstance, storeInstance)
+	amazon.SyncInit(meiliInstance, storeInstance)
+	electronics.SyncInit(meiliInstance, storeInstance)
 
 	servemux.Serve(
 		func(router *http.ServeMux) {

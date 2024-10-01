@@ -33,11 +33,19 @@ VALUES (
 -------------Product-------------
 
 INSERT INTO
-    products (id, quantity, price)
+    products (
+        id,
+        title,
+        quantity,
+        price,
+        category
+    )
 VALUES (
         '123e4567-e89b-12d3-a456-426614174000',
+        'Cube',
         100,
-        50
+        50,
+        'Kids > Toy'
     );
 
 -------------Order-------------

@@ -38,8 +38,10 @@ class OrderItem:
 @dataclasses.dataclass()
 class Product:
     id: uuid.UUID
+    name: str
     quantity: int
     price: int
+    category: str
 
 
 @dataclasses.dataclass()

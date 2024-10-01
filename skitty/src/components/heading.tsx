@@ -67,7 +67,7 @@ export function Avatar(props: AvatarProps) {
 export type ListTileProps = {
     start?: JSX.Element;
     title: string;
-    subtitle: string;
+    subtitle?: string;
     end?: JSX.Element;
 }
 
@@ -75,7 +75,7 @@ export function ListTile(props: ListTileProps) {
     return <div class="flex justify-between items-center gap-3">
         <div class='flex gap-4'>
             {props.start}
-            <TitleSubtitle title={props.title} subtitle={props.title}></TitleSubtitle>
+            <TitleSubtitle title={props.title} subtitle={props.subtitle}></TitleSubtitle>
         </div>
         {props.end}
     </div>;
@@ -83,7 +83,7 @@ export function ListTile(props: ListTileProps) {
 
 export type TitleSubtitleProps = {
     title: string;
-    subtitle: string;
+    subtitle?: string;
 }
 
 export function TitleSubtitle(props: TitleSubtitleProps) {

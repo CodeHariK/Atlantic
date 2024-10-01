@@ -35,7 +35,7 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 	logger := workflow.GetLogger(ctx)
 
 	err := workflow.SetQueryHandler(ctx, "getCart", func(input []byte) (*v1.Cart, error) {
-		colorlogger.Log("getCart", state)
+		colorlogger.Log("getCart")
 		return state, nil
 	})
 	if err != nil {
@@ -63,6 +63,12 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 				logger.Error("Invalid signal type %v", err)
 				return
 			}
+
+			_, err = o.cartToProducts(state)
+			if err != nil {
+				logger.Error("Error fetching products", err)
+				return
+			}
 		})
 
 		selector.AddReceive(checkoutChannel, func(c workflow.ReceiveChannel, _ bool) {
@@ -75,12 +81,16 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 				return
 			}
 
-			err = o.UpdateProductsTransaction(context.Background(), state, products)
+			colorlogger.Log(".......", products)
+
+			err = o.UpdateProductsTransaction(context.Background(), state, &products)
 			if err != nil {
 				logger.Error("Error updating products: %v", err)
 				return
 			}
 			logger.Info("Products updated successfully")
+
+			colorlogger.Log(products, ".......")
 
 			ao := workflow.ActivityOptions{
 				StartToCloseTimeout: time.Minute,
@@ -88,7 +98,7 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 
 			ctx = workflow.WithActivityOptions(ctx, ao)
 
-			err = workflow.ExecuteActivity(ctx, a.CreateStripeCharge, state).Get(ctx, nil)
+			err = workflow.ExecuteActivity(ctx, a.CreateStripeCharge).Get(ctx, nil)
 			if err != nil {
 				logger.Error("Error creating stripe charge: %v", err)
 				return
@@ -97,7 +107,7 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 			checkedOut = true
 		})
 
-		colorlogger.Log("sentAbandonedCartEmail", sentAbandonedCartEmail, len(state.Items) > 0, state)
+		colorlogger.Log("sentAbandonedCartEmail", sentAbandonedCartEmail, len(state.Items) > 0)
 
 		if !sentAbandonedCartEmail && len(state.Items) > 0 {
 			selector.AddFuture(workflow.NewTimer(ctx, abandonedCartTimeout), func(f workflow.Future) {
@@ -148,15 +158,12 @@ func parseCartItem(c workflow.ReceiveChannel, ctx workflow.Context) (*v1.CartIte
 }
 
 func UpdateCartItem(state *v1.Cart, item *v1.CartItem) error {
-	if item.Quantity < 0 {
-		return errors.New("Negative quantity")
-	}
 	for i := range state.Items {
 		if state.Items[i].ProductId != item.ProductId {
 			continue
 		}
 
-		state.Items[i].Quantity = item.Quantity
+		state.Items[i].Quantity += item.Quantity
 		return nil
 	}
 
@@ -167,7 +174,7 @@ func UpdateCartItem(state *v1.Cart, item *v1.CartItem) error {
 }
 
 // UpdateProductsTransaction updates product quantities in a transaction
-func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state *v1.Cart, products []product.Product) error {
+func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state *v1.Cart, products *[]product.Product) error {
 	// Begin the transaction
 	tx, err := o.storeInstance.Db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
@@ -185,7 +192,7 @@ func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state 
 
 	// Iterate over state items and update product quantities
 	for _, item := range state.Items {
-		for _, prod := range products {
+		for i, prod := range *products {
 			if prod.ID.String() == item.ProductId {
 				// Calculate new quantity
 				newQuantity := prod.Quantity - item.Quantity
@@ -194,13 +201,14 @@ func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state 
 				}
 
 				// Update the product in the transaction context
-				err = o.productStore.WithTx(tx).UpdateProduct(ctx, product.UpdateProductParams{
+				p, err := o.productStore.WithTx(tx).UpdateProduct(ctx, product.UpdateProductParams{
 					ID:       prod.ID,
 					Quantity: newQuantity,
 				})
 				if err != nil {
 					return fmt.Errorf("failed to update product ID %s: %v", prod.ID, err)
 				}
+				(*products)[i] = p
 			}
 		}
 	}
@@ -217,9 +225,7 @@ func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state 
 	return nil // Successful completion
 }
 
-// HandleCheckout processes checkout requests by checking product quantities
-func (o CartServiceServer) HandleCheckout(ctx context.Context, state *v1.Cart) ([]product.Product, error) {
-	// Prepare a list of product IDs from state items
+func (o CartServiceServer) cartToProducts(state *v1.Cart) ([]product.Product, error) {
 	pids := make([]uuid.UUID, len(state.Items))
 	for i, item := range state.Items {
 		pid, err := uuid.Parse(item.ProductId)
@@ -230,13 +236,33 @@ func (o CartServiceServer) HandleCheckout(ctx context.Context, state *v1.Cart) (
 	}
 
 	// Fetch products based on their IDs
-	products, err := o.productStore.GetProductsByIds(ctx, pids)
+	products, err := o.productStore.GetProductsByIds(context.Background(), pids)
+	colorlogger.Log(products)
+
+	for i, item := range state.Items {
+		pid, err := uuid.Parse(item.ProductId)
+		if err != nil {
+			return nil, fmt.Errorf("invalid product ID: %s, error: %v", item.ProductId, err)
+		}
+		pids[i] = pid
+		item.Name = products[i].Title
+	}
+
+	colorlogger.Log("==== AddToCart ====", state, products, "==== === === ====")
+
+	return products, err
+}
+
+// HandleCheckout processes checkout requests by checking product quantities
+func (o CartServiceServer) HandleCheckout(ctx context.Context, state *v1.Cart) ([]product.Product, error) {
+	// Prepare a list of product IDs from state items
+	products, err := o.cartToProducts(state)
 	if err != nil {
 		return nil, fmt.Errorf("Error fetching products: %v", err)
 	}
 
 	// Log the fetched products (assuming colorlogger is set up correctly)
-	colorlogger.Log("checkoutChannel", "Products:", products)
+	colorlogger.Log("checkoutChannel", "Products:")
 
 	// Check product quantities against the items in the state
 	for _, item := range state.Items {

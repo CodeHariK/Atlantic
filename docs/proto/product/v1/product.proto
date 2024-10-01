@@ -21,8 +21,10 @@ service ProductService {
 
 message CreateProductRequest {
   string id = 1;
-  int32 quantity = 2;
-  int32 price = 3;
+  string title = 2;
+  int32 quantity = 3;
+  int32 price = 4;
+  string category = 5;
 }
 
 message CreateProductResponse {
@@ -55,7 +57,13 @@ message ListProductsRequest {
 }
 
 message ListProductsResponse {
-  repeated Product list = 1;
+  repeated ListProductsRow list = 1;
+}
+
+message ListProductsRow {
+  string id = 1;
+  int32 quantity = 2;
+  int32 price = 3;
 }
 
 message Order {
@@ -78,8 +86,10 @@ message OrderItem {
 
 message Product {
   string id = 1;
-  int32 quantity = 2;
-  int32 price = 3;
+  string title = 2;
+  int32 quantity = 3;
+  int32 price = 4;
+  string category = 5;
 }
 
 message ProductReview {
@@ -98,7 +108,9 @@ message UpdateProductRequest {
   int32 price = 3;
 }
 
-message UpdateProductResponse {}
+message UpdateProductResponse {
+  Product product = 1;
+}
 
 message User {
   string id = 1;

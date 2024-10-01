@@ -5,9 +5,14 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand/v2"
 	"os"
 
+	"github.com/codeharik/Atlantic/cosmog/utils"
+	"github.com/codeharik/Atlantic/database/store/product"
 	"github.com/codeharik/Atlantic/service/colorlogger"
+	"github.com/codeharik/Atlantic/service/store"
+	"github.com/google/uuid"
 	"github.com/meilisearch/meilisearch-go"
 )
 
@@ -23,47 +28,35 @@ import (
 // 	Src     string  `json:"src,omitempty"`
 // }
 
-func SyncInit(meiliInstance meilisearch.ServiceManager) {
+func SyncInit(meiliInstance meilisearch.ServiceManager, storeInstance store.Store) {
 	for category := range amazon {
 		if subcategories, exists := amazon[category]; exists {
 			for _, subcat := range subcategories {
 
 				products := loadProducts(category, subcat)
 
+				prods := make([]product.Product, len(products))
+				for i := range products {
+					prods[i].Title = products[i].Title
+
+					uid, _ := uuid.Parse(products[i].ID)
+					prods[i].ID = uid
+
+					prods[i].Price = rand.Int32N(2000) + 300
+					prods[i].Quantity = rand.Int32N(300) + 10
+					prods[i].Category = products[i].Category.Lvl1
+				}
+				utils.BatchInsertProducts(storeInstance, prods)
+
 				task, err := meiliInstance.Index("Atlantic").AddDocumentsInBatches(
 					products,
 					1000,
 				)
 				colorlogger.Log(task, err)
-
-				meiliInstance.CreateIndex(&meilisearch.IndexConfig{
-					Uid:        "Atlantic",
-					PrimaryKey: "id",
-				})
-
-				searchableAttributes := []string{
-					"title",
-				}
-				filterableAttributes := []string{
-					"gen",
-					"cat",
-					"price",
-					"sale",
-					"age",
-					"category",
-					"rating",
-				}
-				sortableAttributes := []string{
-					"sale",
-					"categroy",
-					"rating",
-				}
-				meiliInstance.Index("Atlantic").UpdateSearchableAttributes(&searchableAttributes)
-				meiliInstance.Index("Atlantic").UpdateFilterableAttributes(&filterableAttributes)
-				meiliInstance.Index("Atlantic").UpdateSortableAttributes(&sortableAttributes)
 			}
 		}
 	}
+	utils.Mix(meiliInstance)
 }
 
 func loadProducts(category, subcat string) []Product {

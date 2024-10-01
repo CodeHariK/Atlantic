@@ -833,14 +833,24 @@ export class Product extends Message<Product> {
   id = "";
 
   /**
-   * @generated from field: int32 quantity = 2;
+   * @generated from field: string title = 2;
+   */
+  title = "";
+
+  /**
+   * @generated from field: int32 quantity = 3;
    */
   quantity = 0;
 
   /**
-   * @generated from field: int32 price = 3;
+   * @generated from field: int32 price = 4;
    */
   price = 0;
+
+  /**
+   * @generated from field: string category = 5;
+   */
+  category = "";
 
   constructor(data?: PartialMessage<Product>) {
     super();
@@ -851,8 +861,10 @@ export class Product extends Message<Product> {
   static readonly typeName = "orders.v1.Product";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 3, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "title", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 4, name: "price", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 5, name: "category", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {

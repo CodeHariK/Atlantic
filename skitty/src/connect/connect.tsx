@@ -35,6 +35,7 @@ import {
    GetProfileRequest,
    ProfileUser,
 } from "../../api/auth/v1/profile_pb.ts";
+import { Cart, GetCartRequest } from "../../api/cart/v1/cart_pb.ts";
 
 const interceptor: (authclient: AuthConnect) => Interceptor =
    (authclient: AuthConnect) => (next) => async (req) => {
@@ -84,7 +85,9 @@ export interface ConnectBox {
    ordersclient: OrdersConnect;
    cartclient: CartConnect;
 
-   muser: ProfileUser | null;
+   user: ProfileUser | null;
+   cart: Cart | null;
+   getCart(): Promise<void>;
 }
 
 // Create the context with a default value of undefined
@@ -117,23 +120,47 @@ export function ConnectProvider(props: ConnectProviderProps) {
       productclient: createPromiseClient(ProductService, transport),
       ordersclient: createPromiseClient(OrdersService, transport),
       cartclient: createPromiseClient(CartService, transport),
-      muser: null,
+
+      user: null,
+      cart: null,
+
+      getCart: getCart
    });
 
-   // Fetch the user data (you might be fetching this from an API)
-   createEffect(async () => {
+   async function getProfile() {
       try {
          const request = new GetProfileRequest();
          const response = await connectBox.profileclient.getProfile(request);
 
          if (response.user) {
             console.log("Get Profile successful:", response);
-            setConnectBox("muser", response.user);
+            setConnectBox("user", response.user);
          }
       } catch (err) {
          console.error("Failed to get profile:", err);
-      } finally {
       }
+   }
+
+   async function getCart() {
+      try {
+         const request = new GetCartRequest();
+         const response = await connectBox.cartclient.getCart(request);
+
+         if (response) {
+            console.log("Get Cart successful:", response);
+            setConnectBox("cart", response);
+         }
+      } catch (err) {
+         console.error("Failed to get cart:", err);
+      }
+   }
+
+
+   // Fetch the user data (you might be fetching this from an API)
+   createEffect(async () => {
+      await getProfile();
+
+      await getCart();
    });
 
    // createMemo(() => {

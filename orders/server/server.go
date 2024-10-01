@@ -15,6 +15,7 @@ import (
 	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/store"
+	"go.temporal.io/api/serviceerror"
 	"go.temporal.io/sdk/client"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -94,20 +95,29 @@ func (o CartServiceServer) CreateCart(ctx context.Context, req *connect.Request[
 	// uid := cb.AccessObj.ID
 	uid := "66173097-653b-400b-9e98-78830fdd630e"
 
+	err := CreateCart(o, uid)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeAborted, err)
+	}
+
+	return connect.NewResponse(&v1.Cart{}), nil
+}
+
+func CreateCart(o CartServiceServer, uid string) error {
 	options := client.StartWorkflowOptions{
 		ID:        "cart-" + uid,
 		TaskQueue: "CART_TASK_QUEUE",
 	}
 
 	cart := v1.Cart{Items: []*v1.CartItem{}, UpdatedAt: timestamppb.Now()}
+
 	we, err := o.temporalClient.ExecuteWorkflow(context.Background(), options, o.CartWorkflow, &cart)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return err
 	}
 
 	colorlogger.Log(we.GetID(), we.GetRunID())
-
-	return connect.NewResponse(&v1.Cart{}), nil
+	return nil
 }
 
 func (o CartServiceServer) GetCart(ctx context.Context, req *connect.Request[v1.GetCartRequest]) (*connect.Response[v1.Cart], error) {
@@ -119,17 +129,25 @@ func (o CartServiceServer) GetCart(ctx context.Context, req *connect.Request[v1.
 	// uid := cb.AccessObj.ID
 	uid := "66173097-653b-400b-9e98-78830fdd630e"
 
-	response, err := o.temporalClient.QueryWorkflow(context.Background(), "cart-"+uid, "", "getCart")
+	cartState, err := GetCart(o, uid)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	var cartState v1.Cart
-	if err := response.Get(&cartState); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+	return connect.NewResponse(cartState), err
+}
+
+func GetCart(o CartServiceServer, uid string) (*v1.Cart, error) {
+	response, err := o.temporalClient.QueryWorkflow(context.Background(), "cart-"+uid, "", "getCart")
+	if err != nil {
+		return &v1.Cart{}, err
 	}
 
-	return connect.NewResponse(&cartState), err
+	var cartState v1.Cart
+	if err := response.Get(&cartState); err != nil {
+		return &v1.Cart{}, err
+	}
+	return &cartState, nil
 }
 
 func (o CartServiceServer) UpdateCartItem(ctx context.Context, req *connect.Request[v1.CartItem]) (*connect.Response[v1.Cart], error) {
@@ -140,26 +158,56 @@ func (o CartServiceServer) UpdateCartItem(ctx context.Context, req *connect.Requ
 
 	// uid := cb.AccessObj.ID
 	uid := "66173097-653b-400b-9e98-78830fdd630e"
+	cartWorkflowID := "cart-" + uid
 
 	update, _ := protojson.Marshal(req.Msg)
 
 	colorlogger.Log("update", update)
 
-	err := o.temporalClient.SignalWorkflow(context.Background(), "cart-"+uid, "", SignalChannels.UPDATE_CART_CHANNEL, update)
+	err := o.temporalClient.SignalWorkflow(context.Background(), cartWorkflowID, "", SignalChannels.UPDATE_CART_CHANNEL, update)
 	if err != nil {
-		return nil, err
+		if _, isNotFound := err.(*serviceerror.NotFound); isNotFound {
+			colorlogger.Log("isNotFound : ", isNotFound)
+
+			err = CreateCart(o, uid)
+			colorlogger.Log("server:createcart", err)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeAborted, err)
+			}
+
+			err = o.temporalClient.SignalWorkflow(context.Background(), cartWorkflowID, "", SignalChannels.UPDATE_CART_CHANNEL, update)
+			colorlogger.Log("server:updatecart", err)
+			if err != nil {
+				return nil, connect.NewError(connect.CodeInternal, err)
+			}
+		} else {
+			// Handle other types of errors
+			return nil, connect.NewError(connect.CodeInternal, err)
+		}
 	}
 
-	return connect.NewResponse(&v1.Cart{}), err
+	cart, err := GetCart(o, uid)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	return connect.NewResponse(cart), err
 }
 
 func (o CartServiceServer) CheckoutCart(context.Context, *connect.Request[v1.CheckoutCartRequest]) (*connect.Response[v1.CheckoutCartResponse], error) {
 	uid := "66173097-653b-400b-9e98-78830fdd630e"
-
-	err := o.temporalClient.SignalWorkflow(context.Background(), "cart-"+uid, "", SignalChannels.CHECKOUT_CHANNEL, nil)
+	err := CheckoutCart(o, uid)
 	if err != nil {
-		return nil, err
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
 	return connect.NewResponse(&v1.CheckoutCartResponse{}), err
+}
+
+func CheckoutCart(o CartServiceServer, uid string) error {
+	err := o.temporalClient.SignalWorkflow(context.Background(), "cart-"+uid, "", SignalChannels.CHECKOUT_CHANNEL, nil)
+	if err != nil {
+		return err
+	}
+	return nil
 }

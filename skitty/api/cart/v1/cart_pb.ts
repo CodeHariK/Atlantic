@@ -54,12 +54,17 @@ export class Cart extends Message<Cart> {
  */
 export class CartItem extends Message<CartItem> {
   /**
-   * @generated from field: string product_id = 3;
+   * @generated from field: string product_id = 1;
    */
   productId = "";
 
   /**
-   * @generated from field: int32 quantity = 4;
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * @generated from field: int32 quantity = 3;
    */
   quantity = 0;
 
@@ -71,8 +76,9 @@ export class CartItem extends Message<CartItem> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "cart.v1.CartItem";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 3, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 1, name: "product_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "quantity", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CartItem {

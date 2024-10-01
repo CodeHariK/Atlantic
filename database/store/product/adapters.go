@@ -6,11 +6,22 @@ import (
 	pb "github.com/codeharik/Atlantic/database/api/product/v1"
 )
 
+func toListProductsRow(in ListProductsRow) *pb.ListProductsRow {
+
+	out := new(pb.ListProductsRow)
+	out.Id = in.ID.String()
+	out.Quantity = in.Quantity
+	out.Price = in.Price
+	return out
+}
+
 func toProduct(in Product) *pb.Product {
 
 	out := new(pb.Product)
 	out.Id = in.ID.String()
+	out.Title = in.Title
 	out.Quantity = in.Quantity
 	out.Price = in.Price
+	out.Category = in.Category
 	return out
 }

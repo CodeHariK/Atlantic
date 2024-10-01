@@ -2,6 +2,7 @@
 # versions:
 #   sqlc v1.27.0
 # source: product.sql
+import dataclasses
 from typing import List, Optional
 import uuid
 
@@ -12,8 +13,14 @@ from product import models
 
 CREATE_PRODUCT = """-- name: create_product \\:one
 INSERT INTO
-    products (id, quantity, price)
-VALUES (:p1, :p2, :p3) RETURNING id, quantity, price
+    products (
+        id,
+        name,
+        quantity,
+        price,
+        category
+    )
+VALUES (:p1, :p2, :p3, :p4, :p5) RETURNING id, name, quantity, price, category
 """
 
 
@@ -23,7 +30,7 @@ DELETE FROM products WHERE id = :p1
 
 
 GET_PRODUCTS_BY_IDS = """-- name: get_products_by_ids \\:many
-SELECT id, quantity, price FROM products WHERE id = ANY(:p1\\:\\:uuid[])
+SELECT id, name, quantity, price, category FROM products WHERE id = ANY(:p1\\:\\:uuid[])
 """
 
 
@@ -32,11 +39,20 @@ SELECT id, quantity, price FROM products LIMIT :p1
 """
 
 
-UPDATE_PRODUCT = """-- name: update_product \\:exec
+@dataclasses.dataclass()
+class ListProductsRow:
+    id: uuid.UUID
+    quantity: int
+    price: int
+
+
+UPDATE_PRODUCT = """-- name: update_product \\:one
 UPDATE products
 SET
+    name = name,
+    category = category,
     quantity = quantity + :p2,
     price = :p3
 WHERE
-    id = :p1
+    id = :p1 RETURNING id, name, quantity, price, category
 """
