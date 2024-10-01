@@ -24,6 +24,7 @@ import { Account } from "./pages/account";
 import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
 import { Product } from "./pages/product";
+import { OrderDetails } from "./pages/orderdetails";
 
 export const routes: RouteDefinition[] = [
 	{
@@ -93,6 +94,10 @@ export const routes: RouteDefinition[] = [
 	{
 		path: "/myorders",
 		component: MyOrders,
+	},
+	{
+		path: "/orderdetails",
+		component: OrderDetails,
 	},
 	{
 		path: "/uploadproduct",

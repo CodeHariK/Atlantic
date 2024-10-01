@@ -6,6 +6,7 @@ import { type JSX } from 'solid-js';
 export type ToggleOptionsProps = {
     name: JSX.Element;
     children: JSX.Element;
+    show?: boolean;
 }
 
 export function ToggleOptions(props: ToggleOptionsProps) {
@@ -49,7 +50,7 @@ export function ToggleOptions(props: ToggleOptionsProps) {
                 {props.name}
             </button>
 
-            {hover() && (
+            {(props.show || hover()) && (
                 <div
                     ref={dropdown}
                     class="absolute left-1/2 transform translate-y-11 -translate-x-1/2 mt-2 rounded-lg space-y-0.5 transition-opacity duration-300 opacity-100 visible  dark:border dark:border-neutral-700"

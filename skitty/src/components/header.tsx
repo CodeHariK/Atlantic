@@ -87,28 +87,35 @@ export function CartModal() {
 
     const connect = useConnect();
 
+    console.log("------")
+    console.log(connect.cartbox)
+    console.log("------")
+
     return (
-        <ToggleOptions name={<p>{CartIcon()}{<span>My Cart</span>}{DownIcon()}</p>}>
+        <ToggleOptions show={connect.cartbox?.loading == true && connect.cartbox?.cart != null} name={<p>{CartIcon()}{<span>My Cart</span>}{DownIcon()}</p>}>
 
-            <div id="myCartDropdown1" class="min-w-[300px] z-10 mx-auto space-y-4 overflow-hidden rounded-lg bg-white p-4 antialiased shadow-lg dark:bg-gray-800">
+            <div class="min-w-[300px] z-10 mx-auto space-y-4 overflow-hidden rounded-lg bg-white p-4 antialiased shadow-lg dark:bg-gray-800">
 
-                {connect.cart == null ?
-                    <>
-                        Cart is empty
-                    </>
-                    :
-                    <>
-                        {connect.cart?.items.map((c) => (
-                            <ListTile
-                                end={<CrossIconFilled />}
-                                title={c.name}
-                                subtitle={"Qty:" + c.quantity}
-                            />
-                        ))}
+                {
+                    connect.cartbox?.cart == null
+                        ?
+                        <>Cart is empty</>
+                        :
+                        <>
+                            {connect.cartbox?.cart.items.map((c) => (
+                                <ListTile
+                                    end={<CrossIconFilled />}
+                                    title={c.name}
+                                    subtitle={"Qty:" + c.quantity}
+                                />
+                            ))}
 
-                        <MaterialButton class="w-full items-center justify-center">Proceed to Checkout</MaterialButton>
-                    </>
+                            <MaterialButton class="w-full items-center justify-center">Proceed to Checkout</MaterialButton>
+
+                            {connect.cartbox?.loading == true ? "Loading" : ""}
+                        </>
                 }
+
             </div>
 
         </ToggleOptions>

@@ -1,3 +1,4 @@
+import { useParams, useSearchParams } from "@solidjs/router";
 import { Breadcrumbs } from "../components/breadcrumb";
 import { MaterialButton, OutlinedButton } from "../components/button";
 import { H2, H6, P } from "../components/heading";
@@ -5,12 +6,19 @@ import { RatingsBar } from "../components/ratingsbar";
 import SpaceLayout from "../layouts/SpaceLayout";
 
 export function Product() {
+
+   const params = useParams();
+   const [searchParams] = useSearchParams();
+
    return (
-      <SpaceLayout title='Home'>
+      <SpaceLayout title={'Product ' + searchParams.name}>
          <section class="py-12 sm:py-16">
             <div class="container mx-auto px-4">
 
                {Breadcrumbs()}
+
+               Product Id : {params.productId}
+               Name : {searchParams.name}
 
                <div class="lg:col-gap-12 xl:col-gap-16 mt-8 grid grid-cols-1 gap-12 lg:mt-12 lg:grid-cols-5 lg:gap-16">
 

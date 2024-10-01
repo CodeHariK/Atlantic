@@ -137,6 +137,34 @@ export default function SearchGames() {
                      </ul>`;
 						};
 
+						const PrevNext = () => {
+							return html`
+							<div class="flex gap-4 w-full justify-center">
+								
+								<button
+									onclick=${() => {
+									imgmov = (imgmov - 1) % total;
+									if (imgmov < 0) {
+										imgmov += total;
+									}
+									imgNext(imgmov, hit, id);
+								}}
+								>
+									prev
+								</button>
+
+								<button
+									onclick=${() => {
+									imgmov = (imgmov + 1) % total;
+									imgNext(imgmov, hit, id);
+								}}
+								>
+									next
+								</button>
+							</div>
+						`
+						}
+
 						const cartButton = () => {
 							return html`<button
                         class="rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none dark:bg-primary-600 dark:hover:bg-primary-700"
@@ -146,8 +174,11 @@ export default function SearchGames() {
 										productId: hit.id,
 										quantity: 1,
 									});
+									console.log(connect.cartbox)
+									console.log(cart)
 									await connect.cartclient.updateCartItem(cart);
 									await connect.getCart()
+									console.log(connect.cartbox)
 								}}
                      >
                         Add to cart
@@ -165,71 +196,30 @@ export default function SearchGames() {
                         class="flex flex-col h-full overflow-hidden justify-between items-start"
                      >
                         <div
-                           class="rounded-lg h-56 ml-auto mr-auto content-center object-contain overflow-hidden"
+                           class="rounded-lg w-full text-center h-56 ml-auto mr-auto content-center object-contain overflow-hidden"
                            id=${id}
                         >
-                           ${typeof hit.img === "string"
-								? html`<img src="${hit.img}" alt="Image" />`
+                           ${(typeof hit.img) === "string"
+								? html`<img class="h-full w-full object-cover" src="${hit.img}" alt="Image" />`
 								: html`<img
+											class="inline  h-full object-cover"
 											src="${hit.img[imgmov]}"
 											alt="Image"
 										/>`}
                         </div>
 
                         ${typeof hit.img === "string" ||
-								hit.img.length + hit.mov?.length == 1
+								hit.img?.length + hit.mov?.length == 1
 								? html``
-								: html`
-										<div class="flex gap-4 w-full justify-center">
-											<button
-												onclick=${() => {
-										imgmov = (imgmov - 1) % total;
-										if (imgmov < 0) {
-											imgmov += total;
-										}
-										if (imgmov >= hit.img.length) {
-											document.getElementById(
-												id,
-											)!.innerHTML =
-												`<video controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
-										} else {
-											document.getElementById(
-												id,
-											)!.innerHTML =
-												`<img src="${hit.img[imgmov]}" />`;
-										}
-									}}
-											>
-												prev
-											</button>
-											<button
-												onclick=${() => {
-										imgmov = (imgmov + 1) % total;
-										if (imgmov >= hit.img.length) {
-											document.getElementById(
-												id,
-											)!.innerHTML =
-												`<video class="h-full" controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
-										} else {
-											document.getElementById(
-												id,
-											)!.innerHTML =
-												`<img src="${hit.img[imgmov]}" />`;
-										}
-									}}
-											>
-												next
-											</button>
-										</div>
-									`}
+								: PrevNext()}
 
                         <a
                            id=${hit.id}
                            href=${(() => {
-								if (hit.src) {
-									return "https://amazon.in" + hit.src;
-								}
-								return "/product/" + hit.id;
+								// if (hit.src) {
+								// 	return "https://amazon.in" + hit.src;
+								// }
+								return "/product/" + hit.id + "?name=hello";
 							})()}
                         >
                            <h2
@@ -267,14 +257,14 @@ export default function SearchGames() {
 										</p>`
 								: html``}
                            <p class="text-sm dark:text-blue-200">
-                              ${hit.rating}
+                              ${Number(hit.rating).toFixed(1)}
                            </p>
                         </div>
                         <div class="w-full flex items-center justify-between">
                            <p
                               class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white"
                            >
-                              ${hit.price}
+                              ${Number(hit.price).toFixed(0)}
                            </p>
                            ${cartButton()}
                         </div>
@@ -326,4 +316,18 @@ export default function SearchGames() {
 			</div>
 		</SpaceLayout>
 	);
+
+	function imgNext(imgmov: number, hit: any, id: string) {
+		if (imgmov >= hit.img.length) {
+			document.getElementById(
+				id
+			)!.innerHTML =
+				`<video class="h-full w-full object-cover" controls="" autoplay="" name="media"><source type="video/mp4" src="${hit.mov[imgmov - hit.img.length]}"></video>`;
+		} else {
+			document.getElementById(
+				id
+			)!.innerHTML =
+				`<img class="h-full w-full object-cover" src="${hit.img[imgmov]}" />`;
+		}
+	}
 }

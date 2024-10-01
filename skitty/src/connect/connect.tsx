@@ -75,6 +75,11 @@ const interceptor: (authclient: AuthConnect) => Interceptor =
       }
    };
 
+type CartBox = {
+   loading: boolean;
+   cart: Cart;
+}
+
 export interface ConnectBox {
    authclient: AuthConnect;
    profileclient: ProfileConnect;
@@ -86,8 +91,10 @@ export interface ConnectBox {
    cartclient: CartConnect;
 
    user: ProfileUser | null;
-   cart: Cart | null;
-   getCart(): Promise<void>;
+
+   cartbox: CartBox | null;
+
+   getCart: () => Promise<Cart | undefined>;
 }
 
 // Create the context with a default value of undefined
@@ -122,7 +129,7 @@ export function ConnectProvider(props: ConnectProviderProps) {
       cartclient: createPromiseClient(CartService, transport),
 
       user: null,
-      cart: null,
+      cartbox: null,
 
       getCart: getCart
    });
@@ -143,15 +150,22 @@ export function ConnectProvider(props: ConnectProviderProps) {
 
    async function getCart() {
       try {
+         setConnectBox("cartbox", { loading: true });
+         await (new Promise(resolve => setTimeout(resolve, 500)))
          const request = new GetCartRequest();
          const response = await connectBox.cartclient.getCart(request);
 
          if (response) {
             console.log("Get Cart successful:", response);
-            setConnectBox("cart", response);
+
+            setConnectBox("cartbox", { cart: response });
+            await (new Promise(resolve => setTimeout(resolve, 500)))
+            setConnectBox("cartbox", { loading: false });
          }
+         return response
       } catch (err) {
          console.error("Failed to get cart:", err);
+         setConnectBox("cartbox", { loading: false });
       }
    }
 
