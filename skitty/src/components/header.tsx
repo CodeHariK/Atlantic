@@ -1,11 +1,12 @@
 import { JSXElement } from "solid-js";
-import { RevokeReq } from "../connect/auth";
 import { useConnect } from "../connect/connect";
 import { MaterialButton, OutlinedButton } from "./button";
 import { PositionBox2, ToggleOptions } from "./dropdown";
 import { ListTile } from "./heading";
 import { CartIcon, CrossIconFilled, DownIcon, UserIcon } from "./svg";
 import ThemeToggle from "./theme_toggle";
+import { useNavigate } from "@solidjs/router";
+import { RevokeReq } from "../connect/auth";
 
 export const Header = () => (
     <header>
@@ -22,10 +23,9 @@ export const Header = () => (
                         </a>
 
                         <ul class="hidden lg:flex items-center justify-start gap-2 md:gap-2 py-3 sm:justify-center">
-                            {HeaderLinks("/products", "Best Sellers")}
-                            {HeaderLinks("/", "Gift Ideas")}
-                            {HeaderLinks("/", "Today's Deals")}
-                            {HeaderLinks("/", "Home")}
+                            <HeaderLinks href="/products?Atlantic%3Arating%3Adesc%5BhierarchicalMenu%5D%5Bcategory.lvl0%5D%5B0%5D=games" title="Games" />
+                            <HeaderLinks href="/products" title="Best Sellers" />
+                            <HeaderLinks href="/products?Atlantic%3Arating%3Adesc%5BhierarchicalMenu%5D%5Bcategory.lvl0%5D%5B0%5D=electronics" title="Electronics" />
                         </ul>
                     </div>
 
@@ -46,7 +46,6 @@ export const Header = () => (
     </header >
 );
 
-
 export const AccountModal = () => {
 
     const connect = useConnect();
@@ -61,10 +60,10 @@ export const AccountModal = () => {
                             <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
                         </div>
                         <ul class="py-2" aria-labelledby="user-menu-button">
-                            {HeaderLinks("/profile", "Profile")}
-                            {HeaderLinks("/dashboard", "Dashboard")}
-                            {HeaderLinks("/settings", "Settings")}
-                            {HeaderLinks("", "Sign out", () => { RevokeReq(connect, -1) })}
+                            <HeaderLinks href="/profile" title="Profile" />
+                            <HeaderLinks href="/dashboard" title="Dashboard" />
+                            <HeaderLinks href="/settings" title="Settings" />
+                            <HeaderLinks href="" title="Sign out" fn={() => { RevokeReq(connect, -1) }} />
                         </ul>
                     </div>
                 </PositionBox2>
@@ -75,10 +74,22 @@ export const AccountModal = () => {
     );
 }
 
-function HeaderLinks(href: string, title: string, fn?: () => void) {
-    return <li onClick={fn}>
-        <a href={href} title={title} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-            {title}
+export const HeaderLinks = (props: { href: string, title: string, fn?: () => void }) => {
+    const navigate = useNavigate();
+
+    const handleLinkClick = (event: MouseEvent) => {
+        event.preventDefault();
+        console.log(props.href)
+        if (props.fn) props.fn();
+        navigate(props.href, { replace: false }); // Forces navigation even if the URL is similar
+        setTimeout(() => {
+            location.reload()
+        }, 10)
+    };
+
+    return <li>
+        <a onClick={handleLinkClick} href={props.href} title={props.title} class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+            {props.title}
         </a>
     </li>;
 }
@@ -86,10 +97,8 @@ function HeaderLinks(href: string, title: string, fn?: () => void) {
 export function CartModal() {
 
     const connect = useConnect();
+    const navigate = useNavigate();
 
-    console.log("------")
-    console.log(connect.cartbox)
-    console.log("------")
 
     return (
         <ToggleOptions show={connect.cartbox?.loading == true && connect.cartbox?.cart != null} name={<p>{CartIcon()}{<span>My Cart</span>}{DownIcon()}</p>}>
@@ -110,7 +119,7 @@ export function CartModal() {
                                 />
                             ))}
 
-                            <MaterialButton class="w-full items-center justify-center">Proceed to Checkout</MaterialButton>
+                            <MaterialButton onClick={() => { navigate("/cart", { replace: false }); }} class="w-full items-center justify-center">Proceed to Checkout</MaterialButton>
 
                             {connect.cartbox?.loading == true ? "Loading" : ""}
                         </>

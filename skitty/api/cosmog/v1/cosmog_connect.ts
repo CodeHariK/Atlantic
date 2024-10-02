@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateSearchKeyRequest, CreateSearchKeyResponse, DeleteProductRequest, DeleteProductResponse, GetProductRequest, GetProductResponse, GetTaskRequest, GetTaskResponse, UpdateProductRequest, UpdateProductResponse } from "./cosmog_pb.js";
+import { CreateSearchKeyRequest, CreateSearchKeyResponse, DeleteProductRequest, DeleteProductResponse, GetProductRequest, GetTaskRequest, GetTaskResponse, Product, UpdateProductRequest, UpdateProductResponse } from "./cosmog_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -27,7 +27,7 @@ export const CosmogService = {
     getProduct: {
       name: "GetProduct",
       I: GetProductRequest,
-      O: GetProductResponse,
+      O: Product,
       kind: MethodKind.Unary,
     },
     /**

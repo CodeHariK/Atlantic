@@ -1,5 +1,6 @@
 :80 {
 	reverse_proxy /inventory.v1.InventoryService/* 127.0.0.1:9100
+	reverse_proxy /product.v1.ProductService/* 127.0.0.1:9100
 
 	reverse_proxy /profile.v1.ProfileService/* 127.0.0.1:7777
 	reverse_proxy /auth.v1.AuthService/* 127.0.0.1:7777

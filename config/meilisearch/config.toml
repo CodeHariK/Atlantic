@@ -45,7 +45,7 @@ log_level = "INFO"
 
 # Sets the directory where Meilisearch will create dump files.
 # https://www.meilisearch.com/docs/learn/configuration/instance_options#dump-directory
-dump_dir = "dumps/"
+dump_dir = "./executables/dumps"
 
 # Imports the dump file located at the specified path. Path must point to a .dump file.
 # https://www.meilisearch.com/docs/learn/configuration/instance_options#import-dump

@@ -62,7 +62,7 @@ var (
 // CosmogServiceClient is a client for the cosmog.v1.CosmogService service.
 type CosmogServiceClient interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
-	GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error)
+	GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.Product], error)
 	DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error)
 	UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error)
 	GetTask(context.Context, *connect.Request[v1.GetTaskRequest]) (*connect.Response[v1.GetTaskResponse], error)
@@ -84,7 +84,7 @@ func NewCosmogServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
-		getProduct: connect.NewClient[v1.GetProductRequest, v1.GetProductResponse](
+		getProduct: connect.NewClient[v1.GetProductRequest, v1.Product](
 			httpClient,
 			baseURL+CosmogServiceGetProductProcedure,
 			connect.WithSchema(cosmogServiceGetProductMethodDescriptor),
@@ -114,7 +114,7 @@ func NewCosmogServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 // cosmogServiceClient implements CosmogServiceClient.
 type cosmogServiceClient struct {
 	createSearchKey *connect.Client[v1.CreateSearchKeyRequest, v1.CreateSearchKeyResponse]
-	getProduct      *connect.Client[v1.GetProductRequest, v1.GetProductResponse]
+	getProduct      *connect.Client[v1.GetProductRequest, v1.Product]
 	deleteProduct   *connect.Client[v1.DeleteProductRequest, v1.DeleteProductResponse]
 	updateProduct   *connect.Client[v1.UpdateProductRequest, v1.UpdateProductResponse]
 	getTask         *connect.Client[v1.GetTaskRequest, v1.GetTaskResponse]
@@ -126,7 +126,7 @@ func (c *cosmogServiceClient) CreateSearchKey(ctx context.Context, req *connect.
 }
 
 // GetProduct calls cosmog.v1.CosmogService.GetProduct.
-func (c *cosmogServiceClient) GetProduct(ctx context.Context, req *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error) {
+func (c *cosmogServiceClient) GetProduct(ctx context.Context, req *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.Product], error) {
 	return c.getProduct.CallUnary(ctx, req)
 }
 
@@ -148,7 +148,7 @@ func (c *cosmogServiceClient) GetTask(ctx context.Context, req *connect.Request[
 // CosmogServiceHandler is an implementation of the cosmog.v1.CosmogService service.
 type CosmogServiceHandler interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
-	GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error)
+	GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.Product], error)
 	DeleteProduct(context.Context, *connect.Request[v1.DeleteProductRequest]) (*connect.Response[v1.DeleteProductResponse], error)
 	UpdateProduct(context.Context, *connect.Request[v1.UpdateProductRequest]) (*connect.Response[v1.UpdateProductResponse], error)
 	GetTask(context.Context, *connect.Request[v1.GetTaskRequest]) (*connect.Response[v1.GetTaskResponse], error)
@@ -215,7 +215,7 @@ func (UnimplementedCosmogServiceHandler) CreateSearchKey(context.Context, *conne
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.CreateSearchKey is not implemented"))
 }
 
-func (UnimplementedCosmogServiceHandler) GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error) {
+func (UnimplementedCosmogServiceHandler) GetProduct(context.Context, *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.Product], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("cosmog.v1.CosmogService.GetProduct is not implemented"))
 }
 

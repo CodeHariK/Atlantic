@@ -21,7 +21,7 @@ export default function Test() {
          {/* <TelTest pattern={Pattern.Tel}></TelTest> */}
 
          <CartModal />
-         {/* <Modal show modal={(setter) => DeleteModal(setter)} /> */}
+         <Modal show child=<>Delete</> modal={(setter) => DeleteModal(setter)} />
 
          {/* <AccountModal /> */}
          <ClassicForm />

@@ -1,5 +1,6 @@
 :80 {
 	reverse_proxy /inventory.v1.InventoryService/* inventory:9100
+	reverse_proxy /product.v1.ProductService/* inventory:9100
 
 	reverse_proxy /profile.v1.ProfileService/* auth:7777
 	reverse_proxy /auth.v1.AuthService/* auth:7777
@@ -7,7 +8,7 @@
 	reverse_proxy /cosmog.v1.CosmogService/* cosmog:7800
 	
 	reverse_proxy /orders.v1.OrdersService/* orders:4400
-	reverse_proxy /cart.v1.CartService/* 127.0.0.1:4400
+	reverse_proxy /cart.v1.CartService/* orders:4400
 
    #---------
 	reverse_proxy /* skitty:3000

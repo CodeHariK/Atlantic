@@ -66,12 +66,12 @@ func (c CosmogServiceServer) CreateSearchKey(ctx context.Context, req *connect.R
 	}), nil
 }
 
-func (c CosmogServiceServer) GetProduct(ctx context.Context, req *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.GetProductResponse], error) {
+func (c CosmogServiceServer) GetProduct(ctx context.Context, req *connect.Request[v1.GetProductRequest]) (*connect.Response[v1.Product], error) {
 	if err := c.validator.Validate(req.Msg); err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	var product v1.GetProductResponse
+	var product v1.Product
 	err := c.meiliInstance.Index("Atlantic").
 		GetDocument(req.Msg.Id, &meilisearch.DocumentQuery{
 			Fields: []string{"id", "title", "img", "mov", "dev", "brand", "category", "info", "price", "rating"},

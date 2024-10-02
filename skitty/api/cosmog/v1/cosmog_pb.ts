@@ -161,9 +161,9 @@ export class Category extends Message<Category> {
 }
 
 /**
- * @generated from message cosmog.v1.GetProductResponse
+ * @generated from message cosmog.v1.Product
  */
-export class GetProductResponse extends Message<GetProductResponse> {
+export class Product extends Message<Product> {
   /**
    * @generated from field: string id = 1;
    */
@@ -214,13 +214,13 @@ export class GetProductResponse extends Message<GetProductResponse> {
    */
   mov: string[] = [];
 
-  constructor(data?: PartialMessage<GetProductResponse>) {
+  constructor(data?: PartialMessage<Product>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "cosmog.v1.GetProductResponse";
+  static readonly typeName = "cosmog.v1.Product";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "title", kind: "scalar", T: 9 /* ScalarType.STRING */ },
@@ -234,20 +234,20 @@ export class GetProductResponse extends Message<GetProductResponse> {
     { no: 10, name: "mov", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetProductResponse {
-    return new GetProductResponse().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Product {
+    return new Product().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetProductResponse {
-    return new GetProductResponse().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Product {
+    return new Product().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetProductResponse {
-    return new GetProductResponse().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Product {
+    return new Product().fromJsonString(jsonString, options);
   }
 
-  static equals(a: GetProductResponse | PlainMessage<GetProductResponse> | undefined, b: GetProductResponse | PlainMessage<GetProductResponse> | undefined): boolean {
-    return proto3.util.equals(GetProductResponse, a, b);
+  static equals(a: Product | PlainMessage<Product> | undefined, b: Product | PlainMessage<Product> | undefined): boolean {
+    return proto3.util.equals(Product, a, b);
   }
 }
 

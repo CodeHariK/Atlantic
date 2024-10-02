@@ -12,9 +12,6 @@ import Docs from "./pages/docs";
 import Test from "./pages/test";
 import Home from "./pages/home";
 import SearchProducts from "./pages/searchproducts";
-import { Reviews } from "./pages/reviews";
-import SearchDrawer from "./components/searchdrawer";
-import Payment from "./pages/payment";
 import { Checkout } from "./pages/checkout";
 import { Products } from "./pages/products";
 import Register from "./pages/register";
@@ -23,8 +20,8 @@ import { MyOrders } from "./pages/myorders";
 import { Account } from "./pages/account";
 import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
-import { Product } from "./pages/product";
 import { OrderDetails } from "./pages/orderdetails";
+import { ProductPage } from "./pages/product";
 
 export const routes: RouteDefinition[] = [
 	{
@@ -56,36 +53,20 @@ export const routes: RouteDefinition[] = [
 		component: SearchProducts,
 	},
 	{
-		path: "/searchgames",
-		component: SearchGames,
-	},
-	{
-		path: "/searchdrawer",
-		component: SearchDrawer,
-	},
-	{
-		path: "/payment",
-		component: Payment,
-	},
-	{
 		path: "/checkout",
 		component: Checkout,
 	},
 	{
-		path: "/reviews",
-		component: Reviews,
-	},
-	{
-		path: "/search/:productId",
-		component: SearchProducts,
-	},
-	{
-		path: "/products",
+		path: "/searchgames",
 		component: Products,
 	},
 	{
+		path: "/products",
+		component: SearchGames,
+	},
+	{
 		path: "/product/:productId",
-		component: Product,
+		component: ProductPage,
 	},
 	{
 		path: "/cart",

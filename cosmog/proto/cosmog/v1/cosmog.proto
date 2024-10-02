@@ -9,7 +9,7 @@ option go_package = "github.com/codeharik/Atlantic/cosmog/api/cosmog/v1";
 service CosmogService {
   rpc CreateSearchKey(CreateSearchKeyRequest) returns (CreateSearchKeyResponse);
 
-  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  rpc GetProduct(GetProductRequest) returns (Product);
   rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
   rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
   rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
@@ -32,7 +32,7 @@ message Category {
   string lvl1 = 2;
 }
 
-message GetProductResponse {
+message Product {
   string id = 1 [(buf.validate.field).string.uuid = true];
   string title = 2;
   string info = 3;
