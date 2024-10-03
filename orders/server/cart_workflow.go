@@ -239,13 +239,26 @@ func (o CartServiceServer) cartToProducts(state *v1.Cart) ([]product.Product, er
 	products, err := o.productStore.GetProductsByIds(context.Background(), pids)
 	colorlogger.Log(products)
 
-	for i, item := range state.Items {
-		pid, err := uuid.Parse(item.ProductId)
-		if err != nil {
-			return nil, fmt.Errorf("invalid product ID: %s, error: %v", item.ProductId, err)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, item := range state.Items {
+		found := false
+		for _, p := range products {
+			pid, err := uuid.Parse(item.ProductId)
+			if err != nil {
+				return nil, fmt.Errorf("invalid product ID: %s, error: %v", item.ProductId, err)
+			}
+			if p.ID == pid {
+				item.Name = p.Title
+				found = true
+				break // Product found, no need to check further.
+			}
 		}
-		pids[i] = pid
-		item.Name = products[i].Title
+		if !found {
+			return nil, fmt.Errorf("product with ID %s not found", item.ProductId)
+		}
 	}
 
 	colorlogger.Log("==== AddToCart ====", state, products, "==== === === ====")

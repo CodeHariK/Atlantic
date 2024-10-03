@@ -23,7 +23,8 @@ func Serve(
 	createRoutes func(router *http.ServeMux),
 	closeFn func() error,
 	portUrl string, fullUrl string, serviceName string,
-	config *config.Config, dragon dragon.Dragon,
+	config *config.Config,
+	dragon dragon.Dragon,
 ) {
 	// Handle SIGINT (CTRL+C) gracefully.
 	sigctx, stop := signal.NotifyContext(

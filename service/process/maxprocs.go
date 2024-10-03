@@ -1,7 +1,7 @@
 package process
 
 import (
-	"log/slog"
+	"fmt"
 	"runtime"
 
 	"go.uber.org/automaxprocs/maxprocs"
@@ -10,7 +10,7 @@ import (
 func SetMaxProcs() {
 	_, err := maxprocs.Set()
 	if err != nil {
-		slog.Warn("startup", "error", err)
+		fmt.Println("startup", "error", err)
 	}
-	slog.Info("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
+	fmt.Printf("GOMAXPROCS:%d NumCPU:%d NumGoroutine:%d", runtime.GOMAXPROCS(0), runtime.NumCPU(), runtime.NumGoroutine())
 }

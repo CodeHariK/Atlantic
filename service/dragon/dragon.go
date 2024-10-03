@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	v1 "github.com/codeharik/Atlantic/auth/api/auth/v1"
 	"github.com/codeharik/Atlantic/config"
@@ -29,10 +30,23 @@ func CreateDragon(
 	}
 
 	dragonClient := dragon.NewClient(options)
+	maxRetries := 5
+	retryDelay := time.Second * 2
 
-	return Dragon{
-		dragonClient,
+	for retries := 0; retries < maxRetries; retries++ {
+		status := dragonClient.Ping(context.Background())
+		if status.Err() == nil {
+			fmt.Println("Successfully connected to Dragon")
+			return Dragon{
+				dragonClient,
+			}
+		}
+
+		fmt.Printf("Failed to connect to Dragon: %v. Retrying in %v...\n", status.Err(), retryDelay)
+		time.Sleep(retryDelay)
 	}
+
+	panic(errors.New("Cannot connect to dragon"))
 }
 
 func (d *Dragon) GetDragonUser(obj *v1.JwtObj) (*v1.AuthUser, int, error) {
