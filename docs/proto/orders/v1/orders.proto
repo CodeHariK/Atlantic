@@ -12,6 +12,8 @@ service OrdersService {
 
   rpc CreateOrderItem(CreateOrderItemRequest) returns (CreateOrderItemResponse) {}
 
+  rpc CreateOrderWithItems(CreateOrderWithItemsRequest) returns (CreateOrderWithItemsResponse) {}
+
   rpc DeleteOrderByID(DeleteOrderByIDRequest) returns (DeleteOrderByIDResponse) {}
 
   rpc DeleteOrderItemByID(DeleteOrderItemByIDRequest) returns (DeleteOrderItemByIDResponse) {}
@@ -30,7 +32,7 @@ service OrdersService {
 }
 
 message CreateOrderItemRequest {
-  string id = 1;
+  string orderitem_id = 1;
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
@@ -42,7 +44,7 @@ message CreateOrderItemResponse {
 }
 
 message CreateOrderRequest {
-  string id = 1;
+  string order_id = 1;
   string user_id = 2;
   int32 price = 3;
   string status = 4;
@@ -53,20 +55,34 @@ message CreateOrderResponse {
   Order order = 1;
 }
 
+message CreateOrderWithItemsRequest {
+  string order_id = 1;
+  string user_id = 2;
+  int32 price = 3;
+  string status = 4;
+  string payment_status = 5;
+  repeated string column6 = 6;
+  repeated string column7 = 7;
+  repeated int32 column8 = 8;
+  repeated int32 column9 = 9;
+}
+
+message CreateOrderWithItemsResponse {}
+
 message DeleteOrderByIDRequest {
-  string id = 1;
+  string order_id = 1;
 }
 
 message DeleteOrderByIDResponse {}
 
 message DeleteOrderItemByIDRequest {
-  string id = 1;
+  string orderitem_id = 1;
 }
 
 message DeleteOrderItemByIDResponse {}
 
 message GetOrderByIDRequest {
-  string id = 1;
+  string order_id = 1;
 }
 
 message GetOrderByIDResponse {
@@ -74,7 +90,7 @@ message GetOrderByIDResponse {
 }
 
 message GetOrderItemByIDRequest {
-  string id = 1;
+  string orderitem_id = 1;
 }
 
 message GetOrderItemByIDResponse {
@@ -105,7 +121,7 @@ message GooseDbVersion {
 }
 
 message Order {
-  string id = 1;
+  string order_id = 1;
   string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
@@ -115,7 +131,7 @@ message Order {
 }
 
 message OrderItem {
-  string id = 1;
+  string orderitem_id = 1;
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
@@ -123,25 +139,15 @@ message OrderItem {
 }
 
 message Product {
-  string id = 1;
+  string product_id = 1;
   string title = 2;
   int32 quantity = 3;
   int32 price = 4;
   string category = 5;
 }
 
-message ProductReview {
-  string id = 1;
-  string user_id = 2;
-  string product_id = 3;
-  google.protobuf.StringValue comment = 4;
-  int32 rating = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-}
-
 message UpdateOrderPaymentStatusRequest {
-  string id = 1;
+  string order_id = 1;
   string payment_status = 2;
   google.protobuf.Timestamp updated_at = 3;
 }
@@ -151,7 +157,7 @@ message UpdateOrderPaymentStatusResponse {
 }
 
 message UpdateOrderStatusRequest {
-  string id = 1;
+  string order_id = 1;
   string status = 2;
 }
 
@@ -160,7 +166,7 @@ message UpdateOrderStatusResponse {
 }
 
 message User {
-  string id = 1;
+  string user_id = 1;
   google.protobuf.StringValue username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;

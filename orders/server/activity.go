@@ -19,7 +19,7 @@ type PaymentDetails struct {
 
 func Withdraw(q *user.Queries, data PaymentDetails) (string, error) {
 	balance, err := q.UpdateUserBalance(context.Background(), user.UpdateUserBalanceParams{
-		ID:      data.Account,
+		UserID:  data.Account,
 		Balance: -data.Amount,
 	})
 
@@ -36,7 +36,7 @@ func Withdraw(q *user.Queries, data PaymentDetails) (string, error) {
 
 func Deposit(q *user.Queries, data PaymentDetails) (string, error) {
 	balance, err := q.UpdateUserBalance(context.Background(), user.UpdateUserBalanceParams{
-		ID:      data.Account,
+		UserID:  data.Account,
 		Balance: data.Amount,
 	})
 

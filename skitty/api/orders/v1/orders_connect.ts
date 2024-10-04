@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateOrderItemRequest, CreateOrderItemResponse, CreateOrderRequest, CreateOrderResponse, DeleteOrderByIDRequest, DeleteOrderByIDResponse, DeleteOrderItemByIDRequest, DeleteOrderItemByIDResponse, GetOrderByIDRequest, GetOrderByIDResponse, GetOrderItemByIDRequest, GetOrderItemByIDResponse, GetOrderItemsByOrderIDRequest, GetOrderItemsByOrderIDResponse, GetOrdersByUserIDRequest, GetOrdersByUserIDResponse, UpdateOrderPaymentStatusRequest, UpdateOrderPaymentStatusResponse, UpdateOrderStatusRequest, UpdateOrderStatusResponse } from "./orders_pb.js";
+import { CreateOrderItemRequest, CreateOrderItemResponse, CreateOrderRequest, CreateOrderResponse, CreateOrderWithItemsRequest, CreateOrderWithItemsResponse, DeleteOrderByIDRequest, DeleteOrderByIDResponse, DeleteOrderItemByIDRequest, DeleteOrderItemByIDResponse, GetOrderByIDRequest, GetOrderByIDResponse, GetOrderItemByIDRequest, GetOrderItemByIDResponse, GetOrderItemsByOrderIDRequest, GetOrderItemsByOrderIDResponse, GetOrdersByUserIDRequest, GetOrdersByUserIDResponse, UpdateOrderPaymentStatusRequest, UpdateOrderPaymentStatusResponse, UpdateOrderStatusRequest, UpdateOrderStatusResponse } from "./orders_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -28,6 +28,15 @@ export const OrdersService = {
       name: "CreateOrderItem",
       I: CreateOrderItemRequest,
       O: CreateOrderItemResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc orders.v1.OrdersService.CreateOrderWithItems
+     */
+    createOrderWithItems: {
+      name: "CreateOrderWithItems",
+      I: CreateOrderWithItemsRequest,
+      O: CreateOrderWithItemsResponse,
       kind: MethodKind.Unary,
     },
     /**

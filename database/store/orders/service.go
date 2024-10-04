@@ -22,11 +22,11 @@ type Service struct {
 
 func (s *Service) CreateOrder(ctx context.Context, req *connect.Request[pb.CreateOrderRequest]) (*connect.Response[pb.CreateOrderResponse], error) {
 	var arg CreateOrderParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
+		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.OrderID = v
 	}
 	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
 		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
@@ -48,11 +48,11 @@ func (s *Service) CreateOrder(ctx context.Context, req *connect.Request[pb.Creat
 
 func (s *Service) CreateOrderItem(ctx context.Context, req *connect.Request[pb.CreateOrderItemRequest]) (*connect.Response[pb.CreateOrderItemResponse], error) {
 	var arg CreateOrderItemParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetOrderitemId()); err != nil {
+		err = fmt.Errorf("invalid OrderitemID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.OrderitemID = v
 	}
 	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
 		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
@@ -77,16 +77,62 @@ func (s *Service) CreateOrderItem(ctx context.Context, req *connect.Request[pb.C
 	return connect.NewResponse(&pb.CreateOrderItemResponse{OrderItem: toOrderItem(result)}), nil
 }
 
-func (s *Service) DeleteOrderByID(ctx context.Context, req *connect.Request[pb.DeleteOrderByIDRequest]) (*connect.Response[pb.DeleteOrderByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+func (s *Service) CreateOrderWithItems(ctx context.Context, req *connect.Request[pb.CreateOrderWithItemsRequest]) (*connect.Response[pb.CreateOrderWithItemsResponse], error) {
+	var arg CreateOrderWithItemsParams
+	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
+		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		arg.OrderID = v
+	}
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.UserID = v
+	}
+	arg.Price = req.Msg.GetPrice()
+	arg.Status = req.Msg.GetStatus()
+	arg.PaymentStatus = req.Msg.GetPaymentStatus()
+	arg.Column6 = make([]uuid.UUID, len(req.Msg.GetColumn6()))
+	for i, s := range req.Msg.GetColumn6() {
+		if v, err := uuid.Parse(s); err != nil {
+			err = fmt.Errorf("invalid Column6: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		} else {
+			arg.Column6[i] = v
+		}
+	}
+	arg.Column7 = make([]uuid.UUID, len(req.Msg.GetColumn7()))
+	for i, s := range req.Msg.GetColumn7() {
+		if v, err := uuid.Parse(s); err != nil {
+			err = fmt.Errorf("invalid Column7: %s%w", err.Error(), validation.ErrUserInput)
+			return nil, err
+		} else {
+			arg.Column7[i] = v
+		}
+	}
+	arg.Column8 = req.Msg.GetColumn8()
+	arg.Column9 = req.Msg.GetColumn9()
+
+	err := s.querier.CreateOrderWithItems(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "CreateOrderWithItems")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.CreateOrderWithItemsResponse{}), nil
+}
+
+func (s *Service) DeleteOrderByID(ctx context.Context, req *connect.Request[pb.DeleteOrderByIDRequest]) (*connect.Response[pb.DeleteOrderByIDResponse], error) {
+	var orderID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
+		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		orderID = v
 	}
 
-	err := s.querier.DeleteOrderByID(ctx, id)
+	err := s.querier.DeleteOrderByID(ctx, orderID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "DeleteOrderByID")
 		return nil, err
@@ -95,15 +141,15 @@ func (s *Service) DeleteOrderByID(ctx context.Context, req *connect.Request[pb.D
 }
 
 func (s *Service) DeleteOrderItemByID(ctx context.Context, req *connect.Request[pb.DeleteOrderItemByIDRequest]) (*connect.Response[pb.DeleteOrderItemByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+	var orderitemID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetOrderitemId()); err != nil {
+		err = fmt.Errorf("invalid OrderitemID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		orderitemID = v
 	}
 
-	err := s.querier.DeleteOrderItemByID(ctx, id)
+	err := s.querier.DeleteOrderItemByID(ctx, orderitemID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "DeleteOrderItemByID")
 		return nil, err
@@ -112,15 +158,15 @@ func (s *Service) DeleteOrderItemByID(ctx context.Context, req *connect.Request[
 }
 
 func (s *Service) GetOrderByID(ctx context.Context, req *connect.Request[pb.GetOrderByIDRequest]) (*connect.Response[pb.GetOrderByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+	var orderID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
+		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		orderID = v
 	}
 
-	result, err := s.querier.GetOrderByID(ctx, id)
+	result, err := s.querier.GetOrderByID(ctx, orderID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "GetOrderByID")
 		return nil, err
@@ -129,15 +175,15 @@ func (s *Service) GetOrderByID(ctx context.Context, req *connect.Request[pb.GetO
 }
 
 func (s *Service) GetOrderItemByID(ctx context.Context, req *connect.Request[pb.GetOrderItemByIDRequest]) (*connect.Response[pb.GetOrderItemByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+	var orderitemID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetOrderitemId()); err != nil {
+		err = fmt.Errorf("invalid OrderitemID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		orderitemID = v
 	}
 
-	result, err := s.querier.GetOrderItemByID(ctx, id)
+	result, err := s.querier.GetOrderItemByID(ctx, orderitemID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "GetOrderItemByID")
 		return nil, err
@@ -189,11 +235,11 @@ func (s *Service) GetOrdersByUserID(ctx context.Context, req *connect.Request[pb
 
 func (s *Service) UpdateOrderPaymentStatus(ctx context.Context, req *connect.Request[pb.UpdateOrderPaymentStatusRequest]) (*connect.Response[pb.UpdateOrderPaymentStatusResponse], error) {
 	var arg UpdateOrderPaymentStatusParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
+		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.OrderID = v
 	}
 	arg.PaymentStatus = req.Msg.GetPaymentStatus()
 	if v := req.Msg.GetUpdatedAt(); v != nil {
@@ -217,11 +263,11 @@ func (s *Service) UpdateOrderPaymentStatus(ctx context.Context, req *connect.Req
 
 func (s *Service) UpdateOrderStatus(ctx context.Context, req *connect.Request[pb.UpdateOrderStatusRequest]) (*connect.Response[pb.UpdateOrderStatusResponse], error) {
 	var arg UpdateOrderStatusParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetOrderId()); err != nil {
+		err = fmt.Errorf("invalid OrderID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.OrderID = v
 	}
 	arg.Status = req.Msg.GetStatus()
 

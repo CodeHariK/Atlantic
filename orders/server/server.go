@@ -8,6 +8,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/codeharik/Atlantic/config"
+	"github.com/codeharik/Atlantic/database/store/orders"
 	"github.com/codeharik/Atlantic/database/store/product"
 	"github.com/codeharik/Atlantic/database/store/user"
 	v1 "github.com/codeharik/Atlantic/orders/api/cart/v1"
@@ -29,6 +30,7 @@ type CartServiceServer struct {
 
 	userStore     *user.Queries
 	productStore  *product.Queries
+	ordersStore   *orders.Queries
 	storeInstance store.Store
 
 	natsClient *nats.NatsClient
@@ -51,6 +53,7 @@ func CreateCartServiceServer(cfg config.Config, natsClient *nats.NatsClient, sto
 		storeInstance: storeInstance,
 		userStore:     storeInstance.UserStore,
 		productStore:  storeInstance.ProductStore,
+		ordersStore:   storeInstance.OrdersStore,
 	}
 
 	natsClient.CreateOrdersStream(cfg)

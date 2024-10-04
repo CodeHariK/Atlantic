@@ -17,10 +17,14 @@ service ProductService {
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse) {}
 
   rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse) {}
+
+  rpc UpdateProductPrice(UpdateProductPriceRequest) returns (UpdateProductPriceResponse) {}
+
+  rpc UpdateProductQuantity(UpdateProductQuantityRequest) returns (UpdateProductQuantityResponse) {}
 }
 
 message CreateProductRequest {
-  string id = 1;
+  string product_id = 1;
   string title = 2;
   int32 quantity = 3;
   int32 price = 4;
@@ -32,7 +36,7 @@ message CreateProductResponse {
 }
 
 message DeleteProductRequest {
-  string id = 1;
+  string product_id = 1;
 }
 
 message DeleteProductResponse {}
@@ -61,13 +65,13 @@ message ListProductsResponse {
 }
 
 message ListProductsRow {
-  string id = 1;
+  string product_id = 1;
   int32 quantity = 2;
   int32 price = 3;
 }
 
 message Order {
-  string id = 1;
+  string order_id = 1;
   string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
@@ -77,7 +81,7 @@ message Order {
 }
 
 message OrderItem {
-  string id = 1;
+  string orderitem_id = 1;
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
@@ -85,27 +89,34 @@ message OrderItem {
 }
 
 message Product {
-  string id = 1;
+  string product_id = 1;
   string title = 2;
   int32 quantity = 3;
   int32 price = 4;
   string category = 5;
 }
 
-message ProductReview {
-  string id = 1;
-  string user_id = 2;
-  string product_id = 3;
-  google.protobuf.StringValue comment = 4;
-  int32 rating = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-}
-
 message UpdateProductRequest {
-  string id = 1;
+  string product_id = 1;
   int32 quantity = 2;
   int32 price = 3;
+}
+
+message UpdateProductPriceRequest {
+  string product_id = 1;
+}
+
+message UpdateProductPriceResponse {
+  Product product = 1;
+}
+
+message UpdateProductQuantityRequest {
+  string product_id = 1;
+  int32 quantity = 2;
+}
+
+message UpdateProductQuantityResponse {
+  Product product = 1;
 }
 
 message UpdateProductResponse {
@@ -113,7 +124,7 @@ message UpdateProductResponse {
 }
 
 message User {
-  string id = 1;
+  string user_id = 1;
   google.protobuf.StringValue username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;

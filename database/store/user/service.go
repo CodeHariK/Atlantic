@@ -23,11 +23,11 @@ type Service struct {
 
 func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.CreateUserRequest]) (*connect.Response[pb.CreateUserResponse], error) {
 	var arg CreateUserParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.UserID = v
 	}
 	if v := req.Msg.GetUsername(); v != nil {
 		arg.Username = pgtype.Text{Valid: true, String: v.Value}
@@ -68,15 +68,15 @@ func (s *Service) CreateUser(ctx context.Context, req *connect.Request[pb.Create
 }
 
 func (s *Service) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[pb.DeleteUserResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+	var userID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		userID = v
 	}
 
-	err := s.querier.DeleteUser(ctx, id)
+	err := s.querier.DeleteUser(ctx, userID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "DeleteUser")
 		return nil, err
@@ -99,15 +99,15 @@ func (s *Service) GetUserByEmail(ctx context.Context, req *connect.Request[pb.Ge
 }
 
 func (s *Service) GetUserByID(ctx context.Context, req *connect.Request[pb.GetUserByIDRequest]) (*connect.Response[pb.GetUserByIDResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+	var userID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		userID = v
 	}
 
-	result, err := s.querier.GetUserByID(ctx, id)
+	result, err := s.querier.GetUserByID(ctx, userID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "GetUserByID")
 		return nil, err
@@ -172,11 +172,11 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 			arg.DateOfBirth.Time = t
 		}
 	}
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.UserID = v
 	}
 
 	err := s.querier.UpdateUser(ctx, arg)
@@ -189,11 +189,11 @@ func (s *Service) UpdateUser(ctx context.Context, req *connect.Request[pb.Update
 
 func (s *Service) UpdateUserBalance(ctx context.Context, req *connect.Request[pb.UpdateUserBalanceRequest]) (*connect.Response[pb.UpdateUserBalanceResponse], error) {
 	var arg UpdateUserBalanceParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.UserID = v
 	}
 	arg.Balance = req.Msg.GetBalance()
 
@@ -207,11 +207,11 @@ func (s *Service) UpdateUserBalance(ctx context.Context, req *connect.Request[pb
 
 func (s *Service) UpdateUserPassword(ctx context.Context, req *connect.Request[pb.UpdateUserPasswordRequest]) (*connect.Response[pb.UpdateUserPasswordResponse], error) {
 	var arg UpdateUserPasswordParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetUserId()); err != nil {
+		err = fmt.Errorf("invalid UserID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.UserID = v
 	}
 	if v := req.Msg.GetPasswordHash(); v != nil {
 		arg.PasswordHash = pgtype.Text{Valid: true, String: v.Value}

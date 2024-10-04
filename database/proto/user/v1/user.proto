@@ -28,7 +28,7 @@ service UserService {
 }
 
 message CreateUserRequest {
-  string id = 1;
+  string user_id = 1;
   google.protobuf.StringValue username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;
@@ -44,7 +44,7 @@ message CreateUserRequest {
 message CreateUserResponse {}
 
 message DeleteUserRequest {
-  string id = 1;
+  string user_id = 1;
 }
 
 message DeleteUserResponse {}
@@ -58,7 +58,7 @@ message GetUserByEmailResponse {
 }
 
 message GetUserByIDRequest {
-  string id = 1;
+  string user_id = 1;
 }
 
 message GetUserByIDResponse {
@@ -90,7 +90,7 @@ message ListUsersResponse {
 }
 
 message ListUsersRow {
-  string id = 1;
+  string user_id = 1;
   google.protobuf.StringValue username = 2;
   google.protobuf.StringValue email = 3;
   google.protobuf.StringValue phone_number = 4;
@@ -102,7 +102,7 @@ message ListUsersRow {
 }
 
 message Order {
-  string id = 1;
+  string order_id = 1;
   string user_id = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
@@ -112,7 +112,7 @@ message Order {
 }
 
 message OrderItem {
-  string id = 1;
+  string orderitem_id = 1;
   string order_id = 2;
   string product_id = 3;
   int32 quantity = 4;
@@ -120,25 +120,15 @@ message OrderItem {
 }
 
 message Product {
-  string id = 1;
+  string product_id = 1;
   string title = 2;
   int32 quantity = 3;
   int32 price = 4;
   string category = 5;
 }
 
-message ProductReview {
-  string id = 1;
-  string user_id = 2;
-  string product_id = 3;
-  google.protobuf.StringValue comment = 4;
-  int32 rating = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-}
-
 message UpdateUserBalanceRequest {
-  string id = 1;
+  string user_id = 1;
   int32 balance = 2;
 }
 
@@ -154,11 +144,11 @@ message UpdateUserRequest {
   google.protobuf.StringValue gender = 5;
   int64 role = 6;
   google.protobuf.Timestamp date_of_birth = 7;
-  string id = 8;
+  string user_id = 8;
 }
 
 message UpdateUserPasswordRequest {
-  string id = 1;
+  string user_id = 1;
   google.protobuf.StringValue password_hash = 2;
 }
 
@@ -167,7 +157,7 @@ message UpdateUserPasswordResponse {}
 message UpdateUserResponse {}
 
 message User {
-  string id = 1;
+  string user_id = 1;
   google.protobuf.StringValue username = 2;
   google.protobuf.StringValue password_hash = 3;
   google.protobuf.StringValue email = 4;

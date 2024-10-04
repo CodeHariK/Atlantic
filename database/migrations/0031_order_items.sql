@@ -2,9 +2,9 @@
 
 -- Create "order_items" table
 CREATE TABLE IF NOT EXISTS "order_items" (
-    "id" UUID PRIMARY KEY,
-    "order_id" UUID NOT NULL REFERENCES "orders" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
-    "product_id" UUID NOT NULL REFERENCES "products" ("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "orderitem_id" UUID PRIMARY KEY,
+    "order_id" UUID NOT NULL REFERENCES "orders" ("order_id") ON UPDATE NO ACTION ON DELETE CASCADE,
+    "product_id" UUID NOT NULL REFERENCES "products" ("product_id") ON UPDATE NO ACTION ON DELETE CASCADE,
     "quantity" INTEGER NOT NULL,
     "price" INTEGER NOT NULL
 );

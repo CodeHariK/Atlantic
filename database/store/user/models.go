@@ -17,7 +17,7 @@ type GooseDbVersion struct {
 }
 
 type Order struct {
-	ID            uuid.UUID        `json:"id"`
+	OrderID       uuid.UUID        `json:"order_id"`
 	UserID        uuid.UUID        `json:"user_id"`
 	CreatedAt     pgtype.Timestamp `json:"created_at"`
 	UpdatedAt     pgtype.Timestamp `json:"updated_at"`
@@ -27,33 +27,23 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID        uuid.UUID `json:"id"`
-	OrderID   uuid.UUID `json:"order_id"`
-	ProductID uuid.UUID `json:"product_id"`
-	Quantity  int32     `json:"quantity"`
-	Price     int32     `json:"price"`
+	OrderitemID uuid.UUID `json:"orderitem_id"`
+	OrderID     uuid.UUID `json:"order_id"`
+	ProductID   uuid.UUID `json:"product_id"`
+	Quantity    int32     `json:"quantity"`
+	Price       int32     `json:"price"`
 }
 
 type Product struct {
-	ID       uuid.UUID `json:"id"`
-	Title    string    `json:"title"`
-	Quantity int32     `json:"quantity"`
-	Price    int32     `json:"price"`
-	Category string    `json:"category"`
-}
-
-type ProductReview struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    uuid.UUID        `json:"user_id"`
-	ProductID uuid.UUID        `json:"product_id"`
-	Comment   pgtype.Text      `json:"comment"`
-	Rating    int32            `json:"rating"`
-	CreatedAt pgtype.Timestamp `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	ProductID uuid.UUID `json:"product_id"`
+	Title     string    `json:"title"`
+	Quantity  int32     `json:"quantity"`
+	Price     int32     `json:"price"`
+	Category  string    `json:"category"`
 }
 
 type User struct {
-	ID           uuid.UUID        `json:"id"`
+	UserID       uuid.UUID        `json:"user_id"`
 	Username     pgtype.Text      `json:"username"`
 	PasswordHash pgtype.Text      `json:"password_hash"`
 	Email        pgtype.Text      `json:"email"`

@@ -39,6 +39,9 @@ const (
 	// OrdersServiceCreateOrderItemProcedure is the fully-qualified name of the OrdersService's
 	// CreateOrderItem RPC.
 	OrdersServiceCreateOrderItemProcedure = "/orders.v1.OrdersService/CreateOrderItem"
+	// OrdersServiceCreateOrderWithItemsProcedure is the fully-qualified name of the OrdersService's
+	// CreateOrderWithItems RPC.
+	OrdersServiceCreateOrderWithItemsProcedure = "/orders.v1.OrdersService/CreateOrderWithItems"
 	// OrdersServiceDeleteOrderByIDProcedure is the fully-qualified name of the OrdersService's
 	// DeleteOrderByID RPC.
 	OrdersServiceDeleteOrderByIDProcedure = "/orders.v1.OrdersService/DeleteOrderByID"
@@ -70,6 +73,7 @@ var (
 	ordersServiceServiceDescriptor                        = v1.File_orders_v1_orders_proto.Services().ByName("OrdersService")
 	ordersServiceCreateOrderMethodDescriptor              = ordersServiceServiceDescriptor.Methods().ByName("CreateOrder")
 	ordersServiceCreateOrderItemMethodDescriptor          = ordersServiceServiceDescriptor.Methods().ByName("CreateOrderItem")
+	ordersServiceCreateOrderWithItemsMethodDescriptor     = ordersServiceServiceDescriptor.Methods().ByName("CreateOrderWithItems")
 	ordersServiceDeleteOrderByIDMethodDescriptor          = ordersServiceServiceDescriptor.Methods().ByName("DeleteOrderByID")
 	ordersServiceDeleteOrderItemByIDMethodDescriptor      = ordersServiceServiceDescriptor.Methods().ByName("DeleteOrderItemByID")
 	ordersServiceGetOrderByIDMethodDescriptor             = ordersServiceServiceDescriptor.Methods().ByName("GetOrderByID")
@@ -84,6 +88,7 @@ var (
 type OrdersServiceClient interface {
 	CreateOrder(context.Context, *connect.Request[v1.CreateOrderRequest]) (*connect.Response[v1.CreateOrderResponse], error)
 	CreateOrderItem(context.Context, *connect.Request[v1.CreateOrderItemRequest]) (*connect.Response[v1.CreateOrderItemResponse], error)
+	CreateOrderWithItems(context.Context, *connect.Request[v1.CreateOrderWithItemsRequest]) (*connect.Response[v1.CreateOrderWithItemsResponse], error)
 	DeleteOrderByID(context.Context, *connect.Request[v1.DeleteOrderByIDRequest]) (*connect.Response[v1.DeleteOrderByIDResponse], error)
 	DeleteOrderItemByID(context.Context, *connect.Request[v1.DeleteOrderItemByIDRequest]) (*connect.Response[v1.DeleteOrderItemByIDResponse], error)
 	GetOrderByID(context.Context, *connect.Request[v1.GetOrderByIDRequest]) (*connect.Response[v1.GetOrderByIDResponse], error)
@@ -114,6 +119,12 @@ func NewOrdersServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			httpClient,
 			baseURL+OrdersServiceCreateOrderItemProcedure,
 			connect.WithSchema(ordersServiceCreateOrderItemMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		createOrderWithItems: connect.NewClient[v1.CreateOrderWithItemsRequest, v1.CreateOrderWithItemsResponse](
+			httpClient,
+			baseURL+OrdersServiceCreateOrderWithItemsProcedure,
+			connect.WithSchema(ordersServiceCreateOrderWithItemsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 		deleteOrderByID: connect.NewClient[v1.DeleteOrderByIDRequest, v1.DeleteOrderByIDResponse](
@@ -171,6 +182,7 @@ func NewOrdersServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 type ordersServiceClient struct {
 	createOrder              *connect.Client[v1.CreateOrderRequest, v1.CreateOrderResponse]
 	createOrderItem          *connect.Client[v1.CreateOrderItemRequest, v1.CreateOrderItemResponse]
+	createOrderWithItems     *connect.Client[v1.CreateOrderWithItemsRequest, v1.CreateOrderWithItemsResponse]
 	deleteOrderByID          *connect.Client[v1.DeleteOrderByIDRequest, v1.DeleteOrderByIDResponse]
 	deleteOrderItemByID      *connect.Client[v1.DeleteOrderItemByIDRequest, v1.DeleteOrderItemByIDResponse]
 	getOrderByID             *connect.Client[v1.GetOrderByIDRequest, v1.GetOrderByIDResponse]
@@ -189,6 +201,11 @@ func (c *ordersServiceClient) CreateOrder(ctx context.Context, req *connect.Requ
 // CreateOrderItem calls orders.v1.OrdersService.CreateOrderItem.
 func (c *ordersServiceClient) CreateOrderItem(ctx context.Context, req *connect.Request[v1.CreateOrderItemRequest]) (*connect.Response[v1.CreateOrderItemResponse], error) {
 	return c.createOrderItem.CallUnary(ctx, req)
+}
+
+// CreateOrderWithItems calls orders.v1.OrdersService.CreateOrderWithItems.
+func (c *ordersServiceClient) CreateOrderWithItems(ctx context.Context, req *connect.Request[v1.CreateOrderWithItemsRequest]) (*connect.Response[v1.CreateOrderWithItemsResponse], error) {
+	return c.createOrderWithItems.CallUnary(ctx, req)
 }
 
 // DeleteOrderByID calls orders.v1.OrdersService.DeleteOrderByID.
@@ -235,6 +252,7 @@ func (c *ordersServiceClient) UpdateOrderStatus(ctx context.Context, req *connec
 type OrdersServiceHandler interface {
 	CreateOrder(context.Context, *connect.Request[v1.CreateOrderRequest]) (*connect.Response[v1.CreateOrderResponse], error)
 	CreateOrderItem(context.Context, *connect.Request[v1.CreateOrderItemRequest]) (*connect.Response[v1.CreateOrderItemResponse], error)
+	CreateOrderWithItems(context.Context, *connect.Request[v1.CreateOrderWithItemsRequest]) (*connect.Response[v1.CreateOrderWithItemsResponse], error)
 	DeleteOrderByID(context.Context, *connect.Request[v1.DeleteOrderByIDRequest]) (*connect.Response[v1.DeleteOrderByIDResponse], error)
 	DeleteOrderItemByID(context.Context, *connect.Request[v1.DeleteOrderItemByIDRequest]) (*connect.Response[v1.DeleteOrderItemByIDResponse], error)
 	GetOrderByID(context.Context, *connect.Request[v1.GetOrderByIDRequest]) (*connect.Response[v1.GetOrderByIDResponse], error)
@@ -261,6 +279,12 @@ func NewOrdersServiceHandler(svc OrdersServiceHandler, opts ...connect.HandlerOp
 		OrdersServiceCreateOrderItemProcedure,
 		svc.CreateOrderItem,
 		connect.WithSchema(ordersServiceCreateOrderItemMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	ordersServiceCreateOrderWithItemsHandler := connect.NewUnaryHandler(
+		OrdersServiceCreateOrderWithItemsProcedure,
+		svc.CreateOrderWithItems,
+		connect.WithSchema(ordersServiceCreateOrderWithItemsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceDeleteOrderByIDHandler := connect.NewUnaryHandler(
@@ -317,6 +341,8 @@ func NewOrdersServiceHandler(svc OrdersServiceHandler, opts ...connect.HandlerOp
 			ordersServiceCreateOrderHandler.ServeHTTP(w, r)
 		case OrdersServiceCreateOrderItemProcedure:
 			ordersServiceCreateOrderItemHandler.ServeHTTP(w, r)
+		case OrdersServiceCreateOrderWithItemsProcedure:
+			ordersServiceCreateOrderWithItemsHandler.ServeHTTP(w, r)
 		case OrdersServiceDeleteOrderByIDProcedure:
 			ordersServiceDeleteOrderByIDHandler.ServeHTTP(w, r)
 		case OrdersServiceDeleteOrderItemByIDProcedure:
@@ -348,6 +374,10 @@ func (UnimplementedOrdersServiceHandler) CreateOrder(context.Context, *connect.R
 
 func (UnimplementedOrdersServiceHandler) CreateOrderItem(context.Context, *connect.Request[v1.CreateOrderItemRequest]) (*connect.Response[v1.CreateOrderItemResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("orders.v1.OrdersService.CreateOrderItem is not implemented"))
+}
+
+func (UnimplementedOrdersServiceHandler) CreateOrderWithItems(context.Context, *connect.Request[v1.CreateOrderWithItemsRequest]) (*connect.Response[v1.CreateOrderWithItemsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("orders.v1.OrdersService.CreateOrderWithItems is not implemented"))
 }
 
 func (UnimplementedOrdersServiceHandler) DeleteOrderByID(context.Context, *connect.Request[v1.DeleteOrderByIDRequest]) (*connect.Response[v1.DeleteOrderByIDResponse], error) {

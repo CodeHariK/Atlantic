@@ -170,9 +170,13 @@ export default function SearchGames() {
 					class="rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none dark:bg-primary-600 dark:hover:bg-primary-700"
 					onclick=${async () => {
 									let cart = new CartItem({
+										name: hit.title,
 										productId: hit.id,
 										quantity: 1,
 									});
+									console.log("-----")
+									console.log(cart)
+									console.log("-----")
 									await connect.cartclient.updateCartItem(cart);
 									await connect.getCart()
 								}}

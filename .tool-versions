@@ -1,6 +1,4 @@
 golang 1.23.1
-cilium-cli 0.16.16
-cilium-hubble 1.16.1
 ko 0.16.0
 skaffold 2.13.2
 dive 0.12.0

@@ -1,7 +1,7 @@
 -- name: CreateUser :exec
 INSERT INTO
     users (
-        id,
+        user_id,
         username,
         password_hash,
         email,
@@ -28,7 +28,7 @@ VALUES (
     );
 
 -- name: GetUserByID :one
-SELECT * FROM users WHERE id = $1;
+SELECT * FROM users WHERE user_id = $1;
 
 -- name: GetUserByEmail :one
 SELECT * FROM users WHERE email = $1;
@@ -48,14 +48,14 @@ SET
     date_of_birth = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $8;
+    user_id = $8;
 
 -- name: DeleteUser :exec
-DELETE FROM users WHERE id = $1;
+DELETE FROM users WHERE user_id = $1;
 
 -- name: ListUsers :many
 SELECT
-    id,
+    user_id,
     username,
     email,
     phone_number,
@@ -75,7 +75,7 @@ SET
     balance = balance + $2,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $1 RETURNING balance;
+    user_id = $1 RETURNING balance;
 
 -- name: UpdateUserPassword :exec
 UPDATE users
@@ -83,4 +83,4 @@ SET
     password_hash = $2,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $1;
+    user_id = $1;

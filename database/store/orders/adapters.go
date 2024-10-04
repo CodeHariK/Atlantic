@@ -11,7 +11,7 @@ import (
 func toOrder(in Order) *pb.Order {
 
 	out := new(pb.Order)
-	out.Id = in.ID.String()
+	out.OrderId = in.OrderID.String()
 	out.UserId = in.UserID.String()
 	if in.CreatedAt.Valid {
 		out.CreatedAt = timestamppb.New(in.CreatedAt.Time)
@@ -28,7 +28,7 @@ func toOrder(in Order) *pb.Order {
 func toOrderItem(in OrderItem) *pb.OrderItem {
 
 	out := new(pb.OrderItem)
-	out.Id = in.ID.String()
+	out.OrderitemId = in.OrderitemID.String()
 	out.OrderId = in.OrderID.String()
 	out.ProductId = in.ProductID.String()
 	out.Quantity = in.Quantity

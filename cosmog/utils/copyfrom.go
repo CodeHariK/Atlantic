@@ -29,7 +29,7 @@ func (r *iteratorForMultiCreateProduct) Next() bool {
 
 func (r iteratorForMultiCreateProduct) Values() ([]interface{}, error) {
 	return []interface{}{
-		r.rows[0].ID,
+		r.rows[0].ProductID,
 		r.rows[0].Title,
 		r.rows[0].Quantity,
 		r.rows[0].Price,
@@ -57,7 +57,11 @@ func BatchInsertProducts(storeInstance store.Store, products []product.Product) 
 
 		batch := products[start:end]
 
-		n, err := storeInstance.Db.CopyFrom(context.Background(), []string{"products"}, []string{"id", "title", "quantity", "price", "category"}, &iteratorForMultiCreateProduct{rows: batch})
+		for _, p := range batch {
+			p.Title = TruncateString(p.Title, 128)
+		}
+
+		n, err := storeInstance.Db.CopyFrom(context.Background(), []string{"products"}, []string{"product_id", "title", "quantity", "price", "category"}, &iteratorForMultiCreateProduct{rows: batch})
 		fmt.Printf("Inserted %d products total:%d batch:%d err:%v\n", n, totalProducts, len(batch), err)
 		if err != nil {
 			fmt.Printf("failed to insert batch %d: %v\n", i+1, err)
@@ -66,4 +70,11 @@ func BatchInsertProducts(storeInstance store.Store, products []product.Product) 
 	}
 
 	return nil
+}
+
+func TruncateString(s string, maxLength int) string {
+	if len(s) > maxLength {
+		return s[:maxLength]
+	}
+	return s
 }

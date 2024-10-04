@@ -73,7 +73,7 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 	}
 
 	user := &v1.AuthUser{
-		ID:          dbuser.ID.String(),
+		ID:          dbuser.UserID.String(),
 		Username:    dbuser.Username.String,
 		Email:       dbuser.Email.String,
 		PhoneNumber: dbuser.PhoneNumber.String,
@@ -84,7 +84,7 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 
 	session := &v1.JwtObj{
 		TokenId: rand.Int31(),
-		ID:      dbuser.ID.String(),
+		ID:      dbuser.UserID.String(),
 		Iat:     time.Now().Unix(),
 		Exp:     time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
@@ -98,7 +98,7 @@ func (s AuthServiceServer) EmailLogin(ctx context.Context, req *connect.Request[
 		cb.R, cb.W, s.config, session,
 		&v1.JwtObj{
 			TokenId: session.TokenId,
-			ID:      dbuser.ID.String(),
+			ID:      dbuser.UserID.String(),
 			Roles:   strconv.FormatInt(dbuser.Role, 10),
 			Iat:     time.Now().Unix(),
 			Exp:     time.Now().Add(time.Hour).Unix(),
@@ -155,7 +155,7 @@ func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Reques
 	err = s.userStore.CreateUser(
 		context.Background(),
 		user.CreateUserParams{
-			ID:           uid,
+			UserID:       uid,
 			Role:         1,
 			Email:        pgtype.Text{String: email, Valid: true},
 			PasswordHash: pgtype.Text{String: hash, Valid: true},

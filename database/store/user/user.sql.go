@@ -15,7 +15,7 @@ import (
 const createUser = `-- name: CreateUser :exec
 INSERT INTO
     users (
-        id,
+        user_id,
         username,
         password_hash,
         email,
@@ -43,7 +43,7 @@ VALUES (
 `
 
 type CreateUserParams struct {
-	ID           uuid.UUID   `json:"id"`
+	UserID       uuid.UUID   `json:"user_id"`
 	Username     pgtype.Text `json:"username"`
 	PasswordHash pgtype.Text `json:"password_hash"`
 	Email        pgtype.Text `json:"email"`
@@ -58,7 +58,7 @@ type CreateUserParams struct {
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 	_, err := q.db.Exec(ctx, createUser,
-		arg.ID,
+		arg.UserID,
 		arg.Username,
 		arg.PasswordHash,
 		arg.Email,
@@ -74,23 +74,23 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 }
 
 const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM users WHERE id = $1
+DELETE FROM users WHERE user_id = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteUser, id)
+func (q *Queries) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, userID)
 	return err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE email = $1
+SELECT user_id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
-		&i.ID,
+		&i.UserID,
 		&i.Username,
 		&i.PasswordHash,
 		&i.Email,
@@ -108,14 +108,14 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email pgtype.Text) (User, 
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE id = $1
+SELECT user_id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE user_id = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByID, id)
+func (q *Queries) GetUserByID(ctx context.Context, userID uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, userID)
 	var i User
 	err := row.Scan(
-		&i.ID,
+		&i.UserID,
 		&i.Username,
 		&i.PasswordHash,
 		&i.Email,
@@ -133,14 +133,14 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE username = $1
+SELECT user_id, username, password_hash, email, verified, phone_number, gender, role, date_of_birth, address, balance, created_at, updated_at FROM users WHERE username = $1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username pgtype.Text) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByUsername, username)
 	var i User
 	err := row.Scan(
-		&i.ID,
+		&i.UserID,
 		&i.Username,
 		&i.PasswordHash,
 		&i.Email,
@@ -159,7 +159,7 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username pgtype.Text) (
 
 const listUsers = `-- name: ListUsers :many
 SELECT
-    id,
+    user_id,
     username,
     email,
     phone_number,
@@ -180,7 +180,7 @@ type ListUsersParams struct {
 }
 
 type ListUsersRow struct {
-	ID          uuid.UUID        `json:"id"`
+	UserID      uuid.UUID        `json:"user_id"`
 	Username    pgtype.Text      `json:"username"`
 	Email       pgtype.Text      `json:"email"`
 	PhoneNumber pgtype.Text      `json:"phone_number"`
@@ -201,7 +201,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUse
 	for rows.Next() {
 		var i ListUsersRow
 		if err := rows.Scan(
-			&i.ID,
+			&i.UserID,
 			&i.Username,
 			&i.Email,
 			&i.PhoneNumber,
@@ -233,7 +233,7 @@ SET
     date_of_birth = $7,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $8
+    user_id = $8
 `
 
 type UpdateUserParams struct {
@@ -244,7 +244,7 @@ type UpdateUserParams struct {
 	Gender      pgtype.Text `json:"gender"`
 	Role        int64       `json:"role"`
 	DateOfBirth pgtype.Date `json:"date_of_birth"`
-	ID          uuid.UUID   `json:"id"`
+	UserID      uuid.UUID   `json:"user_id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
@@ -256,7 +256,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 		arg.Gender,
 		arg.Role,
 		arg.DateOfBirth,
-		arg.ID,
+		arg.UserID,
 	)
 	return err
 }
@@ -267,16 +267,16 @@ SET
     balance = balance + $2,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $1 RETURNING balance
+    user_id = $1 RETURNING balance
 `
 
 type UpdateUserBalanceParams struct {
-	ID      uuid.UUID `json:"id"`
+	UserID  uuid.UUID `json:"user_id"`
 	Balance int32     `json:"balance"`
 }
 
 func (q *Queries) UpdateUserBalance(ctx context.Context, arg UpdateUserBalanceParams) (int32, error) {
-	row := q.db.QueryRow(ctx, updateUserBalance, arg.ID, arg.Balance)
+	row := q.db.QueryRow(ctx, updateUserBalance, arg.UserID, arg.Balance)
 	var balance int32
 	err := row.Scan(&balance)
 	return balance, err
@@ -288,15 +288,15 @@ SET
     password_hash = $2,
     updated_at = CURRENT_TIMESTAMP
 WHERE
-    id = $1
+    user_id = $1
 `
 
 type UpdateUserPasswordParams struct {
-	ID           uuid.UUID   `json:"id"`
+	UserID       uuid.UUID   `json:"user_id"`
 	PasswordHash pgtype.Text `json:"password_hash"`
 }
 
 func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
-	_, err := q.db.Exec(ctx, updateUserPassword, arg.ID, arg.PasswordHash)
+	_, err := q.db.Exec(ctx, updateUserPassword, arg.UserID, arg.PasswordHash)
 	return err
 }

@@ -1,7 +1,7 @@
 -- name: CreateProduct :one
 INSERT INTO
     products (
-        id,
+        product_id,
         title,
         quantity,
         price,
@@ -20,10 +20,20 @@ SET
     quantity = quantity + $2,
     price = $3
 WHERE
-    id = $1 RETURNING *;
+    product_id = $1 RETURNING *;
+
+-- name: UpdateProductPrice :one
+UPDATE products SET price = price WHERE product_id = $1 RETURNING *;
+
+-- name: UpdateProductQuantity :one
+UPDATE products
+SET
+    quantity = quantity + $2
+WHERE
+    product_id = $1 RETURNING *;
 
 -- name: DeleteProduct :exec
-DELETE FROM products WHERE id = $1;
+DELETE FROM products WHERE product_id = $1;
 
 -- name: ListProducts :many
-SELECT id, quantity, price FROM products LIMIT $1;
+SELECT product_id, quantity, price FROM products LIMIT $1;

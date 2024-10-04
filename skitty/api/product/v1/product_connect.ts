@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { CreateProductRequest, CreateProductResponse, DeleteProductRequest, DeleteProductResponse, GetProductsByIdsRequest, GetProductsByIdsResponse, ListProductsRequest, ListProductsResponse, UpdateProductRequest, UpdateProductResponse } from "./product_pb.js";
+import { CreateProductRequest, CreateProductResponse, DeleteProductRequest, DeleteProductResponse, GetProductsByIdsRequest, GetProductsByIdsResponse, ListProductsRequest, ListProductsResponse, UpdateProductPriceRequest, UpdateProductPriceResponse, UpdateProductQuantityRequest, UpdateProductQuantityResponse, UpdateProductRequest, UpdateProductResponse } from "./product_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -55,6 +55,24 @@ export const ProductService = {
       name: "UpdateProduct",
       I: UpdateProductRequest,
       O: UpdateProductResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.UpdateProductPrice
+     */
+    updateProductPrice: {
+      name: "UpdateProductPrice",
+      I: UpdateProductPriceRequest,
+      O: UpdateProductPriceResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc product.v1.ProductService.UpdateProductQuantity
+     */
+    updateProductQuantity: {
+      name: "UpdateProductQuantity",
+      I: UpdateProductQuantityRequest,
+      O: UpdateProductQuantityResponse,
       kind: MethodKind.Unary,
     },
   }

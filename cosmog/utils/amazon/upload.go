@@ -40,7 +40,7 @@ func SyncInit(meiliInstance meilisearch.ServiceManager, storeInstance store.Stor
 					prods[i].Title = products[i].Title
 
 					uid, _ := uuid.Parse(products[i].ID)
-					prods[i].ID = uid
+					prods[i].ProductID = uid
 
 					prods[i].Price = rand.Int32N(2000) + 300
 					prods[i].Quantity = rand.Int32N(300) + 10

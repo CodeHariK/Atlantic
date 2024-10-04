@@ -4,7 +4,7 @@
 
 INSERT INTO
     users (
-        id,
+        user_id,
         username,
         password_hash,
         email,
@@ -34,7 +34,7 @@ VALUES (
 
 INSERT INTO
     products (
-        id,
+        product_id,
         title,
         quantity,
         price,
@@ -52,7 +52,7 @@ VALUES (
 
 INSERT INTO
     orders (
-        id,
+        order_id,
         user_id,
         price,
         status,
@@ -68,7 +68,7 @@ VALUES (
 
 INSERT INTO
     order_items (
-        id,
+        orderitem_id,
         order_id,
         product_id,
         quantity,

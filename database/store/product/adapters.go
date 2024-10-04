@@ -9,7 +9,7 @@ import (
 func toListProductsRow(in ListProductsRow) *pb.ListProductsRow {
 
 	out := new(pb.ListProductsRow)
-	out.Id = in.ID.String()
+	out.ProductId = in.ProductID.String()
 	out.Quantity = in.Quantity
 	out.Price = in.Price
 	return out
@@ -18,7 +18,7 @@ func toListProductsRow(in ListProductsRow) *pb.ListProductsRow {
 func toProduct(in Product) *pb.Product {
 
 	out := new(pb.Product)
-	out.Id = in.ID.String()
+	out.ProductId = in.ProductID.String()
 	out.Title = in.Title
 	out.Quantity = in.Quantity
 	out.Price = in.Price

@@ -14,26 +14,26 @@ import (
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO
     products (
-        id,
+        product_id,
         title,
         quantity,
         price,
         category
     )
-VALUES ($1, $2, $3, $4, $5) RETURNING id, title, quantity, price, category
+VALUES ($1, $2, $3, $4, $5) RETURNING product_id, title, quantity, price, category
 `
 
 type CreateProductParams struct {
-	ID       uuid.UUID `json:"id"`
-	Title    string    `json:"title"`
-	Quantity int32     `json:"quantity"`
-	Price    int32     `json:"price"`
-	Category string    `json:"category"`
+	ProductID uuid.UUID `json:"product_id"`
+	Title     string    `json:"title"`
+	Quantity  int32     `json:"quantity"`
+	Price     int32     `json:"price"`
+	Category  string    `json:"category"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
 	row := q.db.QueryRow(ctx, createProduct,
-		arg.ID,
+		arg.ProductID,
 		arg.Title,
 		arg.Quantity,
 		arg.Price,
@@ -41,7 +41,7 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 	)
 	var i Product
 	err := row.Scan(
-		&i.ID,
+		&i.ProductID,
 		&i.Title,
 		&i.Quantity,
 		&i.Price,
@@ -51,16 +51,16 @@ func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (P
 }
 
 const deleteProduct = `-- name: DeleteProduct :exec
-DELETE FROM products WHERE id = $1
+DELETE FROM products WHERE product_id = $1
 `
 
-func (q *Queries) DeleteProduct(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteProduct, id)
+func (q *Queries) DeleteProduct(ctx context.Context, productID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteProduct, productID)
 	return err
 }
 
 const getProductsByIds = `-- name: GetProductsByIds :many
-SELECT id, title, quantity, price, category FROM products WHERE id = ANY($1::uuid[])
+SELECT product_id, title, quantity, price, category FROM products WHERE id = ANY($1::uuid[])
 `
 
 func (q *Queries) GetProductsByIds(ctx context.Context, dollar_1 []uuid.UUID) ([]Product, error) {
@@ -73,7 +73,7 @@ func (q *Queries) GetProductsByIds(ctx context.Context, dollar_1 []uuid.UUID) ([
 	for rows.Next() {
 		var i Product
 		if err := rows.Scan(
-			&i.ID,
+			&i.ProductID,
 			&i.Title,
 			&i.Quantity,
 			&i.Price,
@@ -90,13 +90,13 @@ func (q *Queries) GetProductsByIds(ctx context.Context, dollar_1 []uuid.UUID) ([
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, quantity, price FROM products LIMIT $1
+SELECT product_id, quantity, price FROM products LIMIT $1
 `
 
 type ListProductsRow struct {
-	ID       uuid.UUID `json:"id"`
-	Quantity int32     `json:"quantity"`
-	Price    int32     `json:"price"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int32     `json:"quantity"`
+	Price     int32     `json:"price"`
 }
 
 func (q *Queries) ListProducts(ctx context.Context, limit int32) ([]ListProductsRow, error) {
@@ -108,7 +108,7 @@ func (q *Queries) ListProducts(ctx context.Context, limit int32) ([]ListProducts
 	items := []ListProductsRow{}
 	for rows.Next() {
 		var i ListProductsRow
-		if err := rows.Scan(&i.ID, &i.Quantity, &i.Price); err != nil {
+		if err := rows.Scan(&i.ProductID, &i.Quantity, &i.Price); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -127,20 +127,63 @@ SET
     quantity = quantity + $2,
     price = $3
 WHERE
-    id = $1 RETURNING id, title, quantity, price, category
+    product_id = $1 RETURNING product_id, title, quantity, price, category
 `
 
 type UpdateProductParams struct {
-	ID       uuid.UUID `json:"id"`
-	Quantity int32     `json:"quantity"`
-	Price    int32     `json:"price"`
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int32     `json:"quantity"`
+	Price     int32     `json:"price"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
-	row := q.db.QueryRow(ctx, updateProduct, arg.ID, arg.Quantity, arg.Price)
+	row := q.db.QueryRow(ctx, updateProduct, arg.ProductID, arg.Quantity, arg.Price)
 	var i Product
 	err := row.Scan(
-		&i.ID,
+		&i.ProductID,
+		&i.Title,
+		&i.Quantity,
+		&i.Price,
+		&i.Category,
+	)
+	return i, err
+}
+
+const updateProductPrice = `-- name: UpdateProductPrice :one
+UPDATE products SET price = price WHERE product_id = $1 RETURNING product_id, title, quantity, price, category
+`
+
+func (q *Queries) UpdateProductPrice(ctx context.Context, productID uuid.UUID) (Product, error) {
+	row := q.db.QueryRow(ctx, updateProductPrice, productID)
+	var i Product
+	err := row.Scan(
+		&i.ProductID,
+		&i.Title,
+		&i.Quantity,
+		&i.Price,
+		&i.Category,
+	)
+	return i, err
+}
+
+const updateProductQuantity = `-- name: UpdateProductQuantity :one
+UPDATE products
+SET
+    quantity = quantity + $2
+WHERE
+    product_id = $1 RETURNING product_id, title, quantity, price, category
+`
+
+type UpdateProductQuantityParams struct {
+	ProductID uuid.UUID `json:"product_id"`
+	Quantity  int32     `json:"quantity"`
+}
+
+func (q *Queries) UpdateProductQuantity(ctx context.Context, arg UpdateProductQuantityParams) (Product, error) {
+	row := q.db.QueryRow(ctx, updateProductQuantity, arg.ProductID, arg.Quantity)
+	var i Product
+	err := row.Scan(
+		&i.ProductID,
 		&i.Title,
 		&i.Quantity,
 		&i.Price,

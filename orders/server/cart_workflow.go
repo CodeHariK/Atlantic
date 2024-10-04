@@ -14,6 +14,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	"github.com/codeharik/Atlantic/database/store/orders"
 	"github.com/codeharik/Atlantic/database/store/product"
 
 	v1 "github.com/codeharik/Atlantic/orders/api/cart/v1"
@@ -35,7 +36,7 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 	logger := workflow.GetLogger(ctx)
 
 	err := workflow.SetQueryHandler(ctx, "getCart", func(input []byte) (*v1.Cart, error) {
-		colorlogger.Log("getCart")
+		colorlogger.Log("getCart", state)
 		return state, nil
 	})
 	if err != nil {
@@ -45,8 +46,6 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 
 	addToCartChannel := workflow.GetSignalChannel(ctx, SignalChannels.UPDATE_CART_CHANNEL)
 	checkoutChannel := workflow.GetSignalChannel(ctx, SignalChannels.CHECKOUT_CHANNEL)
-	checkedOut := false
-	sentAbandonedCartEmail := false
 
 	var a *Activities
 
@@ -83,12 +82,21 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 
 			colorlogger.Log(".......", products)
 
-			err = o.UpdateProductsTransaction(context.Background(), state, &products)
+			tx, err := o.UpdateProductsTransaction(context.Background(), state, &products)
+			colorlogger.Log("Error UpdateProductsTransaction", err, products, "+ + + + + +")
 			if err != nil {
 				logger.Error("Error updating products: %v", err)
 				return
 			}
 			logger.Info("Products updated successfully")
+
+			err = o.ordersStore.CreateOrderWithItems(context.Background(), orders.CreateOrderWithItemsParams{})
+			if err != nil {
+				if rbErr := tx.Rollback(context.Background()); rbErr != nil {
+					log.Printf("failed to rollback transaction: %v", rbErr)
+				}
+				return
+			}
 
 			colorlogger.Log(products, ".......")
 
@@ -104,19 +112,14 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 				return
 			}
 
-			checkedOut = true
+			state = &v1.Cart{UpdatedAt: timestamppb.Now()}
 		})
 
-		colorlogger.Log("sentAbandonedCartEmail", sentAbandonedCartEmail, len(state.Items) > 0)
-
-		if !sentAbandonedCartEmail && len(state.Items) > 0 {
+		if len(state.Items) > 0 {
 			selector.AddFuture(workflow.NewTimer(ctx, abandonedCartTimeout), func(f workflow.Future) {
-				sentAbandonedCartEmail = true
 				ao := workflow.ActivityOptions{
 					StartToCloseTimeout: time.Minute,
 				}
-
-				colorlogger.Log("---- boom sent", sentAbandonedCartEmail)
 
 				ctx = workflow.WithActivityOptions(ctx, ao)
 
@@ -130,12 +133,7 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 
 		selector.Select(ctx)
 
-		if checkedOut {
-			break
-		}
 	}
-
-	return nil
 }
 
 func parseCartItem(c workflow.ReceiveChannel, ctx workflow.Context) (*v1.CartItem, error) {
@@ -158,11 +156,13 @@ func parseCartItem(c workflow.ReceiveChannel, ctx workflow.Context) (*v1.CartIte
 }
 
 func UpdateCartItem(state *v1.Cart, item *v1.CartItem) error {
+	colorlogger.Log("UpdateCartItem", state, item)
 	for i := range state.Items {
 		if state.Items[i].ProductId != item.ProductId {
 			continue
 		}
 
+		state.Items[i].Name += item.Name
 		state.Items[i].Quantity += item.Quantity
 		return nil
 	}
@@ -174,11 +174,11 @@ func UpdateCartItem(state *v1.Cart, item *v1.CartItem) error {
 }
 
 // UpdateProductsTransaction updates product quantities in a transaction
-func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state *v1.Cart, products *[]product.Product) error {
+func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state *v1.Cart, products *[]product.Product) (pgx.Tx, error) {
 	// Begin the transaction
 	tx, err := o.storeInstance.Db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %v", err)
+		return nil, fmt.Errorf("failed to begin transaction: %v", err)
 	}
 
 	// Ensure rollback in case of panic
@@ -193,20 +193,15 @@ func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state 
 	// Iterate over state items and update product quantities
 	for _, item := range state.Items {
 		for i, prod := range *products {
-			if prod.ID.String() == item.ProductId {
-				// Calculate new quantity
-				newQuantity := prod.Quantity - item.Quantity
-				if newQuantity < 0 {
-					return fmt.Errorf("not enough quantity for product ID: %s", item.ProductId)
-				}
+			if prod.ProductID.String() == item.ProductId {
 
 				// Update the product in the transaction context
-				p, err := o.productStore.WithTx(tx).UpdateProduct(ctx, product.UpdateProductParams{
-					ID:       prod.ID,
-					Quantity: newQuantity,
+				p, err := o.productStore.WithTx(tx).UpdateProductQuantity(ctx, product.UpdateProductQuantityParams{
+					ProductID: prod.ProductID,
+					Quantity:  -item.Quantity,
 				})
 				if err != nil {
-					return fmt.Errorf("failed to update product ID %s: %v", prod.ID, err)
+					return nil, fmt.Errorf("failed to update product ID %s: %v", prod.ProductID, err)
 				}
 				(*products)[i] = p
 			}
@@ -219,10 +214,10 @@ func (o CartServiceServer) UpdateProductsTransaction(ctx context.Context, state 
 	// Commit the transaction
 	err = tx.Commit(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to commit transaction: %v", err)
+		return nil, fmt.Errorf("failed to commit transaction: %v", err)
 	}
 
-	return nil // Successful completion
+	return tx, nil // Successful completion
 }
 
 func (o CartServiceServer) cartToProducts(state *v1.Cart) ([]product.Product, error) {
@@ -250,7 +245,7 @@ func (o CartServiceServer) cartToProducts(state *v1.Cart) ([]product.Product, er
 			if err != nil {
 				return nil, fmt.Errorf("invalid product ID: %s, error: %v", item.ProductId, err)
 			}
-			if p.ID == pid {
+			if p.ProductID == pid {
 				item.Name = p.Title
 				found = true
 				break // Product found, no need to check further.
@@ -281,7 +276,7 @@ func (o CartServiceServer) HandleCheckout(ctx context.Context, state *v1.Cart) (
 	for _, item := range state.Items {
 		var matchingProduct *product.Product
 		for _, product := range products {
-			if product.ID.String() == item.ProductId {
+			if product.ProductID.String() == item.ProductId {
 				matchingProduct = &product
 				break
 			}

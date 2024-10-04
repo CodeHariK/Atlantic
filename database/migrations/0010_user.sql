@@ -2,7 +2,7 @@
 
 -- Create "users" table
 CREATE TABLE IF NOT EXISTS "users" (
-    "id" UUID PRIMARY KEY,
+    "user_id" UUID PRIMARY KEY,
     "username" VARCHAR(255) UNIQUE CHECK (CHAR_LENGTH("username") > 0),
     "password_hash" VARCHAR(255), -- Nullable for OAuth users
     "email" VARCHAR(255) UNIQUE CHECK (CHAR_LENGTH("email") > 0),

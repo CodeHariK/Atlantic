@@ -22,11 +22,11 @@ type Service struct {
 
 func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.CreateProductRequest]) (*connect.Response[pb.CreateProductResponse], error) {
 	var arg CreateProductParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.ProductID = v
 	}
 	arg.Title = req.Msg.GetTitle()
 	arg.Quantity = req.Msg.GetQuantity()
@@ -42,15 +42,15 @@ func (s *Service) CreateProduct(ctx context.Context, req *connect.Request[pb.Cre
 }
 
 func (s *Service) DeleteProduct(ctx context.Context, req *connect.Request[pb.DeleteProductRequest]) (*connect.Response[pb.DeleteProductResponse], error) {
-	var id uuid.UUID
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid Id: %s%w", err.Error(), validation.ErrUserInput)
+	var productID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		id = v
+		productID = v
 	}
 
-	err := s.querier.DeleteProduct(ctx, id)
+	err := s.querier.DeleteProduct(ctx, productID)
 	if err != nil {
 		slog.Error("sql call failed", "error", err, "method", "DeleteProduct")
 		return nil, err
@@ -99,11 +99,11 @@ func (s *Service) ListProducts(ctx context.Context, req *connect.Request[pb.List
 
 func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.UpdateProductRequest]) (*connect.Response[pb.UpdateProductResponse], error) {
 	var arg UpdateProductParams
-	if v, err := uuid.Parse(req.Msg.GetId()); err != nil {
-		err = fmt.Errorf("invalid ID: %s%w", err.Error(), validation.ErrUserInput)
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
 		return nil, err
 	} else {
-		arg.ID = v
+		arg.ProductID = v
 	}
 	arg.Quantity = req.Msg.GetQuantity()
 	arg.Price = req.Msg.GetPrice()
@@ -114,4 +114,39 @@ func (s *Service) UpdateProduct(ctx context.Context, req *connect.Request[pb.Upd
 		return nil, err
 	}
 	return connect.NewResponse(&pb.UpdateProductResponse{Product: toProduct(result)}), nil
+}
+
+func (s *Service) UpdateProductPrice(ctx context.Context, req *connect.Request[pb.UpdateProductPriceRequest]) (*connect.Response[pb.UpdateProductPriceResponse], error) {
+	var productID uuid.UUID
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		productID = v
+	}
+
+	result, err := s.querier.UpdateProductPrice(ctx, productID)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateProductPrice")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateProductPriceResponse{Product: toProduct(result)}), nil
+}
+
+func (s *Service) UpdateProductQuantity(ctx context.Context, req *connect.Request[pb.UpdateProductQuantityRequest]) (*connect.Response[pb.UpdateProductQuantityResponse], error) {
+	var arg UpdateProductQuantityParams
+	if v, err := uuid.Parse(req.Msg.GetProductId()); err != nil {
+		err = fmt.Errorf("invalid ProductID: %s%w", err.Error(), validation.ErrUserInput)
+		return nil, err
+	} else {
+		arg.ProductID = v
+	}
+	arg.Quantity = req.Msg.GetQuantity()
+
+	result, err := s.querier.UpdateProductQuantity(ctx, arg)
+	if err != nil {
+		slog.Error("sql call failed", "error", err, "method", "UpdateProductQuantity")
+		return nil, err
+	}
+	return connect.NewResponse(&pb.UpdateProductQuantityResponse{Product: toProduct(result)}), nil
 }

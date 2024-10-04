@@ -12,7 +12,7 @@ import (
 func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 
 	out := new(pb.ListUsersRow)
-	out.Id = in.ID.String()
+	out.UserId = in.UserID.String()
 	if in.Username.Valid {
 		out.Username = wrapperspb.String(in.Username.String)
 	}
@@ -41,7 +41,7 @@ func toListUsersRow(in ListUsersRow) *pb.ListUsersRow {
 func toUser(in User) *pb.User {
 
 	out := new(pb.User)
-	out.Id = in.ID.String()
+	out.UserId = in.UserID.String()
 	if in.Username.Valid {
 		out.Username = wrapperspb.String(in.Username.String)
 	}
