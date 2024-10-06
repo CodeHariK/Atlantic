@@ -36,12 +36,12 @@ func CreateRoutes(
 		authbox.ConnectInterceptors(config)...,
 	)
 
-	// shield := authbox.ConnectShield(config)
+	shield := authbox.ConnectShield(config)
 
 	router.Handle(
 		cosmogPath,
-		// shield.Wrap(cosmogHandler),
-		cosmogHandler,
+		shield.Wrap(cosmogHandler),
+		// cosmogHandler,
 	)
 
 	//------------------

@@ -28,7 +28,9 @@ export function Cart() {
       let a = connect.cartbox?.cart?.items.map((m) => {
          return m.productId
       })
+      console.log("* * * *")
       console.log(a)
+      console.log("* * * *")
 
       let response = await connect.productclient.getProductsByIds(new GetProductsByIdsRequest({
          dollar1: a

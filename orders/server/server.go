@@ -13,6 +13,7 @@ import (
 	"github.com/codeharik/Atlantic/database/store/user"
 	v1 "github.com/codeharik/Atlantic/orders/api/cart/v1"
 	"github.com/codeharik/Atlantic/orders/api/cart/v1/v1connect"
+	"github.com/codeharik/Atlantic/service/authbox"
 	"github.com/codeharik/Atlantic/service/colorlogger"
 	"github.com/codeharik/Atlantic/service/nats"
 	"github.com/codeharik/Atlantic/service/store"
@@ -58,10 +59,9 @@ func CreateCartServiceServer(cfg config.Config, natsClient *nats.NatsClient, sto
 
 	natsClient.CreateOrdersStream(cfg)
 
-	fmt.Println("---Temporal---")
+	fmt.Println("Starting Temporal Workers")
 	go cartService.Orderworker()
 	go cartService.Moneyworker()
-	fmt.Println("--------------")
 
 	return cartService
 }
@@ -90,13 +90,13 @@ func CreateCartServiceServer(cfg config.Config, natsClient *nats.NatsClient, sto
 // }
 
 func (o CartServiceServer) CreateCart(ctx context.Context, req *connect.Request[v1.CreateCartRequest]) (*connect.Response[v1.Cart], error) {
-	// cb, ok := authbox.GetConnectBox(ctx)
-	// if !ok {
-	// 	return nil, authbox.InternalServerError
-	// }
+	cb, ok := authbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, authbox.InternalServerError
+	}
 
-	// uid := cb.AccessObj.ID
-	uid := "66173097-653b-400b-9e98-78830fdd630e"
+	uid := cb.AccessObj.ID
+	// uid := "66173097-653b-400b-9e98-78830fdd630e"
 
 	err := CreateCart(o, uid)
 	if err != nil {
@@ -124,13 +124,13 @@ func CreateCart(o CartServiceServer, uid string) error {
 }
 
 func (o CartServiceServer) GetCart(ctx context.Context, req *connect.Request[v1.GetCartRequest]) (*connect.Response[v1.Cart], error) {
-	// cb, ok := authbox.GetConnectBox(ctx)
-	// if !ok {
-	// 	return nil, authbox.InternalServerError
-	// }
+	cb, ok := authbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, authbox.InternalServerError
+	}
 
-	// uid := cb.AccessObj.ID
-	uid := "66173097-653b-400b-9e98-78830fdd630e"
+	uid := cb.AccessObj.ID
+	// uid := "66173097-653b-400b-9e98-78830fdd630e"
 
 	cartState, err := GetCart(o, uid)
 	if err != nil {
@@ -154,13 +154,13 @@ func GetCart(o CartServiceServer, uid string) (*v1.Cart, error) {
 }
 
 func (o CartServiceServer) UpdateCartItem(ctx context.Context, req *connect.Request[v1.CartItem]) (*connect.Response[v1.Cart], error) {
-	// cb, ok := authbox.GetConnectBox(ctx)
-	// if !ok {
-	// 	return nil, authbox.InternalServerError
-	// }
+	cb, ok := authbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, authbox.InternalServerError
+	}
 
-	// uid := cb.AccessObj.ID
-	uid := "66173097-653b-400b-9e98-78830fdd630e"
+	uid := cb.AccessObj.ID
+	// uid := "66173097-653b-400b-9e98-78830fdd630e"
 	cartWorkflowID := "cart-" + uid
 
 	update, _ := protojson.Marshal(req.Msg)
@@ -197,8 +197,14 @@ func (o CartServiceServer) UpdateCartItem(ctx context.Context, req *connect.Requ
 	return connect.NewResponse(cart), err
 }
 
-func (o CartServiceServer) CheckoutCart(context.Context, *connect.Request[v1.CheckoutCartRequest]) (*connect.Response[v1.CheckoutCartResponse], error) {
-	uid := "66173097-653b-400b-9e98-78830fdd630e"
+func (o CartServiceServer) CheckoutCart(ctx context.Context, req *connect.Request[v1.CheckoutCartRequest]) (*connect.Response[v1.CheckoutCartResponse], error) {
+	cb, ok := authbox.GetConnectBox(ctx)
+	if !ok {
+		return nil, authbox.InternalServerError
+	}
+
+	uid := cb.AccessObj.ID
+	// uid := "66173097-653b-400b-9e98-78830fdd630e"
 	err := CheckoutCart(o, uid)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)

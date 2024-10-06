@@ -45,12 +45,11 @@ func CreateRoutes(
 		interceptors...,
 	)
 
-	// shield := authbox.ConnectShield(config)
+	shield := authbox.ConnectShield(config)
 
 	router.Handle(
 		cartPath,
-		// shield.Wrap(ordersHandler),
-		cartHandler,
+		shield.Wrap(cartHandler),
 	)
 
 	//------------------
@@ -65,8 +64,7 @@ func CreateRoutes(
 	)
 	router.Handle(
 		orderPath,
-		// shield.Wrap(userHandler),
-		orderHandler,
+		shield.Wrap(orderHandler),
 	)
 
 	//------------------

@@ -112,7 +112,9 @@ func (o CartServiceServer) CartWorkflow(ctx workflow.Context, state *v1.Cart) er
 				return
 			}
 
-			state = &v1.Cart{UpdatedAt: timestamppb.Now()}
+			state = &v1.Cart{UpdatedAt: timestamppb.Now(), Items: []*v1.CartItem{}}
+
+			colorlogger.Log("***Checkout state", state, "*****")
 		})
 
 		if len(state.Items) > 0 {

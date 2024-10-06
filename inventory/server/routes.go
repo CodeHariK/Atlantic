@@ -66,8 +66,8 @@ func CreateRoutes(
 	)
 	router.Handle(
 		productPath,
-		// shield.Wrap(userHandler),
-		productHandler,
+		shield.Wrap(productHandler),
+		// productHandler,
 	)
 
 	//------------------

@@ -60,7 +60,7 @@ func (q *Queries) DeleteProduct(ctx context.Context, productID uuid.UUID) error 
 }
 
 const getProductsByIds = `-- name: GetProductsByIds :many
-SELECT product_id, title, quantity, price, category FROM products WHERE id = ANY($1::uuid[])
+SELECT product_id, title, quantity, price, category FROM products WHERE product_id = ANY($1::uuid[])
 `
 
 func (q *Queries) GetProductsByIds(ctx context.Context, dollar_1 []uuid.UUID) ([]Product, error) {

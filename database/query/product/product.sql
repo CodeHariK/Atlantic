@@ -10,7 +10,7 @@ INSERT INTO
 VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
 -- name: GetProductsByIds :many
-SELECT * FROM products WHERE id = ANY($1::uuid[]);
+SELECT * FROM products WHERE product_id = ANY($1::uuid[]);
 
 -- name: UpdateProduct :one
 UPDATE products
