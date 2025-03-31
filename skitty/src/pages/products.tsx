@@ -1,16 +1,13 @@
-import { Breadcrumbs, PositionBox2, RatingsBar, CartIcon, DownIcon, FilterIcon, HeartIcon } from 'solgaleo';
-
-// import { Breadcrumbs } from "../components/breadcrumb";
-// import { PositionBox2 } from "../components/dropdown";
-// import { RatingsBar } from "../components/ratingsbar";
-// import { CartIcon, DownIcon, FilterIcon, HeartIcon } from "../components/svg";
-
-import SpaceLayout from "../layouts/SpaceLayout";
+import { SpaceLayout, Breadcrumbs, PositionBox2, RatingsBar, CartIcon, DownIcon, FilterIcon, HeartIcon, Footer } from 'solgaleo';
+import { AtlanticHeader } from '../components/header';
 
 export function Products() {
    return (
 
-      <SpaceLayout title='Home'>
+      <SpaceLayout title='Home'
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <section class="py-8 antialiased md:py-12">
             <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">

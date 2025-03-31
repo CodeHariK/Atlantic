@@ -1,4 +1,4 @@
-import SpaceLayout from "../layouts/SpaceLayout";
+import { Footer, SpaceLayout } from 'solgaleo';
 
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
 
@@ -22,6 +22,7 @@ import "../css/searchgames.css";
 import { Atlantic } from "../data/Constants";
 import { useConnect } from "../connect/connect";
 import { CartItem } from "../../api/cart/v1/cart_pb";
+import { AtlanticHeader } from '../components/header';
 
 export default function SearchGames() {
 	const connect = useConnect();
@@ -284,7 +285,10 @@ export default function SearchGames() {
 	});
 
 	return (
-		<SpaceLayout two title="Home">
+		<SpaceLayout two title="Home"
+			header={<AtlanticHeader />}
+			footer={<Footer />}
+		>
 			<div class="ais-InstantSearch py-8 antialiased">
 				<div class="left-panel">
 					<h3 class="mb-2">Categories</h3>

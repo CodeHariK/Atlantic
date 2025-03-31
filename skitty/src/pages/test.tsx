@@ -1,34 +1,23 @@
-// import { CartModal } from '../components/header';
-// import { DeleteModal, Modal } from '../components/modal';
-
-import { CartModal, DeleteModal, Modal } from 'solgaleo';
-
-import SpaceLayout from '../layouts/SpaceLayout';
-
 // import { Pattern } from '../data/regex';
 // import { TelTest } from '../data/regex_test';
 
-// import { AccountModal } from './account';
 // import { OrderDetails } from './orderdetails';
 
-import { CheckboxGroup } from "../components/checkbox";
-import { RadioGroup } from "../components/radio";
-import { SearchInput } from "../components/search";
-import { Select } from "../components/select";
-import { TextInput } from "../components/textinput";
-import { SpaceForm, SpaceDebugInfo, SpaceFormError } from "../components/spaceform";
-import * as yup from 'yup';
+import { SpaceLayout, DeleteModal, Modal, SearchInput, RadioGroup, Select, TextInput, CheckboxGroup, SpaceForm, SpaceDebugInfo, SpaceFormError, Footer } from "solgaleo"
 
+import * as yup from 'yup';
+import { AtlanticHeader } from "../components/header";
 
 export default function Test() {
    return (
-      <SpaceLayout two title='Page Not Found'>
+      <SpaceLayout two title='Page Not Found'
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
          {/* <TelTest pattern={Pattern.Tel}></TelTest> */}
 
-         <CartModal />
          <Modal show child=<>Delete</> modal={(setter) => DeleteModal(setter)} />
 
-         {/* <AccountModal /> */}
          <ClassicForm />
 
       </SpaceLayout>

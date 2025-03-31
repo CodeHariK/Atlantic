@@ -1,4 +1,4 @@
-import { RatingsBar } from "../components/ratingsbar"
+import { RatingsBar } from "solgaleo"
 
 export function Reviews(props: { rating: Number }) {
    return (

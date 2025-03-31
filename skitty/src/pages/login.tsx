@@ -1,12 +1,4 @@
-import SpaceLayout from '../layouts/SpaceLayout';
-
-// import { EmailIcon, GoogleIcon } from '../components/svg';
-// import { GradientText, H3, H6, P } from '../components/heading';
-// import { MaterialButton, OutlinedButton } from '../components/button';
-// import { SpaceForm } from '../components/spaceform';
-// import { TextInput } from '../components/textinput';
-
-import { TextInput, SpaceForm, EmailIcon, GoogleIcon, MaterialButton, OutlinedButton, GradientText, H3, H6, P } from 'solgaleo';
+import { SpaceLayout, TextInput, SpaceForm, EmailIcon, GoogleIcon, MaterialButton, OutlinedButton, GradientText, H3, H6, P, Footer } from 'solgaleo';
 
 import { createSignal } from "solid-js";
 import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
@@ -14,6 +6,7 @@ import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
 import { useConnect } from '../connect/connect.tsx';
 
 import * as yup from 'yup';
+import { AtlanticHeader } from '../components/header.tsx';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -58,7 +51,10 @@ export default function Login() {
 
 
    return (
-      <SpaceLayout two title='Login'>
+      <SpaceLayout two title='Login'
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <div class="justify-center h-full items-center flex">
 

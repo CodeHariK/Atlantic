@@ -1,8 +1,12 @@
-import SpaceLayout from '../layouts/SpaceLayout';
+import { Footer, SpaceLayout } from 'solgaleo';
+import { AtlanticHeader } from '../components/header';
 
 export default function SearchProducts() {
    return (
-      <SpaceLayout title='Home'>
+      <SpaceLayout title='Home'
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <button data-drawer-target="cta-button-sidebar" data-drawer-toggle="cta-button-sidebar" aria-controls="cta-button-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
             <span class="sr-only">Open sidebar</span>

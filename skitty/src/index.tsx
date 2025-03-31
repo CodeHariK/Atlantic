@@ -1,16 +1,18 @@
 import { render } from "solid-js/web";
 import { Router, type RouteDefinition } from "@solidjs/router";
-import { lazy, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 
 import { ConnectProvider } from "./connect/connect";
 
 import "./css/app.css";
 
+import "solgaleo/solgaleo.css"
+
 import Login from "./pages/login";
 import Profile from "./pages/profile";
 import Docs from "./pages/docs";
 import Test from "./pages/test";
-import Home from "./pages/home";
+import { Home } from "./pages/home";
 import SearchProducts from "./pages/searchproducts";
 import { Checkout } from "./pages/checkout";
 import { Products } from "./pages/products";
@@ -22,6 +24,7 @@ import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
 import { OrderDetails } from "./pages/orderdetails";
 import { ProductPage } from "./pages/product";
+import { NotFound } from "solgaleo";
 
 export const routes: RouteDefinition[] = [
 	{
@@ -90,7 +93,7 @@ export const routes: RouteDefinition[] = [
 	},
 	{
 		path: "**",
-		component: lazy(() => import("./pages/404")),
+		component: NotFound,
 	},
 	{
 		path: "/routes",

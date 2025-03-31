@@ -1,7 +1,4 @@
-import SpaceLayout from '../layouts/SpaceLayout';
-// import { MaterialButton } from '../components/button';
-
-import { MaterialButton } from 'solgaleo';
+import { SpaceLayout, MaterialButton, Footer } from 'solgaleo';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from 'solid-js';
@@ -9,6 +6,7 @@ import { GetProductsByIdsRequest } from '../../api/product/v1/product_pb';
 
 import { CheckoutCartRequest } from '../../api/cart/v1/cart_pb';
 import { useNavigate } from "@solidjs/router";
+import { AtlanticHeader } from '../components/header';
 
 type Product = {
    productId?: string;
@@ -52,7 +50,10 @@ export function Cart() {
    })
 
    return (
-      <SpaceLayout one title={'Cart'}>
+      <SpaceLayout one title={'Cart'}
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
             <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">

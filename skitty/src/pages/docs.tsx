@@ -1,9 +1,13 @@
+import { AtlanticHeader } from '../components/header';
 import { Atlantic } from '../data/Constants';
-import SpaceLayout from '../layouts/SpaceLayout';
+import { Footer, SpaceLayout } from 'solgaleo';
 
 export default function NotFound() {
     return (
-        <SpaceLayout two title='Docs'>
+        <SpaceLayout two title='Docs'
+            header={<AtlanticHeader />}
+            footer={<Footer />}
+        >
             <div class="flex h-full">
                 <div class="w-64 p-4">
                     <a href="#link1" class="block mb-2 text-blue-600">Link 1</a>

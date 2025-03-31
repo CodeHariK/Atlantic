@@ -1,11 +1,4 @@
-// import { Breadcrumbs } from "../components/breadcrumb";
-// import { MaterialButton, OutlinedButton } from "../components/button";
-// import { H2, H6, P } from "../components/heading";
-// import { RatingsBar } from "../components/ratingsbar";
-// import { Modal } from "../components/modal";
-import SpaceLayout from "../layouts/SpaceLayout";
-
-import { MaterialButton, OutlinedButton, Breadcrumbs, RatingsBar, H2, H6, P, Modal } from 'solgaleo';
+import { SpaceLayout, MaterialButton, OutlinedButton, Breadcrumbs, RatingsBar, H2, H6, P, Modal, Footer } from 'solgaleo';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from "solid-js";
@@ -15,6 +8,7 @@ import { GetProductRequest, Product } from "../../api/cosmog/v1/cosmog_pb";
 
 import { Reviews } from "./reviews";
 import { CartItem } from "../../api/cart/v1/cart_pb";
+import { AtlanticHeader } from '../components/header';
 
 export function ProductPage() {
 
@@ -74,7 +68,10 @@ export function ProductPage() {
    }
 
    return (
-      <SpaceLayout title={"" + searchParams.title}>
+      <SpaceLayout title={"" + searchParams.title}
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
          <section class="py-12 sm:py-16">
             <div class="container mx-auto px-4">
 

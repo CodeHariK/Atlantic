@@ -5,16 +5,10 @@ import { useConnect } from '../connect/connect.tsx';
 
 import { proto3 } from "@bufbuild/protobuf";
 
-import SpaceLayout from '../layouts/SpaceLayout';
-
-import { SuperTable, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, CrossIcon, TableHeadingIcon } from 'solgaleo';
-
-// import { SuperTable } from "../components/table.tsx";
-// import { CrossIcon, TableHeadingIcon } from "../components/svg.tsx";
-// import { H3, P, SmallBadgeText } from "../components/heading.tsx";
-// import { IconButton, MaterialButton, OutlinedButton } from "../components/button.tsx";
+import { SpaceLayout, SuperTable, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, CrossIcon, TableHeadingIcon, Footer } from 'solgaleo';
 
 import { handleRefresh, Revoke, RevokeAll } from "../connect/auth.tsx";
+import { AtlanticHeader } from "../components/header.tsx";
 
 export default function Profile() {
    // const [user, setUser] = createSignal<ProfileUser | null>(null);
@@ -56,7 +50,10 @@ export default function Profile() {
 
    return (
 
-      <SpaceLayout two title='Profile'>
+      <SpaceLayout two title='Profile'
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
          <MaterialButton onClick={() => { handleRefresh(connect, setLoading, setError) }} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
             <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
          </MaterialButton>

@@ -1,6 +1,5 @@
 import { ImageUploader } from "solgaleo";
 
-// import { ImageUploader } from "../components/uploadpic";
 import { Atlantic } from "../data/Constants";
 
 import { InventoryService } from "../../api/inventory/v1/inventory_connect";
@@ -10,7 +9,7 @@ export function UploadProduct() {
         <>
             <form>
 
-                <ImageUploader uploadFunc={async (formData, setImageValid, setImageCategories) => {
+                <ImageUploader uploadFunc={async (formData, _setImageValid, _setImageCategories) => {
 
                     console.log(`${Atlantic}/${InventoryService.typeName}/UploadImage`)
 

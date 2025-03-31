@@ -1,11 +1,4 @@
-import SpaceLayout from '../layouts/SpaceLayout.tsx';
-// import { EmailIcon } from '../components/svg.tsx';
-// import { GradientText, H3, P } from '../components/heading.tsx';
-// import { MaterialButton } from '../components/button.tsx';
-// import { SpaceForm } from '../components/spaceform.tsx';
-// import { TextInput } from '../components/textinput.tsx';
-
-import { TextInput, SpaceForm, EmailIcon, MaterialButton, GradientText, H3, P } from 'solgaleo';
+import { SpaceLayout, TextInput, SpaceForm, EmailIcon, MaterialButton, GradientText, H3, P, Footer } from 'solgaleo';
 
 import { createSignal } from "solid-js";
 import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";
@@ -14,6 +7,7 @@ import { useConnect } from '../connect/connect.tsx';
 
 import * as yup from 'yup';
 import { ConnectError } from '@connectrpc/connect';
+import { AtlanticHeader } from '../components/header.tsx';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -57,7 +51,10 @@ export default function Register() {
    };
 
    return (
-      <SpaceLayout two title='Login'>
+      <SpaceLayout two title='Login'
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <div class="justify-center h-full items-center flex">
 

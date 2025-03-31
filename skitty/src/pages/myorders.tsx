@@ -1,17 +1,14 @@
 
-import SpaceLayout from '../layouts/SpaceLayout';
-// import { Pagination } from "../components/pagination";
-// import { SuperTable } from '../components/table';
-// import { TableHeadingIcon } from '../components/svg';
-// import { H3, P, SmallBadgeText } from '../components/heading';
-// import { MaterialButton, OutlinedButton } from '../components/button';
-
-import { MaterialButton, OutlinedButton, H3, P, SmallBadgeText, TableHeadingIcon, SuperTable, Pagination } from 'solgaleo';
+import { SpaceLayout, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, TableHeadingIcon, SuperTable, Pagination, Footer } from 'solgaleo';
+import { AtlanticHeader } from '../components/header';
 
 export function MyOrders() {
 
    return (
-      <SpaceLayout one title={'My Details'}>
+      <SpaceLayout one title={'My Details'}
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <SuperTable width={900}
 

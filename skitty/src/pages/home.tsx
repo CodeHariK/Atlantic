@@ -1,9 +1,13 @@
-import SpaceLayout from '../layouts/SpaceLayout';
+import { Footer, SpaceLayout } from 'solgaleo';
+import { AtlanticHeader } from '../components/header';
 
-export default function Home() {
+export function Home() {
 
     return (
-        <SpaceLayout title='Home'>
+        <SpaceLayout two title='Home'
+            header={<AtlanticHeader />}
+            footer={<Footer />}
+        >
 
             <section class="py-8 antialiased md:py-16">
                 <div class="mx-auto grid max-w-screen-xl px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">

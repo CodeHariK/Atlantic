@@ -1,12 +1,16 @@
 import { useParams } from "@solidjs/router";
 
-import SpaceLayout from '../layouts/SpaceLayout';
+import { Footer, SpaceLayout } from 'solgaleo';
+import { AtlanticHeader } from "../components/header";
 
 export function OrderDetails() {
    const params = useParams();
 
    return (
-      <SpaceLayout one title={'Order Details ' + params.orderId}>
+      <SpaceLayout one title={'Order Details ' + params.orderId}
+         header={<AtlanticHeader />}
+         footer={<Footer />}
+      >
 
          <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
             <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
