@@ -6,12 +6,11 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-// isDuplicateKeyError checks if the error is a duplicate key error for the specified constraint
-func isDuplicateKeyError(err error, constraintName string) bool {
+// isError checks if the error is a duplicate key error for the specified constraint
+func isError(err error, constraintName string) bool {
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) {
-		// Check if the error is a unique violation and matches the constraint
-		if pgErr.Code == "23505" && pgErr.ConstraintName == constraintName {
+		if pgErr.ConstraintName == constraintName {
 			return true
 		}
 	}
@@ -19,8 +18,11 @@ func isDuplicateKeyError(err error, constraintName string) bool {
 }
 
 func PgCheck(err error) error {
-	if isDuplicateKeyError(err, "users_email_key") {
+	if isError(err, "users_email_key") {
 		return errors.New("email address is already in use")
+	}
+	if isError(err, "users_address_check") {
+		return errors.New("user address cannot be null")
 	}
 	return err
 }

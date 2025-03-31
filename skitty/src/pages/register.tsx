@@ -1,9 +1,11 @@
 import SpaceLayout from '../layouts/SpaceLayout.tsx';
-import { EmailIcon } from '../components/svg.tsx';
-import { GradientText, H3, P } from '../components/heading.tsx';
-import { MaterialButton } from '../components/button.tsx';
-import { SpaceForm } from '../components/spaceform.tsx';
-import { TextInput } from '../components/textinput.tsx';
+// import { EmailIcon } from '../components/svg.tsx';
+// import { GradientText, H3, P } from '../components/heading.tsx';
+// import { MaterialButton } from '../components/button.tsx';
+// import { SpaceForm } from '../components/spaceform.tsx';
+// import { TextInput } from '../components/textinput.tsx';
+
+import { TextInput, SpaceForm, EmailIcon, MaterialButton, GradientText, H3, P } from 'solgaleo';
 
 import { createSignal } from "solid-js";
 import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";

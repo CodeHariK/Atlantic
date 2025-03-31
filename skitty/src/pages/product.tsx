@@ -1,13 +1,18 @@
-import { useParams, useSearchParams } from "@solidjs/router";
-import { Breadcrumbs } from "../components/breadcrumb";
-import { MaterialButton, OutlinedButton } from "../components/button";
-import { H2, H6, P } from "../components/heading";
-import { RatingsBar } from "../components/ratingsbar";
+// import { Breadcrumbs } from "../components/breadcrumb";
+// import { MaterialButton, OutlinedButton } from "../components/button";
+// import { H2, H6, P } from "../components/heading";
+// import { RatingsBar } from "../components/ratingsbar";
+// import { Modal } from "../components/modal";
 import SpaceLayout from "../layouts/SpaceLayout";
+
+import { MaterialButton, OutlinedButton, Breadcrumbs, RatingsBar, H2, H6, P, Modal } from 'solgaleo';
+
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from "solid-js";
+import { useParams, useSearchParams } from "@solidjs/router";
+
 import { GetProductRequest, Product } from "../../api/cosmog/v1/cosmog_pb";
-import { Modal } from "../components/modal";
+
 import { Reviews } from "./reviews";
 import { CartItem } from "../../api/cart/v1/cart_pb";
 

@@ -1,10 +1,15 @@
-import { CartModal } from '../components/header';
-import { DeleteModal, Modal } from '../components/modal';
-import { Pattern } from '../data/regex';
-import { TelTest } from '../data/regex_test';
+// import { CartModal } from '../components/header';
+// import { DeleteModal, Modal } from '../components/modal';
+
+import { CartModal, DeleteModal, Modal } from 'solgaleo';
+
 import SpaceLayout from '../layouts/SpaceLayout';
-import { AccountModal } from './account';
-import { OrderDetails } from './orderdetails';
+
+// import { Pattern } from '../data/regex';
+// import { TelTest } from '../data/regex_test';
+
+// import { AccountModal } from './account';
+// import { OrderDetails } from './orderdetails';
 
 import { CheckboxGroup } from "../components/checkbox";
 import { RadioGroup } from "../components/radio";

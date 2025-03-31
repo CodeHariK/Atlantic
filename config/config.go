@@ -190,7 +190,7 @@ func (config *Config) DatabaseConnectionUri() string {
 }
 
 func (config *Config) DragonConnectionUri() string {
-	return fmt.Sprintf("rediss://%s:%s@%s:%d",
+	return fmt.Sprintf("redis://%s:%s@%s:%d",
 		config.Dragon.User,
 		config.Dragon.Password,
 		config.Dragon.Host,

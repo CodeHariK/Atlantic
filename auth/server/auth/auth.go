@@ -159,6 +159,7 @@ func (s AuthServiceServer) RegisterUser(ctx context.Context, req *connect.Reques
 			Role:         1,
 			Email:        pgtype.Text{String: email, Valid: true},
 			PasswordHash: pgtype.Text{String: hash, Valid: true},
+			Address:      "-",
 		},
 	)
 	if err != nil {

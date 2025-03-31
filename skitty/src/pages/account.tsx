@@ -1,9 +1,11 @@
-import { IconButton, MaterialButton, OutlinedButton } from "../components/button";
-import { H4 } from "../components/heading";
-import { Select } from "../components/select";
-import { SpaceForm } from "../components/spaceform";
-import { CrossIcon } from "../components/svg";
-import { TextInput } from "../components/textinput";
+// import { IconButton, MaterialButton, OutlinedButton } from "../components/button";
+// import { H4 } from "../components/heading";
+// import { Select } from "../components/select";
+// import { SpaceForm } from "../components/spaceform";
+// import { CrossIcon } from "../components/svg";
+// import { TextInput } from "../components/textinput";
+
+import { IconButton, MaterialButton, OutlinedButton, H4, Select, SpaceForm, CrossIcon, TextInput } from 'solgaleo';
 
 export function Account() {
     return (

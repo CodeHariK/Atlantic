@@ -7,10 +7,13 @@ import { proto3 } from "@bufbuild/protobuf";
 
 import SpaceLayout from '../layouts/SpaceLayout';
 
-import { SuperTable } from "../components/table.tsx";
-import { CrossIcon, TableHeadingIcon } from "../components/svg.tsx";
-import { H3, P, SmallBadgeText } from "../components/heading.tsx";
-import { IconButton, MaterialButton, OutlinedButton } from "../components/button.tsx";
+import { SuperTable, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, CrossIcon, TableHeadingIcon } from 'solgaleo';
+
+// import { SuperTable } from "../components/table.tsx";
+// import { CrossIcon, TableHeadingIcon } from "../components/svg.tsx";
+// import { H3, P, SmallBadgeText } from "../components/heading.tsx";
+// import { IconButton, MaterialButton, OutlinedButton } from "../components/button.tsx";
+
 import { handleRefresh, Revoke, RevokeAll } from "../connect/auth.tsx";
 
 export default function Profile() {

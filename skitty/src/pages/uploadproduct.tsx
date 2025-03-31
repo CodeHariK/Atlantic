@@ -1,4 +1,6 @@
-import { ImageUploader } from "../components/uploadpic";
+import { ImageUploader } from "solgaleo";
+
+// import { ImageUploader } from "../components/uploadpic";
 import { Atlantic } from "../data/Constants";
 
 import { InventoryService } from "../../api/inventory/v1/inventory_connect";

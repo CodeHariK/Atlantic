@@ -1,7 +1,10 @@
-import { Breadcrumbs } from "../components/breadcrumb";
-import { PositionBox2 } from "../components/dropdown";
-import { RatingsBar } from "../components/ratingsbar";
-import { CartIcon, DownIcon, FilterIcon, HeartIcon } from "../components/svg";
+import { Breadcrumbs, PositionBox2, RatingsBar, CartIcon, DownIcon, FilterIcon, HeartIcon } from 'solgaleo';
+
+// import { Breadcrumbs } from "../components/breadcrumb";
+// import { PositionBox2 } from "../components/dropdown";
+// import { RatingsBar } from "../components/ratingsbar";
+// import { CartIcon, DownIcon, FilterIcon, HeartIcon } from "../components/svg";
+
 import SpaceLayout from "../layouts/SpaceLayout";
 
 export function Products() {
@@ -88,7 +91,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
 
          <a href={"/product/" + id} class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{name}</a>
 
-         {RatingsBar(ratings, reviews)}
+         {RatingsBar({ ratings, reviews })}
 
          <ul class="mt-2 flex items-center gap-4">
             <li class="flex items-center gap-2">

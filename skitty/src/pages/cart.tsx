@@ -1,9 +1,12 @@
-
 import SpaceLayout from '../layouts/SpaceLayout';
+// import { MaterialButton } from '../components/button';
+
+import { MaterialButton } from 'solgaleo';
+
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from 'solid-js';
 import { GetProductsByIdsRequest } from '../../api/product/v1/product_pb';
-import { MaterialButton } from '../components/button';
+
 import { CheckoutCartRequest } from '../../api/cart/v1/cart_pb';
 import { useNavigate } from "@solidjs/router";
 

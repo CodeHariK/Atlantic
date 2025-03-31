@@ -46,29 +46,32 @@ export type SuperTableProps = {
     footerstart?: JSX.Element;
     footerend?: JSX.Element;
     class?: string;
-}
+    width?: number | string;
+};
 
 export function SuperTable(props: SuperTableProps) {
-    return <div class={`${props.class || ''} mx-auto`}>
-        <div class="flex flex-col w-full h-full bg-white dark:bg-gray-800 shadow-md rounded-xl bg-clip-border">
-            {!(props.headerstart || props.headerend) ? <></> :
-                <div class="flex items-center justify-between mx-4 mt-4 overflow-hidden rounded-none bg-clip-border">
+    return (
+        <div
+            class={`${props.class || ''} mx-auto`}
+            style={{ width: typeof props.width === "number" ? `${props.width}px` : props.width }}
+        >
+            <div class="flex flex-col w-full h-full bg-white dark:bg-gray-800 shadow-md rounded-xl bg-clip-border">
+                {!(props.headerstart || props.headerend) ? null : (
+                    <div class="flex items-center justify-between mx-4 mt-4 overflow-hidden rounded-none bg-clip-border">
+                        {props.headerstart}
+                        {props.headerend}
+                    </div>
+                )}
 
-                    {props.headerstart}
+                <Table heading={props.table.heading} rows={props.table.rows} class={props.table.class} />
 
-                    {props.headerend}
-                </div>
-            }
-
-            <Table heading={props.table.heading} rows={props.table.rows} class={props.table.class} >
-            </Table>
-
-            {!(props.footerstart || props.footerend) ? <></> :
-                <div class="flex items-center justify-between p-3">
-                    {props.footerstart}
-                    {props.footerend}
-                </div>
-            }
+                {!(props.footerstart || props.footerend) ? null : (
+                    <div class="flex items-center justify-between p-3">
+                        {props.footerstart}
+                        {props.footerend}
+                    </div>
+                )}
+            </div>
         </div>
-    </div>;
+    );
 }
