@@ -1,4 +1,4 @@
-import { SpaceLayout, MaterialButton, GradientText, H3, P } from 'solgaleo';
+import { SpaceLayoutFull, MaterialButton, GradientText, H3, P } from 'solgaleo';
 import { TextInput, SpaceForm } from 'solgaleo/input';
 import { EmailIcon } from 'solgaleo/svg';
 import { Footer } from 'solgaleo/nav';
@@ -54,7 +54,7 @@ export default function Register() {
    };
 
    return (
-      <SpaceLayout two title='Login'
+      <SpaceLayoutFull two title='Login'
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -98,6 +98,6 @@ export default function Register() {
             </div>
          </div>
 
-      </SpaceLayout >
+      </SpaceLayoutFull >
    );
 }

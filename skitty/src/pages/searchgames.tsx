@@ -1,4 +1,4 @@
-import { SpaceLayout } from 'solgaleo';
+import { SpaceLayoutFull } from 'solgaleo';
 import { Footer } from 'solgaleo/nav';
 
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
@@ -286,7 +286,7 @@ export default function SearchGames() {
 	});
 
 	return (
-		<SpaceLayout two title="Home"
+		<SpaceLayoutFull two title="Home"
 			header={<AtlanticHeader />}
 			footer={<Footer />}
 		>
@@ -319,7 +319,7 @@ export default function SearchGames() {
 					<div id="pagination"></div>
 				</div>
 			</div>
-		</SpaceLayout>
+		</SpaceLayoutFull>
 	);
 
 	function imgNext(imgmov: number, hit: any, id: string) {

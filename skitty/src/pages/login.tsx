@@ -1,4 +1,4 @@
-import { SpaceLayout, TextInput, SpaceForm, EmailIcon, GoogleIcon, MaterialButton, OutlinedButton, GradientText, H3, H6, P, Footer } from 'solgaleo';
+import { SpaceLayoutFull, TextInput, SpaceForm, EmailIcon, GoogleIcon, MaterialButton, OutlinedButton, GradientText, H3, H6, P, Footer } from 'solgaleo';
 
 import { createSignal } from "solid-js";
 import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
@@ -51,7 +51,7 @@ export default function Login() {
 
 
    return (
-      <SpaceLayout two title='Login'
+      <SpaceLayoutFull two title='Login'
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -103,6 +103,6 @@ export default function Login() {
             </div>
          </div>
 
-      </SpaceLayout >
+      </SpaceLayoutFull >
    );
 }

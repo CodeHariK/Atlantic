@@ -1,10 +1,10 @@
 import { AtlanticHeader } from '../components/header';
 import { Atlantic } from '../data/Constants';
-import { Footer, SpaceLayout } from 'solgaleo';
+import { Footer, SpaceLayoutFull } from 'solgaleo';
 
 export default function NotFound() {
     return (
-        <SpaceLayout two title='Docs'
+        <SpaceLayoutFull two title='Docs'
             header={<AtlanticHeader />}
             footer={<Footer />}
         >
@@ -23,6 +23,6 @@ export default function NotFound() {
                         class="w-full h-full border-0"></iframe>
                 </div>
             </div>
-        </SpaceLayout>
+        </SpaceLayoutFull>
     );
 }

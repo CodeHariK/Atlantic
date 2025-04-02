@@ -1,14 +1,16 @@
-import { SpaceLayout } from 'solgaleo';
+import { Dropdown, SpaceLayoutFull } from 'solgaleo';
 import { Breadcrumbs, Footer } from 'solgaleo/nav';
 import { PositionBox2, RatingsBar } from 'solgaleo/input';
 import { CartIcon, DownIcon, FilterIcon, HeartIcon } from 'solgaleo/svg';
 
 import { AtlanticHeader } from '../components/header';
 
+import { JSX } from "solid-js";
+
 export function Products() {
    return (
 
-      <SpaceLayout title='Home'
+      <SpaceLayoutFull title='Home'
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -23,30 +25,14 @@ export function Products() {
                      <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
                   </div>
 
-                  <PositionBox2 name={<p>{FilterIcon()}{<span>Filter</span>}{DownIcon()}</p>} align={{ x: 0, y: 1 }}>
-                     <div id="dropdownSort1" class="z-50 w-40 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700" data-popper-placement="bottom">
-                        <ul class="p-2 text-left text-sm font-medium text-gray-500 dark:text-gray-400" aria-labelledby="sortDropdownButton">
-                           <li>
-                              <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> The most popular </a>
-                           </li>
-                           <li>
-                              <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Newest </a>
-                           </li>
-                           <li>
-                              <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Increasing price </a>
-                           </li>
-                           <li>
-                              <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Decreasing price </a>
-                           </li>
-                           <li>
-                              <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> No. reviews </a>
-                           </li>
-                           <li>
-                              <a href="#" class="group inline-flex w-full items-center rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"> Discount % </a>
-                           </li>
-                        </ul>
-                     </div>
-                  </PositionBox2>
+                  <Dropdown items={[
+                     <p> The most popular </p>,
+                     <p> Increasing price </p>,
+                     <p> Newest </p>,
+                     <p> Decreasing price </p>,
+                     <p> No. reviews </p>,
+                     <p> Discount % </p>,
+                  ]} />
 
                </div>
 
@@ -63,7 +49,7 @@ export function Products() {
             </div>
          </section>
 
-      </SpaceLayout>
+      </SpaceLayoutFull>
    );
 }
 

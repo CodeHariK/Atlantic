@@ -1,13 +1,13 @@
 import { useParams } from "@solidjs/router";
 
-import { Footer, SpaceLayout } from 'solgaleo';
+import { Footer, SpaceLayoutFull } from 'solgaleo';
 import { AtlanticHeader } from "../components/header";
 
 export function OrderDetails() {
    const params = useParams();
 
    return (
-      <SpaceLayout one title={'Order Details ' + params.orderId}
+      <SpaceLayoutFull one title={'Order Details ' + params.orderId}
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -611,6 +611,6 @@ export function OrderDetails() {
             </div>
          </section>
 
-      </SpaceLayout>
+      </SpaceLayoutFull>
    );
 }

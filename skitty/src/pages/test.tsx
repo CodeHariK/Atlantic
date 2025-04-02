@@ -3,7 +3,7 @@
 
 // import { OrderDetails } from './orderdetails';
 
-import { SpaceLayout } from "solgaleo"
+import { SpaceLayoutFull } from "solgaleo"
 import { SearchInput, RadioGroup, Select, TextInput, CheckboxGroup, SpaceForm, SpaceDebugInfo, SpaceFormError, } from "solgaleo/input"
 import { DeleteModal, Modal, Footer } from "solgaleo/nav"
 
@@ -12,7 +12,7 @@ import { AtlanticHeader } from "../components/header";
 
 export default function Test() {
    return (
-      <SpaceLayout two title='Page Not Found'
+      <SpaceLayoutFull two title='Page Not Found'
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -22,7 +22,7 @@ export default function Test() {
 
          <ClassicForm />
 
-      </SpaceLayout>
+      </SpaceLayoutFull>
    );
 }
 

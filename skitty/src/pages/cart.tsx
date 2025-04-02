@@ -1,4 +1,4 @@
-import { SpaceLayout, MaterialButton, Footer } from 'solgaleo';
+import { SpaceLayoutFull, MaterialButton, Footer } from 'solgaleo';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from 'solid-js';
@@ -50,7 +50,7 @@ export function Cart() {
    })
 
    return (
-      <SpaceLayout one title={'Cart'}
+      <SpaceLayoutFull one title={'Cart'}
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -189,6 +189,6 @@ export function Cart() {
             </div>
          </section>
 
-      </SpaceLayout >
+      </SpaceLayoutFull>
    );
 }

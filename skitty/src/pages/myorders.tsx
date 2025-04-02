@@ -1,11 +1,11 @@
 
-import { SpaceLayout, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, TableHeadingIcon, SuperTable, Pagination, Footer } from 'solgaleo';
+import { SpaceLayoutFull, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, TableHeadingIcon, SuperTable, Pagination, Footer } from 'solgaleo';
 import { AtlanticHeader } from '../components/header';
 
 export function MyOrders() {
 
    return (
-      <SpaceLayout one title={'My Details'}
+      <SpaceLayoutFull one title={'My Details'}
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -239,7 +239,7 @@ export function MyOrders() {
             </div>
          </section>
 
-      </SpaceLayout>
+      </SpaceLayoutFull>
    );
 }
 

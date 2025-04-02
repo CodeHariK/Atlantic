@@ -17,6 +17,7 @@ export function AtlanticHeader() {
     }
 
     return <Header
+        iconSrc='https://cdn-icons-png.flaticon.com/128/12244/12244295.png'
         links={<>
             <HeaderLinks fn={navi} href="/products?Atlantic%3Arating%3Adesc%5BhierarchicalMenu%5D%5Bcategory.lvl0%5D%5B0%5D=games" title="Games" />
             <HeaderLinks fn={navi} href="/products" title="Best Sellers" />
@@ -51,9 +52,14 @@ export function CartModal() {
     const navigate = useNavigate();
 
     return (
-        <ToggleOptions show={connect.cartbox?.loading == true && connect.cartbox?.cart != null} name={<p>{CartIcon()}{<span>My Cart</span>}{DownIcon()}</p>}>
+        <ToggleOptions
+            show={connect.cartbox?.loading == true && connect.cartbox?.cart != null}
+            name={<p>
+                {CartIcon()}
+                {<span>My Cart</span>}
+                {DownIcon()}</p>}>
 
-            <div class="min-w-[300px] z-10 mx-auto space-y-4 overflow-hidden rounded-lg bg-white p-4 antialiased shadow-lg dark:bg-gray-800">
+            <div class="secbg min-w-[300px] z-10 mx-auto space-y-4 overflow-hidden rounded-lg p-4 antialiased shadow-lg">
 
                 {
                     connect.cartbox?.cart == null

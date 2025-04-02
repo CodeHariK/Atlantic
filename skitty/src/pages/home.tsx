@@ -1,10 +1,10 @@
-import { Footer, SpaceLayout } from 'solgaleo';
+import { Footer, SpaceLayoutFull } from 'solgaleo';
 import { AtlanticHeader } from '../components/header';
 
 export function Home() {
 
     return (
-        <SpaceLayout two title='Home'
+        <SpaceLayoutFull two title='Home'
             header={<AtlanticHeader />}
             footer={<Footer />}
         >
@@ -104,7 +104,7 @@ export function Home() {
                 </div>
             </section>
 
-        </SpaceLayout>
+        </SpaceLayoutFull>
     );
 }
 

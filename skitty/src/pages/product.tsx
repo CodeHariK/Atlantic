@@ -1,4 +1,4 @@
-import { SpaceLayout, MaterialButton, OutlinedButton, Breadcrumbs, RatingsBar, H2, H6, P, Modal, Footer } from 'solgaleo';
+import { SpaceLayoutFull, MaterialButton, OutlinedButton, Breadcrumbs, RatingsBar, H2, H6, P, Modal, Footer } from 'solgaleo';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from "solid-js";
@@ -68,7 +68,7 @@ export function ProductPage() {
    }
 
    return (
-      <SpaceLayout title={"" + searchParams.title}
+      <SpaceLayoutFull title={"" + searchParams.title}
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -199,6 +199,6 @@ export function ProductPage() {
             </div>
 
          </section>
-      </SpaceLayout>
+      </SpaceLayoutFull>
    );
 }

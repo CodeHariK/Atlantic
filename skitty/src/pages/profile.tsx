@@ -5,7 +5,7 @@ import { useConnect } from '../connect/connect.tsx';
 
 import { proto3 } from "@bufbuild/protobuf";
 
-import { SpaceLayout, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText } from 'solgaleo';
+import { SpaceLayoutFull, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText } from 'solgaleo';
 import { CrossIcon, TableHeadingIcon } from 'solgaleo/svg';
 import { Footer } from 'solgaleo/nav';
 import { SuperTable } from 'solgaleo/adv';
@@ -53,7 +53,7 @@ export default function Profile() {
 
    return (
 
-      <SpaceLayout two title='Profile'
+      <SpaceLayoutFull two title='Profile'
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -124,7 +124,7 @@ export default function Profile() {
                      <H3>Login sessions</H3>
                   </div>}
                   headerend={
-                     <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
+                     <div class="flex flex-row gap-2 shrink-0 sm:flex-row">
                         <OutlinedButton onClick={() => { RevokeAll(connect, setLoading, setError) }}>
                            Revoke All
                         </OutlinedButton>
@@ -150,6 +150,6 @@ export default function Profile() {
          )
          }
 
-      </SpaceLayout >
+      </SpaceLayoutFull >
    );
 };

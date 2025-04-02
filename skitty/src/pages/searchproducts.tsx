@@ -1,11 +1,11 @@
-import { SpaceLayout } from 'solgaleo';
+import { SpaceLayoutFull } from "solgaleo"
 import { Footer } from 'solgaleo/nav';
 
 import { AtlanticHeader } from '../components/header';
 
 export default function SearchProducts() {
    return (
-      <SpaceLayout title='Home'
+      <SpaceLayoutFull title='Home'
          header={<AtlanticHeader />}
          footer={<Footer />}
       >
@@ -202,6 +202,6 @@ export default function SearchProducts() {
             </div>
          </div>
 
-      </SpaceLayout>
+      </SpaceLayoutFull>
    );
 }
