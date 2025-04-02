@@ -1,4 +1,6 @@
-import { Footer, SpaceLayout } from 'solgaleo';
+import { SpaceLayout } from 'solgaleo';
+import { Footer } from 'solgaleo/nav';
+
 import { AtlanticHeader } from '../components/header';
 
 export default function SearchProducts() {

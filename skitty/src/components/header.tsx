@@ -1,4 +1,8 @@
-import { CartIcon, CrossIconFilled, DownIcon, Header, HeaderLinks, ListTile, MaterialButton, ThemeToggle, ToggleOptions, TransitionModal } from 'solgaleo';
+import { ListTile, MaterialButton, ThemeToggle } from 'solgaleo';
+import { Header, HeaderLinks, TransitionModal } from 'solgaleo/nav';
+import { ToggleOptions } from 'solgaleo/input';
+import { CartIcon, CrossIconFilled, DownIcon } from 'solgaleo/svg';
+
 import { RevokeReq } from "../connect/auth";
 import { useConnect } from '../connect/connect';
 import { useNavigate } from '@solidjs/router';

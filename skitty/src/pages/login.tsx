@@ -58,7 +58,7 @@ export default function Login() {
 
          <div class="justify-center h-full items-center flex">
 
-            <div class="w-full max-w-md bg-white dark:bg-gray-700 rounded-lg shadow p-5">
+            <div class="w-full max-w-md secbg rounded-lg shadow p-5">
 
                <H3 class="text-center">Login to your account</H3>
 

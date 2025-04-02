@@ -5,7 +5,10 @@ import { useConnect } from '../connect/connect.tsx';
 
 import { proto3 } from "@bufbuild/protobuf";
 
-import { SpaceLayout, SuperTable, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, CrossIcon, TableHeadingIcon, Footer } from 'solgaleo';
+import { SpaceLayout, IconButton, MaterialButton, OutlinedButton, H3, P, SmallBadgeText } from 'solgaleo';
+import { CrossIcon, TableHeadingIcon } from 'solgaleo/svg';
+import { Footer } from 'solgaleo/nav';
+import { SuperTable } from 'solgaleo/adv';
 
 import { handleRefresh, Revoke, RevokeAll } from "../connect/auth.tsx";
 import { AtlanticHeader } from "../components/header.tsx";

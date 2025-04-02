@@ -1,4 +1,7 @@
-import { SpaceLayout, TextInput, SpaceForm, EmailIcon, MaterialButton, GradientText, H3, P, Footer } from 'solgaleo';
+import { SpaceLayout, MaterialButton, GradientText, H3, P } from 'solgaleo';
+import { TextInput, SpaceForm } from 'solgaleo/input';
+import { EmailIcon } from 'solgaleo/svg';
+import { Footer } from 'solgaleo/nav';
 
 import { createSignal } from "solid-js";
 import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";

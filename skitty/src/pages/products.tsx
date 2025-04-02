@@ -1,4 +1,8 @@
-import { SpaceLayout, Breadcrumbs, PositionBox2, RatingsBar, CartIcon, DownIcon, FilterIcon, HeartIcon, Footer } from 'solgaleo';
+import { SpaceLayout } from 'solgaleo';
+import { Breadcrumbs, Footer } from 'solgaleo/nav';
+import { PositionBox2, RatingsBar } from 'solgaleo/input';
+import { CartIcon, DownIcon, FilterIcon, HeartIcon } from 'solgaleo/svg';
+
 import { AtlanticHeader } from '../components/header';
 
 export function Products() {

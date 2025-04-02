@@ -24,7 +24,7 @@ import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
 import { OrderDetails } from "./pages/orderdetails";
 import { ProductPage } from "./pages/product";
-import { NotFound } from "solgaleo";
+import { NotFound } from "solgaleo/pages";
 
 export const routes: RouteDefinition[] = [
 	{

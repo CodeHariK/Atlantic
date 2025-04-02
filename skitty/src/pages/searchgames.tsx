@@ -1,4 +1,5 @@
-import { Footer, SpaceLayout } from 'solgaleo';
+import { SpaceLayout } from 'solgaleo';
+import { Footer } from 'solgaleo/nav';
 
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
 

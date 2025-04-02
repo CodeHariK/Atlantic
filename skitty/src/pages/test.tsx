@@ -3,7 +3,9 @@
 
 // import { OrderDetails } from './orderdetails';
 
-import { SpaceLayout, DeleteModal, Modal, SearchInput, RadioGroup, Select, TextInput, CheckboxGroup, SpaceForm, SpaceDebugInfo, SpaceFormError, Footer } from "solgaleo"
+import { SpaceLayout } from "solgaleo"
+import { SearchInput, RadioGroup, Select, TextInput, CheckboxGroup, SpaceForm, SpaceDebugInfo, SpaceFormError, } from "solgaleo/input"
+import { DeleteModal, Modal, Footer } from "solgaleo/nav"
 
 import * as yup from 'yup';
 import { AtlanticHeader } from "../components/header";

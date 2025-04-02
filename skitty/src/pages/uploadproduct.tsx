@@ -1,4 +1,4 @@
-import { ImageUploader } from "solgaleo";
+import { ImageUploader } from "solgaleo/input";
 
 import { Atlantic } from "../data/Constants";
 
