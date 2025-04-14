@@ -1,18 +1,15 @@
-import { Dropdown, SpaceLayoutFull } from 'solgaleo';
-import { Breadcrumbs, Footer } from 'solgaleo/nav';
-import { PositionBox2, RatingsBar } from 'solgaleo/input';
-import { CartIcon, DownIcon, FilterIcon, HeartIcon } from 'solgaleo/svg';
+import { Breadcrumbs } from 'solgaleo/nav';
+import { RatingsBar, Dropdown, SpaceLayout } from 'solgaleo/ui';
+import { IconCart, IconHeart } from 'solgaleo/svg';
 
 import { AtlanticHeader } from '../components/header';
-
-import { JSX } from "solid-js";
 
 export function Products() {
    return (
 
-      <SpaceLayoutFull title='Home'
+      <SpaceLayout title='Home'
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
 
          <section class="py-8 antialiased md:py-12">
@@ -21,18 +18,23 @@ export function Products() {
                <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
 
                   <div>
-                     {Breadcrumbs()}
+
+                     <Breadcrumbs items={[]} />
+
                      <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
                   </div>
 
-                  <Dropdown items={[
-                     <p> The most popular </p>,
-                     <p> Increasing price </p>,
-                     <p> Newest </p>,
-                     <p> Decreasing price </p>,
-                     <p> No. reviews </p>,
-                     <p> Discount % </p>,
-                  ]} />
+                  <Dropdown
+                     button={<>DropdownButton</>}
+                     items={[
+                        {
+                           subitems: [
+                              { element: <p> The most popular </p>, },
+                              { element: <p> Increasing price </p>, },
+                              { element: <p> Newest </p>, },
+                           ]
+                        }
+                     ]} />
 
                </div>
 
@@ -49,7 +51,7 @@ export function Products() {
             </div>
          </section>
 
-      </SpaceLayoutFull>
+      </SpaceLayout>
    );
 }
 
@@ -67,7 +69,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
             <div class="flex items-center justify-end gap-1">
                <button type="button" data-tooltip-target="tooltip-add-to-favorites" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                   <span class="sr-only"> Add to Favorites </span>
-                  {HeartIcon()}
+                  <IconHeart />
                </button>
                <div id="tooltip-add-to-favorites" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700" data-popper-placement="top">
                   Add to favorites
@@ -100,7 +102,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
             <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{price}</p>
 
             <button type="button" class="inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-               {CartIcon()}
+               <IconCart />
                Add to cart
             </button>
          </div>

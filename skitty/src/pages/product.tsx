@@ -1,4 +1,4 @@
-import { SpaceLayoutFull, MaterialButton, OutlinedButton, Breadcrumbs, RatingsBar, H2, H6, P, Modal, Footer } from 'solgaleo';
+import { SpaceLayout, RatingsBar, CssUI } from 'solgaleo/ui';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from "solid-js";
@@ -9,6 +9,7 @@ import { GetProductRequest, Product } from "../../api/cosmog/v1/cosmog_pb";
 import { Reviews } from "./reviews";
 import { CartItem } from "../../api/cart/v1/cart_pb";
 import { AtlanticHeader } from '../components/header';
+import { Breadcrumbs } from 'solgaleo/nav';
 
 export function ProductPage() {
 
@@ -68,14 +69,14 @@ export function ProductPage() {
    }
 
    return (
-      <SpaceLayoutFull title={"" + searchParams.title}
+      <SpaceLayout title={"" + searchParams.title}
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
          <section class="py-12 sm:py-16">
             <div class="container mx-auto px-4">
 
-               {Breadcrumbs()}
+               <Breadcrumbs items={[]} />
 
                <div class="lg:col-gap-12 xl:col-gap-16 mt-4 grid grid-cols-1 gap-12 lg:mt-12 lg:grid-cols-5 lg:gap-16">
 
@@ -116,18 +117,19 @@ export function ProductPage() {
 
                                  return product()?.img.map((m) => {
 
-                                    return <Modal child={
+                                    return <>To be fixed</>
 
-                                       <button type="button" class="flex-0 aspect-square mb-3 h-16 overflow-hidden rounded-lg border-2 border-gray-900 text-center">
-                                          <img class="h-full w-full object-cover" src={m} alt="" />
-                                       </button>
+                                    // return <Modal child={
 
-                                    } size={{ x: 70 }} modal={() => {
+                                    //    <button type="button" class="flex-0 aspect-square mb-3 h-16 overflow-hidden rounded-lg border-2 border-gray-900 text-center">
+                                    //       <img class="h-full w-full object-cover" src={m} alt="" />
+                                    //    </button>
 
-                                       return <img class="h-full w-full object-cover" src={m} alt="" />
+                                    // } size={{ x: 70 }} modal={() => {
 
-                                    }} />
+                                    //    return <img class="h-full w-full object-cover" src={m} alt="" />
 
+                                    // }} />
 
                                  })
 
@@ -135,19 +137,21 @@ export function ProductPage() {
                               {(() => {
                                  return product()?.mov.map((m) => {
 
-                                    return <Modal child={
+                                    return <>To be fixed</>
 
-                                       <button type="button" class="flex-0 aspect-square mb-3 h-16 overflow-hidden rounded-lg border-2 border-gray-900 text-center">
-                                          <video class="h-full w-full object-cover" controls={false} autoplay={false}><source type="video/mp4" src={m} /></video>
-                                       </button>
+                                    // return <Modal child={
 
-                                    } size={{ x: 70 }} modal={() => {
+                                    //    <button type="button" class="flex-0 aspect-square mb-3 h-16 overflow-hidden rounded-lg border-2 border-gray-900 text-center">
+                                    //       <video class="h-full w-full object-cover" controls={false} autoplay={false}><source type="video/mp4" src={m} /></video>
+                                    //    </button>
 
-                                       return <video class="h-full w-full object-cover" controls autoplay={true}>
-                                          <source type="video/mp4" src={m} />
-                                       </video>
+                                    // } size={{ x: 70 }} modal={() => {
 
-                                    }} />
+                                    //    return <video class="h-full w-full object-cover" controls autoplay={true}>
+                                    //       <source type="video/mp4" src={m} />
+                                    //    </video>
+
+                                    // }} />
 
 
                                  })
@@ -159,20 +163,20 @@ export function ProductPage() {
                   </div>
 
                   <div class="lg:col-span-2 lg:row-span-2 lg:row-end-2">
-                     <H2>{product()?.title}</H2>
+                     <h2>{product()?.title}</h2>
 
                      <RatingsBar ratings={5} reviews={120} />
 
-                     <P class="mt-4">{product()?.info}</P>
+                     <p class="mt-4">{product()?.info}</p>
 
-                     <H6 class="mt-8">Choose subscription</H6>
+                     <h6 class="mt-8">Choose subscription</h6>
                      <div class="mt-3 flex select-none flex-wrap items-center gap-1">
-                        <MaterialButton onClick={addToCart}>4 Months / $80</MaterialButton>
-                        <OutlinedButton onClick={addToCart}>8 Months / $60</OutlinedButton>
+                        <button class={CssUI.MaterialButton} onClick={addToCart}>4 Months / $80</button>
+                        <button class={CssUI.OutlinedButton} onClick={addToCart}>8 Months / $60</button>
                      </div>
 
                      <div class="mt-10 flex flex-col items-center justify-between space-y-4 border-t border-b py-4 sm:flex-row sm:space-y-0">
-                        <MaterialButton onClick={addToCart}>Add to cart</MaterialButton>
+                        <button class={CssUI.MaterialButton} onClick={addToCart}>Add to cart</button>
                      </div>
 
                      <ul class="mt-8 space-y-2">
@@ -199,6 +203,6 @@ export function ProductPage() {
             </div>
 
          </section>
-      </SpaceLayoutFull>
+      </SpaceLayout>
    );
 }

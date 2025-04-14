@@ -1,13 +1,12 @@
-import { SpaceLayoutFull } from "solgaleo"
-import { Footer } from 'solgaleo/nav';
+import { SpaceLayout } from "solgaleo/ui"
 
 import { AtlanticHeader } from '../components/header';
 
 export default function SearchProducts() {
    return (
-      <SpaceLayoutFull title='Home'
+      <SpaceLayout title='Home'
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
 
          <button data-drawer-target="cta-button-sidebar" data-drawer-toggle="cta-button-sidebar" aria-controls="cta-button-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
@@ -202,6 +201,6 @@ export default function SearchProducts() {
             </div>
          </div>
 
-      </SpaceLayoutFull>
+      </SpaceLayout>
    );
 }

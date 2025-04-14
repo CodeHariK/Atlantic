@@ -1,4 +1,4 @@
-import { SpaceLayoutFull, MaterialButton, Footer } from 'solgaleo';
+import { SpaceLayout } from 'solgaleo/ui';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from 'solid-js';
@@ -50,9 +50,9 @@ export function Cart() {
    })
 
    return (
-      <SpaceLayoutFull one title={'Cart'}
+      <SpaceLayout title={'Cart'}
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
 
          <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
@@ -160,7 +160,7 @@ export function Cart() {
                                  </dl>
                               </div>
 
-                              <MaterialButton class='justify-center w-full' onClick={async () => {
+                              <button class='justify-center w-full' onClick={async () => {
                                  try {
                                     let cart = new CheckoutCartRequest({});
                                     await connect.cartclient.checkoutCart(cart);
@@ -169,7 +169,7 @@ export function Cart() {
                                  } catch (error) {
                                     console.log(error)
                                  }
-                              }}>Proceed to Checkout</MaterialButton>
+                              }}>Proceed to Checkout</button>
 
                               <div class="flex items-center justify-center gap-2">
                                  <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
@@ -189,6 +189,6 @@ export function Cart() {
             </div>
          </section>
 
-      </SpaceLayoutFull>
+      </SpaceLayout>
    );
 }

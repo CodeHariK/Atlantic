@@ -1,7 +1,5 @@
-import { SpaceLayoutFull, MaterialButton, GradientText, H3, P } from 'solgaleo';
-import { TextInput, SpaceForm } from 'solgaleo/input';
-import { EmailIcon } from 'solgaleo/svg';
-import { Footer } from 'solgaleo/nav';
+import { SpaceLayout, CssUI, Input, SpaceForm } from 'solgaleo/ui';
+import { IconEmail } from 'solgaleo/svg';
 
 import { createSignal } from "solid-js";
 import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";
@@ -54,20 +52,20 @@ export default function Register() {
    };
 
    return (
-      <SpaceLayoutFull two title='Login'
+      <SpaceLayout title='Login'
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
 
          <div class="justify-center h-full items-center flex">
 
             <div class="w-full max-w-md bg-white dark:bg-gray-700 rounded-lg shadow p-5">
 
-               <H3 class="text-center">Create an account</H3>
+               <h3 class="text-center">Create an account</h3>
 
-               <P class='my-2 text-center'>Already have an account?
-                  <a href='/login'><GradientText> Login here</GradientText></a>
-               </P>
+               <p class='my-2 text-center'>Already have an account?
+                  <a href='/login'> Login here</a>
+               </p>
 
                <SpaceForm id="Form"
                   schema={validationSchema}
@@ -76,28 +74,28 @@ export default function Register() {
                      register(state as Credentials)
                   }}
                >
-                  <TextInput name="email" icon={EmailIcon()} label='Email Address' type="text" placeholder="Email Address"></TextInput>
-                  <TextInput name="password" type="password" label='Password' placeholder="Password" />
-                  <TextInput name="confirmpassword" type="password" label='Confirm password' placeholder="Confirm Password" />
+                  <Input name="email" icon={<IconEmail />} label='Email Address' type="text" placeholder="Email Address" />
+                  <Input name="password" type="password" label='Password' placeholder="Password" />
+                  <Input name="confirmpassword" type="password" label='Confirm password' placeholder="Confirm Password" />
 
-                  <P class='py-1'>
+                  <p class='py-1'>
 
-                     <MaterialButton disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+                     <button class={CssUI.MaterialButton + " mt-1 mb-1 w-full justify-center"} disabled={loading()} type='submit'>
                         <p class='text-sm'>{loading() ? "Loading..." : "Continue"}</p>
-                     </MaterialButton>
+                     </button>
 
                      {error() && <p style='AppErrorText'>{error()}</p>}
-                  </P>
+                  </p>
                </SpaceForm>
 
-               <P class='mt-4 text-center'>
-                  By creating an account you agree to the <a><GradientText>Terms of Service</GradientText></a> and our
-                  <a><GradientText> Privacy Policy</GradientText></a>.
+               <p class='mt-4 text-center'>
+                  By creating an account you agree to the <a>Terms of Service</a> and our
+                  <a> Privacy Policy</a>.
                   We'll occasionally send you emails about news, products, and services; you can opt-out anytime.
-               </P>
+               </p>
             </div>
          </div>
 
-      </SpaceLayoutFull >
+      </SpaceLayout >
    );
 }

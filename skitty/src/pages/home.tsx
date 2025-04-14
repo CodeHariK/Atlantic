@@ -1,12 +1,12 @@
-import { Footer, SpaceLayoutFull } from 'solgaleo';
+import { SpaceLayout } from 'solgaleo/ui';
 import { AtlanticHeader } from '../components/header';
 
 export function Home() {
 
     return (
-        <SpaceLayoutFull two title='Home'
+        <SpaceLayout title='Home'
             header={<AtlanticHeader />}
-            footer={<Footer />}
+            footer={<AtlanticHeader />}
         >
 
             <section class="py-8 antialiased md:py-16">
@@ -104,7 +104,7 @@ export function Home() {
                 </div>
             </section>
 
-        </SpaceLayoutFull>
+        </SpaceLayout>
     );
 }
 

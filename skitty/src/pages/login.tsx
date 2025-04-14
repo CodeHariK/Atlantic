@@ -1,4 +1,4 @@
-import { SpaceLayoutFull, TextInput, SpaceForm, EmailIcon, GoogleIcon, MaterialButton, OutlinedButton, GradientText, H3, H6, P, Footer } from 'solgaleo';
+import { SpaceLayout, Input, SpaceForm, CssUI } from 'solgaleo/ui';
 
 import { createSignal } from "solid-js";
 import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
@@ -7,6 +7,7 @@ import { useConnect } from '../connect/connect.tsx';
 
 import * as yup from 'yup';
 import { AtlanticHeader } from '../components/header.tsx';
+import { IconEmail, IconGoogle } from 'solgaleo/svg';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -51,22 +52,21 @@ export default function Login() {
 
 
    return (
-      <SpaceLayoutFull two title='Login'
+      <SpaceLayout title='Login'
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
-
          <div class="justify-center h-full items-center flex">
 
             <div class="w-full max-w-md secbg rounded-lg shadow p-5">
 
-               <H3 class="text-center">Login to your account</H3>
+               <h3 class="text-center">Login to your account</h3>
 
                <div class="mt-7 flex flex-col gap-2">
-                  <OutlinedButton class='justify-center'>
-                     <GoogleIcon />
-                     <H6>Continue with Google</H6>
-                  </OutlinedButton>
+                  <button class={CssUI.OutlinedButton}>
+                     <IconGoogle />
+                     <h6>Continue with Google</h6>
+                  </button>
                </div>
 
                <div class="flex w-full items-center gap-2 py-6 text-sm text-slate-600 dark:text-slate-400">
@@ -82,27 +82,27 @@ export default function Login() {
                      login(state as Credentials)
                   }}
                >
-                  <TextInput name="email" icon={EmailIcon()} label='Email Address' type="text" placeholder="alien@atlantic.io"></TextInput>
-                  <TextInput name="password" type="password" label='Password' placeholder="******" />
+                  <Input name="email" icon={<IconEmail />} label='Email Address' type="text" placeholder="alien@atlantic.io" />
+                  <Input name="password" type="password" label='Password' placeholder="******" />
 
-                  <P class='py-1'>
+                  <p class='py-1'>
 
-                     <MaterialButton disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
+                     <button disabled={loading()} class={CssUI.MaterialButton + ' mt-1 mb-1 w-full justify-center'} type='submit'>
                         <p class='text-sm'>{loading() ? "Loading..." : "Continue"}</p>
-                     </MaterialButton>
+                     </button>
 
                      {error() && <p style='AppErrorText'>{error()}</p>}
 
-                     <a href='/forgot-password'><GradientText>Reset your password?</GradientText></a>
-                  </P>
+                     <a href='/forgot-password'>Reset your password?</a>
+                  </p>
                </SpaceForm>
 
-               <P class='mt-4 text-center'>Don't have an account?
-                  <a href='/register'><GradientText> Sign up</GradientText></a>
-               </P>
+               <p class='mt-4 text-center'>Don't have an account?
+                  <a href='/register'>Sign up</a>
+               </p>
             </div>
          </div>
 
-      </SpaceLayoutFull >
+      </SpaceLayout >
    );
 }

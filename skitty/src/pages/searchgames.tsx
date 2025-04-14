@@ -1,5 +1,4 @@
-import { SpaceLayoutFull } from 'solgaleo';
-import { Footer } from 'solgaleo/nav';
+import { SpaceLayout } from 'solgaleo/ui';
 
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
 
@@ -286,9 +285,9 @@ export default function SearchGames() {
 	});
 
 	return (
-		<SpaceLayoutFull two title="Home"
+		<SpaceLayout title="Home"
 			header={<AtlanticHeader />}
-			footer={<Footer />}
+			footer={<AtlanticHeader />}
 		>
 			<div class="ais-InstantSearch py-8 antialiased">
 				<div class="left-panel">
@@ -319,7 +318,7 @@ export default function SearchGames() {
 					<div id="pagination"></div>
 				</div>
 			</div>
-		</SpaceLayoutFull>
+		</SpaceLayout>
 	);
 
 	function imgNext(imgmov: number, hit: any, id: string) {

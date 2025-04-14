@@ -1,15 +1,15 @@
 import { useParams } from "@solidjs/router";
 
-import { Footer, SpaceLayoutFull } from 'solgaleo';
+import { SpaceLayout } from 'solgaleo/ui';
 import { AtlanticHeader } from "../components/header";
 
 export function OrderDetails() {
    const params = useParams();
 
    return (
-      <SpaceLayoutFull one title={'Order Details ' + params.orderId}
+      <SpaceLayout title={'Order Details ' + params.orderId}
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
 
          <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
@@ -611,6 +611,6 @@ export function OrderDetails() {
             </div>
          </section>
 
-      </SpaceLayoutFull>
+      </SpaceLayout>
    );
 }

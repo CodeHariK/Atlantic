@@ -1,4 +1,4 @@
-import { ImageUploader } from "solgaleo/input";
+import { FileUploader } from "solgaleo/ui";
 
 import { Atlantic } from "../data/Constants";
 
@@ -9,7 +9,7 @@ export function UploadProduct() {
         <>
             <form>
 
-                <ImageUploader uploadFunc={async (formData, _setImageValid, _setImageCategories) => {
+                <FileUploader name="" accept={["image/*"]} uploadFunc={async (formData) => {
 
                     console.log(`${Atlantic}/${InventoryService.typeName}/UploadImage`)
 
@@ -19,6 +19,11 @@ export function UploadProduct() {
                     });
 
                     console.log("Image upload successful:", response);
+
+                    return {
+                        valid: true,
+                        info: <p>Works</p>
+                    }
 
                 }} />
 

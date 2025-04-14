@@ -1,23 +1,25 @@
 
-import { SpaceLayoutFull, MaterialButton, OutlinedButton, H3, P, SmallBadgeText, TableHeadingIcon, SuperTable, Pagination, Footer } from 'solgaleo';
+import { CssUI, SpaceLayout } from 'solgaleo/ui';
 import { AtlanticHeader } from '../components/header';
+import { SuperTable } from 'solgaleo/adv';
+import { IconTableHeading } from 'solgaleo/svg';
 
 export function MyOrders() {
 
    return (
-      <SpaceLayoutFull one title={'My Details'}
+      <SpaceLayout title={'My Details'}
          header={<AtlanticHeader />}
-         footer={<Footer />}
+         footer={<AtlanticHeader />}
       >
 
          <SuperTable width={900}
 
             table={{
                heading: [
-                  <>User Agent {TableHeadingIcon()}</>,
-                  <>Started {TableHeadingIcon()}</>,
-                  <>Active {TableHeadingIcon()}</>,
-                  <>Valid {TableHeadingIcon()}</>,
+                  <>User Agent {<IconTableHeading />}</>,
+                  <>Started {<IconTableHeading />}</>,
+                  <>Active {<IconTableHeading />}</>,
+                  <>Valid {<IconTableHeading />}</>,
                   <>Revoke</>,
                ],
                class: [
@@ -25,37 +27,33 @@ export function MyOrders() {
                ],
                rows: [
                   [
-                     <P>{"s.agent"}</P>,
-                     <P>{"s.iat.toString()"}</P>,
-                     <SmallBadgeText>Active {"Current"}</SmallBadgeText>,
-                     <P>{"s.exp.toString()"}</P>,
+                     <p>{"s.agent"}</p>,
+                     <p>{"s.iat.toString()"}</p>,
+                     <p>Active {"Current"}</p>,
+                     <p>{"s.exp.toString()"}</p>,
                   ]
 
                ],
             }}
             headerstart={<div>
-               <H3>Login sessions</H3>
+               <h3>Login sessions</h3>
             </div>}
             headerend={
                <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
                   {/* <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
                            <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
                         </MaterialButton> */}
-                  <OutlinedButton>
-                     Revoke All
-                  </OutlinedButton>
-                  <MaterialButton>
-                     Logout
-                  </MaterialButton>
+                  <button class={CssUI.OutlinedButton}>Revoke All</button>
+                  <button class={CssUI.OutlinedButton}>Logout</button>
                </div>
             }
             footerstart={
-               <P>Page 1 of 10</P>
+               <p>Page 1 of 10</p>
             }
             footerend={
                <div class="flex gap-1">
-                  <OutlinedButton>Previous</OutlinedButton>
-                  <OutlinedButton>Next</OutlinedButton>
+                  <button class={CssUI.OutlinedButton}>Previous</button>
+                  <button class={CssUI.OutlinedButton}>Next</button>
                </div>
             }
          ></SuperTable>
@@ -234,12 +232,11 @@ export function MyOrders() {
                      </div>
                   </div>
 
-                  {Pagination()}
                </div>
             </div>
          </section>
 
-      </SpaceLayoutFull>
+      </SpaceLayout>
    );
 }
 

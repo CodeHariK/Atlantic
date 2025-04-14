@@ -11,7 +11,6 @@ import "solgaleo/solgaleo.css"
 import Login from "./pages/login";
 import Profile from "./pages/profile";
 import Docs from "./pages/docs";
-import Test from "./pages/test";
 import { Home } from "./pages/home";
 import SearchProducts from "./pages/searchproducts";
 import { Checkout } from "./pages/checkout";
@@ -24,7 +23,6 @@ import { UploadProduct } from "./pages/uploadproduct";
 import { Cart } from "./pages/cart";
 import { OrderDetails } from "./pages/orderdetails";
 import { ProductPage } from "./pages/product";
-import { NotFound } from "solgaleo/pages";
 
 export const routes: RouteDefinition[] = [
 	{
@@ -46,10 +44,6 @@ export const routes: RouteDefinition[] = [
 	{
 		path: "/docs",
 		component: Docs,
-	},
-	{
-		path: "/test",
-		component: Test,
 	},
 	{
 		path: "/search",
@@ -93,7 +87,7 @@ export const routes: RouteDefinition[] = [
 	},
 	{
 		path: "**",
-		component: NotFound,
+		component: () => { return <>Not Found</> },
 	},
 	{
 		path: "/routes",
