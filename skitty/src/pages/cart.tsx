@@ -1,4 +1,4 @@
-import { SpaceLayout } from 'solgaleo/ui';
+import { GridLayout } from 'solgaleo/ui';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from 'solid-js';
@@ -50,7 +50,7 @@ export function Cart() {
    })
 
    return (
-      <SpaceLayout title={'Cart'}
+      <GridLayout title={'Cart'}
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
@@ -189,6 +189,6 @@ export function Cart() {
             </div>
          </section>
 
-      </SpaceLayout>
+      </GridLayout>
    );
 }

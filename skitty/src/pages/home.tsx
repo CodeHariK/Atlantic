@@ -1,10 +1,10 @@
-import { SpaceLayout } from 'solgaleo/ui';
+import { GridLayout } from 'solgaleo/ui';
 import { AtlanticHeader } from '../components/header';
 
 export function Home() {
 
     return (
-        <SpaceLayout title='Home'
+        <GridLayout title='Home'
             header={<AtlanticHeader />}
             footer={<AtlanticHeader />}
         >
@@ -104,7 +104,7 @@ export function Home() {
                 </div>
             </section>
 
-        </SpaceLayout>
+        </GridLayout>
     );
 }
 

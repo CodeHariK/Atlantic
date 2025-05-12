@@ -1,4 +1,4 @@
-import { SpaceLayout, Input, SpaceForm, CssUI } from 'solgaleo/ui';
+import { GridLayout, Input, SpaceForm, CssUI } from 'solgaleo/ui';
 
 import { createSignal } from "solid-js";
 import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
@@ -7,7 +7,7 @@ import { useConnect } from '../connect/connect.tsx';
 
 import * as yup from 'yup';
 import { AtlanticHeader } from '../components/header.tsx';
-import { IconEmail, IconGoogle } from 'solgaleo/svg';
+import { IconEmail } from 'solgaleo/svg';
 
 export const validationSchema = yup.object().shape({
    email: yup.string().email('Invalid email').required('Email is required'),
@@ -52,19 +52,19 @@ export default function Login() {
 
 
    return (
-      <SpaceLayout title='Login'
+      <GridLayout title='Login'
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
          <div class="justify-center h-full items-center flex">
 
-            <div class="w-full max-w-md secbg rounded-lg shadow p-5">
+            <div class="max-w-md secbg rounded-lg shadow p-5">
 
                <h3 class="text-center">Login to your account</h3>
 
                <div class="mt-7 flex flex-col gap-2">
                   <button class={CssUI.OutlinedButton}>
-                     <IconGoogle />
+                     <IconEmail />
                      <h6>Continue with Google</h6>
                   </button>
                </div>
@@ -103,6 +103,6 @@ export default function Login() {
             </div>
          </div>
 
-      </SpaceLayout >
+      </GridLayout >
    );
 }

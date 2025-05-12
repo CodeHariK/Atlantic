@@ -1,4 +1,4 @@
-import { SpaceLayout, CssUI, Input, SpaceForm } from 'solgaleo/ui';
+import { GridLayout, CssUI, Input, SpaceForm } from 'solgaleo/ui';
 import { IconEmail } from 'solgaleo/svg';
 
 import { createSignal } from "solid-js";
@@ -52,14 +52,14 @@ export default function Register() {
    };
 
    return (
-      <SpaceLayout title='Login'
+      <GridLayout title='Login'
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
 
          <div class="justify-center h-full items-center flex">
 
-            <div class="w-full max-w-md bg-white dark:bg-gray-700 rounded-lg shadow p-5">
+            <div class="w-full max-w-md rounded-lg shadow p-5">
 
                <h3 class="text-center">Create an account</h3>
 
@@ -96,6 +96,6 @@ export default function Register() {
             </div>
          </div>
 
-      </SpaceLayout >
+      </GridLayout >
    );
 }

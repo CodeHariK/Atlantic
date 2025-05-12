@@ -1,4 +1,4 @@
-import { SpaceLayout, RatingsBar, CssUI } from 'solgaleo/ui';
+import { GridLayout, RatingsBar, CssUI } from 'solgaleo/ui';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from "solid-js";
@@ -69,7 +69,7 @@ export function ProductPage() {
    }
 
    return (
-      <SpaceLayout title={"" + searchParams.title}
+      <GridLayout title={"" + searchParams.title}
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
@@ -203,6 +203,6 @@ export function ProductPage() {
             </div>
 
          </section>
-      </SpaceLayout>
+      </GridLayout>
    );
 }

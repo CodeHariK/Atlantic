@@ -1,5 +1,5 @@
-import { Breadcrumbs } from 'solgaleo/nav';
-import { RatingsBar, Dropdown, SpaceLayout } from 'solgaleo/ui';
+import { Breadcrumbs, Modal, TreeView } from 'solgaleo/nav';
+import { RatingsBar, GridLayout, CssUI } from 'solgaleo/ui';
 import { IconCart, IconHeart } from 'solgaleo/svg';
 
 import { AtlanticHeader } from '../components/header';
@@ -7,7 +7,7 @@ import { AtlanticHeader } from '../components/header';
 export function Products() {
    return (
 
-      <SpaceLayout title='Home'
+      <GridLayout title='Home'
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
@@ -24,17 +24,34 @@ export function Products() {
                      <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
                   </div>
 
-                  <Dropdown
-                     button={<>DropdownButton</>}
-                     items={[
-                        {
-                           subitems: [
-                              { element: <p> The most popular </p>, },
-                              { element: <p> Increasing price </p>, },
-                              { element: <p> Newest </p>, },
-                           ]
+
+                  <Modal
+                     // fullScreen={true}
+                     anchor={{
+                        element: ([, setRef], [isVisible, setVisibiliy]) => {
+                           return <button ref={setRef} class={CssUI.OutlinedButton}
+                              onmousedown={() => { setVisibiliy(!isVisible()) }}
+                           >
+                              <span>Filter</span>
+                           </button>
                         }
-                     ]} />
+                     }}
+                     child={() => {
+                        return <TreeView
+                           id='productdropdown'
+                           data={[
+                              {
+                                 id: "",
+                                 label: "",
+                                 children: [
+                                    { id: "mostpopular", label: <p> The most popular </p>, },
+                                    { id: "increasingprice", label: <p> Increasing price </p>, },
+                                    { id: "newest", label: <p> Newest </p>, },
+                                 ]
+                              }
+                           ]} />
+                     }}
+                  />
 
                </div>
 
@@ -51,7 +68,7 @@ export function Products() {
             </div>
          </section>
 
-      </SpaceLayout>
+      </GridLayout>
    );
 }
 

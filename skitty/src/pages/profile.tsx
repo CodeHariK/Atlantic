@@ -5,7 +5,7 @@ import { useConnect } from '../connect/connect.tsx';
 
 import { proto3 } from "@bufbuild/protobuf";
 
-import { CssUI, SpaceLayout } from 'solgaleo/ui';
+import { CssUI, GridLayout } from 'solgaleo/ui';
 import { IconCross, IconTableHeading } from 'solgaleo/svg';
 import { SuperTable } from 'solgaleo/adv';
 
@@ -52,7 +52,7 @@ export default function Profile() {
 
    return (
 
-      <SpaceLayout title='Profile'
+      <GridLayout title='Profile'
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
@@ -90,42 +90,40 @@ export default function Profile() {
                         <p>Location: {connect.user!.location}</p>
                      </div>
                   </div>
-
+                  {/* 
                   <SuperTable
-                     class={"max-w-[1000px]"}
 
-                     table={{
-                        heading: [
-                           <>User Agent {<IconTableHeading />}</>,
-                           <>Started {<IconTableHeading />}</>,
-                           <>Active {<IconTableHeading />}</>,
-                           <>Valid {<IconTableHeading />}</>,
-                           <>Revoke</>,
-                        ],
-                        class: [
-                           "max-w-64",
-                        ],
-                        rows: [
-                           ...connect.user?.sessions.map((s, i) =>
-                              [
-                                 <p>{s.agent}</p>,
+                     // data={{
 
-                                 <p>{(() => {
-                                    let d = new Date(Number(s.iat) * 1000)
-                                    return d.toLocaleDateString() + " (" + d.toLocaleTimeString() + ")"
-                                 })()}</p>,
-                                 <p>Active {i == connect.user?.sessionNumber ? ", Current" : ""}</p>,
-                                 <p>{s.exp.toString()}</p>,
-                                 <button class={CssUI.IconButton}
-                                    onClick={() => Revoke(connect, i, setLoading, setError)}>
-                                    <IconCross /></button>
-                              ]
-                           ) ?? []
-                        ],
-                     }}
-                     headerstart={<div>
-                        <h3>Login sessions</h3>
-                     </div>}
+                     //    rowsItems: [
+                     //       ...connect.user?.sessions.map((s, i) =>
+                     //          [
+                     //             <p>{s.agent}</p>,
+
+                     //             <p>{(() => {
+                     //                let d = new Date(Number(s.iat) * 1000)
+                     //                return d.toLocaleDateString() + " (" + d.toLocaleTimeString() + ")"
+                     //             })()}</p>,
+                     //             <p>Active {i == connect.user?.sessionNumber ? ", Current" : ""}</p>,
+                     //             <p>{s.exp.toString()}</p>,
+                     //             <button class={CssUI.IconButton}
+                     //                onClick={() => Revoke(connect, i, setLoading, setError)}>
+                     //                <IconCross /></button>
+                     //          ]
+                     //       ) ?? []
+                     //    ],
+                     // }}
+
+                     headerstart={<div><h3>Login sessions</h3></div>}
+
+                     // headerItems:  [
+                     //       <>User Agent {<IconTableHeading />}</>,
+                     //       <>Started {<IconTableHeading />}</>,
+                     //       <>Active {<IconTableHeading />}</>,
+                     //       <>Valid {<IconTableHeading />}</>,
+                     //       <>Revoke</>,
+                     //    ],
+
                      headerend={
                         <div class="flex flex-row gap-2 shrink-0 sm:flex-row">
                            <button class={CssUI.OutlinedButton} onClick={() => { RevokeAll(connect, setLoading, setError) }}>
@@ -145,7 +143,7 @@ export default function Profile() {
                            <button class={CssUI.MaterialButton}>Next</button>
                         </div>
                      }
-                  ></SuperTable>
+                  /> */}
 
                </>
             ) : (
@@ -153,6 +151,6 @@ export default function Profile() {
             )
          }
 
-      </SpaceLayout >
+      </GridLayout >
    );
 };

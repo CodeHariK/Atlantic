@@ -1,5 +1,5 @@
 
-import { CssUI, SpaceLayout } from 'solgaleo/ui';
+import { CssUI, GridLayout } from 'solgaleo/ui';
 import { AtlanticHeader } from '../components/header';
 import { SuperTable } from 'solgaleo/adv';
 import { IconTableHeading } from 'solgaleo/svg';
@@ -7,7 +7,7 @@ import { IconTableHeading } from 'solgaleo/svg';
 export function MyOrders() {
 
    return (
-      <SpaceLayout title={'My Details'}
+      <GridLayout title={'My Details'}
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
@@ -236,7 +236,7 @@ export function MyOrders() {
             </div>
          </section>
 
-      </SpaceLayout>
+      </GridLayout>
    );
 }
 

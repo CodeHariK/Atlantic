@@ -24,6 +24,8 @@ import { Cart } from "./pages/cart";
 import { OrderDetails } from "./pages/orderdetails";
 import { ProductPage } from "./pages/product";
 
+import { SolProvider } from "solgaleo";
+
 export const routes: RouteDefinition[] = [
 	{
 		path: "/",
@@ -116,9 +118,11 @@ function RouteList() {
 }
 render(
 	() => (
-		<ConnectProvider>
-			<Router>{routes}</Router>
-		</ConnectProvider>
+		<SolProvider initialData={{ baseroute: "/", themes: [] }}>
+			<ConnectProvider>
+				<Router>{routes}</Router>
+			</ConnectProvider>
+		</SolProvider >
 	),
 	document.body!,
 );
