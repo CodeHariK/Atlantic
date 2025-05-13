@@ -56,10 +56,9 @@ export default function Register() {
          header={<AtlanticHeader />}
          footer={<AtlanticHeader />}
       >
-
          <div class="justify-center h-full items-center flex">
 
-            <div class="w-full max-w-md rounded-lg shadow p-5">
+            <div class="shadowh br2 p8 flex flex-col gap4">
 
                <h3 class="text-center">Create an account</h3>
 
@@ -88,11 +87,15 @@ export default function Register() {
                   </p>
                </SpaceForm>
 
-               <p class='mt-4 text-center'>
-                  By creating an account you agree to the <a>Terms of Service</a> and our
-                  <a> Privacy Policy</a>.
-                  We'll occasionally send you emails about news, products, and services; you can opt-out anytime.
-               </p>
+               <span>
+
+                  <p class='mt4 text-center'>
+                     By creating an account you agree to the <a>Terms of Service</a> and our <a> Privacy Policy</a>.
+                  </p>
+                  <p>
+                     We'll occasionally send you emails about news, products, and services.
+                  </p>
+               </span>
             </div>
          </div>
 

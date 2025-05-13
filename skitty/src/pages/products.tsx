@@ -84,7 +84,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
             <span class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"> Up to {discount}% off </span>
 
             <div class="flex items-center justify-end gap-1">
-               <button type="button" data-tooltip-target="tooltip-add-to-favorites" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+               <button type="button" data-tooltip-target="tooltip-add-to-favorites" class={CssUI.MaterialRoundButton}>
                   <span class="sr-only"> Add to Favorites </span>
                   <IconHeart />
                </button>
@@ -118,7 +118,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
          <div class="mt-4 flex items-center justify-between gap-4">
             <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{price}</p>
 
-            <button type="button" class="inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+            <button type="button" class={CssUI.MaterialButton}>
                <IconCart />
                Add to cart
             </button>

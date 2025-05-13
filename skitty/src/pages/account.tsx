@@ -1,7 +1,7 @@
 export function Account() {
     return (
-        <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-8">
-            <div class="mx-auto max-w-screen-lg px-4 2xl:px-0">
+        <section class="py8">
+            <div class="px4 2xl:px-0">
                 <nav class="mb-4 flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                         <li class="inline-flex items-center">

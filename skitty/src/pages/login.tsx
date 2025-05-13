@@ -50,7 +50,6 @@ export default function Login() {
       }
    };
 
-
    return (
       <GridLayout title='Login'
          header={<AtlanticHeader />}
@@ -58,21 +57,16 @@ export default function Login() {
       >
          <div class="justify-center h-full items-center flex">
 
-            <div class="max-w-md secbg rounded-lg shadow p-5">
+            <div class="shadowh br2 p8 flex flex-col gap4">
 
                <h3 class="text-center">Login to your account</h3>
+               <button class={CssUI.OutlinedButton}>
+                  <IconEmail />
+                  <h6>Continue with Google</h6>
+               </button>
 
-               <div class="mt-7 flex flex-col gap-2">
-                  <button class={CssUI.OutlinedButton}>
-                     <IconEmail />
-                     <h6>Continue with Google</h6>
-                  </button>
-               </div>
-
-               <div class="flex w-full items-center gap-2 py-6 text-sm text-slate-600 dark:text-slate-400">
-                  <div class="h-px w-full bg-slate-200 dark:bg-slate-400"></div>
+               <div class="w-full text-center">
                   OR
-                  <div class="h-px w-full bg-slate-200 dark:bg-slate-400"></div>
                </div>
 
                <SpaceForm id="Form"
