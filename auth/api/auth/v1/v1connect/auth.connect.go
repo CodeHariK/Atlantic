@@ -48,16 +48,6 @@ const (
 	AuthServiceInvalidateAllSessionsProcedure = "/auth.v1.AuthService/InvalidateAllSessions"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	authServiceServiceDescriptor                     = v1.File_auth_v1_auth_proto.Services().ByName("AuthService")
-	authServiceEmailLoginMethodDescriptor            = authServiceServiceDescriptor.Methods().ByName("EmailLogin")
-	authServiceRegisterUserMethodDescriptor          = authServiceServiceDescriptor.Methods().ByName("RegisterUser")
-	authServiceAuthRefreshMethodDescriptor           = authServiceServiceDescriptor.Methods().ByName("AuthRefresh")
-	authServiceRevokeSessionMethodDescriptor         = authServiceServiceDescriptor.Methods().ByName("RevokeSession")
-	authServiceInvalidateAllSessionsMethodDescriptor = authServiceServiceDescriptor.Methods().ByName("InvalidateAllSessions")
-)
-
 // AuthServiceClient is a client for the auth.v1.AuthService service.
 type AuthServiceClient interface {
 	EmailLogin(context.Context, *connect.Request[v1.EmailLoginRequest]) (*connect.Response[v1.EmailLoginResponse], error)
@@ -76,35 +66,36 @@ type AuthServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) AuthServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	authServiceMethods := v1.File_auth_v1_auth_proto.Services().ByName("AuthService").Methods()
 	return &authServiceClient{
 		emailLogin: connect.NewClient[v1.EmailLoginRequest, v1.EmailLoginResponse](
 			httpClient,
 			baseURL+AuthServiceEmailLoginProcedure,
-			connect.WithSchema(authServiceEmailLoginMethodDescriptor),
+			connect.WithSchema(authServiceMethods.ByName("EmailLogin")),
 			connect.WithClientOptions(opts...),
 		),
 		registerUser: connect.NewClient[v1.RegisterUserRequest, v1.RegisterUserResponse](
 			httpClient,
 			baseURL+AuthServiceRegisterUserProcedure,
-			connect.WithSchema(authServiceRegisterUserMethodDescriptor),
+			connect.WithSchema(authServiceMethods.ByName("RegisterUser")),
 			connect.WithClientOptions(opts...),
 		),
 		authRefresh: connect.NewClient[v1.RefreshRequest, v1.RefreshResponse](
 			httpClient,
 			baseURL+AuthServiceAuthRefreshProcedure,
-			connect.WithSchema(authServiceAuthRefreshMethodDescriptor),
+			connect.WithSchema(authServiceMethods.ByName("AuthRefresh")),
 			connect.WithClientOptions(opts...),
 		),
 		revokeSession: connect.NewClient[v1.RevokeRequest, v1.RevokeResponse](
 			httpClient,
 			baseURL+AuthServiceRevokeSessionProcedure,
-			connect.WithSchema(authServiceRevokeSessionMethodDescriptor),
+			connect.WithSchema(authServiceMethods.ByName("RevokeSession")),
 			connect.WithClientOptions(opts...),
 		),
 		invalidateAllSessions: connect.NewClient[v1.InvalidateAllSessionsRequest, v1.InvalidateAllSessionsResponse](
 			httpClient,
 			baseURL+AuthServiceInvalidateAllSessionsProcedure,
-			connect.WithSchema(authServiceInvalidateAllSessionsMethodDescriptor),
+			connect.WithSchema(authServiceMethods.ByName("InvalidateAllSessions")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -159,34 +150,35 @@ type AuthServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	authServiceMethods := v1.File_auth_v1_auth_proto.Services().ByName("AuthService").Methods()
 	authServiceEmailLoginHandler := connect.NewUnaryHandler(
 		AuthServiceEmailLoginProcedure,
 		svc.EmailLogin,
-		connect.WithSchema(authServiceEmailLoginMethodDescriptor),
+		connect.WithSchema(authServiceMethods.ByName("EmailLogin")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authServiceRegisterUserHandler := connect.NewUnaryHandler(
 		AuthServiceRegisterUserProcedure,
 		svc.RegisterUser,
-		connect.WithSchema(authServiceRegisterUserMethodDescriptor),
+		connect.WithSchema(authServiceMethods.ByName("RegisterUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authServiceAuthRefreshHandler := connect.NewUnaryHandler(
 		AuthServiceAuthRefreshProcedure,
 		svc.AuthRefresh,
-		connect.WithSchema(authServiceAuthRefreshMethodDescriptor),
+		connect.WithSchema(authServiceMethods.ByName("AuthRefresh")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authServiceRevokeSessionHandler := connect.NewUnaryHandler(
 		AuthServiceRevokeSessionProcedure,
 		svc.RevokeSession,
-		connect.WithSchema(authServiceRevokeSessionMethodDescriptor),
+		connect.WithSchema(authServiceMethods.ByName("RevokeSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	authServiceInvalidateAllSessionsHandler := connect.NewUnaryHandler(
 		AuthServiceInvalidateAllSessionsProcedure,
 		svc.InvalidateAllSessions,
-		connect.WithSchema(authServiceInvalidateAllSessionsMethodDescriptor),
+		connect.WithSchema(authServiceMethods.ByName("InvalidateAllSessions")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/auth.v1.AuthService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

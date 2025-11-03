@@ -16,38 +16,6 @@
     "application/json"
   ],
   "paths": {
-    "/product.v1.ProductService/CheckProductQuantity": {
-      "post": {
-        "operationId": "ProductService_CheckProductQuantity",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1CheckProductQuantityResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1CheckProductQuantityRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProductService"
-        ]
-      }
-    },
     "/product.v1.ProductService/CreateProduct": {
       "post": {
         "operationId": "ProductService_CreateProduct",
@@ -112,14 +80,14 @@
         ]
       }
     },
-    "/product.v1.ProductService/GetProductByID": {
+    "/product.v1.ProductService/GetProductsByIds": {
       "post": {
-        "operationId": "ProductService_GetProductByID",
+        "operationId": "ProductService_GetProductsByIds",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetProductByIDResponse"
+              "$ref": "#/definitions/v1GetProductsByIdsResponse"
             }
           },
           "default": {
@@ -135,7 +103,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1GetProductByIDRequest"
+              "$ref": "#/definitions/v1GetProductsByIdsRequest"
             }
           }
         ],
@@ -207,6 +175,70 @@
           "ProductService"
         ]
       }
+    },
+    "/product.v1.ProductService/UpdateProductPrice": {
+      "post": {
+        "operationId": "ProductService_UpdateProductPrice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductPriceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductPriceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
+    },
+    "/product.v1.ProductService/UpdateProductQuantity": {
+      "post": {
+        "operationId": "ProductService_UpdateProductQuantity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductQuantityResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateProductQuantityRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -238,42 +270,24 @@
         }
       }
     },
-    "v1CheckProductQuantityRequest": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        }
-      }
-    },
-    "v1CheckProductQuantityResponse": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "v1CreateProductRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "productId": {
+          "type": "string"
+        },
+        "title": {
           "type": "string"
         },
         "quantity": {
           "type": "integer",
           "format": "int32"
         },
-        "amountUnits": {
-          "type": "string",
-          "format": "int64"
-        },
-        "amountNanos": {
+        "price": {
           "type": "integer",
           "format": "int32"
         },
-        "amountCurrency": {
+        "category": {
           "type": "string"
         }
       }
@@ -289,7 +303,7 @@
     "v1DeleteProductRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "productId": {
           "type": "string"
         }
       }
@@ -297,26 +311,18 @@
     "v1DeleteProductResponse": {
       "type": "object"
     },
-    "v1GetProductByIDRequest": {
+    "v1GetProductsByIdsRequest": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
+        "dollar1": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
-    "v1GetProductByIDResponse": {
-      "type": "object",
-      "properties": {
-        "product": {
-          "$ref": "#/definitions/v1Product"
-        }
-      }
-    },
-    "v1ListProductsRequest": {
-      "type": "object"
-    },
-    "v1ListProductsResponse": {
+    "v1GetProductsByIdsResponse": {
       "type": "object",
       "properties": {
         "list": {
@@ -328,54 +334,124 @@
         }
       }
     },
-    "v1Product": {
+    "v1ListProductsRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListProductsResponse": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1ListProductsRow"
+          }
+        }
+      }
+    },
+    "v1ListProductsRow": {
+      "type": "object",
+      "properties": {
+        "productId": {
           "type": "string"
         },
         "quantity": {
           "type": "integer",
           "format": "int32"
         },
-        "amountUnits": {
-          "type": "string",
-          "format": "int64"
+        "price": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1Product": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
         },
-        "amountNanos": {
+        "title": {
+          "type": "string"
+        },
+        "quantity": {
           "type": "integer",
           "format": "int32"
         },
-        "amountCurrency": {
+        "price": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
           "type": "string"
+        }
+      }
+    },
+    "v1UpdateProductPriceRequest": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateProductPriceResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/v1Product"
+        }
+      }
+    },
+    "v1UpdateProductQuantityRequest": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1UpdateProductQuantityResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/v1Product"
         }
       }
     },
     "v1UpdateProductRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "productId": {
           "type": "string"
         },
         "quantity": {
           "type": "integer",
           "format": "int32"
         },
-        "amountUnits": {
-          "type": "string",
-          "format": "int64"
-        },
-        "amountNanos": {
+        "price": {
           "type": "integer",
           "format": "int32"
-        },
-        "amountCurrency": {
-          "type": "string"
         }
       }
     },
     "v1UpdateProductResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/v1Product"
+        }
+      }
     }
   }
 }

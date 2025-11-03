@@ -41,13 +41,6 @@ const (
 	ProfileServiceUpdateProfileProcedure = "/profile.v1.ProfileService/UpdateProfile"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	profileServiceServiceDescriptor             = v1.File_auth_v1_profile_proto.Services().ByName("ProfileService")
-	profileServiceGetProfileMethodDescriptor    = profileServiceServiceDescriptor.Methods().ByName("GetProfile")
-	profileServiceUpdateProfileMethodDescriptor = profileServiceServiceDescriptor.Methods().ByName("UpdateProfile")
-)
-
 // ProfileServiceClient is a client for the profile.v1.ProfileService service.
 type ProfileServiceClient interface {
 	// Retrieves the profile of a user by ID
@@ -65,17 +58,18 @@ type ProfileServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewProfileServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ProfileServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	profileServiceMethods := v1.File_auth_v1_profile_proto.Services().ByName("ProfileService").Methods()
 	return &profileServiceClient{
 		getProfile: connect.NewClient[v1.GetProfileRequest, v1.GetProfileResponse](
 			httpClient,
 			baseURL+ProfileServiceGetProfileProcedure,
-			connect.WithSchema(profileServiceGetProfileMethodDescriptor),
+			connect.WithSchema(profileServiceMethods.ByName("GetProfile")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProfile: connect.NewClient[v1.UpdateProfileRequest, v1.UpdateProfileResponse](
 			httpClient,
 			baseURL+ProfileServiceUpdateProfileProcedure,
-			connect.WithSchema(profileServiceUpdateProfileMethodDescriptor),
+			connect.WithSchema(profileServiceMethods.ByName("UpdateProfile")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -111,16 +105,17 @@ type ProfileServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewProfileServiceHandler(svc ProfileServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	profileServiceMethods := v1.File_auth_v1_profile_proto.Services().ByName("ProfileService").Methods()
 	profileServiceGetProfileHandler := connect.NewUnaryHandler(
 		ProfileServiceGetProfileProcedure,
 		svc.GetProfile,
-		connect.WithSchema(profileServiceGetProfileMethodDescriptor),
+		connect.WithSchema(profileServiceMethods.ByName("GetProfile")),
 		connect.WithHandlerOptions(opts...),
 	)
 	profileServiceUpdateProfileHandler := connect.NewUnaryHandler(
 		ProfileServiceUpdateProfileProcedure,
 		svc.UpdateProfile,
-		connect.WithSchema(profileServiceUpdateProfileMethodDescriptor),
+		connect.WithSchema(profileServiceMethods.ByName("UpdateProfile")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/profile.v1.ProfileService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

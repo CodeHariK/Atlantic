@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "cosmog/v1/cosmog.proto",
+    "title": "buf/validate/expression.proto",
     "version": "version not set"
   },
   "tags": [
@@ -87,7 +87,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetProductResponse"
+              "$ref": "#/definitions/v1Product"
             }
           },
           "default": {
@@ -258,7 +258,30 @@
         }
       }
     },
-    "v1GetProductResponse": {
+    "v1GetTaskRequest": {
+      "type": "object",
+      "properties": {
+        "taskid": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1GetTaskResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "errorCode": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Product": {
       "type": "object",
       "properties": {
         "id": {
@@ -298,29 +321,6 @@
           "items": {
             "type": "string"
           }
-        }
-      }
-    },
-    "v1GetTaskRequest": {
-      "type": "object",
-      "properties": {
-        "taskid": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "v1GetTaskResponse": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "errorCode": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
         }
       }
     },

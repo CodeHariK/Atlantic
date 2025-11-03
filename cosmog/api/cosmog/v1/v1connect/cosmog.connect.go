@@ -49,16 +49,6 @@ const (
 	CosmogServiceGetTaskProcedure = "/cosmog.v1.CosmogService/GetTask"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	cosmogServiceServiceDescriptor               = v1.File_cosmog_v1_cosmog_proto.Services().ByName("CosmogService")
-	cosmogServiceCreateSearchKeyMethodDescriptor = cosmogServiceServiceDescriptor.Methods().ByName("CreateSearchKey")
-	cosmogServiceGetProductMethodDescriptor      = cosmogServiceServiceDescriptor.Methods().ByName("GetProduct")
-	cosmogServiceDeleteProductMethodDescriptor   = cosmogServiceServiceDescriptor.Methods().ByName("DeleteProduct")
-	cosmogServiceUpdateProductMethodDescriptor   = cosmogServiceServiceDescriptor.Methods().ByName("UpdateProduct")
-	cosmogServiceGetTaskMethodDescriptor         = cosmogServiceServiceDescriptor.Methods().ByName("GetTask")
-)
-
 // CosmogServiceClient is a client for the cosmog.v1.CosmogService service.
 type CosmogServiceClient interface {
 	CreateSearchKey(context.Context, *connect.Request[v1.CreateSearchKeyRequest]) (*connect.Response[v1.CreateSearchKeyResponse], error)
@@ -77,35 +67,36 @@ type CosmogServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewCosmogServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) CosmogServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	cosmogServiceMethods := v1.File_cosmog_v1_cosmog_proto.Services().ByName("CosmogService").Methods()
 	return &cosmogServiceClient{
 		createSearchKey: connect.NewClient[v1.CreateSearchKeyRequest, v1.CreateSearchKeyResponse](
 			httpClient,
 			baseURL+CosmogServiceCreateSearchKeyProcedure,
-			connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
+			connect.WithSchema(cosmogServiceMethods.ByName("CreateSearchKey")),
 			connect.WithClientOptions(opts...),
 		),
 		getProduct: connect.NewClient[v1.GetProductRequest, v1.Product](
 			httpClient,
 			baseURL+CosmogServiceGetProductProcedure,
-			connect.WithSchema(cosmogServiceGetProductMethodDescriptor),
+			connect.WithSchema(cosmogServiceMethods.ByName("GetProduct")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteProduct: connect.NewClient[v1.DeleteProductRequest, v1.DeleteProductResponse](
 			httpClient,
 			baseURL+CosmogServiceDeleteProductProcedure,
-			connect.WithSchema(cosmogServiceDeleteProductMethodDescriptor),
+			connect.WithSchema(cosmogServiceMethods.ByName("DeleteProduct")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProduct: connect.NewClient[v1.UpdateProductRequest, v1.UpdateProductResponse](
 			httpClient,
 			baseURL+CosmogServiceUpdateProductProcedure,
-			connect.WithSchema(cosmogServiceUpdateProductMethodDescriptor),
+			connect.WithSchema(cosmogServiceMethods.ByName("UpdateProduct")),
 			connect.WithClientOptions(opts...),
 		),
 		getTask: connect.NewClient[v1.GetTaskRequest, v1.GetTaskResponse](
 			httpClient,
 			baseURL+CosmogServiceGetTaskProcedure,
-			connect.WithSchema(cosmogServiceGetTaskMethodDescriptor),
+			connect.WithSchema(cosmogServiceMethods.ByName("GetTask")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -160,34 +151,35 @@ type CosmogServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewCosmogServiceHandler(svc CosmogServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	cosmogServiceMethods := v1.File_cosmog_v1_cosmog_proto.Services().ByName("CosmogService").Methods()
 	cosmogServiceCreateSearchKeyHandler := connect.NewUnaryHandler(
 		CosmogServiceCreateSearchKeyProcedure,
 		svc.CreateSearchKey,
-		connect.WithSchema(cosmogServiceCreateSearchKeyMethodDescriptor),
+		connect.WithSchema(cosmogServiceMethods.ByName("CreateSearchKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cosmogServiceGetProductHandler := connect.NewUnaryHandler(
 		CosmogServiceGetProductProcedure,
 		svc.GetProduct,
-		connect.WithSchema(cosmogServiceGetProductMethodDescriptor),
+		connect.WithSchema(cosmogServiceMethods.ByName("GetProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cosmogServiceDeleteProductHandler := connect.NewUnaryHandler(
 		CosmogServiceDeleteProductProcedure,
 		svc.DeleteProduct,
-		connect.WithSchema(cosmogServiceDeleteProductMethodDescriptor),
+		connect.WithSchema(cosmogServiceMethods.ByName("DeleteProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cosmogServiceUpdateProductHandler := connect.NewUnaryHandler(
 		CosmogServiceUpdateProductProcedure,
 		svc.UpdateProduct,
-		connect.WithSchema(cosmogServiceUpdateProductMethodDescriptor),
+		connect.WithSchema(cosmogServiceMethods.ByName("UpdateProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cosmogServiceGetTaskHandler := connect.NewUnaryHandler(
 		CosmogServiceGetTaskProcedure,
 		svc.GetTask,
-		connect.WithSchema(cosmogServiceGetTaskMethodDescriptor),
+		connect.WithSchema(cosmogServiceMethods.ByName("GetTask")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/cosmog.v1.CosmogService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

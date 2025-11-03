@@ -56,18 +56,6 @@ const (
 	ProductServiceUpdateProductQuantityProcedure = "/product.v1.ProductService/UpdateProductQuantity"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	productServiceServiceDescriptor                     = v1.File_product_v1_product_proto.Services().ByName("ProductService")
-	productServiceCreateProductMethodDescriptor         = productServiceServiceDescriptor.Methods().ByName("CreateProduct")
-	productServiceDeleteProductMethodDescriptor         = productServiceServiceDescriptor.Methods().ByName("DeleteProduct")
-	productServiceGetProductsByIdsMethodDescriptor      = productServiceServiceDescriptor.Methods().ByName("GetProductsByIds")
-	productServiceListProductsMethodDescriptor          = productServiceServiceDescriptor.Methods().ByName("ListProducts")
-	productServiceUpdateProductMethodDescriptor         = productServiceServiceDescriptor.Methods().ByName("UpdateProduct")
-	productServiceUpdateProductPriceMethodDescriptor    = productServiceServiceDescriptor.Methods().ByName("UpdateProductPrice")
-	productServiceUpdateProductQuantityMethodDescriptor = productServiceServiceDescriptor.Methods().ByName("UpdateProductQuantity")
-)
-
 // ProductServiceClient is a client for the product.v1.ProductService service.
 type ProductServiceClient interface {
 	CreateProduct(context.Context, *connect.Request[v1.CreateProductRequest]) (*connect.Response[v1.CreateProductResponse], error)
@@ -88,47 +76,48 @@ type ProductServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ProductServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	productServiceMethods := v1.File_product_v1_product_proto.Services().ByName("ProductService").Methods()
 	return &productServiceClient{
 		createProduct: connect.NewClient[v1.CreateProductRequest, v1.CreateProductResponse](
 			httpClient,
 			baseURL+ProductServiceCreateProductProcedure,
-			connect.WithSchema(productServiceCreateProductMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("CreateProduct")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteProduct: connect.NewClient[v1.DeleteProductRequest, v1.DeleteProductResponse](
 			httpClient,
 			baseURL+ProductServiceDeleteProductProcedure,
-			connect.WithSchema(productServiceDeleteProductMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("DeleteProduct")),
 			connect.WithClientOptions(opts...),
 		),
 		getProductsByIds: connect.NewClient[v1.GetProductsByIdsRequest, v1.GetProductsByIdsResponse](
 			httpClient,
 			baseURL+ProductServiceGetProductsByIdsProcedure,
-			connect.WithSchema(productServiceGetProductsByIdsMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("GetProductsByIds")),
 			connect.WithClientOptions(opts...),
 		),
 		listProducts: connect.NewClient[v1.ListProductsRequest, v1.ListProductsResponse](
 			httpClient,
 			baseURL+ProductServiceListProductsProcedure,
-			connect.WithSchema(productServiceListProductsMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("ListProducts")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProduct: connect.NewClient[v1.UpdateProductRequest, v1.UpdateProductResponse](
 			httpClient,
 			baseURL+ProductServiceUpdateProductProcedure,
-			connect.WithSchema(productServiceUpdateProductMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("UpdateProduct")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProductPrice: connect.NewClient[v1.UpdateProductPriceRequest, v1.UpdateProductPriceResponse](
 			httpClient,
 			baseURL+ProductServiceUpdateProductPriceProcedure,
-			connect.WithSchema(productServiceUpdateProductPriceMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("UpdateProductPrice")),
 			connect.WithClientOptions(opts...),
 		),
 		updateProductQuantity: connect.NewClient[v1.UpdateProductQuantityRequest, v1.UpdateProductQuantityResponse](
 			httpClient,
 			baseURL+ProductServiceUpdateProductQuantityProcedure,
-			connect.WithSchema(productServiceUpdateProductQuantityMethodDescriptor),
+			connect.WithSchema(productServiceMethods.ByName("UpdateProductQuantity")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -197,46 +186,47 @@ type ProductServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	productServiceMethods := v1.File_product_v1_product_proto.Services().ByName("ProductService").Methods()
 	productServiceCreateProductHandler := connect.NewUnaryHandler(
 		ProductServiceCreateProductProcedure,
 		svc.CreateProduct,
-		connect.WithSchema(productServiceCreateProductMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("CreateProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceDeleteProductHandler := connect.NewUnaryHandler(
 		ProductServiceDeleteProductProcedure,
 		svc.DeleteProduct,
-		connect.WithSchema(productServiceDeleteProductMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("DeleteProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceGetProductsByIdsHandler := connect.NewUnaryHandler(
 		ProductServiceGetProductsByIdsProcedure,
 		svc.GetProductsByIds,
-		connect.WithSchema(productServiceGetProductsByIdsMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("GetProductsByIds")),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceListProductsHandler := connect.NewUnaryHandler(
 		ProductServiceListProductsProcedure,
 		svc.ListProducts,
-		connect.WithSchema(productServiceListProductsMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("ListProducts")),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceUpdateProductHandler := connect.NewUnaryHandler(
 		ProductServiceUpdateProductProcedure,
 		svc.UpdateProduct,
-		connect.WithSchema(productServiceUpdateProductMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("UpdateProduct")),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceUpdateProductPriceHandler := connect.NewUnaryHandler(
 		ProductServiceUpdateProductPriceProcedure,
 		svc.UpdateProductPrice,
-		connect.WithSchema(productServiceUpdateProductPriceMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("UpdateProductPrice")),
 		connect.WithHandlerOptions(opts...),
 	)
 	productServiceUpdateProductQuantityHandler := connect.NewUnaryHandler(
 		ProductServiceUpdateProductQuantityProcedure,
 		svc.UpdateProductQuantity,
-		connect.WithSchema(productServiceUpdateProductQuantityMethodDescriptor),
+		connect.WithSchema(productServiceMethods.ByName("UpdateProductQuantity")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/product.v1.ProductService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

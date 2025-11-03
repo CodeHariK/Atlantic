@@ -45,15 +45,6 @@ const (
 	CartServiceCheckoutCartProcedure = "/cart.v1.CartService/CheckoutCart"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	cartServiceServiceDescriptor              = v1.File_cart_v1_cart_proto.Services().ByName("CartService")
-	cartServiceCreateCartMethodDescriptor     = cartServiceServiceDescriptor.Methods().ByName("CreateCart")
-	cartServiceGetCartMethodDescriptor        = cartServiceServiceDescriptor.Methods().ByName("GetCart")
-	cartServiceUpdateCartItemMethodDescriptor = cartServiceServiceDescriptor.Methods().ByName("UpdateCartItem")
-	cartServiceCheckoutCartMethodDescriptor   = cartServiceServiceDescriptor.Methods().ByName("CheckoutCart")
-)
-
 // CartServiceClient is a client for the cart.v1.CartService service.
 type CartServiceClient interface {
 	CreateCart(context.Context, *connect.Request[v1.CreateCartRequest]) (*connect.Response[v1.Cart], error)
@@ -71,29 +62,30 @@ type CartServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewCartServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) CartServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	cartServiceMethods := v1.File_cart_v1_cart_proto.Services().ByName("CartService").Methods()
 	return &cartServiceClient{
 		createCart: connect.NewClient[v1.CreateCartRequest, v1.Cart](
 			httpClient,
 			baseURL+CartServiceCreateCartProcedure,
-			connect.WithSchema(cartServiceCreateCartMethodDescriptor),
+			connect.WithSchema(cartServiceMethods.ByName("CreateCart")),
 			connect.WithClientOptions(opts...),
 		),
 		getCart: connect.NewClient[v1.GetCartRequest, v1.Cart](
 			httpClient,
 			baseURL+CartServiceGetCartProcedure,
-			connect.WithSchema(cartServiceGetCartMethodDescriptor),
+			connect.WithSchema(cartServiceMethods.ByName("GetCart")),
 			connect.WithClientOptions(opts...),
 		),
 		updateCartItem: connect.NewClient[v1.CartItem, v1.Cart](
 			httpClient,
 			baseURL+CartServiceUpdateCartItemProcedure,
-			connect.WithSchema(cartServiceUpdateCartItemMethodDescriptor),
+			connect.WithSchema(cartServiceMethods.ByName("UpdateCartItem")),
 			connect.WithClientOptions(opts...),
 		),
 		checkoutCart: connect.NewClient[v1.CheckoutCartRequest, v1.CheckoutCartResponse](
 			httpClient,
 			baseURL+CartServiceCheckoutCartProcedure,
-			connect.WithSchema(cartServiceCheckoutCartMethodDescriptor),
+			connect.WithSchema(cartServiceMethods.ByName("CheckoutCart")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -141,28 +133,29 @@ type CartServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewCartServiceHandler(svc CartServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	cartServiceMethods := v1.File_cart_v1_cart_proto.Services().ByName("CartService").Methods()
 	cartServiceCreateCartHandler := connect.NewUnaryHandler(
 		CartServiceCreateCartProcedure,
 		svc.CreateCart,
-		connect.WithSchema(cartServiceCreateCartMethodDescriptor),
+		connect.WithSchema(cartServiceMethods.ByName("CreateCart")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cartServiceGetCartHandler := connect.NewUnaryHandler(
 		CartServiceGetCartProcedure,
 		svc.GetCart,
-		connect.WithSchema(cartServiceGetCartMethodDescriptor),
+		connect.WithSchema(cartServiceMethods.ByName("GetCart")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cartServiceUpdateCartItemHandler := connect.NewUnaryHandler(
 		CartServiceUpdateCartItemProcedure,
 		svc.UpdateCartItem,
-		connect.WithSchema(cartServiceUpdateCartItemMethodDescriptor),
+		connect.WithSchema(cartServiceMethods.ByName("UpdateCartItem")),
 		connect.WithHandlerOptions(opts...),
 	)
 	cartServiceCheckoutCartHandler := connect.NewUnaryHandler(
 		CartServiceCheckoutCartProcedure,
 		svc.CheckoutCart,
-		connect.WithSchema(cartServiceCheckoutCartMethodDescriptor),
+		connect.WithSchema(cartServiceMethods.ByName("CheckoutCart")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/cart.v1.CartService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

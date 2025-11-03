@@ -3,7 +3,6 @@ syntax = "proto3";
 package auth.v1;
 
 import "buf/validate/validate.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
@@ -20,11 +19,11 @@ service AuthService {
 }
 
 enum Role {
-  ROLE_INVALID = 0; // Default value
-  USER = 1;
-  EDITOR = 62;
-  DEVELOPER = 63;
-  ADMIN = 64;
+  ROLE_UNSPECIFIED = 0; // Default value
+  ROLE_USER = 1;
+  ROLE_EDITOR = 62;
+  ROLE_DEVELOPER = 63;
+  ROLE_ADMIN = 64;
 }
 
 // The user profile message
@@ -41,13 +40,9 @@ message AuthUser {
       // must match it.
       pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"
     }
-    ignore_empty: true
   }];
 
-  string avatar = 4 [
-    (buf.validate.field).ignore = IGNORE_IF_DEFAULT_VALUE,
-    (buf.validate.field).string.uri = true
-  ]; // Avatar must be a valid URL
+  string avatar = 4 [(buf.validate.field).string.uri = true]; // Avatar must be a valid URL (optional field)
 
   // `email` validates that a string field is a valid email.
   string email = 5 [(buf.validate.field).string.email = true];
@@ -56,7 +51,7 @@ message AuthUser {
 
   bool verified = 7;
 
-  int64 role = 8 [(buf.validate.field).int32.gt = 0];
+  int64 role = 8 [(buf.validate.field).int64.gt = 0];
 
   repeated UserSession sessions = 9;
   int32 sessionNumber = 10;

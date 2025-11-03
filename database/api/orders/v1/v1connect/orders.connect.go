@@ -68,22 +68,6 @@ const (
 	OrdersServiceUpdateOrderStatusProcedure = "/orders.v1.OrdersService/UpdateOrderStatus"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	ordersServiceServiceDescriptor                        = v1.File_orders_v1_orders_proto.Services().ByName("OrdersService")
-	ordersServiceCreateOrderMethodDescriptor              = ordersServiceServiceDescriptor.Methods().ByName("CreateOrder")
-	ordersServiceCreateOrderItemMethodDescriptor          = ordersServiceServiceDescriptor.Methods().ByName("CreateOrderItem")
-	ordersServiceCreateOrderWithItemsMethodDescriptor     = ordersServiceServiceDescriptor.Methods().ByName("CreateOrderWithItems")
-	ordersServiceDeleteOrderByIDMethodDescriptor          = ordersServiceServiceDescriptor.Methods().ByName("DeleteOrderByID")
-	ordersServiceDeleteOrderItemByIDMethodDescriptor      = ordersServiceServiceDescriptor.Methods().ByName("DeleteOrderItemByID")
-	ordersServiceGetOrderByIDMethodDescriptor             = ordersServiceServiceDescriptor.Methods().ByName("GetOrderByID")
-	ordersServiceGetOrderItemByIDMethodDescriptor         = ordersServiceServiceDescriptor.Methods().ByName("GetOrderItemByID")
-	ordersServiceGetOrderItemsByOrderIDMethodDescriptor   = ordersServiceServiceDescriptor.Methods().ByName("GetOrderItemsByOrderID")
-	ordersServiceGetOrdersByUserIDMethodDescriptor        = ordersServiceServiceDescriptor.Methods().ByName("GetOrdersByUserID")
-	ordersServiceUpdateOrderPaymentStatusMethodDescriptor = ordersServiceServiceDescriptor.Methods().ByName("UpdateOrderPaymentStatus")
-	ordersServiceUpdateOrderStatusMethodDescriptor        = ordersServiceServiceDescriptor.Methods().ByName("UpdateOrderStatus")
-)
-
 // OrdersServiceClient is a client for the orders.v1.OrdersService service.
 type OrdersServiceClient interface {
 	CreateOrder(context.Context, *connect.Request[v1.CreateOrderRequest]) (*connect.Response[v1.CreateOrderResponse], error)
@@ -108,71 +92,72 @@ type OrdersServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewOrdersServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) OrdersServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	ordersServiceMethods := v1.File_orders_v1_orders_proto.Services().ByName("OrdersService").Methods()
 	return &ordersServiceClient{
 		createOrder: connect.NewClient[v1.CreateOrderRequest, v1.CreateOrderResponse](
 			httpClient,
 			baseURL+OrdersServiceCreateOrderProcedure,
-			connect.WithSchema(ordersServiceCreateOrderMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("CreateOrder")),
 			connect.WithClientOptions(opts...),
 		),
 		createOrderItem: connect.NewClient[v1.CreateOrderItemRequest, v1.CreateOrderItemResponse](
 			httpClient,
 			baseURL+OrdersServiceCreateOrderItemProcedure,
-			connect.WithSchema(ordersServiceCreateOrderItemMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("CreateOrderItem")),
 			connect.WithClientOptions(opts...),
 		),
 		createOrderWithItems: connect.NewClient[v1.CreateOrderWithItemsRequest, v1.CreateOrderWithItemsResponse](
 			httpClient,
 			baseURL+OrdersServiceCreateOrderWithItemsProcedure,
-			connect.WithSchema(ordersServiceCreateOrderWithItemsMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("CreateOrderWithItems")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteOrderByID: connect.NewClient[v1.DeleteOrderByIDRequest, v1.DeleteOrderByIDResponse](
 			httpClient,
 			baseURL+OrdersServiceDeleteOrderByIDProcedure,
-			connect.WithSchema(ordersServiceDeleteOrderByIDMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("DeleteOrderByID")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteOrderItemByID: connect.NewClient[v1.DeleteOrderItemByIDRequest, v1.DeleteOrderItemByIDResponse](
 			httpClient,
 			baseURL+OrdersServiceDeleteOrderItemByIDProcedure,
-			connect.WithSchema(ordersServiceDeleteOrderItemByIDMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("DeleteOrderItemByID")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrderByID: connect.NewClient[v1.GetOrderByIDRequest, v1.GetOrderByIDResponse](
 			httpClient,
 			baseURL+OrdersServiceGetOrderByIDProcedure,
-			connect.WithSchema(ordersServiceGetOrderByIDMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("GetOrderByID")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrderItemByID: connect.NewClient[v1.GetOrderItemByIDRequest, v1.GetOrderItemByIDResponse](
 			httpClient,
 			baseURL+OrdersServiceGetOrderItemByIDProcedure,
-			connect.WithSchema(ordersServiceGetOrderItemByIDMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("GetOrderItemByID")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrderItemsByOrderID: connect.NewClient[v1.GetOrderItemsByOrderIDRequest, v1.GetOrderItemsByOrderIDResponse](
 			httpClient,
 			baseURL+OrdersServiceGetOrderItemsByOrderIDProcedure,
-			connect.WithSchema(ordersServiceGetOrderItemsByOrderIDMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("GetOrderItemsByOrderID")),
 			connect.WithClientOptions(opts...),
 		),
 		getOrdersByUserID: connect.NewClient[v1.GetOrdersByUserIDRequest, v1.GetOrdersByUserIDResponse](
 			httpClient,
 			baseURL+OrdersServiceGetOrdersByUserIDProcedure,
-			connect.WithSchema(ordersServiceGetOrdersByUserIDMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("GetOrdersByUserID")),
 			connect.WithClientOptions(opts...),
 		),
 		updateOrderPaymentStatus: connect.NewClient[v1.UpdateOrderPaymentStatusRequest, v1.UpdateOrderPaymentStatusResponse](
 			httpClient,
 			baseURL+OrdersServiceUpdateOrderPaymentStatusProcedure,
-			connect.WithSchema(ordersServiceUpdateOrderPaymentStatusMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("UpdateOrderPaymentStatus")),
 			connect.WithClientOptions(opts...),
 		),
 		updateOrderStatus: connect.NewClient[v1.UpdateOrderStatusRequest, v1.UpdateOrderStatusResponse](
 			httpClient,
 			baseURL+OrdersServiceUpdateOrderStatusProcedure,
-			connect.WithSchema(ordersServiceUpdateOrderStatusMethodDescriptor),
+			connect.WithSchema(ordersServiceMethods.ByName("UpdateOrderStatus")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -269,70 +254,71 @@ type OrdersServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewOrdersServiceHandler(svc OrdersServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	ordersServiceMethods := v1.File_orders_v1_orders_proto.Services().ByName("OrdersService").Methods()
 	ordersServiceCreateOrderHandler := connect.NewUnaryHandler(
 		OrdersServiceCreateOrderProcedure,
 		svc.CreateOrder,
-		connect.WithSchema(ordersServiceCreateOrderMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("CreateOrder")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceCreateOrderItemHandler := connect.NewUnaryHandler(
 		OrdersServiceCreateOrderItemProcedure,
 		svc.CreateOrderItem,
-		connect.WithSchema(ordersServiceCreateOrderItemMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("CreateOrderItem")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceCreateOrderWithItemsHandler := connect.NewUnaryHandler(
 		OrdersServiceCreateOrderWithItemsProcedure,
 		svc.CreateOrderWithItems,
-		connect.WithSchema(ordersServiceCreateOrderWithItemsMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("CreateOrderWithItems")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceDeleteOrderByIDHandler := connect.NewUnaryHandler(
 		OrdersServiceDeleteOrderByIDProcedure,
 		svc.DeleteOrderByID,
-		connect.WithSchema(ordersServiceDeleteOrderByIDMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("DeleteOrderByID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceDeleteOrderItemByIDHandler := connect.NewUnaryHandler(
 		OrdersServiceDeleteOrderItemByIDProcedure,
 		svc.DeleteOrderItemByID,
-		connect.WithSchema(ordersServiceDeleteOrderItemByIDMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("DeleteOrderItemByID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceGetOrderByIDHandler := connect.NewUnaryHandler(
 		OrdersServiceGetOrderByIDProcedure,
 		svc.GetOrderByID,
-		connect.WithSchema(ordersServiceGetOrderByIDMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("GetOrderByID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceGetOrderItemByIDHandler := connect.NewUnaryHandler(
 		OrdersServiceGetOrderItemByIDProcedure,
 		svc.GetOrderItemByID,
-		connect.WithSchema(ordersServiceGetOrderItemByIDMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("GetOrderItemByID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceGetOrderItemsByOrderIDHandler := connect.NewUnaryHandler(
 		OrdersServiceGetOrderItemsByOrderIDProcedure,
 		svc.GetOrderItemsByOrderID,
-		connect.WithSchema(ordersServiceGetOrderItemsByOrderIDMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("GetOrderItemsByOrderID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceGetOrdersByUserIDHandler := connect.NewUnaryHandler(
 		OrdersServiceGetOrdersByUserIDProcedure,
 		svc.GetOrdersByUserID,
-		connect.WithSchema(ordersServiceGetOrdersByUserIDMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("GetOrdersByUserID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceUpdateOrderPaymentStatusHandler := connect.NewUnaryHandler(
 		OrdersServiceUpdateOrderPaymentStatusProcedure,
 		svc.UpdateOrderPaymentStatus,
-		connect.WithSchema(ordersServiceUpdateOrderPaymentStatusMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("UpdateOrderPaymentStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
 	ordersServiceUpdateOrderStatusHandler := connect.NewUnaryHandler(
 		OrdersServiceUpdateOrderStatusProcedure,
 		svc.UpdateOrderStatus,
-		connect.WithSchema(ordersServiceUpdateOrderStatusMethodDescriptor),
+		connect.WithSchema(ordersServiceMethods.ByName("UpdateOrderStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/orders.v1.OrdersService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

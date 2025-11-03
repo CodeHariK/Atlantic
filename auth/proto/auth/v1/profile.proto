@@ -4,7 +4,6 @@ package profile.v1;
 
 import "auth/v1/auth.proto";
 import "buf/validate/validate.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/codeharik/Atlantic/auth/api/auth/v1";
 
@@ -43,13 +42,9 @@ message ProfileUser {
       // must match it.
       pattern: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$"
     }
-    ignore_empty: true
   }];
 
-  string avatar = 3 [
-    (buf.validate.field).ignore = IGNORE_IF_DEFAULT_VALUE,
-    (buf.validate.field).string.uri = true
-  ]; // Avatar must be a valid URL
+  string avatar = 3 [(buf.validate.field).string.uri = true]; // Avatar must be a valid URL (optional field)
 
   // `email` validates that a string field is a valid email.
   string email = 4 [(buf.validate.field).string.email = true];
@@ -58,7 +53,7 @@ message ProfileUser {
 
   bool verified = 6;
 
-  int64 role = 7 [(buf.validate.field).int32.gt = 0];
+  int64 role = 7 [(buf.validate.field).int64.gt = 0];
 
   repeated auth.v1.UserSession sessions = 8;
   int32 sessionNumber = 9;

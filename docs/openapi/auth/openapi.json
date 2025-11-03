@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "auth/v1/auth.proto",
+    "title": "buf/validate/expression.proto",
     "version": "version not set"
   },
   "tags": [
@@ -471,6 +471,70 @@
           "UserService"
         ]
       }
+    },
+    "/user.v1.UserService/UpdateUserBalance": {
+      "post": {
+        "operationId": "UserService_UpdateUserBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateUserBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateUserBalanceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user.v1.UserService/UpdateUserPassword": {
+      "post": {
+        "operationId": "UserService_UpdateUserPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateUserPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateUserPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -505,7 +569,7 @@
     "v1CreateUserRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "userId": {
           "type": "string"
         },
         "username": {
@@ -517,13 +581,10 @@
         "email": {
           "type": "string"
         },
-        "phoneNumber": {
-          "type": "string"
-        },
         "verified": {
           "type": "boolean"
         },
-        "avatar": {
+        "phoneNumber": {
           "type": "string"
         },
         "gender": {
@@ -537,23 +598,22 @@
           "type": "string",
           "format": "date-time"
         },
-        "location": {
+        "address": {
           "type": "string"
+        },
+        "balance": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
     "v1CreateUserResponse": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
+      "type": "object"
     },
     "v1DeleteUserRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "userId": {
           "type": "string"
         }
       }
@@ -614,7 +674,7 @@
     "v1GetUserByIDRequest": {
       "type": "object",
       "properties": {
-        "id": {
+        "userId": {
           "type": "string"
         }
       }
@@ -682,7 +742,7 @@
     "v1ListUsersRow": {
       "type": "object",
       "properties": {
-        "id": {
+        "userId": {
           "type": "string"
         },
         "username": {
@@ -712,9 +772,6 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
-        },
-        "location": {
-          "type": "string"
         }
       }
     },
@@ -730,7 +787,7 @@
         },
         "avatar": {
           "type": "string",
-          "title": "Avatar must be a valid URL"
+          "title": "Avatar must be a valid URL (optional field)"
         },
         "email": {
           "type": "string",
@@ -816,6 +873,41 @@
         }
       }
     },
+    "v1UpdateUserBalanceRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "balance": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1UpdateUserBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1UpdateUserPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateUserPasswordResponse": {
+      "type": "object"
+    },
     "v1UpdateUserRequest": {
       "type": "object",
       "properties": {
@@ -831,9 +923,6 @@
         "verified": {
           "type": "boolean"
         },
-        "avatar": {
-          "type": "string"
-        },
         "gender": {
           "type": "string"
         },
@@ -845,7 +934,7 @@
           "type": "string",
           "format": "date-time"
         },
-        "location": {
+        "userId": {
           "type": "string"
         }
       }
@@ -856,7 +945,7 @@
     "v1User": {
       "type": "object",
       "properties": {
-        "id": {
+        "userId": {
           "type": "string"
         },
         "username": {
@@ -874,9 +963,6 @@
         "phoneNumber": {
           "type": "string"
         },
-        "avatar": {
-          "type": "string"
-        },
         "gender": {
           "type": "string"
         },
@@ -888,8 +974,12 @@
           "type": "string",
           "format": "date-time"
         },
-        "location": {
+        "address": {
           "type": "string"
+        },
+        "balance": {
+          "type": "integer",
+          "format": "int32"
         },
         "createdAt": {
           "type": "string",

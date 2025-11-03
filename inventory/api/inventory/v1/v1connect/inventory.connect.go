@@ -6,7 +6,7 @@ package v1connect
 
 import (
 	connect "connectrpc.com/connect"
-	v1 "github.com/codeharik/Atlantic/inventory/api/inventory/v1"
+	_ "github.com/codeharik/Atlantic/inventory/api/inventory/v1"
 	http "net/http"
 )
 
@@ -20,11 +20,6 @@ const _ = connect.IsAtLeastVersion1_13_0
 const (
 	// InventoryServiceName is the fully-qualified name of the InventoryService service.
 	InventoryServiceName = "inventory.v1.InventoryService"
-)
-
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	inventoryServiceServiceDescriptor = v1.File_inventory_v1_inventory_proto.Services().ByName("InventoryService")
 )
 
 // InventoryServiceClient is a client for the inventory.v1.InventoryService service.

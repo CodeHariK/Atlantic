@@ -2,9 +2,10 @@ PORT = 7777
 CONTAINER_NAME = auth
 
 gen:
+	# buf lint
 	buf dep update
 	buf format -w
-	buf generate
+	buf generate --include-imports
 	cp -r ./proto/ ../docs/proto
 
 run:

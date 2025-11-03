@@ -57,20 +57,6 @@ const (
 	UserServiceUpdateUserPasswordProcedure = "/user.v1.UserService/UpdateUserPassword"
 )
 
-// These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
-var (
-	userServiceServiceDescriptor                  = v1.File_user_v1_user_proto.Services().ByName("UserService")
-	userServiceCreateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("CreateUser")
-	userServiceDeleteUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("DeleteUser")
-	userServiceGetUserByEmailMethodDescriptor     = userServiceServiceDescriptor.Methods().ByName("GetUserByEmail")
-	userServiceGetUserByIDMethodDescriptor        = userServiceServiceDescriptor.Methods().ByName("GetUserByID")
-	userServiceGetUserByUsernameMethodDescriptor  = userServiceServiceDescriptor.Methods().ByName("GetUserByUsername")
-	userServiceListUsersMethodDescriptor          = userServiceServiceDescriptor.Methods().ByName("ListUsers")
-	userServiceUpdateUserMethodDescriptor         = userServiceServiceDescriptor.Methods().ByName("UpdateUser")
-	userServiceUpdateUserBalanceMethodDescriptor  = userServiceServiceDescriptor.Methods().ByName("UpdateUserBalance")
-	userServiceUpdateUserPasswordMethodDescriptor = userServiceServiceDescriptor.Methods().ByName("UpdateUserPassword")
-)
-
 // UserServiceClient is a client for the user.v1.UserService service.
 type UserServiceClient interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.CreateUserResponse], error)
@@ -93,59 +79,60 @@ type UserServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewUserServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) UserServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	userServiceMethods := v1.File_user_v1_user_proto.Services().ByName("UserService").Methods()
 	return &userServiceClient{
 		createUser: connect.NewClient[v1.CreateUserRequest, v1.CreateUserResponse](
 			httpClient,
 			baseURL+UserServiceCreateUserProcedure,
-			connect.WithSchema(userServiceCreateUserMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("CreateUser")),
 			connect.WithClientOptions(opts...),
 		),
 		deleteUser: connect.NewClient[v1.DeleteUserRequest, v1.DeleteUserResponse](
 			httpClient,
 			baseURL+UserServiceDeleteUserProcedure,
-			connect.WithSchema(userServiceDeleteUserMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("DeleteUser")),
 			connect.WithClientOptions(opts...),
 		),
 		getUserByEmail: connect.NewClient[v1.GetUserByEmailRequest, v1.GetUserByEmailResponse](
 			httpClient,
 			baseURL+UserServiceGetUserByEmailProcedure,
-			connect.WithSchema(userServiceGetUserByEmailMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("GetUserByEmail")),
 			connect.WithClientOptions(opts...),
 		),
 		getUserByID: connect.NewClient[v1.GetUserByIDRequest, v1.GetUserByIDResponse](
 			httpClient,
 			baseURL+UserServiceGetUserByIDProcedure,
-			connect.WithSchema(userServiceGetUserByIDMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("GetUserByID")),
 			connect.WithClientOptions(opts...),
 		),
 		getUserByUsername: connect.NewClient[v1.GetUserByUsernameRequest, v1.GetUserByUsernameResponse](
 			httpClient,
 			baseURL+UserServiceGetUserByUsernameProcedure,
-			connect.WithSchema(userServiceGetUserByUsernameMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("GetUserByUsername")),
 			connect.WithClientOptions(opts...),
 		),
 		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
 			httpClient,
 			baseURL+UserServiceListUsersProcedure,
-			connect.WithSchema(userServiceListUsersMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("ListUsers")),
 			connect.WithClientOptions(opts...),
 		),
 		updateUser: connect.NewClient[v1.UpdateUserRequest, v1.UpdateUserResponse](
 			httpClient,
 			baseURL+UserServiceUpdateUserProcedure,
-			connect.WithSchema(userServiceUpdateUserMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("UpdateUser")),
 			connect.WithClientOptions(opts...),
 		),
 		updateUserBalance: connect.NewClient[v1.UpdateUserBalanceRequest, v1.UpdateUserBalanceResponse](
 			httpClient,
 			baseURL+UserServiceUpdateUserBalanceProcedure,
-			connect.WithSchema(userServiceUpdateUserBalanceMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("UpdateUserBalance")),
 			connect.WithClientOptions(opts...),
 		),
 		updateUserPassword: connect.NewClient[v1.UpdateUserPasswordRequest, v1.UpdateUserPasswordResponse](
 			httpClient,
 			baseURL+UserServiceUpdateUserPasswordProcedure,
-			connect.WithSchema(userServiceUpdateUserPasswordMethodDescriptor),
+			connect.WithSchema(userServiceMethods.ByName("UpdateUserPassword")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -228,58 +215,59 @@ type UserServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewUserServiceHandler(svc UserServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	userServiceMethods := v1.File_user_v1_user_proto.Services().ByName("UserService").Methods()
 	userServiceCreateUserHandler := connect.NewUnaryHandler(
 		UserServiceCreateUserProcedure,
 		svc.CreateUser,
-		connect.WithSchema(userServiceCreateUserMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("CreateUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceDeleteUserHandler := connect.NewUnaryHandler(
 		UserServiceDeleteUserProcedure,
 		svc.DeleteUser,
-		connect.WithSchema(userServiceDeleteUserMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceGetUserByEmailHandler := connect.NewUnaryHandler(
 		UserServiceGetUserByEmailProcedure,
 		svc.GetUserByEmail,
-		connect.WithSchema(userServiceGetUserByEmailMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("GetUserByEmail")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceGetUserByIDHandler := connect.NewUnaryHandler(
 		UserServiceGetUserByIDProcedure,
 		svc.GetUserByID,
-		connect.WithSchema(userServiceGetUserByIDMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("GetUserByID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceGetUserByUsernameHandler := connect.NewUnaryHandler(
 		UserServiceGetUserByUsernameProcedure,
 		svc.GetUserByUsername,
-		connect.WithSchema(userServiceGetUserByUsernameMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("GetUserByUsername")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceListUsersHandler := connect.NewUnaryHandler(
 		UserServiceListUsersProcedure,
 		svc.ListUsers,
-		connect.WithSchema(userServiceListUsersMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("ListUsers")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceUpdateUserHandler := connect.NewUnaryHandler(
 		UserServiceUpdateUserProcedure,
 		svc.UpdateUser,
-		connect.WithSchema(userServiceUpdateUserMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("UpdateUser")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceUpdateUserBalanceHandler := connect.NewUnaryHandler(
 		UserServiceUpdateUserBalanceProcedure,
 		svc.UpdateUserBalance,
-		connect.WithSchema(userServiceUpdateUserBalanceMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("UpdateUserBalance")),
 		connect.WithHandlerOptions(opts...),
 	)
 	userServiceUpdateUserPasswordHandler := connect.NewUnaryHandler(
 		UserServiceUpdateUserPasswordProcedure,
 		svc.UpdateUserPassword,
-		connect.WithSchema(userServiceUpdateUserPasswordMethodDescriptor),
+		connect.WithSchema(userServiceMethods.ByName("UpdateUserPassword")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/user.v1.UserService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

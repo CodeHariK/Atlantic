@@ -47,7 +47,7 @@ connect:
 
 	cp gen.buf.yaml buf.gen.yaml
 
-	buf generate
+	buf generate --include-imports
 
 	rm -rf tools
 	rm -rf internal/server

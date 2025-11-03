@@ -1,5 +1,6 @@
 import { Setter } from "solid-js";
-import { InvalidateAllSessionsRequest, RefreshRequest, RevokeRequest } from "../../api/auth/v1/auth_pb";
+import { create } from "@bufbuild/protobuf";
+import { InvalidateAllSessionsRequestSchema, RefreshRequestSchema, RevokeRequestSchema } from "../../api/auth/v1/auth_pb";
 import { ConnectBox } from "./connect";
 
 export const handleRefresh = async (connect: ConnectBox, setLoading: Setter<boolean>, setError: Setter<string>) => {
@@ -7,7 +8,7 @@ export const handleRefresh = async (connect: ConnectBox, setLoading: Setter<bool
     setError("");
 
     try {
-        const request = new RefreshRequest();
+        const request = create(RefreshRequestSchema);
         // Set any necessary fields in the request
         const response = await connect.authclient.authRefresh(request);
         console.log("Refresh successful:", response);
@@ -21,7 +22,7 @@ export const handleRefresh = async (connect: ConnectBox, setLoading: Setter<bool
 
 export const RevokeReq = async (connect: ConnectBox, sessionNumber: number) => {
     try {
-        const request = new RevokeRequest({ sessionNumber: sessionNumber });
+        const request = create(RevokeRequestSchema, { sessionNumber: sessionNumber });
         // Set any necessary fields in the request
         const response = await connect.authclient.revokeSession(request);
         console.log("Logout successful:", response);
@@ -34,7 +35,7 @@ export const Revoke = async (connect: ConnectBox, sessionNumber: number, setLoad
     setLoading(true);
     setError("");
     try {
-        const request = new RevokeRequest({ sessionNumber: sessionNumber });
+        const request = create(RevokeRequestSchema, { sessionNumber: sessionNumber });
         // Set any necessary fields in the request
         const response = await connect.authclient.revokeSession(request);
         console.log("Logout successful:", response);
@@ -51,7 +52,7 @@ export const RevokeAll = async (connect: ConnectBox, setLoading: Setter<boolean>
     setLoading(true);
     setError("");
     try {
-        const request = new InvalidateAllSessionsRequest({});
+        const request = create(InvalidateAllSessionsRequestSchema);
         // Set any necessary fields in the request
         const response = await connect.authclient.invalidateAllSessions(request);
         console.log("Revoke successful:", response);
@@ -62,4 +63,4 @@ export const RevokeAll = async (connect: ConnectBox, setLoading: Setter<boolean>
     } finally {
         setLoading(false);
     }
-};
+}; 

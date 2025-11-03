@@ -1,0 +1,112 @@
+{
+    // Exclude files from file explorer
+    "files.exclude": {
+        // Node modules
+        "**/node_modules": true,
+        "**/node_modules/**": true,
+        // Generated proto files (all API directories)
+        "**/api": true,
+        "**/api/**": true,
+        // Generated SQLC files
+        "**/store/**/*.go": false, // Keep store files visible but you can exclude if needed
+        "**/query/**/*.go": true,
+        // Dockerfiles
+        "**/Dockerfile*": true,
+        "**/docker-compose*.yaml": true,
+        "**/docker-compose*.yml": true,
+        // Temporary files
+        "**/__pycache__": true,
+        "**/__pycache__/**": true,
+        "**/*.pyc": true,
+        "**/*.pyo": true,
+        "**/.DS_Store": true,
+        "**/*.tsbuildinfo": true,
+        "**/*.log": true,
+        "**/logfile.html": true,
+        // Build artifacts
+        "**/kodata": true,
+        "**/kodata/**": true,
+        "**/executables": true,
+        "**/executables/**": true,
+        "**/dumps": true,
+        "**/dumps/**": true,
+        "**/var.*": true,
+        // Lock files and build metadata
+        "**/buf.lock": true,
+        "**/atlas.sum": true,
+        "**/go.sum": true,
+        "**/*.sum": true,
+        "**/bun.lockb": true,
+        // Go module files
+        "**/go.mod": true,
+        "**/go.work": true,
+        "**/go.work.sum": true,
+        // Buf configuration files
+        "**/buf.yaml": true,
+        "**/buf.gen.yaml": true,
+        // Ignore files
+        "**/.gitignore": true,
+        "**/.dockerignore": true,
+        // Tool version files
+        "**/.tool-versions": true,
+        "**/.tool-version": true,
+        // Generated Kubernetes configs
+        "**/k8s/gen": true,
+        "**/k8s/gen/**": true,
+        // Build outputs
+        "**/*.db": true,
+        "**/*.sqlite": true,
+        "**/*.sqlite3": true,
+        "**/duck.db": true,
+        // Environment files (optional - uncomment if needed)
+        // "**/.env": true,
+        // "**/.env.local": true,
+        // "**/.env.*.local": true
+    },
+    // Exclude from search
+    "search.exclude": {
+        // Node modules
+        "**/node_modules": true,
+        // Generated files (all API directories)
+        "**/api": true,
+        // Go module files
+        "**/go.mod": true,
+        "**/go.work": true,
+        "**/go.work.sum": true,
+        // Tool version files
+        "**/.tool-versions": true,
+        "**/.tool-version": true,
+        // Dockerfiles
+        "**/Dockerfile*": true,
+        // Temporary files
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "**/.DS_Store": true,
+        "**/*.tsbuildinfo": true,
+        // Build artifacts
+        "**/kodata": true,
+        "**/executables": true,
+        "**/dumps": true,
+        "**/var.*": true,
+        // Lock files
+        "**/buf.lock": true,
+        "**/bun.lockb": true,
+        "**/go.sum": true,
+        // Buf configuration files
+        "**/buf.yaml": true,
+        "**/buf.gen.yaml": true,
+        // Ignore files
+        "**/.gitignore": true,
+        "**/.dockerignore": true
+    },
+    // Exclude from file watcher (optional - improves performance)
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/api/**": true,
+        "**/__pycache__/**": true,
+        "**/kodata/**": true,
+        "**/executables/**": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true
+    }
+}
