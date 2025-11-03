@@ -1,3 +1,3 @@
 module github.com/codeharik/Atlantic/skitty
 
-go 1.23.1
+go 1.25.3

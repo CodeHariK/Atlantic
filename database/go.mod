@@ -1,6 +1,6 @@
 module github.com/codeharik/Atlantic/database
 
-go 1.23.1
+go 1.25.3
 
 replace github.com/codeharik/Atlantic/config => ../config
 
