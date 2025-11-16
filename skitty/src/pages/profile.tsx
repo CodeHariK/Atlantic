@@ -3,13 +3,16 @@ import { Role } from "../../api/auth/v1/auth_pb.ts";
 
 import { useConnect } from '../connect/connect.tsx';
 
-import { proto3 } from "@bufbuild/protobuf";
+import { enumToValueMap } from "../helper/enum.ts";
 
 import { CssUI, GridLayout } from 'solgaleo/ui';
-import { IconCross, IconTableHeading } from 'solgaleo/svg';
-import { SuperTable } from 'solgaleo/adv';
+// import { IconCross, IconTableHeading } from 'solgaleo/svg';
+// import { Table } from 'solgaleo/adv';
 
-import { handleRefresh, Revoke, RevokeAll } from "../connect/auth.tsx";
+import {
+   handleRefresh, 
+   // Revoke, RevokeAll
+} from "../connect/auth.tsx";
 import { AtlanticHeader } from "../components/header.tsx";
 
 export default function Profile() {
@@ -57,7 +60,7 @@ export default function Profile() {
          footer={<AtlanticHeader />}
       >
          <button onClick={() => { handleRefresh(connect, setLoading, setError) }} disabled={loading()}
-            class={CssUI.MaterialButton + ' mt-1 mb-1 w-full justify-center'} type='submit'>
+            class={CssUI.ButtonMaterial + ' mt-1 mb-1 w-full justify-center'} type='submit'>
             <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
          </button>
 
@@ -73,11 +76,16 @@ export default function Profile() {
                         {
                            (() => {
                               let a = [];
+                              const roleMap = enumToValueMap(Role);
                               for (let i = 0; i < 64; i++) {
                                  // Check if the i-th bit is set in the role
                                  let b = (connect.user!.role >> BigInt(i)) & BigInt(1)
                                  if (b) {
-                                    a.push(proto3.getEnumType(Role).findNumber(i + 1)?.name);
+                                    const roleValue = Number(i + 1);
+                                    const roleName = roleMap[roleValue];
+                                    if (roleName) {
+                                       a.push(roleName);
+                                    }
                                  }
                               }
                               return <p>Role : {a.join(", ")}</p>;
@@ -91,7 +99,7 @@ export default function Profile() {
                      </div>
                   </div>
                   {/* 
-                  <SuperTable
+                  <Table
 
                      // data={{
 

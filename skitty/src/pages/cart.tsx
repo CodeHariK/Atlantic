@@ -2,9 +2,10 @@ import { GridLayout } from 'solgaleo/ui';
 
 import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from 'solid-js';
-import { GetProductsByIdsRequest } from '../../api/product/v1/product_pb';
+import { GetProductsByIdsRequestSchema } from '../../api/product/v1/product_pb';
+import { create } from "@bufbuild/protobuf";
 
-import { CheckoutCartRequest } from '../../api/cart/v1/cart_pb';
+import { CheckoutCartRequestSchema } from '../../api/cart/v1/cart_pb';
 import { useNavigate } from "@solidjs/router";
 import { AtlanticHeader } from '../components/header';
 
@@ -33,7 +34,7 @@ export function Cart() {
       console.log(a)
       console.log("* * * *")
 
-      let response = await connect.productclient.getProductsByIds(new GetProductsByIdsRequest({
+      let response = await connect.productclient.getProductsByIds(create(GetProductsByIdsRequestSchema, {
          dollar1: a
       }))
       console.log(response)
@@ -162,7 +163,7 @@ export function Cart() {
 
                               <button class='justify-center w-full' onClick={async () => {
                                  try {
-                                    let cart = new CheckoutCartRequest({});
+                                    let cart = create(CheckoutCartRequestSchema, {});
                                     await connect.cartclient.checkoutCart(cart);
                                     await connect.getCart()
                                     navigate("/products", { replace: false });

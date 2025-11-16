@@ -1,8 +1,10 @@
 import { GridLayout, CssUI, Input, SpaceForm } from 'solgaleo/ui';
 import { IconEmail } from 'solgaleo/svg';
 
+import { create } from '@bufbuild/protobuf';
+
 import { createSignal } from "solid-js";
-import { RegisterUserRequest } from "../../api/auth/v1/auth_pb.ts";
+import { RegisterUserRequestSchema } from "../../api/auth/v1/auth_pb.ts";
 
 import { useConnect } from '../connect/connect.tsx';
 
@@ -35,7 +37,7 @@ export default function Register() {
       setError("");
 
       try {
-         const request = new RegisterUserRequest({
+         const request = create(RegisterUserRequestSchema, {
             email: cred.email,
             password: cred.password,
          });
@@ -67,7 +69,7 @@ export default function Register() {
                </p>
 
                <SpaceForm id="Form"
-                  schema={validationSchema}
+                  schema={validationSchema as any}
 
                   onSubmit={(state) => {
                      register(state as Credentials)
@@ -79,7 +81,7 @@ export default function Register() {
 
                   <p class='py-1'>
 
-                     <button class={CssUI.MaterialButton + " mt-1 mb-1 w-full justify-center"} disabled={loading()} type='submit'>
+                     <button class={CssUI.ButtonMaterial + " mt-1 mb-1 w-full justify-center"} disabled={loading()} type='submit'>
                         <p class='text-sm'>{loading() ? "Loading..." : "Continue"}</p>
                      </button>
 
@@ -101,4 +103,4 @@ export default function Register() {
 
       </GridLayout >
    );
-}
+} 

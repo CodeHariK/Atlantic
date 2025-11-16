@@ -6,36 +6,30 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import {
    Code,
    ConnectError,
-   createPromiseClient,
-   PromiseClient,
+   createClient,
+   Client,
+   Interceptor
 } from "@connectrpc/connect";
-import { AuthService } from "../../api/auth/v1/auth_connect.ts";
-import { ProfileService } from "../../api/auth/v1/profile_connect.ts";
-import { UserService } from "../../api/user/v1/user_connect.ts";
-import { InventoryService } from "../../api/inventory/v1/inventory_connect.ts";
-import { CosmogService } from "../../api/cosmog/v1/cosmog_connect.ts";
-import { ProductService } from "../../api/product/v1/product_connect.ts";
-import { OrdersService } from "../../api/orders/v1/orders_connect.ts";
-import { CartService } from "../../api/cart/v1/cart_connect.ts";
+import { create } from "@bufbuild/protobuf";
+import { AuthService, RefreshRequestSchema } from "../../api/auth/v1/auth_pb";
+import { ProfileService, GetProfileRequestSchema, ProfileUser } from "../../api/auth/v1/profile_pb";
+import { UserService } from "../../api/user/v1/user_pb";
+import { InventoryService } from "../../api/inventory/v1/inventory_pb";
+import { CosmogService } from "../../api/cosmog/v1/cosmog_pb";
+import { ProductService } from "../../api/product/v1/product_pb";
+import { OrdersService } from "../../api/orders/v1/orders_pb";
+import { CartService, GetCartRequestSchema, Cart } from "../../api/cart/v1/cart_pb";
 import { Atlantic } from "../data/Constants.ts";
 
 // Define the types for the services
-type AuthConnect = PromiseClient<typeof AuthService>;
-type ProfileConnect = PromiseClient<typeof ProfileService>;
-type UserConnect = PromiseClient<typeof UserService>;
-type InventoryConnect = PromiseClient<typeof InventoryService>;
-type CosmogConnect = PromiseClient<typeof CosmogService>;
-type ProductConnect = PromiseClient<typeof ProductService>;
-type OrdersConnect = PromiseClient<typeof OrdersService>;
-type CartConnect = PromiseClient<typeof CartService>;
-
-import { Interceptor } from "@connectrpc/connect";
-import { RefreshRequest } from "../../api/auth/v1/auth_pb.ts";
-import {
-   GetProfileRequest,
-   ProfileUser,
-} from "../../api/auth/v1/profile_pb.ts";
-import { Cart, GetCartRequest } from "../../api/cart/v1/cart_pb.ts";
+type AuthConnect = Client<typeof AuthService>;
+type ProfileConnect = Client<typeof ProfileService>;
+type UserConnect = Client<typeof UserService>;
+type InventoryConnect = Client<typeof InventoryService>;
+type CosmogConnect = Client<typeof CosmogService>;
+type ProductConnect = Client<typeof ProductService>;
+type OrdersConnect = Client<typeof OrdersService>;
+type CartConnect = Client<typeof CartService>;
 
 const interceptor: (authclient: AuthConnect) => Interceptor =
    (authclient: AuthConnect) => (next) => async (req) => {
@@ -57,7 +51,7 @@ const interceptor: (authclient: AuthConnect) => Interceptor =
             error.code == Code.Unauthenticated
          ) {
             try {
-               const request = new RefreshRequest();
+               const request = create(RefreshRequestSchema);
                await authclient.authRefresh(request);
                console.log("Refresh successful:", response);
                response = await next(req);
@@ -107,26 +101,26 @@ type ConnectProviderProps = {
 export function ConnectProvider(props: ConnectProviderProps) {
    const baseTransport = createConnectTransport({
       baseUrl: Atlantic,
-      credentials: "include",
+      fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
    });
 
    const transport = createConnectTransport({
       baseUrl: Atlantic,
-      credentials: "include",
+      fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
       interceptors: [
-         interceptor(createPromiseClient(AuthService, baseTransport)),
+         interceptor(createClient(AuthService, baseTransport)),
       ],
    });
 
    const [connectBox, setConnectBox] = createStore<ConnectBox>({
-      authclient: createPromiseClient(AuthService, transport),
-      profileclient: createPromiseClient(ProfileService, transport),
-      userclient: createPromiseClient(UserService, transport),
-      inventoryclient: createPromiseClient(InventoryService, transport),
-      cosmogclient: createPromiseClient(CosmogService, transport),
-      productclient: createPromiseClient(ProductService, transport),
-      ordersclient: createPromiseClient(OrdersService, transport),
-      cartclient: createPromiseClient(CartService, transport),
+      authclient: createClient(AuthService, transport),
+      profileclient: createClient(ProfileService, transport),
+      userclient: createClient(UserService, transport),
+      inventoryclient: createClient(InventoryService, transport),
+      cosmogclient: createClient(CosmogService, transport),
+      productclient: createClient(ProductService, transport),
+      ordersclient: createClient(OrdersService, transport),
+      cartclient: createClient(CartService, transport),
 
       user: null,
       cartbox: null,
@@ -136,7 +130,7 @@ export function ConnectProvider(props: ConnectProviderProps) {
 
    async function getProfile() {
       try {
-         const request = new GetProfileRequest();
+         const request = create(GetProfileRequestSchema);
          const response = await connectBox.profileclient.getProfile(request);
 
          if (response.user) {
@@ -152,7 +146,7 @@ export function ConnectProvider(props: ConnectProviderProps) {
       try {
          setConnectBox("cartbox", { loading: true });
          await (new Promise(resolve => setTimeout(resolve, 500)))
-         const request = new GetCartRequest();
+         const request = create(GetCartRequestSchema);
          const response = await connectBox.cartclient.getCart(request);
 
          if (response) {

@@ -2,6 +2,8 @@ import { GridLayout } from 'solgaleo/ui';
 
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
 
+import { create } from "@bufbuild/protobuf";
+
 import instantsearch from "instantsearch.js";
 import {
 	hierarchicalMenu,
@@ -21,7 +23,7 @@ import { createEffect } from "solid-js";
 import "../css/searchgames.css";
 import { Atlantic } from "../data/Constants";
 import { useConnect } from "../connect/connect";
-import { CartItem } from "../../api/cart/v1/cart_pb";
+import { CartItemSchema } from "../../api/cart/v1/cart_pb";
 import { AtlanticHeader } from '../components/header';
 
 export default function SearchGames() {
@@ -170,7 +172,7 @@ export default function SearchGames() {
 							return html`<button
 					class="rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none dark:bg-primary-600 dark:hover:bg-primary-700"
 					onclick=${async () => {
-									let cart = new CartItem({
+									let cart = create(CartItemSchema, {
 										name: hit.title,
 										productId: hit.id,
 										quantity: 1,

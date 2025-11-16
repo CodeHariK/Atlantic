@@ -41,7 +41,7 @@ export function CartModal() {
         visibilitySignal={createSignal(connect.cartbox?.loading == true && connect.cartbox?.cart != null)}
         anchor={{
             element: ([, setRef], [isVisible, setVisibiliy]) => {
-                return <button ref={setRef} class={CssUI.OutlinedButton}
+                return <button ref={setRef} class={CssUI.ButtonOutlined}
                     onmousedown={() => { setVisibiliy(!isVisible()) }}
                 >
                     {<IconCart />}
@@ -65,7 +65,7 @@ export function CartModal() {
                             </>
                         ))}
 
-                        <button onClick={() => { navigate("/cart", { replace: false }); }} class={"w-full items-center justify-center " + CssUI.MaterialButton}>Proceed to Checkout</button>
+                        <button onClick={() => { navigate("/cart", { replace: false }); }} class={"w-full items-center justify-center " + CssUI.ButtonOutlined}>Proceed to Checkout</button>
 
                         {connect.cartbox?.loading == true ? "Loading" : ""}
                     </>
@@ -86,7 +86,7 @@ export const AccountModal = () => {
                     // fullScreen={true}
                     anchor={{
                         element: ([, setRef], [isVisible, setVisibiliy]) => {
-                            return <button ref={setRef} class={CssUI.OutlinedButton}
+                            return <button ref={setRef} class={CssUI.ButtonOutlined}
                                 onmousedown={() => { setVisibiliy(!isVisible()) }}
                             >
                                 <p>{<IconUser />}{<span>Account</span>}{<IconDown />}</p>
@@ -113,7 +113,7 @@ export const AccountModal = () => {
                 />
 
             }
-            two={<button class={CssUI.OutlinedButton}><a href="/login">Log In</a></button>}>
+            two={<button class={CssUI.ButtonOutlined}><a href="/login">Log In</a></button>}>
 
         </TransitionWidget>
     );

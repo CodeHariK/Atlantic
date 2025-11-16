@@ -4,10 +4,12 @@ import { useConnect } from "../connect/connect";
 import { createEffect, createSignal } from "solid-js";
 import { useParams, useSearchParams } from "@solidjs/router";
 
-import { GetProductRequest, Product } from "../../api/cosmog/v1/cosmog_pb";
+import { create } from "@bufbuild/protobuf";
+
+import { GetProductRequestSchema, Product } from "../../api/cosmog/v1/cosmog_pb";
 
 import { Reviews } from "./reviews";
-import { CartItem } from "../../api/cart/v1/cart_pb";
+import { CartItemSchema } from "../../api/cart/v1/cart_pb";
 import { AtlanticHeader } from '../components/header';
 import { Breadcrumbs } from 'solgaleo/nav';
 
@@ -27,7 +29,7 @@ export function ProductPage() {
 
       try {
          // Create the request
-         let request = new GetProductRequest({
+         let request = create(GetProductRequestSchema, {
             id: params.productId, // Assuming params.id is available in your context
          });
 
@@ -60,7 +62,7 @@ export function ProductPage() {
    }
 
    const addToCart = async () => {
-      let cart = new CartItem({
+      let cart = create(CartItemSchema, {
          productId: product()?.id,
          quantity: 1,
       });
@@ -115,7 +117,7 @@ export function ProductPage() {
                            <div class="flex flex-row items-center lg:flex-col">
                               {(() => {
 
-                                 return product()?.img.map((m) => {
+                                 return product()?.img.map((_m) => {
 
                                     return <>To be fixed</>
 
@@ -135,7 +137,7 @@ export function ProductPage() {
 
                               })()}
                               {(() => {
-                                 return product()?.mov.map((m) => {
+                                 return product()?.mov.map((_m) => {
 
                                     return <>To be fixed</>
 
@@ -171,12 +173,12 @@ export function ProductPage() {
 
                      <h6 class="mt-8">Choose subscription</h6>
                      <div class="mt-3 flex select-none flex-wrap items-center gap-1">
-                        <button class={CssUI.MaterialButton} onClick={addToCart}>4 Months / $80</button>
-                        <button class={CssUI.OutlinedButton} onClick={addToCart}>8 Months / $60</button>
+                        <button class={CssUI.ButtonMaterial} onClick={addToCart}>4 Months / $80</button>
+                        <button class={CssUI.ButtonOutlined} onClick={addToCart}>8 Months / $60</button>
                      </div>
 
                      <div class="mt-10 flex flex-col items-center justify-between space-y-4 border-t border-b py-4 sm:flex-row sm:space-y-0">
-                        <button class={CssUI.MaterialButton} onClick={addToCart}>Add to cart</button>
+                        <button class={CssUI.ButtonMaterial} onClick={addToCart}>Add to cart</button>
                      </div>
 
                      <ul class="mt-8 space-y-2">
@@ -205,4 +207,4 @@ export function ProductPage() {
          </section>
       </GridLayout>
    );
-}
+} 

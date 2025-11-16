@@ -1,8 +1,8 @@
 
 import { CssUI, GridLayout } from 'solgaleo/ui';
 import { AtlanticHeader } from '../components/header';
-import { SuperTable } from 'solgaleo/adv';
-import { IconTableHeading } from 'solgaleo/svg';
+import { Table } from 'solgaleo/adv';
+import { IconTableHeading, IconCross } from 'solgaleo/svg';
 
 export function MyOrders() {
 
@@ -12,51 +12,56 @@ export function MyOrders() {
          footer={<AtlanticHeader />}
       >
 
-         <SuperTable width={900}
-
-            table={{
-               heading: [
-                  <>User Agent {<IconTableHeading />}</>,
-                  <>Started {<IconTableHeading />}</>,
-                  <>Active {<IconTableHeading />}</>,
-                  <>Valid {<IconTableHeading />}</>,
-                  <>Revoke</>,
-               ],
-               class: [
-                  "max-w-64",
-               ],
-               rows: [
-                  [
-                     <p>{"s.agent"}</p>,
-                     <p>{"s.iat.toString()"}</p>,
-                     <p>Active {"Current"}</p>,
-                     <p>{"s.exp.toString()"}</p>,
-                  ]
-
-               ],
+         <Table
+            style={{
+               "max-height": "300px",
+               "overflow-y": "scroll",
+               margin: "10px",
+               width: "90%",
+               "box-shadow": "rgba(0, 0, 0, 0.1) 0px 0px 6px 2px",
             }}
-            headerstart={<div>
-               <h3>Login sessions</h3>
-            </div>}
-            headerend={
-               <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
-                  {/* <MaterialButton onClick={handleRefresh} disabled={loading()} class='mt-1 mb-1 w-full justify-center' type='submit'>
-                           <p class='text-sm'>{loading() ? "Loading..." : "Refresh"}</p>
-                        </MaterialButton> */}
-                  <button class={CssUI.OutlinedButton}>Revoke All</button>
-                  <button class={CssUI.OutlinedButton}>Logout</button>
-               </div>
-            }
-            footerstart={
-               <p>Page 1 of 10</p>
-            }
-            footerend={
-               <div class="flex gap-1">
-                  <button class={CssUI.OutlinedButton}>Previous</button>
-                  <button class={CssUI.OutlinedButton}>Next</button>
-               </div>
-            }
-         ></SuperTable>
+            tableArray={[{
+               headerItems: [
+                  <><p>User Agent</p><IconTableHeading /></>,
+                  <><p>Started</p><IconTableHeading /></>,
+                  <><p>Active</p><IconTableHeading /></>,
+                  <><p>Valid</p><IconTableHeading /></>,
+                  <p>Revoke</p>,
+               ],
+               rowStyle: {
+                  "grid-template-columns": `1fr 2fr 1fr 1fr 1fr`
+               },
+               headerStyle: {
+                  "grid-template-columns": `1fr 2fr 1fr 1fr 1fr`,
+               },
+               headerCellStyle: () => {
+                  return {
+                     margin: ".1rem",
+                     padding: "10px",
+                  };
+               },
+               rowCellStyle: (_row, _col) => {
+                  return {
+                     padding: "10px",
+                     margin: ".1rem",
+                  };
+               },
+               data: [
+                  { agent: "s.agent", iat: 0, exp: 0 },
+               ].map((s, _i) => {
+                  return {
+                     hiddenDetails: <div>More info...</div>,
+                     rowItems: [
+                        <p>{s.agent}</p>,
+                        <p>{s.iat.toString()}</p>,
+                        <p>Active {"Current"}</p>,
+                        <p>{s.exp.toString()}</p>,
+                        <button class={CssUI.ButtonIcon}><IconCross /></button>
+                     ]
+                  };
+               })
+            }]}
+         />
 
          <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
             <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -670,4 +675,4 @@ export function QuestionModal() {
          </div>
       </div>
    );
-}
+} 

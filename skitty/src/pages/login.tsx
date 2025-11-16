@@ -1,7 +1,9 @@
 import { GridLayout, Input, SpaceForm, CssUI } from 'solgaleo/ui';
 
+import { create } from "@bufbuild/protobuf";
+
 import { createSignal } from "solid-js";
-import { EmailLoginRequest } from "../../api/auth/v1/auth_pb.ts";
+import { EmailLoginRequestSchema } from "../../api/auth/v1/auth_pb.ts";
 
 import { useConnect } from '../connect/connect.tsx';
 
@@ -31,7 +33,7 @@ export default function Login() {
       setError("");
 
       try {
-         const request = new EmailLoginRequest({
+         const request = create(EmailLoginRequestSchema, {
             email: cred.email,
             password: cred.password,
          });
@@ -60,7 +62,7 @@ export default function Login() {
             <div class="shadowh br2 p8 flex flex-col gap4">
 
                <h3 class="text-center">Login to your account</h3>
-               <button class={CssUI.OutlinedButton}>
+               <button class={CssUI.ButtonOutlined}>
                   <IconEmail />
                   <h6>Continue with Google</h6>
                </button>
@@ -70,7 +72,7 @@ export default function Login() {
                </div>
 
                <SpaceForm id="Form"
-                  schema={validationSchema}
+                  schema={validationSchema as any}
 
                   onSubmit={(state) => {
                      login(state as Credentials)
@@ -81,7 +83,7 @@ export default function Login() {
 
                   <p class='py-1'>
 
-                     <button disabled={loading()} class={CssUI.MaterialButton + ' mt-1 mb-1 w-full justify-center'} type='submit'>
+                     <button disabled={loading()} class={CssUI.ButtonMaterial + ' mt-1 mb-1 w-full justify-center'} type='submit'>
                         <p class='text-sm'>{loading() ? "Loading..." : "Continue"}</p>
                      </button>
 

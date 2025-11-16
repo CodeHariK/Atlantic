@@ -2,7 +2,7 @@ import { FileUploader } from "solgaleo/ui";
 
 import { Atlantic } from "../data/Constants";
 
-import { InventoryService } from "../../api/inventory/v1/inventory_connect";
+import { InventoryService } from "../../api/inventory/v1/inventory_pb";
 
 export function UploadProduct() {
     return (
@@ -215,4 +215,4 @@ export function UploadProduct() {
             </form>
         </>
     );
-}
+} 

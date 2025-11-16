@@ -29,7 +29,7 @@ export function Products() {
                      // fullScreen={true}
                      anchor={{
                         element: ([, setRef], [isVisible, setVisibiliy]) => {
-                           return <button ref={setRef} class={CssUI.OutlinedButton}
+                           return <button ref={setRef} class={CssUI.ButtonOutlined}
                               onmousedown={() => { setVisibiliy(!isVisible()) }}
                            >
                               <span>Filter</span>
@@ -84,7 +84,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
             <span class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300"> Up to {discount}% off </span>
 
             <div class="flex items-center justify-end gap-1">
-               <button type="button" data-tooltip-target="tooltip-add-to-favorites" class={CssUI.MaterialRoundButton}>
+               <button type="button" data-tooltip-target="tooltip-add-to-favorites" class={CssUI.ButtonOutlined}>
                   <span class="sr-only"> Add to Favorites </span>
                   <IconHeart />
                </button>
@@ -118,7 +118,7 @@ function ProductCard(id: string, name: string, price: string, discount: number, 
          <div class="mt-4 flex items-center justify-between gap-4">
             <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{price}</p>
 
-            <button type="button" class={CssUI.MaterialButton}>
+            <button type="button" class={CssUI.ButtonMaterial}>
                <IconCart />
                Add to cart
             </button>
